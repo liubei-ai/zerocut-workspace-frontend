@@ -1,0 +1,52 @@
+name: Deploy to Aliyun ECS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Deploy with rsync
+        uses: burnett01/rsync-deployments@5.2.3
+        with:
+          switches: -avz --delete --chmod=755
+          path: dist/
+          remote_path: ${{ secrets.NGINX_DEPLOY_PATH }}/
+          remote_host: ${{ secrets.ALIYUN_ECS_IP }}
+          remote_user: ${{ secrets.ALIYUN_SSH_USER }}
+          remote_key: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
+          remote_port: 22
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ALIYUN_ECS_IP }}
+          username: ${{ secrets.ALIYUN_SSH_USER }}
+          key: ${{ secrets.ALIYUN_SSH_PRIVATE_KEY }}
+          script: |
+            ls -lht ${{ secrets.NGINX_DEPLOY_PATH }} | head -n 5
+            du -sh ${{ secrets.NGINX_DEPLOY_PATH }}
