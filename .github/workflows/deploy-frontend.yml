@@ -12,28 +12,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 10
+          run_install: false
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: npm
-
-      - name: Install pnpm
-        run: npm install -g pnpm@10
+          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build project
         run: pnpm build
 
-      - name: Install rsync
-        run: sudo apt-get update && sudo apt-get install -y rsync
-
       - name: Deploy with rsync
         uses: burnett01/rsync-deployments@7.0.2
         with:
-          switches: -avz --delete --chmod=755
+          switches: -avzr --delete
           path: dist/
           remote_path: ${{ secrets.NGINX_DEPLOY_PATH }}/
           remote_host: ${{ secrets.ALIYUN_ECS_IP }}
