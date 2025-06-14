@@ -31,7 +31,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y rsync
 
       - name: Deploy with rsync
-        uses: burnett01/rsync-deployments@5.2.3
+        uses: burnett01/rsync-deployments@7.0.2
         with:
           switches: -avz --delete --chmod=755
           path: dist/
