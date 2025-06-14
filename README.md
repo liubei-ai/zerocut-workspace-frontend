@@ -22,69 +22,71 @@
 </p>
 
 <h4 align='center'>
-<a href="https://lux.vuetify3.com/">Live Demo</a>
+<a href="https://lux.vuetify3.com/">在线 Demo</a>
 </h4>
 
 <br>
 
 <p align='center'>
-<b>English</b> | <a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.zh-CN.md">简体中文</a>| <a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.jp.md">日本語</a>
+<a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.md">English</a> | <b>简体中文</b>| <a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.jp.md">日本語</a>
 </p>
 
-## 📖Introduction
+## 📖 序文
 
-> Goal: Creating the best Vuetify 3 Admin open-source template.
+> 目标创造最优秀的 vuetify3 的 Admin 开源模板
 
-Built upon the elegant themes of Vuetify, we have established a clear and efficient project structure, integrating the latest technology frameworks. This project aims to address a wide range of common technical requirements and features, while incorporating an AI assistant for a more intelligent experience. Additionally, we ensure that all pages are adaptive across multiple devices, achieving a seamless cross-platform compatibility.
+在 Vuetify 精美的主题基础上，我们构建了一个清晰且高效的项目逻辑架构，整合了最新的技术框架。本项目旨在实现各种常见的技术需求和功能，同时融合了 AI 助手，以提供更智能化的体验。此外，我们确保所有页面在多种设备上均能自适应展示，实现优雅的跨平台兼容性。
 
-## 📖Other Versions
+## 📖 其他版本
 
-SPA Full Version: [lux-vuetify3](https://github.com/yangjiakai/lux-nuxt3)
+### SPA Version
 
-SPA Simplified i18n Version[lux-vuetify3-i18n](https://github.com/yangjiakai/vuetify3-lux-admin-template-i18n)
+SPA 完整版: [lux-vuetify3](https://github.com/yangjiakai/lux-nuxt3)
 
-SPA Simplified chinese Version[lux-vuetify3-zh](https://github.com/yangjiakai/vuetify3-lux-admin-template-zh)
+SPA 简化国际化模板 [lux-vuetify3-i18n](https://github.com/yangjiakai/vuetify3-lux-admin-template-i18n)
 
-Nuxt3 version:
+SPA 简化中文模板 [lux-vuetify3-zh](https://github.com/yangjiakai/vuetify3-lux-admin-template-zh)
 
-Nuxt3 Full Version [lux-nuxt3](https://github.com/yangjiakai/lux-nuxt3)
+### Nuxt3 Version
 
-Nuxt3 Simplified Version [lux-nuxt3-template](https://github.com/yangjiakai/lux-nuxt3-template)
+Nuxt3 完整版 [lux-nuxt3](https://github.com/yangjiakai/lux-nuxt3)
 
-## 📖Documents
+Nuxt3 简化版 [lux-nuxt3-template](https://github.com/yangjiakai/lux-nuxt3-template)
 
-- 📖 [Document 1.0 Chinese](https://www.craft.me/s/tAMVv4hUxZIH6G)
+## 文档
 
-## 📚Features
+- 📖 [中文版文档 1.0 ](https://www.craft.me/s/tAMVv4hUxZIH6G)
+
+## 📚 特性
 
 - 📖 [Vue 3.2](https://github.com/vuejs/core)
 - 📖 [Vite 4.x](https://github.com/vitejs/vite)
 - 📖 UI Framework [Vuetify 3](https://next.vuetifyjs.com/en/)
 - 📖 TypeScript
-- 📦 Component Auto Importing
-- 🍍 [Pinia](https://pinia.vuejs.org/)
-- 📔 `<script setup>`
-- 📚 Use icons from any icon sets in [Iconify](https://icon-sets.iconify.design/)
-- ☁️ Deploy on Netlify, zero-config
-- 🔑 Firebase auth
+- 📦 组件自动导入
+- 🍍 通过 [Pinia](https://pinia.vuejs.org/)进行状态管理
+- 📔 使用新的 `<script setup>` 语法
+- 📚 使用任意的图标集 [Iconify](https://icon-sets.iconify.design/)
+- ☁️ 零配置部署在 Netlify
+- 🔑 Firebase 授权
 - 📈 Echarts, ApexChart
-- 🧭 Openai, Chatgpt
-- 🌍 vue-i18n
+- 🧭 Openai, Chatgpt 支持
+- 🌍 vue-i18n 多语言支持
 - 📚 virtual-scroller , vuedraggable , perfect-scrollbar
-- 📝 Rich Text Editor
-- 📇 Responsive multi-platform adaptive
+- 📝 富文本编辑器
+- 📇 响应式多平台自适应
 
-## 📈 Project Activity
+## 📈 项目活跃度
 
 ![Alt](https://repobeats.axiom.co/api/embed/306361b2af1a8556f64a0a828e1726a94bff36f0.svg "Repobeats analytics image")
 
-## 💬Contact Me
+## 💬 联络我
 
-- Email <a href="mailto:yjkbako@gmail.com">yjkbako@gmail.com</a>
-- Twitter https://twitter.com/baibaixiang
-- Wechat <img  src='/src/assets/wechat-qrcode.png'  alt='DashBoard' width='300' />
+- 邮箱 <a href="mailto:yjkbako@gmail.com">yjkbako@gmail.com</a>
+- 推特 https://twitter.com/baibaixiang
+- 微信 <img  src='/src/assets/wechat-qrcode.png'  alt='DashBoard' width='300' />
 
-## 💌Preview
+## 💌 预览
 
 <img  src='/src/assets/previews/DashBoard.png'  alt='DashBoard' />
 <img  src='/src/assets/previews/TaskBoard.png'  alt='ChatGPT' />
@@ -102,24 +104,62 @@ Nuxt3 Simplified Version [lux-nuxt3-template](https://github.com/yangjiakai/lux-
 
 ## 📦Pre-packed
 
-### 🏷️ UI Frameworks
+### 🏷️UI 框架
 
-- [Vuetify3](https://next.vuetifyjs.com/en/) - Vuetify is a no design skills required UI Framework with beautifully handcrafted Vue Components.
+- [Vuetify3](https://next.vuetifyjs.com/en/) - Vuetify 是一个不要求设计能力的 Vue 界面组件框架，自带了许多自行设计实现的 Vue 组件。
 
-### 🏷️ Icons
+### 🏷️Icons
 
-- [Iconify](https://iconify.design) - use icons from any icon sets [🔍Icônes](https://icones.netlify.app/)
+- [Iconify](https://iconify.design) - 使用任意的图标集 [🔍Icônes](https://icones.netlify.app/)
 - [Pure CSS Icons via UnoCSS](https://github.com/antfu/unocss/tree/main/packages/preset-icons)
 
-### 🏷️ Plugins
+## 目标功能
+
+- [x] 明暗主题切换 -- 完成
+- [x] 主题色切换 -- 完成
+- [x] 中日英三语言切换-- 完成
+- [x] 整合 ChatGpt-- 完成
+
+## 目标页面
+
+### 认证相关
+
+- [x] 登录 -- 完成
+- [x] 注册 -- 完成
+- [x] 验证邮件 -- 完成
+- [ ] 密码重置 -- 施工中
+
+### 公共页面
+
+- [x] 404 -- 完成
+- [x] 500 -- 施工中
+- [x] 系统维护 -- 施工中
+- [x] 常见问题 -- 施工中
+
+### UI 相关
+
+- [x] 瀑布流布局 -- 完成
+- [x] 大数据虚拟列表 -- 完成
+- [ ] 骨架屏 -- 施工中
+
+### 功能页面
+
+- [x] 任务版(拖拽功能) -- 完成
+- [x] 任务列表() -- 施工中
+
+### 站点仿写
+
+- [ ] ......
+
+### 🏷️ 插件
 
 - [Vue Router4](https://router.vuejs.org/)
-- [VueUse](https://github.com/antfu/vueuse) - collection of useful composition APIs
-- [VuedDaggable](https://github.com/SortableJS/Vue.Draggable) - allowing drag-and-drop and synchronization with view model array.
-- [Vue-Masonry-Wall](https://github.com/DerYeger/yeger/tree/main/packages/vue-masonry-wall) - Responsive masonry layout with SSR support and zero dependencies for Vue 3.
-- [Vue-Virtual-Scroller](https://github.com/Akryum/vue-virtual-scroller) - Blazing fast scrolling of any amount of data
+- [VueUse](https://github.com/antfu/vueuse) - 非常有用的组合式 API 合集
+- [VuedDaggable](https://github.com/SortableJS/Vue.Draggable) - 允许进行与数组模型同步的拖拽放置操作
+- [Vue-Masonry-Wall](https://github.com/DerYeger/yeger/tree/main/packages/vue-masonry-wall) - 是一种 Vue3 响应式,支持 SSR,且零依的的瀑布流布局方案
+- [Vue-Virtual-Scroller](https://github.com/Akryum/vue-virtual-scroller) - 大数据快速虚拟滚动插件
 
-## 👻Try it now!
+## 👻 现在可以试试!
 
 ```
 git clone https://github.com/yangjiakai/lux-admin-vuetify3.git
@@ -133,34 +173,33 @@ yarn dev
 
 ## 👻Docker it!
 
-1. Build the development environment image:
+1. 开发环境构建镜像：
 
    ```
    docker-compose build dev
    ```
 
-2. Start the development environment:
+2. 启动开发环境：
 
    ```
    docker-compose up dev
    ```
 
-3. Build the production environment image:
+3. 生产环境构建镜像：
 
    ```
    docker-compose build app
    ```
 
-4. Start the production environment:
+4. 启动生产环境：
    ```
    docker-compose up app
    ```
 
-这应该能解决实时更新的问题。如果您还有任何疑问或遇到其他问题，请随时告诉我。
+### 🔑 配置 ApiKey
 
-### 🔑Set ApiKey
-
-Find the `.env.template` file in the root directory, remove the `.template` suffix, and replace` VITE_OPENAI_API_KEY`, `VITE_UNSPLASH_ACCESS_KEY`, and `VITE_GITHUB_CLIENT_ID`, and `VITE_TTS_KEY` and `VITE_TTS_REGION` with your own keys.
+找到根目录下的`.env.template`文件，去掉`.template`后缀
+把`VITE_OPENAI_API_KEY`,`VITE_UNSPLASH_ACCESS_KEY`,`VITE_GITHUB_CLIENT_ID`,`VITE_TTS_KEY` , `VITE_TTS_REGION`分别替换成你自己的
 
 > openai apikey： https://platform.openai.com/account/api-keys
 
