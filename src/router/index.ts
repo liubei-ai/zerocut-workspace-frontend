@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores/authStore";
 import UserRoutes from "./user.routes";
 import AuthRoutes from "./auth.routes";
 import UIRoutes from "./ui.routes";
@@ -60,6 +61,46 @@ const router = createRouter({
       return { top: 0 };
     }
   },
+});
+
+// Global navigation guard for authentication
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+
+  // Check if route requires authentication
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth) {
+    // If user is not logged in locally, try to fetch current user from server
+    if (!authStore.isAuthenticated) {
+      try {
+        const isAuthenticated = await authStore.fetchCurrentUser();
+        if (!isAuthenticated) {
+          // Redirect to login page
+          next({
+            name: 'auth-signin',
+            query: { redirect: to.fullPath }
+          });
+          return;
+        }
+      } catch (error) {
+        console.error('Authentication check failed:', error);
+        next({
+          name: 'auth-signin',
+          query: { redirect: to.fullPath }
+        });
+        return;
+      }
+    }
+  }
+
+  // If user is authenticated and trying to access auth pages, redirect to dashboard
+  if (authStore.isAuthenticated && to.path.startsWith('/auth/')) {
+    next('/dashboard');
+    return;
+  }
+
+  next();
 });
 
 export default router;

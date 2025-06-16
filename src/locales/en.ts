@@ -14,6 +14,7 @@ export default {
   login: {
     title: "Sign In",
     email: "Email",
+    username: "Username",
     password: "Password",
     button: "Sign In",
     orsign: "Or sign in with",

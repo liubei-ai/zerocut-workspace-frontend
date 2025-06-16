@@ -14,6 +14,7 @@ export default {
   login: {
     title: "登录",
     email: "电子邮件",
+    username: "用户名",
     password: "密码",
     button: "登录",
     orsign: "或使用",

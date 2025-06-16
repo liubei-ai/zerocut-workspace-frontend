@@ -14,6 +14,7 @@ export default {
   login: {
     title: "サインイン",
     email: "Eメール",
+    username: "ユーザー名",
     password: "パスワード",
     button: "サインイン",
     orsign: "またはでサインイン",

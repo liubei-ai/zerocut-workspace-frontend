@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/authStore";
+import { useRoute, useRouter } from "vue-router";
 
 const authStore = useAuthStore();
-const isLoading = ref(false);
-const isSignInDisabled = ref(false);
+const route = useRoute();
+const router = useRouter();
 
 const refLoginForm = ref();
-const email = ref("vuetify3-visitor@gmail.com");
-const password = ref("sfm12345");
+const username = ref("admin");
+const password = ref("123456");
 const isFormValid = ref(true);
 
 // show password field
@@ -17,43 +18,47 @@ const showPassword = ref(false);
 const handleLogin = async () => {
   const { valid } = await refLoginForm.value.validate();
   if (valid) {
-    isLoading.value = true;
-    isSignInDisabled.value = true;
-    authStore.loginWithEmailAndPassword(email.value, password.value);
-  } else {
-    console.log("no");
+    authStore.clearError();
+    const success = await authStore.loginWithUsernameAndPassword(
+      username.value,
+      password.value
+    );
+
+    if (success) {
+      // Handle redirect after successful login
+      const redirectPath = route.query.redirect as string;
+      if (redirectPath) {
+        router.push(redirectPath);
+      }
+      // Note: Navigation to dashboard is handled in the store
+    }
   }
 };
 
-const signInWithGoolgle = () => {
+const signInWithGoogle = () => {
   authStore.loginWithGoogle();
 };
 
-// Error Check
-const emailRules = ref([
-  (v: string) => !!v || "E-mail is required",
-  (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
+// Validation Rules
+const usernameRules = ref([
+  (v: string) => !!v || "Username is required",
+  (v: string) =>
+    (v && v.length >= 3) || "Username must be at least 3 characters",
+  (v: string) =>
+    (v && v.length <= 50) || "Username must be less than 50 characters",
 ]);
 
 const passwordRules = ref([
   (v: string) => !!v || "Password is required",
   (v: string) =>
-    (v && v.length <= 10) || "Password must be less than 10 characters",
+    (v && v.length >= 6) || "Password must be at least 6 characters",
+  (v: string) =>
+    (v && v.length <= 50) || "Password must be less than 50 characters",
 ]);
 
-// error provider
-const errorProvider = ref(false);
-const errorProviderMessages = ref("");
-
-const error = ref(false);
-const errorMessages = ref("");
-const resetErrors = () => {
-  error.value = false;
-  errorMessages.value = "";
-};
-
 const signInWithFacebook = () => {
-  alert(authStore.isLoggedIn);
+  // TODO: Implement Facebook login
+  console.log("Facebook login not implemented yet");
 };
 </script>
 <template>
@@ -72,32 +77,32 @@ const signInWithFacebook = () => {
         lazy-validation
       >
         <v-text-field
-          ref="refEmail"
-          v-model="email"
+          ref="refUsername"
+          v-model="username"
           required
-          :error="error"
-          :label="$t('login.email')"
+          :error="!!authStore.error"
+          :label="$t('login.username')"
           density="default"
           variant="underlined"
           color="primary"
           bg-color="#fff"
-          :rules="emailRules"
-          name="email"
+          :rules="usernameRules"
+          name="username"
           outlined
           validateOn="blur"
-          placeholder="403474473@qq.com"
+          placeholder="admin"
           @keyup.enter="handleLogin"
-          @change="resetErrors"
+          @change="authStore.clearError"
         ></v-text-field>
         <v-text-field
           ref="refPassword"
           v-model="password"
           :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
           :type="showPassword ? 'text' : 'password'"
-          :error="error"
-          :error-messages="errorMessages"
+          :error="!!authStore.error"
+          :error-messages="authStore.error"
           :label="$t('login.password')"
-          placeholder="sfm12345"
+          placeholder="123456"
           density="default"
           variant="underlined"
           color="primary"
@@ -106,13 +111,13 @@ const signInWithFacebook = () => {
           name="password"
           outlined
           validateOn="blur"
-          @change="resetErrors"
+          @change="authStore.clearError"
           @keyup.enter="handleLogin"
           @click:append-inner="showPassword = !showPassword"
         ></v-text-field>
         <v-btn
-          :loading="isLoading"
-          :disabled="isSignInDisabled"
+          :loading="authStore.loading"
+          :disabled="authStore.loading"
           block
           size="x-large"
           color="primary"
@@ -134,8 +139,8 @@ const signInWithFacebook = () => {
           elevation="1"
           block
           size="x-large"
-          @click="signInWithGoolgle"
-          :disabled="isSignInDisabled"
+          @click="signInWithGoogle"
+          :disabled="authStore.loading"
         >
           <Icon icon="logos:google-icon" class="mr-3 my-2" />
           Google
@@ -146,15 +151,15 @@ const signInWithFacebook = () => {
           color="white"
           block
           size="x-large"
-          :disabled="isSignInDisabled"
+          :disabled="authStore.loading"
           @click="signInWithFacebook"
         >
           <Icon icon="logos:facebook" class="mr-3" />
           Facebook
         </v-btn>
 
-        <div v-if="errorProvider" class="error--text my-2">
-          {{ errorProviderMessages }}
+        <div v-if="authStore.error" class="error--text my-2">
+          {{ authStore.error }}
         </div>
 
         <div class="mt-5 text-center">

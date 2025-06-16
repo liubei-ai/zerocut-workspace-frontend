@@ -38,10 +38,9 @@ export default defineConfig({
       usePolling: true,
     },
     proxy: {
-      "/sdApi": {
-        target: "http://me.yunrobot.cn:7860",
+      "/api/v1": {
+        target: "http://localhost:9527",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/sdApi/, ""),
       },
     },
   },

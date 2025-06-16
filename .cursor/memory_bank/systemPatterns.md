@@ -174,22 +174,37 @@ locales/
 - **HTTP客户端**: Axios
 - **请求拦截**: 统一请求/响应处理
 - **错误处理**: 全局错误处理机制
+- **响应结构**: 统一泛型响应接口
+- **认证方式**: httpOnly Cookie + 服务端验证
 
 ```typescript
+// types/api.ts - 统一响应结构
+export interface ApiResponse<T = any> {
+  code: number;
+  message: string;
+  data: T;
+  timestamp: string;
+}
+
 // api/client.ts
 const apiClient = axios.create({
   baseURL: appConfig.api.baseURL,
-  timeout: appConfig.api.timeout
+  timeout: appConfig.api.timeout,
+  withCredentials: true // 支持 httpOnly Cookie
 })
 
-// 请求拦截器
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = useUserStore().token
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+// 响应拦截器 - 统一处理响应结构
+apiClient.interceptors.response.use(
+  (response) => {
+    const { code, message, data } = response.data;
+    if (code !== 200) {
+      throw new Error(message);
     }
-    return config
+    return response;
+  },
+  (error) => {
+    // 统一错误处理
+    return Promise.reject(error);
   }
 )
 ```
