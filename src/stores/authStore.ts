@@ -129,19 +129,9 @@ export const useAuthStore = defineStore("auth", {
     },
 
     // Legacy methods for backward compatibility
-    registerWithEmailAndPassword(email: string, password: string) {
-      // TODO: Implement registration
-      router.push("/");
-    },
-
     loginWithEmailAndPassword(email: string, password: string) {
       // Redirect to new username-based login
       return this.loginWithUsernameAndPassword(email, password);
-    },
-
-    loginWithGoogle() {
-      // TODO: Implement Google OAuth
-      router.push("/");
     },
   },
 });

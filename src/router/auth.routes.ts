@@ -11,53 +11,54 @@ export default [
       title: "SignIn",
     },
   },
-  {
-    path: "/auth/signup",
-    name: "auth-signup",
-    component: () =>
-      import(
-        /* webpackChunkName: "auth-signup" */ "@/views/auth/SignupPage.vue"
-      ),
-    meta: {
-      layout: "auth",
-      title: "SignUp",
-    },
-  },
-  {
-    path: "/auth/verify-email",
-    name: "verify-email",
-    component: () =>
-      import(
-        /* webpackChunkName: "verify-email" */ "@/views/auth/VerifyEmailPage.vue"
-      ),
-    meta: {
-      requiresAuth: true,
-      layout: "auth",
-      title: "VerifyEmail",
-    },
-  },
-  {
-    path: "/auth/forgot-password",
-    name: "auth-forgot",
-    component: () =>
-      import(
-        /* webpackChunkName: "auth-forgot" */ "@/views/auth/ForgotPage.vue"
-      ),
-    meta: {
-      requiresAuth: true,
-      layout: "auth",
-      title: "ForgotPage",
-    },
-  },
-  {
-    path: "/auth/reset-password",
-    name: "auth-reset",
-    component: () =>
-      import(/* webpackChunkName: "auth-reset" */ "@/views/auth/ResetPage.vue"),
-    meta: {
-      requiresAuth: true,
-      layout: "auth",
-      title: "ResetPage",
-    },
-  },
+  // 注释掉不需要的认证路由
+  // {
+  //   path: "/auth/signup",
+  //   name: "auth-signup",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "auth-signup" */ "@/views/auth/SignupPage.vue"
+  //     ),
+  //   meta: {
+  //     layout: "auth",
+  //     title: "SignUp",
+  //   },
+  // },
+  // {
+  //   path: "/auth/verify-email",
+  //   name: "verify-email",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "verify-email" */ "@/views/auth/VerifyEmailPage.vue"
+  //     ),
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: "auth",
+  //     title: "VerifyEmail",
+  //   },
+  // },
+  // {
+  //   path: "/auth/forgot-password",
+  //   name: "auth-forgot",
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "auth-forgot" */ "@/views/auth/ForgotPage.vue"
+  //     ),
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: "auth",
+  //     title: "ForgotPage",
+  //   },
+  // },
+  // {
+  //   path: "/auth/reset-password",
+  //   name: "auth-reset",
+  //   component: () =>
+  //     import(/* webpackChunkName: "auth-reset" */ "@/views/auth/ResetPage.vue"),
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: "auth",
+  //     title: "ResetPage",
+  //   },
+  // },
 ];

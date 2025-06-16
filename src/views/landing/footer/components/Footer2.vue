@@ -1,7 +1,7 @@
 <!--
-* @Component: 
+* @Component:
 * @Maintainer: J.K. Yang
-* @Description: 
+* @Description:
 -->
 <script setup lang="ts">
 import { RouterLink } from "vue-router";
@@ -94,7 +94,7 @@ const navs = [
           </v-col>
         </v-row>
         <hr class="my-3" />
-        <p class="text-center my-5">Yang J.K. © All Rights Reserved</p>
+        <p class="text-center my-5">Liubei AI © All Rights Reserved</p>
       </v-sheet>
     </v-container>
   </v-sheet>

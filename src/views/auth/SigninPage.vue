@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/authStore";
 import { useRoute, useRouter } from "vue-router";
 
@@ -8,7 +7,7 @@ const route = useRoute();
 const router = useRouter();
 
 const refLoginForm = ref();
-const username = ref("admin");
+const username = ref("alice01");
 const password = ref("123456");
 const isFormValid = ref(true);
 
@@ -35,10 +34,6 @@ const handleLogin = async () => {
   }
 };
 
-const signInWithGoogle = () => {
-  authStore.loginWithGoogle();
-};
-
 // Validation Rules
 const usernameRules = ref([
   (v: string) => !!v || "Username is required",
@@ -55,16 +50,11 @@ const passwordRules = ref([
   (v: string) =>
     (v && v.length <= 50) || "Password must be less than 50 characters",
 ]);
-
-const signInWithFacebook = () => {
-  // TODO: Implement Facebook login
-  console.log("Facebook login not implemented yet");
-};
 </script>
 <template>
   <v-card color="white" class="pa-3 ma-3" elevation="3">
     <v-card-title class="my-4 text-h4">
-      <span class="flex-fill"> Welcome </span>
+      <span class="flex-fill"> Welcome to Liubei AI </span>
     </v-card-title>
     <v-card-subtitle>Sign in to your account</v-card-subtitle>
     <!-- sign in form -->
@@ -126,54 +116,10 @@ const signInWithFacebook = () => {
           >{{ $t("login.button") }}</v-btn
         >
 
-        <div
-          class="text-grey text-center text-caption font-weight-bold text-uppercase my-5"
-        >
-          {{ $t("login.orsign") }}
-        </div>
-
-        <!-- external providers list -->
-        <v-btn
-          class="mb-2 text-capitalize"
-          color="white"
-          elevation="1"
-          block
-          size="x-large"
-          @click="signInWithGoogle"
-          :disabled="authStore.loading"
-        >
-          <Icon icon="logos:google-icon" class="mr-3 my-2" />
-          Google
-        </v-btn>
-        <v-btn
-          class="mb-2 lighten-2 text-capitalize"
-          elevation="1"
-          color="white"
-          block
-          size="x-large"
-          :disabled="authStore.loading"
-          @click="signInWithFacebook"
-        >
-          <Icon icon="logos:facebook" class="mr-3" />
-          Facebook
-        </v-btn>
-
         <div v-if="authStore.error" class="error--text my-2">
           {{ authStore.error }}
-        </div>
-
-        <div class="mt-5 text-center">
-          <router-link class="text-primary" to="/auth/forgot-password">
-            {{ $t("login.forgot") }}
-          </router-link>
         </div>
       </v-form></v-card-text
     >
   </v-card>
-  <div class="text-center mt-6">
-    {{ $t("login.noaccount") }}
-    <router-link to="/auth/signup" class="text-primary font-weight-bold">
-      {{ $t("login.create") }}
-    </router-link>
-  </div>
 </template>

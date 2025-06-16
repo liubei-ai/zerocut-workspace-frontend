@@ -4,16 +4,45 @@
 * @Description:
 -->
 <script setup lang="ts">
-import StatusMenu from "./StatusMenu.vue";
+import { computed } from "vue";
 import { useAuthStore } from "@/stores/authStore";
-import { useRouter } from "vue-router";
-const router = useRouter();
+import StatusMenu from "./StatusMenu.vue";
 
 const authStore = useAuthStore();
+
+// 计算属性：获取用户信息
+const currentUser = computed(() => authStore.user);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const userName = computed(() => {
+  if (!isAuthenticated.value) return "Guest";
+  return authStore.userName || "Unknown User";
+});
+
+const userEmail = computed(() => {
+  if (!isAuthenticated.value) return "Please login";
+  // 由于当前 User 类型只有 username，暂时显示用户名作为邮箱
+  return currentUser.value?.username
+    ? `${currentUser.value.username}@example.com`
+    : "No email";
+});
+
+// 生成用户头像（当前 User 类型没有 avatar 字段，使用默认逻辑）
+const userAvatar = computed(() => {
+  // 当前 User 类型没有 avatar 字段，返回 null 使用首字母头像
+  return null;
+});
+
+// 获取用户名首字母用于头像显示
+const userInitials = computed(() => {
+  const name = userName.value;
+  if (name && name !== "Guest" && name !== "Unknown User") {
+    return name.charAt(0).toUpperCase();
+  }
+  return isAuthenticated.value ? "U" : "G"; // 已登录显示 U (User)，未登录显示 G (Guest)
+});
+
 const handleLogout = () => {
   authStore.logout();
-  console.log("---");
-  console.log(router);
 };
 
 const navs = [
@@ -68,8 +97,11 @@ const navs = [
     <template v-slot:activator="{ props }">
       <v-btn class="mx-2" icon v-bind="props">
         <v-badge content="2" color="success" dot bordered>
-          <v-avatar size="40">
-            <img src="../../assets/theme-avatar.png"></img>
+          <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
+            <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
+            <span v-else class="text-white font-weight-bold">{{
+              userInitials
+            }}</span>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -81,20 +113,20 @@ const navs = [
         <!-- ---------------------------------------------- -->
         <v-list-item to="/profile">
           <template v-slot:prepend>
-            <v-avatar size="40">
-              <v-img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s"
-              ></v-img>
+            <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
+              <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
+              <span v-else class="text-white font-weight-bold">{{
+                userInitials
+              }}</span>
             </v-avatar>
           </template>
 
           <v-list-item-title class="font-weight-bold text-primary">
-            YANG J.K.
+            {{ userName }}
             <StatusMenu />
           </v-list-item-title>
           <v-list-item-subtitle>
-            <!-- {{ $store.state.user.email  }} -->
-            yjkbako@gmail.com
+            {{ userEmail }}
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
@@ -157,7 +189,7 @@ const navs = [
 
           <div>
             <v-list-item-subtitle class="text-body-2">
-              Logout
+              {{ $t("menu.logout") }}
             </v-list-item-subtitle>
           </div>
         </v-list-item>
