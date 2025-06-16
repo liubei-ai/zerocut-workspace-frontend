@@ -1,285 +1,325 @@
-# 系统模式 - Lux Admin Vuetify3
+# 系统模式 - AI视频服务平台
 
 ## 架构概览
 
 ### 整体架构
-项目采用**现代化单页应用(SPA)架构**，基于Vue 3的组合式API设计模式。
+项目采用**模块化AI工具聚合架构**，基于Vue 3的组合式API设计模式，专注于AI视频创作工具的整合。
 
 ```
 ┌─────────────────────────────────────────┐
-│                用户界面层                │
+│              用户界面层                  │
 ├─────────────────────────────────────────┤
-│ Vuetify 3 组件 + 自定义组件             │
+│ Vuetify 3 组件 + AI工具专用组件         │
 ├─────────────────────────────────────────┤
 │              路由层 (Router)            │
 ├─────────────────────────────────────────┤
 │            状态管理层 (Pinia)           │
 ├─────────────────────────────────────────┤
-│             业务逻辑层 (Hooks)          │
+│           AI模型抽象层 (AI Layer)       │
+├─────────────────────────────────────────┤
+│          项目资产管理层 (Asset)         │
 ├─────────────────────────────────────────┤
 │            API服务层 (Services)         │
 ├─────────────────────────────────────────┤
-│          第三方集成层 (Integrations)    │
+│         AI模型集成层 (Integrations)     │
 └─────────────────────────────────────────┘
 ```
 
 ## 核心设计模式
 
-### 1. 组合式API模式
-- **模式**: 使用`<script setup>`语法和Composition API
-- **优势**: 更好的类型推导、代码组织和复用性
-- **实现**: 所有组件都采用组合式API编写
+### 1. AI模型抽象模式
+- **模式**: 统一的AI模型接口抽象
+- **优势**: 屏蔽不同AI模型的API差异，便于扩展
+- **实现**: 每种AI工具类型都有统一的抽象接口
 
 ```typescript
-// 典型的组合式API组件结构
-<script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-
-// 响应式数据
-const loading = ref(false)
-const userStore = useUserStore()
-
-// 计算属性
-const isLoggedIn = computed(() => userStore.isAuthenticated)
-
-// 生命周期
-onMounted(() => {
-  // 初始化逻辑
-})
-</script>
-```
-
-### 2. 状态管理模式
-- **模式**: Pinia Store模式
-- **特点**: 模块化状态管理，支持持久化
-- **组织**: 按功能域划分store
-
-```typescript
-// stores/user.ts
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: null,
-    token: '',
-    preferences: {}
-  }),
-  
-  getters: {
-    isAuthenticated: (state) => !!state.token
-  },
-  
-  actions: {
-    async login(credentials) {
-      // 登录逻辑
-    }
-  },
-  
-  persist: true // 持久化
-})
-```
-
-### 3. 组件组织模式
-
-#### 页面组件结构
-```
-views/
-├── auth/          # 认证相关页面
-├── dashboard/     # 仪表板
-├── app/           # 应用功能页面
-│   ├── todo/      # 任务管理
-│   ├── chat/      # 聊天功能
-│   └── unsplash/  # 图片浏览
-├── ui/            # UI展示页面
-└── errors/        # 错误页面
-```
-
-#### 组件分类
-- **布局组件**: `layouts/` - 页面布局模板
-- **通用组件**: `components/common/` - 可复用基础组件
-- **业务组件**: `components/[domain]/` - 特定业务组件
-- **页面组件**: `views/` - 路由对应的页面组件
-
-### 4. 配置管理模式
-- **集中配置**: `configs/` 目录统一管理配置
-- **环境变量**: 使用Vite环境变量系统
-- **类型安全**: TypeScript接口定义配置结构
-
-```typescript
-// configs/app.config.ts
-export interface AppConfig {
-  name: string
-  version: string
-  api: {
-    baseURL: string
-    timeout: number
-  }
+// AI模型抽象接口
+interface AIModelProvider {
+  name: string;
+  type: 'text' | 'image' | 'video';
+  generate(params: GenerateParams): Promise<GenerateResult>;
+  getStatus(): Promise<ModelStatus>;
 }
 
-export const appConfig: AppConfig = {
-  name: import.meta.env.VITE_APP_NAME,
-  version: import.meta.env.VITE_APP_VERSION,
-  api: {
-    baseURL: import.meta.env.VITE_API_BASE_URL,
-    timeout: 10000
+// 文本生成模型实现
+class DeepseekProvider implements AIModelProvider {
+  name = 'Deepseek';
+  type = 'text' as const;
+  
+  async generate(params: TextGenerateParams): Promise<TextResult> {
+    // Deepseek API调用逻辑
+  }
+}
+```
+
+### 2. 项目化资产管理模式
+- **模式**: 以项目为中心的资产组织模式
+- **特点**: 所有创作资源按项目分组管理
+- **组织**: 支持资产的版本控制和关联关系
+
+```typescript
+// 项目资产数据模型
+interface Project {
+  id: string;
+  name: string;
+  description: string;
+  assets: {
+    scripts: Script[];
+    images: Image[];
+    videos: Video[];
+    audios: Audio[];
+    creatives: Creative[];
+  };
+  collaborators: User[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// 资产基础接口
+interface Asset {
+  id: string;
+  projectId: string;
+  name: string;
+  type: AssetType;
+  url: string;
+  metadata: Record<string, any>;
+  version: number;
+  tags: string[];
+}
+```
+
+### 3. 独立聚合模式
+- **模式**: 各AI工具模块独立开发，统一聚合
+- **特点**: 模块间不做功能耦合，便于扩展
+- **实现**: 每个AI工具都是独立的Vue组件模块
+
+```typescript
+// AI工具模块结构
+interface AIToolModule {
+  name: string;
+  component: Component;
+  config: ToolConfig;
+  providers: AIModelProvider[];
+  routes: RouteConfig[];
+}
+
+// 工具注册系统
+class AIToolRegistry {
+  private tools = new Map<string, AIToolModule>();
+  
+  register(tool: AIToolModule) {
+    this.tools.set(tool.name, tool);
+  }
+  
+  getTools(): AIToolModule[] {
+    return Array.from(this.tools.values());
   }
 }
 ```
 
 ## 关键架构决策
 
-### 1. 路由设计
-- **模式**: Hash模式 + 懒加载
-- **结构**: 嵌套路由 + 路由守卫
-- **权限**: 基于角色的路由权限控制
+### 1. AI工具模块化设计
+- **结构**: 按AI工具类型划分模块
+- **独立性**: 每个模块可独立开发和部署
+- **扩展性**: 新模型接入只需实现标准接口
+
+```
+src/modules/
+├── creative/          # 创意策划模块
+│   ├── components/    # 组件
+│   ├── providers/     # AI模型提供者
+│   ├── stores/        # 状态管理
+│   └── types/         # 类型定义
+├── image/             # 图片生成模块
+│   ├── components/
+│   ├── providers/     # 即梦、豆包、通义万相
+│   └── ...
+├── video/             # 视频生成模块
+│   ├── components/
+│   ├── providers/     # Vidu 2.0、Q1
+│   └── ...
+└── assets/            # 资产管理模块
+```
+
+### 2. 统一配置管理
+- **模型配置**: 集中管理所有AI模型的配置
+- **环境变量**: 统一的API密钥和配置管理
+- **类型安全**: TypeScript接口定义配置结构
 
 ```typescript
-// router/index.ts
-const routes = [
-  {
-    path: '/admin',
-    component: () => import('@/layouts/AdminLayout.vue'),
-    meta: { requiresAuth: true },
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/Index.vue')
-      }
-    ]
-  }
-]
-```
-
-### 2. 主题系统
-- **实现**: Vuetify 3主题系统
-- **特性**: 明暗主题切换、自定义主题色
-- **持久化**: localStorage存储用户偏好
-
-### 3. 国际化架构
-- **实现**: Vue-i18n
-- **组织**: 按模块组织翻译文件
-- **懒加载**: 按需加载语言包
-
-```
-locales/
-├── en/
-│   ├── common.json
-│   ├── auth.json
-│   └── dashboard.json
-├── zh/
-└── jp/
-```
-
-### 4. API集成模式
-- **HTTP客户端**: Axios
-- **请求拦截**: 统一请求/响应处理
-- **错误处理**: 全局错误处理机制
-- **响应结构**: 统一泛型响应接口
-- **认证方式**: httpOnly Cookie + 服务端验证
-
-```typescript
-// types/api.ts - 统一响应结构
-export interface ApiResponse<T = any> {
-  code: number;
-  message: string;
-  data: T;
-  timestamp: string;
+// AI模型配置
+interface AIModelConfig {
+  name: string;
+  apiKey: string;
+  baseURL: string;
+  timeout: number;
+  rateLimit: {
+    requests: number;
+    window: number; // 时间窗口（秒）
+  };
+  features: string[];
 }
 
-// api/client.ts
-const apiClient = axios.create({
-  baseURL: appConfig.api.baseURL,
-  timeout: appConfig.api.timeout,
-  withCredentials: true // 支持 httpOnly Cookie
-})
-
-// 响应拦截器 - 统一处理响应结构
-apiClient.interceptors.response.use(
-  (response) => {
-    const { code, message, data } = response.data;
-    if (code !== 200) {
-      throw new Error(message);
-    }
-    return response;
+// 配置管理
+export const aiConfig = {
+  text: {
+    deepseek: {
+      name: 'Deepseek',
+      apiKey: import.meta.env.VITE_DEEPSEEK_API_KEY,
+      baseURL: 'https://api.deepseek.com',
+      timeout: 30000,
+      rateLimit: { requests: 100, window: 3600 }
+    },
+    doubao: { /* 豆包配置 */ },
+    kimi: { /* Kimi配置 */ }
   },
-  (error) => {
-    // 统一错误处理
-    return Promise.reject(error);
+  image: {
+    jimeng: { /* 即梦配置 */ },
+    doubao: { /* 豆包图片配置 */ },
+    tongyi: { /* 通义万相配置 */ }
+  },
+  video: {
+    vidu2: { /* Vidu 2.0配置 */ },
+    viduQ1: { /* Vidu Q1配置 */ }
   }
-)
+};
+```
+
+### 3. 状态管理架构
+- **模块化状态**: 每个AI工具模块独立的状态管理
+- **全局状态**: 项目、用户、资产的全局状态
+- **持久化**: 重要数据的本地持久化
+
+```typescript
+// 全局状态结构
+interface GlobalState {
+  user: UserState;
+  projects: ProjectState;
+  assets: AssetState;
+  ui: UIState;
+}
+
+// AI工具模块状态
+interface CreativeModuleState {
+  currentProvider: string;
+  history: GenerateHistory[];
+  settings: CreativeSettings;
+  loading: boolean;
+}
+```
+
+### 4. API集成架构
+- **统一客户端**: 基于Axios的统一HTTP客户端
+- **模型适配器**: 为每个AI模型提供适配器
+- **错误处理**: 统一的错误处理和重试机制
+
+```typescript
+// AI模型适配器基类
+abstract class AIModelAdapter {
+  protected config: AIModelConfig;
+  protected client: AxiosInstance;
+  
+  constructor(config: AIModelConfig) {
+    this.config = config;
+    this.client = this.createClient();
+  }
+  
+  abstract generate(params: any): Promise<any>;
+  
+  protected createClient(): AxiosInstance {
+    return axios.create({
+      baseURL: this.config.baseURL,
+      timeout: this.config.timeout,
+      headers: {
+        'Authorization': `Bearer ${this.config.apiKey}`
+      }
+    });
+  }
+}
+
+// 具体模型适配器实现
+class DeepseekAdapter extends AIModelAdapter {
+  async generate(params: TextGenerateParams): Promise<TextResult> {
+    const response = await this.client.post('/chat/completions', {
+      model: 'deepseek-chat',
+      messages: params.messages,
+      temperature: params.temperature
+    });
+    
+    return this.transformResponse(response.data);
+  }
+}
+```
+
+## 数据流架构
+
+### 1. AI生成流程
+```
+用户输入 → 参数验证 → 模型选择 → API调用 → 结果处理 → 资产保存 → 界面更新
+```
+
+### 2. 项目管理流程
+```
+创建项目 → 资产关联 → 版本控制 → 协作管理 → 导出分享
+```
+
+### 3. 状态同步流程
+```
+本地状态 ↔ 服务端状态 ↔ 持久化存储
 ```
 
 ## 性能优化模式
 
-### 1. 代码分割
-- **路由级别**: 页面组件懒加载
-- **组件级别**: 大型组件动态导入
-- **第三方库**: 按需引入
+### 1. 懒加载模式
+- **组件懒加载**: AI工具组件按需加载
+- **模型懒加载**: AI模型适配器按需初始化
+- **资产懒加载**: 大文件资产按需加载
 
-### 2. 状态优化
-- **局部状态**: 组件内部状态优先
-- **全局状态**: 只存储必要的共享状态
-- **计算缓存**: 合理使用computed
+### 2. 缓存策略
+- **结果缓存**: AI生成结果的智能缓存
+- **资产缓存**: 图片、视频等资产的本地缓存
+- **配置缓存**: 模型配置和用户偏好缓存
 
-### 3. 渲染优化
-- **虚拟滚动**: 大数据列表渲染
-- **图片懒加载**: 图片资源优化
-- **组件缓存**: keep-alive缓存
+### 3. 并发控制
+- **请求队列**: AI模型调用的请求队列管理
+- **并发限制**: 防止过多并发请求导致的性能问题
+- **优先级调度**: 重要请求的优先级处理
 
-## 开发体验模式
+## 安全架构
 
-### 1. 自动化导入
-- **API自动导入**: Vue、Router、Pinia API
-- **组件自动导入**: 全局组件无需手动导入
-- **工具函数**: 常用工具函数自动导入
+### 1. API密钥管理
+- **环境变量**: 敏感信息通过环境变量管理
+- **代理调用**: 通过后端代理调用AI模型API
+- **权限控制**: 基于用户角色的API访问控制
 
-### 2. 类型安全
-- **全面TypeScript**: 所有文件使用TypeScript
-- **类型定义**: 统一的类型定义文件
-- **接口约束**: API响应类型定义
-
-### 3. 开发工具
-- **热重载**: Vite HMR
-- **代理服务**: 开发环境API代理
-- **环境变量**: 多环境配置支持
+### 2. 数据安全
+- **数据加密**: 敏感数据的加密存储
+- **访问控制**: 项目和资产的访问权限控制
+- **审计日志**: 重要操作的审计日志记录
 
 ## 扩展性设计
 
-### 1. 插件系统
-- **Vuetify插件**: UI组件库配置
-- **第三方插件**: 功能扩展插件
-- **自定义插件**: 业务逻辑插件
+### 1. 插件化架构
+- **模型插件**: 新AI模型的插件化接入
+- **工具插件**: 新功能工具的插件化扩展
+- **主题插件**: 自定义主题和样式插件
 
-### 2. 模块化架构
-- **功能模块**: 按业务域划分
-- **共享模块**: 跨模块共享资源
-- **独立模块**: 可插拔功能模块
+### 2. 微服务支持
+- **服务拆分**: 支持将AI工具拆分为独立服务
+- **API网关**: 统一的API网关和路由管理
+- **服务发现**: 动态的服务发现和负载均衡
 
-### 3. 配置驱动
-- **菜单配置**: 动态菜单生成
-- **权限配置**: 灵活权限控制
-- **主题配置**: 可定制主题系统
+## 监控和调试
 
-## 测试策略
+### 1. 性能监控
+- **API响应时间**: AI模型调用的性能监控
+- **资源使用**: 内存、CPU等资源使用监控
+- **用户体验**: 页面加载和交互性能监控
 
-### 1. 单元测试
-- **工具**: Vitest + Vue Test Utils
-- **覆盖**: 组件逻辑和工具函数
-- **策略**: 关键业务逻辑优先
+### 2. 错误追踪
+- **错误收集**: 前端错误的自动收集和上报
+- **日志分析**: 结构化日志的分析和查询
+- **告警机制**: 关键错误的实时告警
 
-### 2. 集成测试
-- **API测试**: 接口集成测试
-- **组件测试**: 组件交互测试
-- **用户流程**: 端到端测试场景
-
-## 部署模式
-
-### 1. 容器化部署
-- **Docker**: 标准化部署环境
-- **多阶段构建**: 优化镜像大小
-- **环境隔离**: 开发/生产环境分离
-
-### 2. 静态部署
-- **CDN**: 静态资源CDN加速
-- **缓存策略**: 合理的缓存控制
-- **压缩优化**: Gzip/Brotli压缩 
+这个系统架构设计确保了AI视频服务平台的可扩展性、可维护性和高性能，同时保持了各模块的独立性和整体的一致性。 
