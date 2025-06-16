@@ -1,13 +1,11 @@
-// tailwindcss
-@import "tailwindcss";
+@forward "./variables";
 
-// enforce font globally
-// @use "vuetify/variables";
-@import "./variables";
-@import 'vuetify/styles';
-@import "./override";
-@import "./common/gradients.scss";
-@import "./common/animation.scss";
-@import "./common/beautify.scss";
+@forward "tailwindcss";
 
-@import './pages/editor';
+@forward 'vuetify/styles';
+
+@forward "./override";
+@forward "./common/gradients";
+@forward "./common/animation";
+@forward "./common/beautify";
+@forward './pages/editor';

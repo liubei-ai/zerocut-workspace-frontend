@@ -47,7 +47,11 @@ export default defineConfig({
   },
   css: {
     preprocessorOptions: {
-      scss: { charset: false },
+      scss: {
+        charset: false,
+        api: "modern-compiler",
+        prependData: `@use 'src/styles/main.scss' as *;`,
+      },
       css: { charset: false },
     },
   },
