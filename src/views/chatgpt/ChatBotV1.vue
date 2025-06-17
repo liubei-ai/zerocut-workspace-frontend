@@ -74,9 +74,7 @@ const createCompletion = async () => {
   //   return;
   // }
 
-  const proxyUrl = chatGPTStore.proxyUrl
-    ? chatGPTStore.proxyUrl
-    : 'https://api.openai-proxy.com';
+  const proxyUrl = chatGPTStore.proxyUrl ? chatGPTStore.proxyUrl : 'https://api.openai-proxy.com';
   try {
     // Create a completion (axios is not used here because it does not support streaming)
     const completion = await fetch(`${proxyUrl}/v1/chat/completions`, {
@@ -176,19 +174,12 @@ const inputRow = ref(1);
           </div>
           <div v-else>
             <div class="pa-2 pa-md-5 assistant-message">
-              <v-avatar
-                class="d-none d-md-block mr-2 mr-md-4"
-                rounded="sm"
-                variant="elevated"
-              >
-                <img
-                  src="@/assets/images/avatars/avatar_assistant.jpg"
-                  alt="alt"
-                />
+              <v-avatar class="d-none d-md-block mr-2 mr-md-4" rounded="sm" variant="elevated">
+                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
               </v-avatar>
               <v-card>
                 <div>
-                  <md-preview :modelValue="message.content" class="font-1" />
+                  <MdPreview :modelValue="message.content" class="font-1" />
                 </div>
               </v-card>
             </div>
@@ -203,30 +194,15 @@ const inputRow = ref(1);
         </div>
       </perfect-scrollbar>
       <div class="no-message-container" v-else>
-        <h1 class="text-h4 text-md-h2 text-primary font-weight-bold">
-          Chat With Me
-        </h1>
+        <h1 class="text-h4 text-md-h2 text-primary font-weight-bold">Chat With Me</h1>
         <AnimationChat :size="300" />
       </div>
     </div>
     <div class="input-area">
-      <v-sheet
-        color="transparent"
-        elevation="0"
-        class="input-panel d-flex align-end pa-1"
-      >
-        <v-btn
-          class="mb-1"
-          variant="elevated"
-          icon
-          @click="chatGPTStore.configDialog = true"
-        >
+      <v-sheet color="transparent" elevation="0" class="input-panel d-flex align-end pa-1">
+        <v-btn class="mb-1" variant="elevated" icon @click="chatGPTStore.configDialog = true">
           <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
-          <v-tooltip
-            activator="parent"
-            location="top"
-            text="ChatGPT Config"
-          ></v-tooltip>
+          <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>
         </v-btn>
         <transition name="fade">
           <v-textarea

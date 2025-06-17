@@ -115,9 +115,7 @@ const add = () => {
   </v-card>
   <v-card class="ma-5 pa-5 control panel" min-height="500">
     <h1 class="text-h5 my-5">Control Panel</h1>
-    <v-btn class="mr-5" color="primary" @click="textTitle = 'new Title'"
-      >Change Title</v-btn
-    >
+    <v-btn class="mr-5" color="primary" @click="textTitle = 'new Title'">Change Title</v-btn>
     <v-btn class="mr-5" color="primary" @click="add">Add Data</v-btn>
   </v-card>
 </template>

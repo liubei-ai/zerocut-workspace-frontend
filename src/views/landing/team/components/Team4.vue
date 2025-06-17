@@ -14,15 +14,8 @@ import members from '@/data/members';
     </v-toolbar-title>
   </v-toolbar>
   <v-sheet elevation="0" class="mx-auto landing-warpper text-left" rounded>
-    <v-sheet
-      elevation="0"
-      color="transparent"
-      max-width="1600 "
-      class="mx-auto my-10"
-    >
-      <h1 class="text-h3 font-weight-bold text-center text-blue-grey my-10">
-        Meet the Team
-      </h1>
+    <v-sheet elevation="0" color="transparent" max-width="1600 " class="mx-auto my-10">
+      <h1 class="text-h3 font-weight-bold text-center text-blue-grey my-10">Meet the Team</h1>
       <v-container>
         <v-row align="center" justify="center">
           <v-col cols="12" md="6" v-for="member in members">
@@ -36,15 +29,8 @@ import members from '@/data/members';
                 <p class="text-body-1 text-blue-grey">{{ member.position }}</p>
                 <p class="text-body-2 text-grey">{{ member.description }}</p>
                 <div>
-                  <v-btn
-                    density="compact"
-                    icon
-                    class="mr-2 mt-3"
-                    v-for="item in member.social"
-                    :to="item.link"
-                    ><v-icon class="text-blue-grey">{{
-                      item.icon
-                    }}</v-icon></v-btn
+                  <v-btn density="compact" icon class="mr-2 mt-3" v-for="item in member.social" :to="item.link"
+                    ><v-icon class="text-blue-grey">{{ item.icon }}</v-icon></v-btn
                   >
                 </div>
               </div>

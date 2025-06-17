@@ -12,21 +12,9 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { BarChart } from 'echarts/charts';
 
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent,
-} from 'echarts/components';
+import { TitleComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
 
-use([
-  GridComponent,
-  CanvasRenderer,
-  BarChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-]);
+use([GridComponent, CanvasRenderer, BarChart, TitleComponent, TooltipComponent, LegendComponent]);
 
 const isLoading = ref(false);
 const props = defineProps<{
@@ -45,27 +33,18 @@ const viewsData = ref([]);
 
 const initData = async () => {
   isLoading.value = true;
-  const photoStatisticsResponse = await axios.get(
-    photoStatisticsUrl.value,
-    config
-  );
+  const photoStatisticsResponse = await axios.get(photoStatisticsUrl.value, config);
   photoStatistics.value = photoStatisticsResponse.data;
 
-  xAxis.value = photoStatistics.value.downloads.historical.values.map(
-    value => value.date
-  );
+  xAxis.value = photoStatistics.value.downloads.historical.values.map(value => value.date);
 
-  downloadsData.value = photoStatistics.value.downloads.historical.values.map(
-    value => value.value
-  );
+  downloadsData.value = photoStatistics.value.downloads.historical.values.map(value => value.value);
 
   //   likesData.value = photoStatistics.value.likes.historical.values.map(
   //     (value) => value.value
   //   );
 
-  viewsData.value = photoStatistics.value.views.historical.values.map(
-    value => value.value
-  );
+  viewsData.value = photoStatistics.value.views.historical.values.map(value => value.value);
 
   chartData.value = viewsData.value;
   chartTitle.value = `Photo Info (Total Views: ${photoStatistics.value.views.total})`;
@@ -151,7 +130,7 @@ const changeChart = type => {
   <div class="">
     <v-card class="shadow-1">
       <v-card-text style="height: 300px">
-        <v-chart :option="chartOptions" autoresize />
+        <VChart :option="chartOptions" autoresize />
       </v-card-text>
       <v-divider></v-divider>
       <div class="flex mx-5 my-3 bg-grey-lighten-3 pa-2">

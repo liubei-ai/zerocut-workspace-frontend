@@ -33,9 +33,7 @@ const updatePreviews = async () => {
             imageSize: width + 'x' + height,
             type: file.type,
             suffix: file.name.split('.').pop(),
-            lastModifiedDate: moment(file.lastModifiedDate).format(
-              'YYYY-MM-DD HH:mm:ss'
-            ),
+            lastModifiedDate: moment(file.lastModifiedDate).format('YYYY-MM-DD HH:mm:ss'),
             link: reader.result,
             previewEnabled: true,
           });
@@ -83,9 +81,7 @@ const headers = [
 const searchKey = ref('');
 const filterdFileInfos = computed(() => {
   return fileInfos.value.filter(
-    fileInfo =>
-      fileInfo.name.includes(searchKey.value) ||
-      fileInfo.suffix.includes(searchKey.value)
+    fileInfo => fileInfo.name.includes(searchKey.value) || fileInfo.suffix.includes(searchKey.value)
   );
 });
 </script>
@@ -114,20 +110,11 @@ const filterdFileInfos = computed(() => {
           >
             <template v-slot:selection="{ fileNames }">
               <template v-for="(fileName, index) in fileNames">
-                <v-chip
-                  v-if="index < 6"
-                  color="primary"
-                  label
-                  size="small"
-                  class="me-2"
-                >
+                <v-chip v-if="index < 6" color="primary" label size="small" class="me-2">
                   {{ fileName }}
                 </v-chip>
 
-                <span
-                  v-else-if="index === 6"
-                  class="text-overline text-grey-darken-3 mx-2"
-                >
+                <span v-else-if="index === 6" class="text-overline text-grey-darken-3 mx-2">
                   +{{ files.length - 2 }} File(s)
                 </span>
               </template>
@@ -139,14 +126,7 @@ const filterdFileInfos = computed(() => {
             <!-- ---------------------------------------------- -->
             <!-- View Mode Switch -->
             <!-- ---------------------------------------------- -->
-            <v-btn
-              class="mx-2"
-              icon
-              rounded="sm"
-              variant="flat"
-              color="primary"
-              @click="toggleViewMode"
-            >
+            <v-btn class="mx-2" icon rounded="sm" variant="flat" color="primary" @click="toggleViewMode">
               <v-tooltip
                 activator="parent"
                 location="left"
@@ -174,15 +154,9 @@ const filterdFileInfos = computed(() => {
     <!-- ---------------------------------------------- -->
     <!-- No File View -->
     <!-- ---------------------------------------------- -->
-    <v-sheet
-      class="d-flex align-center justify-center"
-      height="800"
-      v-if="fileInfos.length === 0"
-    >
+    <v-sheet class="d-flex align-center justify-center" height="800" v-if="fileInfos.length === 0">
       <div class="text-center">
-        <h3 class="text-h5 text-md-h3 font-weight-bold text-primary">
-          Upload Some Images
-        </h3>
+        <h3 class="text-h5 text-md-h3 font-weight-bold text-primary">Upload Some Images</h3>
         <AnimationUpload :size="300" />
       </div>
     </v-sheet>
@@ -192,13 +166,7 @@ const filterdFileInfos = computed(() => {
         <!-- Grid View -->
         <!-- ---------------------------------------------- -->
         <v-row>
-          <v-col
-            class="6"
-            md="4"
-            lg="3"
-            v-for="fileInfo in filterdFileInfos"
-            :key="fileInfo.link"
-          >
+          <v-col class="6" md="4" lg="3" v-for="fileInfo in filterdFileInfos" :key="fileInfo.link">
             <v-card>
               <v-card-title>
                 <v-spacer></v-spacer>
@@ -214,18 +182,10 @@ const filterdFileInfos = computed(() => {
               <div class="d-flex align-center pa-3">
                 <div class="flex-fill">
                   <h5 class="text-h6 font-weight-bold">{{ fileInfo.name }}</h5>
-                  <h6 class="text-grey">
-                    {{ fileInfo.suffix }} {{ fileInfo.imageSize }}
-                  </h6>
+                  <h6 class="text-grey">{{ fileInfo.suffix }} {{ fileInfo.imageSize }}</h6>
                 </div>
                 <div>
-                  <v-chip
-                    color="primary"
-                    class="font-weight-bold"
-                    label
-                    rounded="sm"
-                    variant="elevated"
-                  >
+                  <v-chip color="primary" class="font-weight-bold" label rounded="sm" variant="elevated">
                     {{ fileInfo.type }}
                   </v-chip>
                 </div>
@@ -251,29 +211,14 @@ const filterdFileInfos = computed(() => {
             <span class="font-weight-bold">{{ item.raw.name }}</span>
           </template>
           <template v-slot:item.link="{ item }">
-            <v-img
-              class="mx-auto my-2"
-              :src="item.raw.link"
-              height="100"
-              round="sm"
-            ></v-img>
+            <v-img class="mx-auto my-2" :src="item.raw.link" height="100" round="sm"></v-img>
           </template>
           <template v-slot:item.type="{ item }">
-            <v-chip class="font-weight-bold" color="primary">{{
-              item.raw.type
-            }}</v-chip>
+            <v-chip class="font-weight-bold" color="primary">{{ item.raw.type }}</v-chip>
           </template>
           <template v-slot:item.previewEnabled="{ item }">
-            <v-btn
-              v-if="item.raw.previewEnabled"
-              class="font-weight-bold"
-              variant="flat"
-              color="blue"
-              >Yes</v-btn
-            >
-            <v-btn v-else class="font-weight-bold" variant="flat" color="error"
-              >No</v-btn
-            >
+            <v-btn v-if="item.raw.previewEnabled" class="font-weight-bold" variant="flat" color="blue">Yes</v-btn>
+            <v-btn v-else class="font-weight-bold" variant="flat" color="error">No</v-btn>
           </template>
         </v-data-table>
       </div>

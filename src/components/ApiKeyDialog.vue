@@ -34,18 +34,14 @@ const promptList = computed(() => {
 <template>
   <v-dialog v-model="chatGPTStore.configDialog" width="600">
     <v-card>
-      <v-card-title class="font-weight-bold pa-5">
-        {{ $t('chatgpt.config.title') }}</v-card-title
-      >
+      <v-card-title class="font-weight-bold pa-5"> {{ $t('chatgpt.config.title') }}</v-card-title>
       <v-divider />
       <v-card-text>
         <!-- ---------------------------------------------- -->
         <!-- APIKEY -->
         <!-- ---------------------------------------------- -->
 
-        <v-label class="font-weight-medium mb-2 ml-2">{{
-          $t('chatgpt.config.apikey')
-        }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2">{{ $t('chatgpt.config.apikey') }}</v-label>
         <v-text-field
           color="primary"
           variant="outlined"
@@ -62,9 +58,7 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Proxy Url -->
         <!-- ---------------------------------------------- -->
-        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t('chatgpt.config.proxyUrl')
-        }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{ $t('chatgpt.config.proxyUrl') }}</v-label>
         <v-text-field
           color="primary"
           variant="outlined"
@@ -81,9 +75,7 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Model -->
         <!-- ---------------------------------------------- -->
-        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t('chatgpt.config.model')
-        }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{ $t('chatgpt.config.model') }}</v-label>
         <v-card variant="outlined" style="width: 430px" class="flex ml-2 pa-2">
           <v-btn
             :variant="chatGPTStore.model === 'gpt-3.5-turbo' ? 'flat' : 'text'"
@@ -94,9 +86,7 @@ const promptList = computed(() => {
             >GPT-3.5</v-btn
           >
           <v-btn
-            :variant="
-              chatGPTStore.model === 'gpt-4-turbo-2024-04-09' ? 'flat' : 'text'
-            "
+            :variant="chatGPTStore.model === 'gpt-4-turbo-2024-04-09' ? 'flat' : 'text'"
             color="primary"
             class="flex-fill"
             width="200"
@@ -108,9 +98,7 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Language -->
         <!-- ---------------------------------------------- -->
-        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t('chatgpt.config.role')
-        }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{ $t('chatgpt.config.role') }}</v-label>
 
         <v-select
           class="ml-2"

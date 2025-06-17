@@ -11,18 +11,8 @@
       <span>Card2</span>
     </v-toolbar-title>
   </v-toolbar>
-  <v-sheet
-    color="#F2F5F8"
-    elevation="0"
-    class="mx-auto landing-warpper text-left"
-    rounded
-  >
-    <v-sheet
-      elevation="0"
-      color="transparent"
-      max-width="1600 "
-      class="mx-auto my-10"
-    >
+  <v-sheet color="#F2F5F8" elevation="0" class="mx-auto landing-warpper text-left" rounded>
+    <v-sheet elevation="0" color="transparent" max-width="1600 " class="mx-auto my-10">
       <v-item-group selected-class="active-card">
         <v-container>
           <v-row align="stretch">
@@ -37,22 +27,17 @@
                   @click="toggle"
                 >
                   <div>
-                    <RouterLink to="/" class="text-primary font-weight-bold"
-                      >WORK WITH US</RouterLink
-                    >
+                    <RouterLink to="/" class="text-primary font-weight-bold">WORK WITH US</RouterLink>
                     <h1 class="font-weight-black text-h3 mt-5 mb-10">
                       Get your startup ready for
                       <span class="text-primary">Business{{ i }}</span>
                     </h1>
                     <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Natus impedit error labore doloremque fugit! Dolor fugit
-                      molestiae vero quos quisquam nobis, eos debitis magni
-                      omnis ea incidunt amet voluptate dignissimos!
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus impedit error labore doloremque
+                      fugit! Dolor fugit molestiae vero quos quisquam nobis, eos debitis magni omnis ea incidunt amet
+                      voluptate dignissimos!
                     </p>
-                    <v-btn color="primary" size="large" class="mt-10"
-                      >Get In Touch</v-btn
-                    >
+                    <v-btn color="primary" size="large" class="mt-10">Get In Touch</v-btn>
                   </div>
                 </v-card>
               </v-item>

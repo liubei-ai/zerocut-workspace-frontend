@@ -21,9 +21,7 @@ const userName = computed(() => {
 const userEmail = computed(() => {
   if (!isAuthenticated.value) return 'Please login';
   // 由于当前 User 类型只有 username，暂时显示用户名作为邮箱
-  return currentUser.value?.username
-    ? `${currentUser.value.username}@example.com`
-    : 'No email';
+  return currentUser.value?.username ? `${currentUser.value.username}@example.com` : 'No email';
 });
 
 // 生成用户头像（当前 User 类型没有 avatar 字段，使用默认逻辑）
@@ -86,11 +84,7 @@ const navs = [
 </script>
 
 <template>
-  <v-menu
-    :close-on-content-click="false"
-    location="bottom right"
-    transition="slide-y-transition"
-  >
+  <v-menu :close-on-content-click="false" location="bottom right" transition="slide-y-transition">
     <!-- ---------------------------------------------- -->
     <!-- Activator Btn -->
     <!-- ---------------------------------------------- -->
@@ -99,9 +93,7 @@ const navs = [
         <v-badge content="2" color="success" dot bordered>
           <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
             <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
-            <span v-else class="text-white font-weight-bold">{{
-              userInitials
-            }}</span>
+            <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -115,9 +107,7 @@ const navs = [
           <template v-slot:prepend>
             <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
               <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
-              <span v-else class="text-white font-weight-bold">{{
-                userInitials
-              }}</span>
+              <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
             </v-avatar>
           </template>
 
@@ -136,14 +126,7 @@ const navs = [
       <!-- ---------------------------------------------- -->
 
       <v-list variant="flat" elevation="0" :lines="false" density="compact">
-        <v-list-item
-          color="primary"
-          v-for="(nav, i) in navs"
-          :key="i"
-          :to="nav.link"
-          link
-          density="compact"
-        >
+        <v-list-item color="primary" v-for="(nav, i) in navs" :key="i" :to="nav.link" link density="compact">
           <template v-slot:prepend>
             <v-avatar size="30">
               <v-icon>{{ nav.icon }}</v-icon>
@@ -151,9 +134,7 @@ const navs = [
           </template>
 
           <div>
-            <v-list-item-subtitle class="text-body-2">{{
-              nav.title
-            }}</v-list-item-subtitle>
+            <v-list-item-subtitle class="text-body-2">{{ nav.title }}</v-list-item-subtitle>
           </div>
         </v-list-item>
       </v-list>
@@ -170,17 +151,10 @@ const navs = [
           </template>
 
           <div>
-            <v-list-item-subtitle class="text-body-2">
-              Help Center
-            </v-list-item-subtitle>
+            <v-list-item-subtitle class="text-body-2"> Help Center </v-list-item-subtitle>
           </div>
         </v-list-item>
-        <v-list-item
-          color="primary"
-          link
-          @click="handleLogout"
-          density="compact"
-        >
+        <v-list-item color="primary" link @click="handleLogout" density="compact">
           <template v-slot:prepend>
             <v-avatar size="30">
               <v-icon>mdi-logout</v-icon>

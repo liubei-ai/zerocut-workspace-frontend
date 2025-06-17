@@ -73,8 +73,7 @@ function editItem(item: any) {
 }
 function deleteItem(item: any) {
   const index = desserts.value.indexOf(item);
-  confirm('Are you sure you want to delete this item?') &&
-    desserts.value.splice(index, 1);
+  confirm('Are you sure you want to delete this item?') && desserts.value.splice(index, 1);
   ``;
 }
 
@@ -232,18 +231,12 @@ const formTitle = computed(() => {
         <td>
           <div class="d-flex align-center py-2">
             <div>
-              <v-img
-                :src="item.avatar"
-                width="45px"
-                class="rounded-circle img-fluid"
-              ></v-img>
+              <v-img :src="item.avatar" width="45px" class="rounded-circle img-fluid"></v-img>
             </div>
 
             <div class="ml-5">
               <p class="font-weight-bold">{{ item.username }}</p>
-              <span class="d-block mt-1 textSecondary">{{
-                item.usermail
-              }}</span>
+              <span class="d-block mt-1 textSecondary">{{ item.usermail }}</span>
             </div>
           </div>
         </td>
@@ -252,11 +245,7 @@ const formTitle = computed(() => {
         <td>
           <v-chip
             class="font-weight-bold"
-            :color="
-              item.rolestatus === 'black' || item.rolestatus === 'white'
-                ? 'primary'
-                : item.rolestatus
-            "
+            :color="item.rolestatus === 'black' || item.rolestatus === 'white' ? 'primary' : item.rolestatus"
             size="small"
             label
             >{{ item.role }}</v-chip
@@ -267,18 +256,14 @@ const formTitle = computed(() => {
             <v-tooltip text="Edit">
               <template v-slot:activator="{ props }">
                 <v-btn icon flat @click="editItem(item)" v-bind="props"
-                  ><img
-                    width="26"
-                    src="https://img.icons8.com/fluency/48/null/edit.png"
+                  ><img width="26" src="https://img.icons8.com/fluency/48/null/edit.png"
                 /></v-btn>
               </template>
             </v-tooltip>
             <v-tooltip text="Delete">
               <template v-slot:activator="{ props }">
                 <v-btn icon flat @click="deleteItem(item)" v-bind="props"
-                  ><img
-                    width="26"
-                    src="https://img.icons8.com/fluency/48/null/filled-trash.png"
+                  ><img width="26" src="https://img.icons8.com/fluency/48/null/filled-trash.png"
                 /></v-btn>
               </template>
             </v-tooltip>

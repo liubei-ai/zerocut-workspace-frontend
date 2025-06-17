@@ -8,8 +8,8 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "lint": "eslint \"src/**/*.{js,mjs,cjs}\" --fix",
-    "lint:check": "eslint \"src/**/*.{js,mjs,cjs}\"",
+    "lint": "eslint \"src/**/*.{js,mjs,cjs,ts,vue}\" --fix",
+    "lint:check": "eslint \"src/**/*.{js,mjs,cjs,ts,vue}\"",
     "format": "prettier --write \"src/**/*.{js,ts,vue,scss,css}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,vue,scss,css}\"",
     "prepare": "husky"
@@ -84,11 +84,11 @@
     "vue-eslint-parser": "^10.1.3"
   },
   "lint-staged": {
-    "*.{js,mjs,cjs}": [
-      "eslint --fix",
+    "*.{js,mjs,cjs,ts,vue}": [
+      "eslint --fix --quiet",
       "prettier --write"
     ],
-    "*.{ts,vue,scss,css,md,json}": [
+    "*.{scss,css,md,json}": [
       "prettier --write"
     ]
   }

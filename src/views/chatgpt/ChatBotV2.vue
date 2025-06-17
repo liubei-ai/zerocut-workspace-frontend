@@ -69,9 +69,7 @@ const createCompletion = async () => {
   //   snackbarStore.showErrorMessage("请先输入API KEY");
   //   return;
   // }
-  const proxyUrl = chatGPTStore.proxyUrl
-    ? chatGPTStore.proxyUrl
-    : 'https://api.openai-proxy.com';
+  const proxyUrl = chatGPTStore.proxyUrl ? chatGPTStore.proxyUrl : 'https://api.openai-proxy.com';
 
   try {
     // Create a completion (axios is not used here because it does not support streaming)
@@ -162,10 +160,7 @@ const inputRow = ref(1);
             <div class="pa-5 user-message">
               <div class="message align-center text-pre-wrap">
                 <v-avatar class="mr-4 mr-lg-8">
-                  <img
-                    src="@/assets/images/avatars/avatar_user.jpg"
-                    alt="alt"
-                  />
+                  <img src="@/assets/images/avatars/avatar_user.jpg" alt="alt" />
                 </v-avatar>
                 <span> {{ message.content }}</span>
               </div>
@@ -175,43 +170,24 @@ const inputRow = ref(1);
             <div class="pa-5 assitant-message">
               <div class="message">
                 <v-avatar class="mr-4 mr-lg-8">
-                  <img
-                    src="@/assets/images/avatars/avatar_assistant.jpg"
-                    alt="alt"
-                  />
+                  <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
                 </v-avatar>
-                <md-preview :modelValue="message.content" />
+                <MdPreview :modelValue="message.content" />
               </div>
             </div>
           </div>
         </template>
       </perfect-scrollbar>
       <div class="no-message-container" v-else>
-        <h1 class="text-h4 text-md-h2 text-primary font-weight-bold">
-          Ask Me Any Thing
-        </h1>
+        <h1 class="text-h4 text-md-h2 text-primary font-weight-bold">Ask Me Any Thing</h1>
         <AnimationAi :size="300" />
       </div>
     </div>
     <div class="input-area">
-      <v-sheet
-        elevation="0"
-        class="input-panel d-flex align-end pa-1"
-        max-width="1200"
-        color="transparent"
-      >
-        <v-btn
-          class="mb-1"
-          variant="elevated"
-          icon
-          @click="chatGPTStore.configDialog = true"
-        >
+      <v-sheet elevation="0" class="input-panel d-flex align-end pa-1" max-width="1200" color="transparent">
+        <v-btn class="mb-1" variant="elevated" icon @click="chatGPTStore.configDialog = true">
           <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
-          <v-tooltip
-            activator="parent"
-            location="top"
-            text="ChatGPT Config"
-          ></v-tooltip>
+          <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>
         </v-btn>
         <v-textarea
           class="mx-2"

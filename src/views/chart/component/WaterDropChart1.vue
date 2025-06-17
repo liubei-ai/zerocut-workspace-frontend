@@ -10,20 +10,16 @@ import type { EChartsOption } from 'echarts';
 import echarts, { useChart, RenderType, ThemeType } from '@/plugins/echarts';
 
 // Generate data
-let category: string[] = [];
+const category: string[] = [];
 let dottedBase = +new Date();
-let lineData: any[] = [];
-let barData: any[] = [];
+const lineData: any[] = [];
+const barData: any[] = [];
 for (let i = 0; i < 20; i++) {
-  let date = new Date((dottedBase += 3600 * 24 * 1000));
-  const dateStr = [
-    date.getFullYear(),
-    date.getMonth() + 1,
-    date.getDate(),
-  ].join('-');
+  const date = new Date((dottedBase += 3600 * 24 * 1000));
+  const dateStr = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
   category.push(dateStr);
-  let b = Math.random() * 200;
-  let d = Math.random() * 200;
+  const b = Math.random() * 200;
+  const d = Math.random() * 200;
   barData.push(b);
   lineData.push(d + b);
 }

@@ -88,10 +88,7 @@ onMounted(() => {
 </script>
 <template>
   <!-- loading spinner -->
-  <div
-    v-if="loading"
-    class="h-full d-flex flex-grow-1 align-center justify-center"
-  >
+  <div v-if="loading" class="h-full d-flex flex-grow-1 align-center justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>
@@ -111,7 +108,7 @@ onMounted(() => {
         <tbody>
           <tr v-for="item in items" :key="item.id">
             <td class="font-weight-bold">
-              <copy-label :text="`# ${item.id}`" />
+              <CopyLabel :text="`# ${item.id}`" />
             </td>
             <td>
               <div class="d-flex align-center py-2">
@@ -121,7 +118,7 @@ onMounted(() => {
                 <div class="ml-1">
                   <div class="font-weight-bold">{{ item.user.name }}</div>
                   <div class="text-caption">
-                    <copy-label :text="item.user.email" />
+                    <CopyLabel :text="item.user.email" />
                   </div>
                 </div>
               </div>
@@ -140,13 +137,7 @@ onMounted(() => {
               </div>
             </td>
             <td>
-              <v-btn
-                size="small"
-                variant="text"
-                icon="mdi-open-in-new"
-                @click="open(item)"
-              >
-              </v-btn>
+              <v-btn size="small" variant="text" icon="mdi-open-in-new" @click="open(item)"> </v-btn>
             </td>
           </tr>
         </tbody>

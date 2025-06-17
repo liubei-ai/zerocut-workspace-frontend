@@ -10,24 +10,21 @@ const comments = [
       "Extremely down-to-earth and relaxed atmosphere within the company, it's extremely easy to talk to anyone, including C-level executives.The company as a whole is inclusive of the cultural values everyone promotes and shares.",
     name: 'Derrick Mehaffy',
     position: 'Solutions Engineer',
-    avatar:
-      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
+    avatar: 'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
   },
   {
     content:
       "That's so inspiring to see a company fighting so hard for its values! If you take care, for example, the emergency days are still blowing up my mind. Strapi considers employees as a whole, not just workers. ",
     name: 'Noémie Nana Gassa',
     position: 'Talent Acquisition Manager',
-    avatar:
-      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/1631195677739_050c18b591.jfif',
+    avatar: 'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/1631195677739_050c18b591.jfif',
   },
   {
     content:
       "In the US, people tend to value the Hustle culture: 'work, work, work.' In this context, it's easy to forget to take care of yourself. At Strapi, they really put people first and encourage us to take care of ourselves.",
     name: 'Paul Bratslavsky',
     position: 'Developer Advocate',
-    avatar:
-      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
+    avatar: 'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
   },
 ];
 </script>
@@ -39,12 +36,7 @@ const comments = [
     </v-toolbar-title>
   </v-toolbar>
   <v-sheet elevation="0" class="mx-auto landing-warpper text-left" rounded>
-    <v-sheet
-      elevation="0"
-      color="transparent"
-      max-width="1400 "
-      class="mx-auto my-10 pa-10"
-    >
+    <v-sheet elevation="0" color="transparent" max-width="1400 " class="mx-auto my-10 pa-10">
       <h1 class="text-h3 text-center my-10 font-weight-bold">Our Customers</h1>
       <v-item-group mandatory>
         <v-row align="stretch">
@@ -61,11 +53,7 @@ const comments = [
                     {{ comment.content }}
                   </v-card>
 
-                  <v-card
-                    elevation="0"
-                    color="transparent"
-                    class="user-card d-flex align-center my-5"
-                  >
+                  <v-card elevation="0" color="transparent" class="user-card d-flex align-center my-5">
                     <div>
                       <v-avatar size="50" class="mr-4">
                         <img :src="comment.avatar" />

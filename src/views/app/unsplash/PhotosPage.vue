@@ -104,9 +104,7 @@ onMounted(() => {
 
 const initData = () => {
   photoData.photos.forEach(photo => {
-    photo.liked_by_user = unsplashStore.favoriteList.some(
-      item => item.id === photo.id
-    );
+    photo.liked_by_user = unsplashStore.favoriteList.some(item => item.id === photo.id);
   });
 };
 
@@ -209,13 +207,10 @@ const openPhotoDialog = (id: string) => {
               <span class="ml-2">({{ photoData.total }})</span></v-tab
             >
             <v-tab value="collections">
-              collections<span class="ml-2"
-                >({{ collectionData.total }})</span
-              ></v-tab
+              collections<span class="ml-2">({{ collectionData.total }})</span></v-tab
             >
             <v-tab value="users"
-              ><v-icon class="mr-2">mdi-account-multiple</v-icon> users<span
-                class="ml-2"
+              ><v-icon class="mr-2">mdi-account-multiple</v-icon> users<span class="ml-2"
                 >({{ userData.total }})</span
               ></v-tab
             >
@@ -225,24 +220,13 @@ const openPhotoDialog = (id: string) => {
             <v-window v-model="tab">
               <!-- Photos -->
               <v-window-item value="photos">
-                <v-card
-                  min-height="80vh"
-                  class="pa-5 d-flex align-center justify-center"
-                  v-if="photoData.total === 0"
-                >
-                  <v-img
-                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
-                    height="400"
-                  ></v-img>
+                <v-card min-height="80vh" class="pa-5 d-flex align-center justify-center" v-if="photoData.total === 0">
+                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item
-                        v-for="item in relatedSearches"
-                        :key="item.title"
-                        v-slot="{ isSelected }"
-                      >
+                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
                         <v-btn
                           class="ma-2"
                           rounded
@@ -255,20 +239,8 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col
-                      cols="12"
-                      xl="2"
-                      lg="3"
-                      md="4"
-                      sm="6"
-                      v-for="item in photoData.photos"
-                      :key="item.id"
-                    >
-                      <v-card
-                        width="100%"
-                        class="info-card photo-card d-flex flex-column"
-                        height="480"
-                      >
+                    <v-col cols="12" xl="2" lg="3" md="4" sm="6" v-for="item in photoData.photos" :key="item.id">
+                      <v-card width="100%" class="info-card photo-card d-flex flex-column" height="480">
                         <div>
                           <v-img
                             class="align-end text-white"
@@ -279,23 +251,13 @@ const openPhotoDialog = (id: string) => {
                             @click="openPhotoDialog(item.id)"
                           >
                             <template v-slot:placeholder>
-                              <v-row
-                                class="fill-height ma-0"
-                                align="center"
-                                justify="center"
-                              >
-                                <v-progress-circular
-                                  indeterminate
-                                  color="grey-lighten-5"
-                                ></v-progress-circular>
+                              <v-row class="fill-height ma-0" align="center" justify="center">
+                                <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
                               </v-row>
                             </template>
                             <v-card-title class="card-title">
                               <v-avatar size="avatarSize" class="mr-2">
-                                <img
-                                  :src="item.user.profile_image.small"
-                                  alt="alt"
-                                />
+                                <img :src="item.user.profile_image.small" alt="alt" />
                               </v-avatar>
                               {{ item.user.username }}</v-card-title
                             >
@@ -303,11 +265,7 @@ const openPhotoDialog = (id: string) => {
                         </div>
 
                         <v-card-subtitle class="mt-5">
-                          <div>
-                            size: height:{{ item.height }} width:{{
-                              item.width
-                            }}
-                          </div>
+                          <div>size: height:{{ item.height }} width:{{ item.width }}</div>
                         </v-card-subtitle>
 
                         <v-card-text>
@@ -324,11 +282,7 @@ const openPhotoDialog = (id: string) => {
                               icon="mdi-heart"
                               class="heartBeat"
                             ></v-icon>
-                            <v-icon
-                              v-else
-                              start
-                              icon="mdi-heart-outline"
-                            ></v-icon>
+                            <v-icon v-else start icon="mdi-heart-outline"></v-icon>
                             Like({{ item.likes }})
                             <v-tooltip
                               activator="parent"
@@ -340,12 +294,7 @@ const openPhotoDialog = (id: string) => {
                           <v-spacer></v-spacer>
                           <v-tooltip location="bottom" text="Download">
                             <template v-slot:activator="{ props }">
-                              <v-btn
-                                v-bind="props"
-                                icon="mdi-download"
-                                @click="downloadPhoto(item)"
-                              >
-                              </v-btn>
+                              <v-btn v-bind="props" icon="mdi-download" @click="downloadPhoto(item)"> </v-btn>
                             </template>
                           </v-tooltip>
                           <v-tooltip location="bottom" text="Add To Collection">
@@ -376,19 +325,12 @@ const openPhotoDialog = (id: string) => {
                   class="pa-5 d-flex align-center justify-center"
                   v-if="collectionData.total === 0"
                 >
-                  <v-img
-                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
-                    height="400"
-                  ></v-img>
+                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item
-                        v-for="item in relatedSearches"
-                        :key="item.title"
-                        v-slot="{ isSelected }"
-                      >
+                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
                         <v-btn
                           class="ma-2"
                           rounded
@@ -401,17 +343,8 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col
-                      cols="12"
-                      lg="6"
-                      xl="4"
-                      v-for="item in collectionData.collections"
-                      :key="item.id"
-                    >
-                      <v-card
-                        class="info-card collection-card d-flex mt-5"
-                        color="secondary-lighten-1"
-                      >
+                    <v-col cols="12" lg="6" xl="4" v-for="item in collectionData.collections" :key="item.id">
+                      <v-card class="info-card collection-card d-flex mt-5" color="secondary-lighten-1">
                         <v-img
                           max-width="200"
                           aspect-ratio="1"
@@ -435,10 +368,7 @@ const openPhotoDialog = (id: string) => {
                           </v-card-title>
                           <v-card-subtitle class="pt-4">
                             <v-avatar size="avatarSize">
-                              <img
-                                :src="item.user.profile_image.small"
-                                alt="alt"
-                              />
+                              <img :src="item.user.profile_image.small" alt="alt" />
                             </v-avatar>
                             {{ item.user.username }}
                           </v-card-subtitle>
@@ -448,9 +378,7 @@ const openPhotoDialog = (id: string) => {
                           <v-card-actions>
                             <span>{{ item.published_at }}</span>
                             <v-spacer></v-spacer>
-                            <span class="text-accent">{{
-                              item.total_photos
-                            }}</span>
+                            <span class="text-accent">{{ item.total_photos }}</span>
                           </v-card-actions>
                         </div>
                       </v-card>
@@ -470,24 +398,13 @@ const openPhotoDialog = (id: string) => {
 
               <!-- Users -->
               <v-window-item value="users">
-                <v-card
-                  min-height="80vh"
-                  class="pa-5 d-flex align-center justify-center"
-                  v-if="userData.total === 0"
-                >
-                  <v-img
-                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
-                    height="400"
-                  ></v-img>
+                <v-card min-height="80vh" class="pa-5 d-flex align-center justify-center" v-if="userData.total === 0">
+                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item
-                        v-for="item in relatedSearches"
-                        :key="item.title"
-                        v-slot="{ isSelected }"
-                      >
+                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
                         <v-btn
                           class="ma-2"
                           rounded
@@ -500,21 +417,9 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col
-                      cols="12"
-                      lg="3"
-                      md="4"
-                      sm="6"
-                      v-for="item in userData.users"
-                      :key="item.id"
-                    >
-                      <v-card
-                        width="100%"
-                        class="info-card user-card d-flex flex-column justify-space-between"
-                      >
-                        <div
-                          class="card-top bg-secondary-lighten-1 text-content"
-                        >
+                    <v-col cols="12" lg="3" md="4" sm="6" v-for="item in userData.users" :key="item.id">
+                      <v-card width="100%" class="info-card user-card d-flex flex-column justify-space-between">
+                        <div class="card-top bg-secondary-lighten-1 text-content">
                           <v-avatar class="mr-5" size="avatarSize">
                             <img :src="item.profile_image.small" alt="alt" />
                           </v-avatar>
@@ -557,13 +462,7 @@ const openPhotoDialog = (id: string) => {
                     >More Users...</v-btn
                   >
                   <v-row>
-                    <v-col
-                      cols="12"
-                      lg="4"
-                      sm="6"
-                      v-for="item in userData.users"
-                      :key="item.id"
-                    >
+                    <v-col cols="12" lg="4" sm="6" v-for="item in userData.users" :key="item.id">
                       <UserCard :user="item" />
                     </v-col>
                   </v-row>
@@ -581,9 +480,7 @@ const openPhotoDialog = (id: string) => {
     <v-snackbar v-model="snackbar.isShow" :timeout="snackbar.timeout">
       {{ snackbar.text }}
       <template v-slot:actions>
-        <v-btn color="blue" variant="text" @click="snackbar.isShow = false">
-          Close
-        </v-btn>
+        <v-btn color="blue" variant="text" @click="snackbar.isShow = false"> Close </v-btn>
       </template>
     </v-snackbar>
 

@@ -76,19 +76,11 @@ const addFiles = newFiles => {
 
 <template>
   <div class="multi-file-upload" @dragover.prevent @drop.prevent="handleDrop">
-    <input
-      ref="fileInput"
-      type="file"
-      multiple
-      @change="handleInputChange"
-      style="display: none"
-    />
+    <input ref="fileInput" type="file" multiple @change="handleInputChange" style="display: none" />
     <button @click="triggerFileInput">点击或拖拽上传文件</button>
   </div>
   <ul>
-    <li v-for="(file, index) in fileInfoList" :key="index">
-      {{ file.name }} ({{ file.size }} bytes)
-    </li>
+    <li v-for="(file, index) in fileInfoList" :key="index">{{ file.name }} ({{ file.size }} bytes)</li>
   </ul>
 </template>
 

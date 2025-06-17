@@ -29,26 +29,26 @@ const testAuthFailure = async () => {
         <!-- Sales Card -->
         <v-card class="card-shadow" height="420">
           <!-- <sales-card></sales-card> -->
-          <sales-card
+          <SalesCard
             :value="1837.32"
             class="h-100"
             :percentage="3.2"
             style="min-height: 380px"
             :percentage-label="$t('dashboard.lastweek')"
             :action-label="$t('dashboard.viewReport')"
-          ></sales-card>
+          ></SalesCard>
         </v-card>
       </v-col>
       <v-col cols="12" md="6" xl="4">
         <!-- Activity Card -->
         <v-card class="card-shadow" height="420">
-          <activity-card></activity-card>
+          <ActivityCard></ActivityCard>
         </v-card>
       </v-col>
       <v-col cols="12" md="6" xl="4">
         <!-- Trafiic Card-->
         <v-card class="card-shadow h-full" height="420">
-          <sources-card></sources-card>
+          <SourcesCard></SourcesCard>
         </v-card>
       </v-col>
     </v-row>
@@ -59,13 +59,13 @@ const testAuthFailure = async () => {
       <v-col cols="12" xl="6">
         <!-- Table Card-->
         <v-card class="card-shadow" height="420">
-          <table-card></table-card>
+          <TableCard></TableCard>
         </v-card>
       </v-col>
       <v-col cols="12" xl="6">
         <!-- Task Card-->
         <v-card class="card-shadow" height="420">
-          <task-card></task-card>
+          <TaskCard></TaskCard>
         </v-card>
       </v-col>
     </v-row>
@@ -75,20 +75,14 @@ const testAuthFailure = async () => {
     <v-row class="card-shadow flex-grow-0" dense>
       <v-col cols="12" xl="6">
         <!-- Target Card-->
-        <v-card class="card-shadow" height="420"
-          ><todo-card></todo-card
-        ></v-card>
+        <v-card class="card-shadow" height="420"><TodoCard></TodoCard></v-card>
       </v-col>
       <v-col cols="12" xl="6">
-        <v-card class="card-shadow" height="420"
-          ><tickets-card></tickets-card>
-        </v-card>
+        <v-card class="card-shadow" height="420"><TicketsCard></TicketsCard> </v-card>
       </v-col>
     </v-row>
     <!-- 在适当位置添加测试按钮 -->
-    <v-btn color="warning" @click="testAuthFailure" class="mb-4">
-      测试 401 错误处理
-    </v-btn>
+    <v-btn color="warning" @click="testAuthFailure" class="mb-4"> 测试 401 错误处理 </v-btn>
   </div>
 </template>
 <style lang="scss" scoped></style>

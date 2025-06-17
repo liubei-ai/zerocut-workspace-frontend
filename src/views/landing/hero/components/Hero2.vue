@@ -13,21 +13,14 @@
       <v-col cols="12" md="6">
         <img class="mx-auto" width="200" src="@/assets/logo2.svg" alt="" />
         <v-card variant="flat" max-width="800" class="mx-auto my-10">
-          <h1
-            style="color: #4a4d6d"
-            class="font-weight-black text-h3 text-lg-h2 text-xl-h1"
-          >
+          <h1 style="color: #4a4d6d" class="font-weight-black text-h3 text-lg-h2 text-xl-h1">
             We organize chaotic
             <span class="text-primary">internet</span>
           </h1>
-          <h2 class="text-h6 text-secondary mt-4 mx-auto">
-            Stack is a Spatial Browser for Mindful Online Living
-          </h2>
+          <h2 class="text-h6 text-secondary mt-4 mx-auto">Stack is a Spatial Browser for Mindful Online Living</h2>
         </v-card>
         <div class="text-center">
-          <v-btn size="x-large" class="text-white" color="primary"
-            >Get Stack</v-btn
-          >
+          <v-btn size="x-large" class="text-white" color="primary">Get Stack</v-btn>
         </div>
       </v-col>
       <v-col cols="0" md="6">

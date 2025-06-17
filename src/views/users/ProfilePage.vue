@@ -105,9 +105,7 @@ Basic with Icons
         <!--   Basic Infomation -->
         <!-- ---------------------------------------------- -->
         <v-card class="mb-5">
-          <v-card-title class="py-4 font-weight-bold">
-            Basic Infomation
-          </v-card-title>
+          <v-card-title class="py-4 font-weight-bold"> Basic Infomation </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-7">
             <v-row>
@@ -153,14 +151,7 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn
-              class="px-5"
-              color="primary"
-              elevation="1"
-              variant="elevated"
-            >
-              Unpdate Basic Info</v-btn
-            >
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Basic Info</v-btn>
           </v-card-actions>
         </v-card>
 
@@ -168,42 +159,25 @@ Basic with Icons
         <!--   Authentication  -->
         <!-- ---------------------------------------------- -->
         <v-card class="mb-5">
-          <v-card-title class="py-4 font-weight-bold">
-            Authentication</v-card-title
-          >
+          <v-card-title class="py-4 font-weight-bold"> Authentication</v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-7">
             <v-row>
               <v-col cols="12" md="6">
-                <v-btn
-                  color="primary"
-                  size="large"
-                  block
-                  elevation="1"
-                  variant="elevated"
-                >
-                  <Icon
-                    icon="logos:google-icon"
-                    class="mr-3 my-2"
-                  />Google</v-btn
+                <v-btn color="primary" size="large" block elevation="1" variant="elevated">
+                  <Icon icon="logos:google-icon" class="mr-3 my-2" />Google</v-btn
                 >
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-btn size="large" block variant="outlined" disabled>
-                  <Icon
-                    icon="logos:facebook"
-                    class="mr-3 my-2"
-                  />Facebook</v-btn
+                  <Icon icon="logos:facebook" class="mr-3 my-2" />Facebook</v-btn
                 >
               </v-col>
 
               <v-col cols="12" md="6">
                 <v-btn size="large" block variant="outlined" disabled>
-                  <Icon
-                    icon="logos:github-icon"
-                    class="mr-3 my-2"
-                  />Github</v-btn
+                  <Icon icon="logos:github-icon" class="mr-3 my-2" />Github</v-btn
                 >
               </v-col>
               <v-col cols="12" md="6">
@@ -219,16 +193,12 @@ Basic with Icons
         <!--   Change Password  -->
         <!-- ---------------------------------------------- -->
         <v-card class="mb-5">
-          <v-card-title class="py-4 font-weight-bold">
-            Change Password
-          </v-card-title>
+          <v-card-title class="py-4 font-weight-bold"> Change Password </v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-7">
             <v-row>
               <v-col cols="12" sm="6">
-                <v-label class="font-weight-medium mb-2"
-                  >Current Password</v-label
-                >
+                <v-label class="font-weight-medium mb-2">Current Password</v-label>
                 <v-text-field
                   readonly
                   v-model="passwords.currentPassword"
@@ -239,12 +209,8 @@ Basic with Icons
                   :type="currentPasswordShow ? 'text' : 'password'"
                   placeholder="Current Password"
                   hide-details
-                  :append-inner-icon="
-                    currentPasswordShow ? 'mdi-eye' : 'mdi-eye-off'
-                  "
-                  @click:append-inner="
-                    currentPasswordShow = !currentPasswordShow
-                  "
+                  :append-inner-icon="currentPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append-inner="currentPasswordShow = !currentPasswordShow"
                 >
                 </v-text-field>
               </v-col>
@@ -259,17 +225,13 @@ Basic with Icons
                   :type="newPasswordShow ? 'text' : 'password'"
                   placeholder="new password"
                   hide-details
-                  :append-inner-icon="
-                    newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'
-                  "
+                  :append-inner-icon="newPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
                   @click:append-inner="newPasswordShow = !newPasswordShow"
                 >
                 </v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-label class="font-weight-medium mb-2"
-                  >Confirm Password</v-label
-                >
+                <v-label class="font-weight-medium mb-2">Confirm Password</v-label>
                 <v-text-field
                   v-model="passwords.confirmPassword"
                   density="compact"
@@ -278,12 +240,8 @@ Basic with Icons
                   :type="confirmPasswordShow ? 'text' : 'password'"
                   placeholder="confirm password"
                   hide-details
-                  :append-inner-icon="
-                    confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'
-                  "
-                  @click:append-inner="
-                    confirmPasswordShow = !confirmPasswordShow
-                  "
+                  :append-inner-icon="confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append-inner="confirmPasswordShow = !confirmPasswordShow"
                 >
                 </v-text-field
               ></v-col>
@@ -292,14 +250,7 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn
-              class="px-5"
-              color="primary"
-              elevation="1"
-              variant="elevated"
-            >
-              Unpdate Password</v-btn
-            >
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Password</v-btn>
           </v-card-actions>
         </v-card>
 
@@ -307,9 +258,7 @@ Basic with Icons
         <!--   Notifications  -->
         <!-- ---------------------------------------------- -->
         <v-card class="mb-5">
-          <v-card-title class="py-4 font-weight-bold">
-            Notifications</v-card-title
-          >
+          <v-card-title class="py-4 font-weight-bold"> Notifications</v-card-title>
           <v-divider></v-divider>
           <v-card-text class="pa-7">
             <div>
@@ -334,14 +283,7 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn
-              class="px-5"
-              color="primary"
-              elevation="1"
-              variant="elevated"
-            >
-              Unpdate Notifications</v-btn
-            >
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Notifications</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

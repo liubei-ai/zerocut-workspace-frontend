@@ -88,24 +88,21 @@ const translate = async () => {
   // }
   isLoading.value = true;
   try {
-    const completion = await fetch(
-      `${chatGPTStore.proxyUrl}/v1/chat/completions`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${chatGPTStore.getApiKey}`,
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          messages: [
-            { role: 'user', content: prompt.value },
-            { role: 'user', content: baseContent.value },
-          ],
-          model: chatGPTStore.model,
-          stream: true,
-        }),
-      }
-    );
+    const completion = await fetch(`${chatGPTStore.proxyUrl}/v1/chat/completions`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${chatGPTStore.getApiKey}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        messages: [
+          { role: 'user', content: prompt.value },
+          { role: 'user', content: baseContent.value },
+        ],
+        model: chatGPTStore.model,
+        stream: true,
+      }),
+    });
 
     // Handle errors
     if (!completion.ok) {
@@ -161,10 +158,7 @@ const startRecording = async () => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('model', 'whisper-1');
-        const res = await createTranscriptionApi(
-          formData,
-          chatGPTStore.getApiKey
-        );
+        const res = await createTranscriptionApi(formData, chatGPTStore.getApiKey);
         baseContent.value = res.data.text;
       };
     })
@@ -201,26 +195,16 @@ const readText = () => {
 <template>
   <v-btn size="50" @click="dialog = !dialog">
     <v-icon size="30">mdi-google-translate</v-icon>
-    <v-tooltip
-      activator="parent"
-      location="left"
-      :text="$t('toolbox.translationAssistant.title')"
-    ></v-tooltip>
+    <v-tooltip activator="parent" location="left" :text="$t('toolbox.translationAssistant.title')"></v-tooltip>
   </v-btn>
 
   <teleport to="body">
     <transition name="slide-y">
-      <v-card
-        v-if="dialog"
-        class="dialog-bottom d-flex flex-column"
-        :width="xs ? '100%' : '600px'"
-      >
+      <v-card v-if="dialog" class="dialog-bottom d-flex flex-column" :width="xs ? '100%' : '600px'">
         <v-card-title>
           <span class="flex-fill">
             <v-avatar size="40">
-              <v-img
-                src="https://img.icons8.com/color/96/null/translation.png"
-              />
+              <v-img src="https://img.icons8.com/color/96/null/translation.png" />
             </v-avatar>
 
             OpenAi {{ $t('toolbox.translationAssistant.title') }}
@@ -233,9 +217,7 @@ const readText = () => {
         </v-card-title>
         <v-divider />
         <v-card-actions class="px-5">
-          <span class="text-body-2"
-            >{{ $t('toolbox.translationAssistant.targetLanguage') }}:</span
-          >
+          <span class="text-body-2">{{ $t('toolbox.translationAssistant.targetLanguage') }}:</span>
           <!-- <v-btn-toggle
             v-model="currentLang"
             density="compact"
@@ -291,30 +273,18 @@ const readText = () => {
                     color="white"
                     clearable
                     @focus="isBaseContentEmpty = false"
-                    :placeholder="
-                      $t(
-                        'toolbox.translationAssistant.sourceLanguagePlaceholder'
-                      )
-                    "
+                    :placeholder="$t('toolbox.translationAssistant.sourceLanguagePlaceholder')"
                   ></v-textarea>
                 </div>
                 <v-card-actions class="bg-grey-lighten-4 text-primary">
-                  <v-tooltip
-                    v-if="!isRecording"
-                    location="bottom"
-                    :text="$t('toolbox.translationAssistant.speech')"
-                  >
+                  <v-tooltip v-if="!isRecording" location="bottom" :text="$t('toolbox.translationAssistant.speech')">
                     <template #activator="{ props }">
                       <v-btn @click="record" v-bind="props" icon>
                         <v-icon v-if="isRecording">mdi-microphone</v-icon>
                       </v-btn>
                     </template>
                   </v-tooltip>
-                  <v-tooltip
-                    location="bottom"
-                    :text="$t('toolbox.translationAssistant.stopSpeech')"
-                    v-else
-                  >
+                  <v-tooltip location="bottom" :text="$t('toolbox.translationAssistant.stopSpeech')" v-else>
                     <template #activator="{ props }">
                       <v-btn @click="record" v-bind="props" icon>
                         <Icon icon="svg-spinners:bars-scale-fade" />
@@ -347,24 +317,13 @@ const readText = () => {
                     class="elevation-1"
                     color="primary"
                     clearable
-                    :placeholder="
-                      $t(
-                        'toolbox.translationAssistant.targetLanguagePlaceholder'
-                      )
-                    "
+                    :placeholder="$t('toolbox.translationAssistant.targetLanguagePlaceholder')"
                   ></v-textarea>
                 </div>
-                <v-card-actions
-                  class="bg-grey-lighten-4 bg-grey-lighten-4 text-primary"
-                >
-                  <v-tooltip
-                    location="bottom"
-                    :text="$t('toolbox.translationAssistant.read')"
-                  >
+                <v-card-actions class="bg-grey-lighten-4 bg-grey-lighten-4 text-primary">
+                  <v-tooltip location="bottom" :text="$t('toolbox.translationAssistant.read')">
                     <template #activator="{ props }">
-                      <v-btn @click="readText" v-bind="props" icon
-                        ><v-icon>mdi-volume-high</v-icon>
-                      </v-btn>
+                      <v-btn @click="readText" v-bind="props" icon><v-icon>mdi-volume-high</v-icon> </v-btn>
                     </template>
                   </v-tooltip>
                   <v-spacer></v-spacer>

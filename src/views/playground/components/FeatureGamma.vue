@@ -70,8 +70,7 @@ const cards = [
   {
     type: 'card',
     title: '带按钮内容',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-Content-with-Button.0a656178.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-Content-with-Button.0a656178.svg',
   },
   {
     type: 'title',
@@ -90,26 +89,22 @@ const cards = [
   {
     type: 'card',
     title: '2列内容',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-2-Column-Content.31842b2e.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-2-Column-Content.31842b2e.svg',
   },
   {
     type: 'card',
     title: '2列内容(图片在左)',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-2-Column-Image-Left.a898abf9.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-2-Column-Image-Left.a898abf9.svg',
   },
   {
     type: 'card',
     title: '2列内容(图片在右)',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-2-Column-Image-Right.82d9989d.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-2-Column-Image-Right.82d9989d.svg',
   },
   {
     type: 'card',
     title: '2列图片',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-2-images.8c3df472.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-2-images.8c3df472.svg',
   },
   {
     type: 'title',
@@ -118,50 +113,42 @@ const cards = [
   {
     type: 'card',
     title: '3列内容',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-3-Column-Content.a2e0f358.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-3-Column-Content.a2e0f358.svg',
   },
   {
     type: 'card',
     title: '3个图片列',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-3-images.172b44a3.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-3-images.172b44a3.svg',
   },
   {
     type: 'card',
     title: '带有3个嵌套靠谱安',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-3-nested-cards.c9385238.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-3-nested-cards.c9385238.svg',
   },
   {
     type: 'card',
     title: '带有3个折叠列表',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-3-toggles.c0b5bbb9.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-3-toggles.c0b5bbb9.svg',
   },
   {
     type: 'card',
     title: '带有时间线标题',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-timeline.5a8d1065.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-timeline.5a8d1065.svg',
   },
   {
     type: 'card',
     title: '带有大项目符号列表',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-large-bullets.45506775.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-large-bullets.45506775.svg',
   },
   {
     type: 'card',
     title: '带有3个框的标题',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-3-boxes.8a28c3c6.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-3-boxes.8a28c3c6.svg',
   },
   {
     type: 'card',
     title: '带有团队照片的标题',
-    imgUrl:
-      'https://gamma.app/_next/static/media/Title-with-team-photos.475f94b7.svg',
+    imgUrl: 'https://gamma.app/_next/static/media/Title-with-team-photos.475f94b7.svg',
   },
 ];
 </script>
@@ -190,12 +177,7 @@ const cards = [
         color="accent"
         ><Icon width="24" :icon="item.icon" />
         <!-- tooltip -->
-        <v-tooltip
-          activator="parent"
-          location="left"
-          :text="item.title"
-          class="font-weight-bold"
-        ></v-tooltip>
+        <v-tooltip activator="parent" location="left" :text="item.title" class="font-weight-bold"></v-tooltip>
         <!-- Menu -->
         <v-menu location="left center" activator="parent">
           <v-card class="mr-2" height="600" width="300">
@@ -208,9 +190,7 @@ const cards = [
                   <div>
                     <v-img :src="item.imgUrl" width="120" />
                   </div>
-                  <div
-                    class="ml-3 font-weight-bold text-grey-darken-2 text-body-2"
-                  >
+                  <div class="ml-3 font-weight-bold text-grey-darken-2 text-body-2">
                     {{ item.title }}
                   </div>
                 </v-card>

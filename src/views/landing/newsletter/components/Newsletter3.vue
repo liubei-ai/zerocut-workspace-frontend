@@ -12,22 +12,12 @@
       <span>Newsletter3</span>
     </v-toolbar-title>
   </v-toolbar>
-  <v-sheet
-    elevation="0"
-    class="mx-auto landing-warpper text-left"
-    color="#F2F5F8"
-    rounded
-  >
+  <v-sheet elevation="0" class="mx-auto landing-warpper text-left" color="#F2F5F8" rounded>
     <v-container>
       <v-row align="center">
         <v-col cols="12" md="6">
           <v-sheet color="transparent" elevation="0" class="py-10">
-            <v-card
-              color="transparent"
-              elevation="0"
-              max-width="800"
-              class="mx-auto my-10 px-10"
-            >
+            <v-card color="transparent" elevation="0" max-width="800" class="mx-auto my-10 px-10">
               <h1 style="color: #4a4d6d" class="font-weight-black text-h3">
                 Get the best insights directly to your
                 <span class="text-primary">inbox</span>
@@ -42,18 +32,8 @@
                 variant="outlined"
                 placeholder="email"
               ></v-text-field>
-              <v-checkbox
-                color="primary"
-                label="I have read and agree to the terms"
-              >
-              </v-checkbox>
-              <v-btn
-                block
-                height="60"
-                color="primary"
-                class="font-weight-bold mb-5"
-                >Subscribe to the Newsletter</v-btn
-              >
+              <v-checkbox color="primary" label="I have read and agree to the terms"> </v-checkbox>
+              <v-btn block height="60" color="primary" class="font-weight-bold mb-5">Subscribe to the Newsletter</v-btn>
             </v-card>
           </v-sheet>
         </v-col>

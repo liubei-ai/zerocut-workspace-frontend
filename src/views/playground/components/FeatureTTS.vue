@@ -17,14 +17,10 @@ const subscriptionKey = ref(import.meta.env.VITE_TTS_KEY);
 const region = ref('eastus');
 
 // 创建语音配置对象
-const speechConfig = sdk.SpeechConfig.fromSubscription(
-  subscriptionKey.value,
-  region.value
-);
+const speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey.value, region.value);
 
 // 设置输出音频格式
-speechConfig.speechSynthesisOutputFormat =
-  sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
 
 // 创建一个语音合成器
 const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
@@ -78,9 +74,7 @@ const allVoices = ref<VoiceInfo[]>([]);
 // 获取语音列表
 const getVoices = async () => {
   const res = await synthesizer.getVoicesAsync();
-  allVoices.value = res.voices.filter(voice =>
-    languages.value.includes(voice.locale)
-  );
+  allVoices.value = res.voices.filter(voice => languages.value.includes(voice.locale));
 
   // fr-FR 法语 ja-JP 日语 en-US 英语 zh-CN 中文 zh-HK 粤语 ko-KR 韩语 de-DE 德语
 
@@ -115,18 +109,12 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
     <v-text-field name="name" label="label" id="id"></v-text-field>
     <v-btn color="success" @click="textToSpeech(text)">说话</v-btn>
     <v-btn color="success" @click="getVoices">获取VoiceInfo</v-btn>
-    <v-btn color="success" @click="handleTextToSpeech('hello world ')"
-      >text</v-btn
-    >
-    <v-btn color="success" @click="speechStore.textToSpeech('hello world ')">
-      too
-    </v-btn>
+    <v-btn color="success" @click="handleTextToSpeech('hello world ')">text</v-btn>
+    <v-btn color="success" @click="speechStore.textToSpeech('hello world ')"> too </v-btn>
 
     <v-icon v-if="speechStore.isPlaying">mdi-home</v-icon>
 
-    <v-btn :color="speechStore.isPlaying ? 'green' : 'error'">{{
-      speechStore.isPlaying
-    }}</v-btn>
+    <v-btn :color="speechStore.isPlaying ? 'green' : 'error'">{{ speechStore.isPlaying }}</v-btn>
 
     <v-divider class="mb-10"></v-divider>
 
@@ -135,22 +123,12 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
         <v-col cols="12" md="4">
           <v-card>
             <v-list elevation="1" density="compact">
-              <v-list-subheader
-                >Total {{ allVoices.length }} Voices</v-list-subheader
-              >
-              <RecycleScroller
-                class="scroller"
-                :items="allVoices"
-                :item-size="50"
-                key-field="name"
-                v-slot="{ item }"
-              >
+              <v-list-subheader>Total {{ allVoices.length }} Voices</v-list-subheader>
+              <RecycleScroller class="scroller" :items="allVoices" :item-size="50" key-field="name" v-slot="{ item }">
                 <v-list-item
                   active-color="primary"
                   @click="selectVoice(item)"
-                  :active="
-                    item.shortName === speechStore.speechSynthesisVoiceName
-                  "
+                  :active="item.shortName === speechStore.speechSynthesisVoiceName"
                   three-line
                 >
                   <!-- ---------------------------------------------- -->
@@ -159,14 +137,10 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
                   <template v-slot:prepend>
                     <!-- <span class="mr-3">{{ item.id }}</span> -->
                     <v-avatar v-if="item.gender === 1" size="30" color="red">
-                      <img
-                        src="https://img.icons8.com/bubbles/50/null/lock-female-user.png"
-                      />
+                      <img src="https://img.icons8.com/bubbles/50/null/lock-female-user.png" />
                     </v-avatar>
                     <v-avatar v-else size="30" color="blue">
-                      <img
-                        src="https://img.icons8.com/bubbles/50/null/user-male.png"
-                      />
+                      <img src="https://img.icons8.com/bubbles/50/null/user-male.png" />
                     </v-avatar>
                   </template>
                   <!-- ---------------------------------------------- -->
@@ -175,12 +149,7 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
                   <template v-slot:append>
                     <div class="full-h d-flex align-center">
                       <span class="text-body-2 text-grey">
-                        <v-chip
-                          size="small"
-                          class="font-weight-bold"
-                          color="blue"
-                          >{{ item.locale }}</v-chip
-                        >
+                        <v-chip size="small" class="font-weight-bold" color="blue">{{ item.locale }}</v-chip>
                       </span>
                     </div>
                   </template>
@@ -190,9 +159,7 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
                   <div>
                     <v-list-item-title class="font-weight-bold text-primary"
                       >{{ item.localName }}
-                      <span class="text-body-2 ml-2"
-                        >({{ item.shortName }})</span
-                      ></v-list-item-title
+                      <span class="text-body-2 ml-2">({{ item.shortName }})</span></v-list-item-title
                     >
                     <v-list-item-subtitle>{{ item.name }}</v-list-item-subtitle>
                   </div>

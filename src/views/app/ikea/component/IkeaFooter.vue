@@ -169,12 +169,7 @@ const footerNavs = [
 
 <template>
   <v-sheet elevation="0" class="mx-auto text-body-2" color="#F5F5F5" rounded>
-    <v-sheet
-      class="mx-auto text-left pa-10"
-      color="transparent"
-      elevation="0"
-      max-width="1600"
-    >
+    <v-sheet class="mx-auto text-left pa-10" color="transparent" elevation="0" max-width="1600">
       <v-row>
         <v-col cols="12" md="4">
           <div>
@@ -185,16 +180,9 @@ const footerNavs = [
             </p>
 
             <p>
-              <RouterLink to="/ " class="text-decoration-underline text-body-2"
-                >詳しく見る</RouterLink
-              >
+              <RouterLink to="/ " class="text-decoration-underline text-body-2">詳しく見る</RouterLink>
             </p>
-            <v-btn
-              class="text-body-2 font-weight-bold my-5"
-              color="black"
-              rounded="pill"
-              >入会する</v-btn
-            >
+            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill">入会する</v-btn>
           </div>
           <div>
             <h6 class="font-weight-bold">IKEA Business Networkに入会する</h6>
@@ -204,16 +192,9 @@ const footerNavs = [
             </p>
 
             <p>
-              <RouterLink to="/ " class="text-decoration-underline text-body-2"
-                >詳しく見る</RouterLink
-              >
+              <RouterLink to="/ " class="text-decoration-underline text-body-2">詳しく見る</RouterLink>
             </p>
-            <v-btn
-              class="text-body-2 font-weight-bold my-5"
-              color="black"
-              rounded="pill"
-              >入会する</v-btn
-            >
+            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill">入会する</v-btn>
           </div>
         </v-col>
         <v-col cols="12" md="8">
@@ -222,14 +203,10 @@ const footerNavs = [
               <p class="text-body-2 font-weight-bold mb-4">
                 <b>{{ nav.title }}</b>
               </p>
-              <p
-                class="text-body-2 mb-4"
-                v-for="subNav in nav.subNavs"
-                :key="subNav.title"
-              >
-                <router-link :to="nav.to">
+              <p class="text-body-2 mb-4" v-for="subNav in nav.subNavs" :key="subNav.title">
+                <RouterLink :to="nav.to">
                   {{ subNav.title }}
-                </router-link>
+                </RouterLink>
               </p>
             </v-col>
           </v-row>
@@ -266,9 +243,7 @@ const footerNavs = [
         </div>
       </div>
       <hr class="my-3" />
-      <div
-        class="subNavs mt-5 d-flex justify-space-between align-center flex-wrap"
-      >
+      <div class="subNavs mt-5 d-flex justify-space-between align-center flex-wrap">
         <span class="my-5">© Inter IKEA Systems B.V 1999-2023 </span>
         <div class="my-5">
           <a class="mr-2" href="#" v-for="nav in footerNavs">{{ nav.title }}</a>

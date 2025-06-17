@@ -2,15 +2,7 @@ import { Ref } from 'vue';
 import type { EChartsOption } from 'echarts';
 import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
 import * as echarts from 'echarts/core';
-import {
-  BarChart,
-  LineChart,
-  PieChart,
-  MapChart,
-  PictorialBarChart,
-  RadarChart,
-  ScatterChart,
-} from 'echarts/charts';
+import { BarChart, LineChart, PieChart, MapChart, PictorialBarChart, RadarChart, ScatterChart } from 'echarts/charts';
 
 import {
   TitleComponent,
@@ -70,7 +62,7 @@ export enum ThemeType {
 export function useChart(
   elRef: Ref<HTMLDivElement>,
   autoChartSize = false,
-  animation: boolean = false,
+  animation = false,
   render: RenderType = RenderType.SVGRenderer,
   theme: ThemeType = ThemeType.Default
 ) {

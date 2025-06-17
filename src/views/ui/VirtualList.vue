@@ -8,14 +8,7 @@
         variant="outlined"
         color="primary"
       ></v-text-field>
-      <v-btn
-        class="ml-2"
-        variant="elevated"
-        color="primary"
-        height="56"
-        @click="handleScrollTo"
-        >Go</v-btn
-      >
+      <v-btn class="ml-2" variant="elevated" color="primary" height="56" @click="handleScrollTo">Go</v-btn>
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -31,38 +24,21 @@
       <div v-bind="wrapperProps">
         <v-container class="">
           <v-row>
-            <v-col
-              cols="12"
-              sm="6"
-              md="4"
-              xl="2"
-              v-for="item in list"
-              :key="item.index"
-            >
+            <v-col cols="12" sm="6" md="4" xl="2" v-for="item in list" :key="item.index">
               <v-card height="500" elevation="4">
                 <v-img
                   class="align-end text-white"
                   :src="'https://picsum.photos/200/300?random=' + item.index"
-                  :lazy-src="
-                    'https://picsum.photos/200/300?random=' + item.index
-                  "
+                  :lazy-src="'https://picsum.photos/200/300?random=' + item.index"
                   cover
                   :aspect-ratio="2 / 3"
                 >
                   <template v-slot:placeholder>
-                    <v-row
-                      class="fill-height ma-0"
-                      align="center"
-                      justify="center"
-                    >
-                      <v-progress-circular
-                        indeterminate
-                        color="grey-lighten-5"
-                      ></v-progress-circular>
+                    <v-row class="fill-height ma-0" align="center" justify="center">
+                      <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
                     </v-row>
                   </template>
-                  <v-card-title
-                    class="d-flex justify-space-between align-center"
+                  <v-card-title class="d-flex justify-space-between align-center"
                     >No.{{ item.index }}
 
                     <v-btn size="small" variant="text" icon="mdi-heart"></v-btn>
@@ -92,18 +68,13 @@ const allItems = Array.from(Array(9999).keys()).map(i => ({
 }));
 
 const filteredItems = computed(() => {
-  return allItems.filter(item =>
-    item.size.startsWith(search.value.toLowerCase())
-  );
+  return allItems.filter(item => item.size.startsWith(search.value.toLowerCase()));
 });
 
-const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
-  filteredItems,
-  {
-    itemHeight: i => filteredItems.value[i].height + 8,
-    overscan: 10,
-  }
-);
+const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(filteredItems, {
+  itemHeight: i => filteredItems.value[i].height + 8,
+  overscan: 10,
+});
 
 const handleScrollTo = () => {
   scrollTo(index.value);

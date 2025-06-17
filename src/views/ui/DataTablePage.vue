@@ -116,11 +116,7 @@ const getLikesColor = likes => {
               <td>{{ item.columns.location }}</td>
 
               <td class="text-center">
-                <v-chip
-                  size="small"
-                  :color="item.columns.for_hire ? 'blue' : 'grey'"
-                  class="font-weight-bold"
-                >
+                <v-chip size="small" :color="item.columns.for_hire ? 'blue' : 'grey'" class="font-weight-bold">
                   {{ item.columns.for_hire ? 'Hire' : 'No Hire' }}</v-chip
                 >
               </td>
@@ -128,11 +124,7 @@ const getLikesColor = likes => {
                 {{ item.columns.total_collections }}
               </td>
               <td>
-                <v-chip
-                  size="small"
-                  :color="getLikesColor(item.columns.total_likes)"
-                  class="font-weight-bold"
-                >
+                <v-chip size="small" :color="getLikesColor(item.columns.total_likes)" class="font-weight-bold">
                   {{ item.columns.total_likes }}</v-chip
                 >
               </td>
@@ -140,22 +132,9 @@ const getLikesColor = likes => {
                 {{ item.columns.total_photos }}
               </td>
               <td class="text-center">
-                <v-chip
-                  size="small"
-                  :color="item.columns.accepted_tos ? 'green' : 'pink'"
-                  class="font-weight-bold"
-                >
-                  <v-icon
-                    start
-                    :icon="
-                      item.columns.accepted_tos
-                        ? 'mdi-security '
-                        : 'mdi-close-octagon'
-                    "
-                  ></v-icon>
-                  {{
-                    item.columns.accepted_tos ? 'Accepted' : 'Not Accepted'
-                  }}</v-chip
+                <v-chip size="small" :color="item.columns.accepted_tos ? 'green' : 'pink'" class="font-weight-bold">
+                  <v-icon start :icon="item.columns.accepted_tos ? 'mdi-security ' : 'mdi-close-octagon'"></v-icon>
+                  {{ item.columns.accepted_tos ? 'Accepted' : 'Not Accepted' }}</v-chip
                 >
               </td>
               <td>

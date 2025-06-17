@@ -39,8 +39,7 @@ const usernameRules = ref([(v: string) => !!v || 'UserNmae is required']);
 
 const passwordRules = ref([
   (v: string) => !!v || 'Password is required',
-  (v: string) =>
-    (v && v.length <= 10) || 'Password must be less than 10 characters',
+  (v: string) => (v && v.length <= 10) || 'Password must be less than 10 characters',
 ]);
 
 // error provider
@@ -64,12 +63,7 @@ const resetErrors = () => {
     <!-- sign in form -->
 
     <v-card-text>
-      <v-form
-        ref="refLoginForm"
-        class="text-left"
-        v-model="isFormValid"
-        lazy-validation
-      >
+      <v-form ref="refLoginForm" class="text-left" v-model="isFormValid" lazy-validation>
         <v-text-field
           v-model="username"
           required
@@ -134,9 +128,7 @@ const resetErrors = () => {
           >{{ $t('register.button') }}</v-btn
         >
 
-        <div
-          class="text-grey text-center text-caption font-weight-bold text-uppercase my-5"
-        >
+        <div class="text-grey text-center text-caption font-weight-bold text-uppercase my-5">
           {{ $t('register.orsign') }}
         </div>
 
@@ -152,13 +144,7 @@ const resetErrors = () => {
           <Icon icon="logos:google-icon" class="mr-3 my-2" />
           Google
         </v-btn>
-        <v-btn
-          class="mb-2 lighten-2 text-capitalize"
-          block
-          color="white"
-          size="x-large"
-          :disabled="isSignInDisabled"
-        >
+        <v-btn class="mb-2 lighten-2 text-capitalize" block color="white" size="x-large" :disabled="isSignInDisabled">
           <Icon icon="logos:facebook" class="mr-3" />
           Facebook
         </v-btn>
@@ -170,13 +156,9 @@ const resetErrors = () => {
         <div class="my-5 text-center">
           {{ $t('register.agree') }}
           <br />
-          <router-link class="text-primary" to="">{{
-            $t('common.tos')
-          }}</router-link>
+          <router-link class="text-primary" to="">{{ $t('common.tos') }}</router-link>
           &
-          <router-link class="text-primary" to="">{{
-            $t('common.policy')
-          }}</router-link>
+          <router-link class="text-primary" to="">{{ $t('common.policy') }}</router-link>
         </div>
       </v-form></v-card-text
     >

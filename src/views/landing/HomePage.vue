@@ -6,13 +6,7 @@
           <h1 class="text-h5 my-5 d-flex align-center text-title">
             <Icon icon="logos:webix-icon" class="mr-3 my-2" />News
           </h1>
-          <v-card
-            elevation="0"
-            class="my-5 pa-3"
-            v-for="card in newsCards"
-            :key="card.id"
-            color="secondary"
-          >
+          <v-card elevation="0" class="my-5 pa-3" v-for="card in newsCards" :key="card.id" color="secondary">
             <v-card-text class="text-content">
               <v-row align="center" no-gutters>
                 <v-col cols="2" class="text-left">
@@ -43,11 +37,7 @@
               <Icon class="mr-5 text-h4" icon="logos:browserslist" />
               <span>Write something...</span>
               <v-spacer></v-spacer>
-              <v-btn
-                variant="text"
-                icon="mdi-account-search"
-                @click="toggleTheme"
-              ></v-btn>
+              <v-btn variant="text" icon="mdi-account-search" @click="toggleTheme"></v-btn>
               <v-btn variant="text" icon="mdi-pin"></v-btn>
             </v-card-text>
             <v-card-actions class="r py-5 text-title">
@@ -58,28 +48,14 @@
                 density="compact"
                 hide-details
                 class="mr-2"
-                :items="[
-                  'California',
-                  'Colorado',
-                  'Florida',
-                  'Georgia',
-                  'Texas',
-                  'Wyoming',
-                ]"
+                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
               ></v-select>
               <v-select
                 variant="outlined"
                 placeholder="channel"
                 density="compact"
                 hide-details
-                :items="[
-                  'California',
-                  'Colorado',
-                  'Florida',
-                  'Georgia',
-                  'Texas',
-                  'Wyoming',
-                ]"
+                :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
               ></v-select>
 
               <v-spacer></v-spacer>
@@ -91,10 +67,7 @@
           <v-card color="secondary" class="info-card">
             <div class="card-top r text-content">
               <Icon class="mr-5 text-h4" icon="logos:capacitorjs-icon" />
-              <div class="flex-fill">
-                Who has the advantage now? Who do you think will win the
-                election?
-              </div>
+              <div class="flex-fill">Who has the advantage now? Who do you think will win the election?</div>
               <span>9:31 am</span>
             </div>
             <v-card-text class="text-content">
@@ -111,11 +84,7 @@
                           <strong class="ml-1 text-info">Google</strong></v-col
                         >
                         <v-col cols="4" sm="5" md="7">
-                          <v-progress-linear
-                            model-value="79"
-                            color="#E89888"
-                            rounded
-                          ></v-progress-linear
+                          <v-progress-linear model-value="79" color="#E89888" rounded></v-progress-linear
                         ></v-col>
                         <v-col cols="2">79%</v-col>
                       </v-row>
@@ -129,11 +98,7 @@
                           <strong class="ml-1 text-info">Meta</strong></v-col
                         >
                         <v-col cols="4" sm="5" md="7">
-                          <v-progress-linear
-                            model-value="21"
-                            color="#B931F0"
-                            rounded
-                          ></v-progress-linear
+                          <v-progress-linear model-value="21" color="#B931F0" rounded></v-progress-linear
                         ></v-col>
                         <v-col cols="2">70%</v-col>
                       </v-row>
@@ -162,10 +127,7 @@
                   <span class="text-accent">Elon Mask</span> shared a
                   <span class="text-accent">link</span>
                 </p>
-                <p>
-                  Who has the advantage now? Who do you think will win the
-                  election?
-                </p>
+                <p>Who has the advantage now? Who do you think will win the election?</p>
               </div>
 
               <span>9:31 am</span>
@@ -190,12 +152,7 @@
               </v-card>
 
               <v-card class="d-flex mt-5">
-                <v-img
-                  max-width="200"
-                  aspect-ratio="1"
-                  cover
-                  src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                >
+                <v-img max-width="200" aspect-ratio="1" cover src="https://cdn.vuetifyjs.com/images/cards/docks.jpg">
                 </v-img>
 
                 <div class="pa-2 flex-fill">
@@ -213,27 +170,18 @@
               </v-card>
             </v-card-text>
             <v-card-actions class="r text-content">
-              <v-btn color="#D84B82" prepend-icon="mdi-heart">
-                Like(2.7k)</v-btn
-              >
+              <v-btn color="#D84B82" prepend-icon="mdi-heart"> Like(2.7k)</v-btn>
               <v-btn prepend-icon="mdi-comment">CommentLike(35)</v-btn>
               <v-btn prepend-icon="mdi-share">ShareLike(99)</v-btn>
             </v-card-actions>
           </v-card>
           <!-- Info Card4 -->
-          <v-card
-            color="secondary"
-            class="info-card d-flex justify-space-between align-center pa-5 text-content"
-          >
+          <v-card color="secondary" class="info-card d-flex justify-space-between align-center pa-5 text-content">
             <v-avatar size="50" color="red">
-              <v-img
-                src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"
-              ></v-img>
+              <v-img src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"></v-img>
             </v-avatar>
             <span class="text-h4 mx-5">67903</span>
-            <div class="flex-fill text-content">
-              people viewed your profile in the past 90 days
-            </div>
+            <div class="flex-fill text-content">people viewed your profile in the past 90 days</div>
             <v-img
               class="d-none d-md-block"
               max-width="50"
@@ -304,8 +252,7 @@ const newsCards = [
     id: 5,
     title: 'Ant-design',
     icon: 'logos:ant-design',
-    content:
-      'Help designers/developers building beautiful products more flexible and working with happiness',
+    content: 'Help designers/developers building beautiful products more flexible and working with happiness',
   },
 ];
 

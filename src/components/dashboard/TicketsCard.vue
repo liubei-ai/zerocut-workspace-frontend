@@ -83,10 +83,7 @@ onMounted(() => {
 
 <template>
   <!-- loading spinner -->
-  <div
-    v-if="loading"
-    class="h-full d-flex flex-grow-1 align-center justify-center"
-  >
+  <div v-if="loading" class="h-full d-flex flex-grow-1 align-center justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>
@@ -104,17 +101,13 @@ onMounted(() => {
       <tbody>
         <tr v-for="item in items" :key="item.id">
           <td class="font-weight-bold">
-            <copy-label :text="`# ${item.id}`" />
+            <CopyLabel :text="`# ${item.id}`" />
           </td>
           <td>
-            <copy-label :text="item.user.email" />
+            <CopyLabel :text="item.user.email" />
           </td>
           <td>
-            <v-chip
-              size="small"
-              :color="item.priority === 'High' ? 'pink' : 'primary'"
-              class="font-weight-bold"
-            >
+            <v-chip size="small" :color="item.priority === 'High' ? 'pink' : 'primary'" class="font-weight-bold">
               {{ item.priority }}</v-chip
             >
           </td>
@@ -131,14 +124,7 @@ onMounted(() => {
           </td>
           <td>{{ item.date }}</td>
           <td>
-            <v-btn
-              elevation="4"
-              variant="elevated"
-              size="small"
-              @click="open(item)"
-            >
-              Open Text
-            </v-btn>
+            <v-btn elevation="4" variant="elevated" size="small" @click="open(item)"> Open Text </v-btn>
           </td>
         </tr>
       </tbody>

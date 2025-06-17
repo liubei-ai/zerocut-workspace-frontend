@@ -3,8 +3,8 @@ import { faker } from '@faker-js/faker';
 import moment from 'moment';
 
 const chooseColor = () => {
-  let colors = ['red', 'indigo', 'blue', 'cyan', 'teal'];
-  let randomColor = colors[Math.floor(Math.random() * colors.length)];
+  const colors = ['red', 'indigo', 'blue', 'cyan', 'teal'];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
   return randomColor;
 };
 
@@ -80,8 +80,7 @@ function editItem(item: any) {
 }
 function deleteItem(item: any) {
   const index = desserts.value.indexOf(item);
-  confirm('Are you sure you want to delete this item?') &&
-    desserts.value.splice(index, 1);
+  confirm('Are you sure you want to delete this item?') && desserts.value.splice(index, 1);
   ``;
 }
 
@@ -126,8 +125,7 @@ const formTitle = computed(() => {
             <v-dialog v-model="dialog" max-width="700">
               <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
-                  <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add
-                  Contact
+                  <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add Contact
                 </v-btn>
               </template>
               <v-card>
@@ -136,12 +134,7 @@ const formTitle = computed(() => {
                 </v-card-title>
 
                 <v-card-text>
-                  <v-form
-                    class="mt-5"
-                    ref="form"
-                    v-model="refForm"
-                    lazy-validation
-                  >
+                  <v-form class="mt-5" ref="form" v-model="refForm" lazy-validation>
                     <v-row>
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -221,9 +214,7 @@ const formTitle = computed(() => {
                   <v-btn color="error" @click="close">Cancel</v-btn>
                   <v-btn
                     color="secondary"
-                    :disabled="
-                      editedItem.username == '' || editedItem.usermail == ''
-                    "
+                    :disabled="editedItem.username == '' || editedItem.usermail == ''"
                     variant="flat"
                     @click="save"
                     >Save</v-btn
@@ -254,43 +245,25 @@ const formTitle = computed(() => {
             <td>
               <div class="d-flex align-center py-1">
                 <div>
-                  <v-img
-                    :src="item.avatar"
-                    width="40"
-                    class="rounded-circle img-fluid"
-                  ></v-img>
+                  <v-img :src="item.avatar" width="40" class="rounded-circle img-fluid"></v-img>
                 </div>
 
                 <div class="ml-5">
                   <p class="font-weight-bold">{{ item.username }}</p>
-                  <span class="d-block mt-1 text-caption textSecondary">{{
-                    item.usermail
-                  }}</span>
+                  <span class="d-block mt-1 text-caption textSecondary">{{ item.usermail }}</span>
                 </div>
               </div>
             </td>
             <td>{{ item.phone }}</td>
             <td>{{ item.jdate }}</td>
             <td>
-              <v-chip
-                class="font-weight-bold"
-                :color="item.rolestatus"
-                size="small"
-                label
-                >{{ item.role }}</v-chip
-              >
+              <v-chip class="font-weight-bold" :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip>
             </td>
             <td>
               <div class="d-flex align-center">
                 <v-tooltip text="Edit">
                   <template v-slot:activator="{ props }">
-                    <v-btn
-                      color="blue"
-                      icon
-                      variant="text"
-                      @click="editItem(item)"
-                      v-bind="props"
-                    >
+                    <v-btn color="blue" icon variant="text" @click="editItem(item)" v-bind="props">
                       <v-icon>mdi-pencil-outline</v-icon>
                       <!-- <img
                         width="26"
@@ -301,13 +274,7 @@ const formTitle = computed(() => {
                 </v-tooltip>
                 <v-tooltip text="Delete">
                   <template v-slot:activator="{ props }">
-                    <v-btn
-                      icon
-                      variant="text"
-                      @click="deleteItem(item)"
-                      v-bind="props"
-                      color="error"
-                    >
+                    <v-btn icon variant="text" @click="deleteItem(item)" v-bind="props" color="error">
                       <v-icon>mdi-delete-outline</v-icon>
                       <!-- <img
                         width="26"

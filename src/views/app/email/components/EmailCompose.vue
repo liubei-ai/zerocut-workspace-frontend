@@ -10,13 +10,7 @@ const dialog = ref(false);
 <template>
   <v-dialog v-model="dialog" width="600" location="bottom">
     <template v-slot:activator="{ props }">
-      <v-btn
-        color="#705CF6"
-        block
-        :props="props"
-        size="large"
-        class="mb-3 text-white"
-        @click="dialog = true"
+      <v-btn color="#705CF6" block :props="props" size="large" class="mb-3 text-white" @click="dialog = true"
         >Write an email</v-btn
       >
     </template>

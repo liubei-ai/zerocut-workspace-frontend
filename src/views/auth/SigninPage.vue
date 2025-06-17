@@ -18,10 +18,7 @@ const handleLogin = async () => {
   const { valid } = await refLoginForm.value.validate();
   if (valid) {
     authStore.clearError();
-    const success = await authStore.loginWithUsernameAndPassword(
-      username.value,
-      password.value
-    );
+    const success = await authStore.loginWithUsernameAndPassword(username.value, password.value);
 
     if (success) {
       // Handle redirect after successful login
@@ -37,18 +34,14 @@ const handleLogin = async () => {
 // Validation Rules
 const usernameRules = ref([
   (v: string) => !!v || 'Username is required',
-  (v: string) =>
-    (v && v.length >= 3) || 'Username must be at least 3 characters',
-  (v: string) =>
-    (v && v.length <= 50) || 'Username must be less than 50 characters',
+  (v: string) => (v && v.length >= 3) || 'Username must be at least 3 characters',
+  (v: string) => (v && v.length <= 50) || 'Username must be less than 50 characters',
 ]);
 
 const passwordRules = ref([
   (v: string) => !!v || 'Password is required',
-  (v: string) =>
-    (v && v.length >= 6) || 'Password must be at least 6 characters',
-  (v: string) =>
-    (v && v.length <= 50) || 'Password must be less than 50 characters',
+  (v: string) => (v && v.length >= 6) || 'Password must be at least 6 characters',
+  (v: string) => (v && v.length <= 50) || 'Password must be less than 50 characters',
 ]);
 </script>
 <template>
@@ -60,12 +53,7 @@ const passwordRules = ref([
     <!-- sign in form -->
 
     <v-card-text>
-      <v-form
-        ref="refLoginForm"
-        class="text-left"
-        v-model="isFormValid"
-        lazy-validation
-      >
+      <v-form ref="refLoginForm" class="text-left" v-model="isFormValid" lazy-validation>
         <v-text-field
           ref="refUsername"
           v-model="username"

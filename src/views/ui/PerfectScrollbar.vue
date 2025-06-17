@@ -40,20 +40,10 @@ import { Icon } from '@iconify/vue';
                 <Icon v-else icon="mdi:checkbox-blank-circle-outline" />
               </td>
               <td>
-                <v-chip
-                  v-if="user.role === 'ADMIN'"
-                  color="blue"
-                  dark
-                  size="small"
-                >
+                <v-chip v-if="user.role === 'ADMIN'" color="blue" dark size="small">
                   {{ user.role }}
                 </v-chip>
-                <v-chip
-                  v-else-if="user.role === 'EDITOR'"
-                  color="success"
-                  dark
-                  size="small"
-                >
+                <v-chip v-else-if="user.role === 'EDITOR'" color="success" dark size="small">
                   {{ user.role }}
                 </v-chip>
                 <v-chip v-else-if="user.role === 'USER'" size="small">

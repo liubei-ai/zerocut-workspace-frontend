@@ -2,12 +2,11 @@ const themeColors = ['#ee8a6a', '#0cb9c5', '#fec90f', '#05b187', '#fc4b6c'];
 const themeColors2 = ['#4782FB', '#47C4F4', '#fec90f', '#05b187', '#fc4b6c'];
 
 function generateDataHeatMap(count: any, yrange: any) {
-  var i = 0;
-  var series: any[] = [];
+  let i = 0;
+  let series: any[] = [];
   while (i < count) {
-    var x = 'w' + (i + 1).toString();
-    var y =
-      Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+    let x = 'w' + (i + 1).toString();
+    let y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
     series.push({
       x: x,

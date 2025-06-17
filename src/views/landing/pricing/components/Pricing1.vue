@@ -21,25 +21,13 @@ const pricing_plans = [
     plan_name: '专业版',
     price: '每月59元',
     storage: '200GB',
-    features: [
-      '200GB云存储',
-      '实时客户支持',
-      '企业级安全功能',
-      '无限制文件传输速度',
-      '智能文件组织和搜索',
-    ],
+    features: ['200GB云存储', '实时客户支持', '企业级安全功能', '无限制文件传输速度', '智能文件组织和搜索'],
   },
   {
     plan_name: '企业版',
     price: '每月99元',
     storage: '2TB',
-    features: [
-      '2TB云存储',
-      '专属客户经理',
-      '企业级安全和合规性',
-      '高速文件传输和无限制速度',
-      '定制解决方案和集成',
-    ],
+    features: ['2TB云存储', '专属客户经理', '企业级安全和合规性', '高速文件传输和无限制速度', '定制解决方案和集成'],
   },
 ];
 </script>
@@ -49,12 +37,7 @@ const pricing_plans = [
     <v-card-title class="card-title">Feature2</v-card-title>
     <v-divider></v-divider>
     <div class="pa-10">
-      <v-card
-        max-width="1600"
-        class="mx-auto"
-        variant="flat"
-        color="transparent"
-      >
+      <v-card max-width="1600" class="mx-auto" variant="flat" color="transparent">
         <v-item-group mandatory selected-class="active-card">
           <v-row align="stretch">
             <v-col cols="12" md="4" v-for="plan in pricing_plans">
@@ -82,9 +65,7 @@ const pricing_plans = [
                       <div v-for="feature in plan.features">{{ feature }}</div>
                     </div>
 
-                    <v-btn color="primary" size="large" class="mt-10"
-                      >订阅</v-btn
-                    >
+                    <v-btn color="primary" size="large" class="mt-10">订阅</v-btn>
                   </div>
                 </v-card>
               </v-item>

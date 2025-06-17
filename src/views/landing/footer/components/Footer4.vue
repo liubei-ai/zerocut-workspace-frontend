@@ -93,27 +93,12 @@ const navs = [
     </v-toolbar-title>
   </v-toolbar>
 
-  <v-sheet
-    elevation="0"
-    class="mx-auto landing-warpper"
-    color="#F2F5F8"
-    rounded
-  >
+  <v-sheet elevation="0" class="mx-auto landing-warpper" color="#F2F5F8" rounded>
     <v-container class="text-left pa-10">
-      <v-sheet
-        class="mx-auto"
-        color="transparent"
-        elevation="0"
-        max-width="1600"
-      >
+      <v-sheet class="mx-auto" color="transparent" elevation="0" max-width="1600">
         <v-row>
           <v-col cols="12" md="4">
-            <img
-              class="my-2"
-              width="150"
-              src="@/assets/logo_light.svg"
-              alt=""
-            />
+            <img class="my-2" width="150" src="@/assets/logo_light.svg" alt="" />
             <p class="my-4">2000+ Our clients are subscribe Around the World</p>
           </v-col>
           <v-col cols="12" md="8">
@@ -122,14 +107,10 @@ const navs = [
                 <p class="text-h6 mb-4">
                   <b>{{ nav.title }}</b>
                 </p>
-                <p
-                  class="text-body-2 text-primary mb-2"
-                  v-for="subNav in nav.subNavs"
-                  :key="subNav.title"
-                >
-                  <router-link :to="nav.to">
+                <p class="text-body-2 text-primary mb-2" v-for="subNav in nav.subNavs" :key="subNav.title">
+                  <RouterLink :to="nav.to">
                     {{ subNav.title }}
-                  </router-link>
+                  </RouterLink>
                 </p>
               </v-col>
             </v-row>

@@ -169,15 +169,8 @@ const previewImg = url => {
         </v-data-table-server>
       </div>
     </v-card>
-    <v-overlay
-      v-model="imgOverlay"
-      location-strategy="connected"
-      scroll-strategy="none"
-    >
-      <div
-        @click="imgOverlay = false"
-        class="w-screen h-screen d-flex align-center justify-center"
-      >
+    <v-overlay v-model="imgOverlay" location-strategy="connected" scroll-strategy="none">
+      <div @click="imgOverlay = false" class="w-screen h-screen d-flex align-center justify-center">
         <v-img height="80%" :src="imgSrc" />
       </div>
     </v-overlay>

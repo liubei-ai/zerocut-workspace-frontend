@@ -1,9 +1,6 @@
 <template>
   <!-- loading spinner -->
-  <div
-    v-if="loading"
-    class="h-full d-flex flex-grow-1 align-center justify-center"
-  >
+  <div v-if="loading" class="h-full d-flex flex-grow-1 align-center justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>
@@ -48,13 +45,7 @@
             </div>
           </td>
           <td>
-            <v-btn
-              size="small"
-              variant="text"
-              icon="mdi-open-in-new"
-              @click="open(item)"
-            >
-            </v-btn>
+            <v-btn size="small" variant="text" icon="mdi-open-in-new" @click="open(item)"> </v-btn>
           </td>
         </tr>
       </tbody>

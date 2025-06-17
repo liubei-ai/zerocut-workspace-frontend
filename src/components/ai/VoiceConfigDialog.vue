@@ -44,23 +44,14 @@ onMounted(() => {
 <template>
   <v-btn variant="elevated" icon @click="speechStore.voiceConfigDialog = true">
     <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
-    <v-tooltip
-      activator="parent"
-      location="top"
-      text="Voice Config"
-    ></v-tooltip>
+    <v-tooltip activator="parent" location="top" text="Voice Config"></v-tooltip>
   </v-btn>
 
   <v-dialog v-model="speechStore.voiceConfigDialog" width="500">
     <v-card>
       <v-card-title>
         <v-spacer></v-spacer>
-        <v-btn
-          variant="flat"
-          icon
-          @click="speechStore.voiceConfigDialog = false"
-          ><v-icon>mdi-close</v-icon></v-btn
-        >
+        <v-btn variant="flat" icon @click="speechStore.voiceConfigDialog = false"><v-icon>mdi-close</v-icon></v-btn>
       </v-card-title>
       <v-container>
         <v-row>
@@ -85,19 +76,11 @@ onMounted(() => {
                     )</span
                   >
                 </v-list-subheader>
-                <RecycleScroller
-                  class="scroller"
-                  :items="allVoices"
-                  :item-size="50"
-                  key-field="name"
-                  v-slot="{ item }"
-                >
+                <RecycleScroller class="scroller" :items="allVoices" :item-size="50" key-field="name" v-slot="{ item }">
                   <v-list-item
                     active-color="primary"
                     @click="selectVoice(item)"
-                    :active="
-                      item.shortName === speechStore.speechSynthesisVoiceName
-                    "
+                    :active="item.shortName === speechStore.speechSynthesisVoiceName"
                     three-line
                   >
                     <!-- ---------------------------------------------- -->
@@ -106,14 +89,10 @@ onMounted(() => {
                     <template v-slot:prepend>
                       <!-- <span class="mr-3">{{ item.id }}</span> -->
                       <v-avatar v-if="item.gender === 1" size="30" color="red">
-                        <img
-                          src="https://img.icons8.com/bubbles/50/null/lock-female-user.png"
-                        />
+                        <img src="https://img.icons8.com/bubbles/50/null/lock-female-user.png" />
                       </v-avatar>
                       <v-avatar v-else size="30" color="blue">
-                        <img
-                          src="https://img.icons8.com/bubbles/50/null/user-male.png"
-                        />
+                        <img src="https://img.icons8.com/bubbles/50/null/user-male.png" />
                       </v-avatar>
                     </template>
                     <!-- ---------------------------------------------- -->
@@ -122,12 +101,7 @@ onMounted(() => {
                     <template v-slot:append>
                       <div class="full-h d-flex align-center">
                         <span class="text-body-2 text-grey">
-                          <v-chip
-                            size="small"
-                            class="font-weight-bold"
-                            color="blue"
-                            >{{ item.locale }}</v-chip
-                          >
+                          <v-chip size="small" class="font-weight-bold" color="blue">{{ item.locale }}</v-chip>
                         </span>
                       </div>
                     </template>
@@ -137,9 +111,7 @@ onMounted(() => {
                     <div>
                       <v-list-item-title class="font-weight-bold text-primary"
                         >{{ item.localName }}
-                        <span class="text-body-2 ml-2"
-                          >({{ item.shortName }})</span
-                        ></v-list-item-title
+                        <span class="text-body-2 ml-2">({{ item.shortName }})</span></v-list-item-title
                       >
                     </div>
                   </v-list-item>
@@ -191,12 +163,7 @@ onMounted(() => {
         </v-row>
       </v-container>
       <v-card-actions>
-        <v-btn
-          color="primary"
-          block
-          @click="speechStore.voiceConfigDialog = false"
-          >Close
-        </v-btn>
+        <v-btn color="primary" block @click="speechStore.voiceConfigDialog = false">Close </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

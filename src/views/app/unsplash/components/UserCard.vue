@@ -21,10 +21,7 @@ const snackbar = reactive({
 
 <template>
   <div class="">
-    <v-card
-      width="100%"
-      class="user-card d-flex flex-column justify-space-between"
-    >
+    <v-card width="100%" class="user-card d-flex flex-column justify-space-between">
       <div class="card-top bg-secondary-lighten-1 text-content">
         <v-avatar class="mr-5" size="avatarSize">
           <img :src="user.profile_image.small" alt="alt" />
@@ -67,13 +64,7 @@ const snackbar = reactive({
       <v-card-actions>
         <v-tooltip location="bottom" text="Profile">
           <template v-slot:activator="{ props }">
-            <v-btn
-              color="primary"
-              variant="flat"
-              block
-              v-bind="props"
-              :to="`/apps/unsplash/user/${user.username}`"
-            >
+            <v-btn color="primary" variant="flat" block v-bind="props" :to="`/apps/unsplash/user/${user.username}`">
               Profile</v-btn
             >
           </template>

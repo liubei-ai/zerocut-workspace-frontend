@@ -50,68 +50,34 @@ const changeGradientAngel = () => {
     </div>
   </v-container>
   <v-dialog transition="fade" v-model="isDetailShow">
-    <v-card
-      height="80vh"
-      color="red"
-      class="gradient-detail-card"
-      :style="`background: ${bgGradient}`"
-    >
+    <v-card height="80vh" color="red" class="gradient-detail-card" :style="`background: ${bgGradient}`">
       <div class="card-header">
         <div class="left-area">
-          <Icon
-            @click="changeGradientAngel"
-            class="feature-icon"
-            icon="ic:baseline-switch-access-shortcut"
-          />
-          <Icon
-            @click="isCodeShow = !isCodeShow"
-            class="feature-icon"
-            icon="entypo:code"
-          />
+          <Icon @click="changeGradientAngel" class="feature-icon" icon="ic:baseline-switch-access-shortcut" />
+          <Icon @click="isCodeShow = !isCodeShow" class="feature-icon" icon="entypo:code" />
         </div>
         <div class="center-area">
           <div class="gradient-from" @click="clipboard(gradientFrom, $event)">
-            <Icon
-              :color="gradientFrom"
-              icon="academicons:ceur-square"
-              inline
-              class="color-icon"
-            />
+            <Icon :color="gradientFrom" icon="academicons:ceur-square" inline class="color-icon" />
 
-            <copy-label :text="gradientFrom" />
+            <CopyLabel :text="gradientFrom" />
           </div>
-          <Icon
-            class="right-icon"
-            icon="akar-icons:circle-chevron-right-fill"
-          />
+          <Icon class="right-icon" icon="akar-icons:circle-chevron-right-fill" />
           <div class="gradient-to" @click="clipboard(gradientTo, $event)">
-            <Icon
-              icon="academicons:ceur-square"
-              inline
-              class="color-icon"
-              :color="gradientTo"
-            />
+            <Icon icon="academicons:ceur-square" inline class="color-icon" :color="gradientTo" />
 
-            <copy-label :text="gradientTo" />
+            <CopyLabel :text="gradientTo" />
           </div>
         </div>
         <div class="right-area">
-          <Icon
-            class="feature-icon"
-            icon="eva:close-circle-fill"
-            @click="isDetailShow = false"
-          />
+          <Icon class="feature-icon" icon="eva:close-circle-fill" @click="isDetailShow = false" />
         </div>
       </div>
       <div class="gradient-name">{{ gradientName }}</div>
       <div class="gradient-code">
         <transition name="fade">
-          <div
-            class="gradient-code-content"
-            v-if="isCodeShow"
-            @click="clipboard(bgGradient, $event)"
-          >
-            <copy-label :text="bgGradient" />
+          <div class="gradient-code-content" v-if="isCodeShow" @click="clipboard(bgGradient, $event)">
+            <CopyLabel :text="bgGradient" />
           </div>
         </transition>
       </div>
@@ -209,10 +175,7 @@ const changeGradientAngel = () => {
 
       &:hover {
         transform: scale(1.2);
-        filter: drop-shadow(
-          rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-          rgba(60, 64, 67, 0.15) 0px 2px 6px 2px
-        );
+        filter: drop-shadow(rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px);
 
         transition: 0.3s;
       }

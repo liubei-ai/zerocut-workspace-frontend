@@ -92,9 +92,7 @@ const save = () => {
               <span class="pr-2">
                 {{ item.title }}
               </span>
-              <v-icon size="small" @click="parent.selectItem(item)"
-                >close</v-icon
-              >
+              <v-icon size="small" @click="parent.selectItem(item)">close</v-icon>
             </v-chip>
           </template>
 

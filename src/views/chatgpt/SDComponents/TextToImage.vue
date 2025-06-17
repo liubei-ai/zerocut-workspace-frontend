@@ -58,28 +58,14 @@ const imageGenerate = async () => {
       <!-- Width   -->
       <!-- ---------------------------------------------- -->
       <v-label class="font-weight-medium my-3">Width</v-label>
-      <v-slider
-        v-model="params.width"
-        thumb-label="always"
-        max="2480"
-        step="10"
-        color="primary"
-      ></v-slider>
+      <v-slider v-model="params.width" thumb-label="always" max="2480" step="10" color="primary"></v-slider>
       <!-- ---------------------------------------------- -->
       <!-- Height   -->
       <!-- ---------------------------------------------- -->
       <v-label class="font-weight-medium my-3">Height</v-label>
-      <v-slider
-        v-model="params.height"
-        thumb-label="always"
-        max="2480"
-        step="10"
-        color="primary"
-      ></v-slider>
+      <v-slider v-model="params.height" thumb-label="always" max="2480" step="10" color="primary"></v-slider>
 
-      <v-btn size="x-large" color="primary" block @click="imageGenerate"
-        >Generate</v-btn
-      >
+      <v-btn size="x-large" color="primary" block @click="imageGenerate">Generate</v-btn>
     </v-card-text>
   </v-card>
 </template>

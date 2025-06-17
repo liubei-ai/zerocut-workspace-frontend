@@ -127,11 +127,7 @@ const expandeFn = val => {
         <tr>
           <template v-for="column in columns" :key="column.key">
             <td class="bg-blue">
-              <span
-                class="mr-2 cursor-pointer"
-                @click="() => toggleSort(column)"
-                >{{ column.title }}</span
-              >
+              <span class="mr-2 cursor-pointer" @click="() => toggleSort(column)">{{ column.title }}</span>
               <template v-if="isSorted(column)">
                 <v-icon :icon="getSortIcon(column)"></v-icon>
               </template>

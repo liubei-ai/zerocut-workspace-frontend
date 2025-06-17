@@ -43,9 +43,7 @@
           <v-col cols="12" md="6" lg="4" xl="3" v-for="i in 4" :key="i">
             <div class="card-4 mx-auto my-5">
               <v-card variant="flat" height="400" width="300">
-                <v-img
-                  :src="'https://picsum.photos/400/400?random=' + i"
-                ></v-img>
+                <v-img :src="'https://picsum.photos/400/400?random=' + i"></v-img>
               </v-card>
             </div>
           </v-col>
@@ -63,12 +61,7 @@ $black: #000000;
 
 .card-container {
   // background: linear-gradient(135deg, #56ccf2, #2f80ed);
-  background: linear-gradient(
-    135deg,
-    rgb(232, 245, 246),
-    rgb(234, 207, 226),
-    rgb(205, 218, 240)
-  );
+  background: linear-gradient(135deg, rgb(232, 245, 246), rgb(234, 207, 226), rgb(205, 218, 240));
   background-size: cover;
   background-attachment: fixed;
 }

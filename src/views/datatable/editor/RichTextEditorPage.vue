@@ -65,7 +65,7 @@ const editor = useEditor({
               <EditorMenubar :editor="editor" />
             </div>
             <div class="pa-5">
-              <editor-content :editor="editor" />
+              <EditorContent :editor="editor" />
             </div>
           </v-card-text>
         </v-card>

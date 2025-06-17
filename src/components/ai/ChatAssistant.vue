@@ -77,21 +77,18 @@ const createCompletion = async () => {
 
   try {
     // Create a completion (axios is not used here because it does not support streaming)
-    const completion = await fetch(
-      `${chatGPTStore.proxyUrl}/v1/chat/completions`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${chatGPTStore.getApiKey}`,
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          messages: requestMessages.value,
-          model: chatGPTStore.model,
-          stream: true,
-        }),
-      }
-    );
+    const completion = await fetch(`${chatGPTStore.proxyUrl}/v1/chat/completions`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${chatGPTStore.getApiKey}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        messages: requestMessages.value,
+        model: chatGPTStore.model,
+        stream: true,
+      }),
+    });
 
     // Handle errors
     if (!completion.ok) {
@@ -164,28 +161,16 @@ const { xs } = useDisplay();
 <template>
   <v-btn size="50" @click="dialog = !dialog">
     <v-icon size="30">mdi-chat-outline </v-icon>
-    <v-tooltip
-      activator="parent"
-      location="left"
-      :text="$t('toolbox.chatAssistant.title')"
-    ></v-tooltip>
+    <v-tooltip activator="parent" location="left" :text="$t('toolbox.chatAssistant.title')"></v-tooltip>
   </v-btn>
 
   <teleport to="body">
     <transition name="slide-y">
-      <v-card
-        v-if="dialog"
-        class="dialog-bottom d-flex flex-column"
-        :width="xs ? '100%' : '600px'"
-        height="500px"
-      >
+      <v-card v-if="dialog" class="dialog-bottom d-flex flex-column" :width="xs ? '100%' : '600px'" height="500px">
         <v-card-title>
           <span class="flex-fill">
             <v-avatar size="40">
-              <img
-                src="https://img.icons8.com/color/96/null/filled-chat.png"
-                alt="alt"
-              />
+              <img src="https://img.icons8.com/color/96/null/filled-chat.png" alt="alt" />
             </v-avatar>
 
             OpenAi Chat
@@ -198,18 +183,12 @@ const { xs } = useDisplay();
         </v-card-title>
         <v-divider />
         <v-card-text class="overflow-scroll">
-          <perfect-scrollbar
-            v-if="messages.length > 0"
-            class="message-container"
-          >
+          <perfect-scrollbar v-if="messages.length > 0" class="message-container">
             <template v-for="message in displayMessages">
               <div v-if="message.role === 'user'">
                 <div class="pa-2 user-message">
                   <v-avatar class="ml-2" rounded="sm" variant="elevated">
-                    <img
-                      src="@/assets/images/avatars/avatar_user.jpg"
-                      alt="alt"
-                    />
+                    <img src="@/assets/images/avatars/avatar_user.jpg" alt="alt" />
                   </v-avatar>
                   <v-card class="gradient gray text-pre-wrap" theme="dark">
                     <v-card-text>
@@ -220,22 +199,12 @@ const { xs } = useDisplay();
               </div>
               <div v-else>
                 <div class="pa-2 assistant-message">
-                  <v-avatar
-                    class="d-none d-md-block mr-2"
-                    rounded="sm"
-                    variant="elevated"
-                  >
-                    <img
-                      src="@/assets/images/avatars/avatar_assistant.jpg"
-                      alt="alt"
-                    />
+                  <v-avatar class="d-none d-md-block mr-2" rounded="sm" variant="elevated">
+                    <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
                   </v-avatar>
                   <v-card>
                     <div>
-                      <md-preview
-                        :modelValue="message.content"
-                        class="font-1"
-                      />
+                      <MdPreview :modelValue="message.content" class="font-1" />
                     </div>
                   </v-card>
                 </div>
@@ -252,24 +221,10 @@ const { xs } = useDisplay();
         </v-card-text>
         <v-divider />
 
-        <v-sheet
-          color="transparent"
-          elevation="0"
-          class="d-flex align-end justify-center pa-2"
-        >
-          <v-btn
-            class="mb-1"
-            variant="elevated"
-            size="42"
-            icon
-            @click="chatGPTStore.configDialog = true"
-          >
+        <v-sheet color="transparent" elevation="0" class="d-flex align-end justify-center pa-2">
+          <v-btn class="mb-1" variant="elevated" size="42" icon @click="chatGPTStore.configDialog = true">
             <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
-            <v-tooltip
-              activator="parent"
-              location="top"
-              text="ChatGPT Config"
-            ></v-tooltip>
+            <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>
           </v-btn>
 
           <v-textarea

@@ -59,9 +59,7 @@ const props = defineProps({
 
 const { themes, current } = useTheme();
 const chartOptions = computed(() => {
-  const primaryColor = current.value.dark
-    ? themes.value['dark'].colors.primary
-    : themes.value['light'].colors.primary;
+  const primaryColor = current.value.dark ? themes.value['dark'].colors.primary : themes.value['light'].colors.primary;
 
   return {
     chart: {
@@ -93,9 +91,7 @@ const chartOptions = computed(() => {
         const seriesName = w.config.series[seriesIndex].name;
 
         return `<div class="rounded-lg pa-1 text-caption">
-                <div class="font-weight-bold">${formatDate(
-                  w.globals.categoryLabels[dataPointIndex]
-                )}</div>
+                <div class="font-weight-bold">${formatDate(w.globals.categoryLabels[dataPointIndex])}</div>
                 <div>${series[seriesIndex][dataPointIndex]} ${seriesName}</div>
               </div>`;
       },
@@ -124,13 +120,9 @@ onMounted(() => {
       <v-card-title class="d-flex">
         <div class="font-weight-bold">{{ $t(label) }}</div>
         <v-spacer></v-spacer>
-        <v-btn
-          variant="text"
-          color="primary"
-          class="font-weight-bold"
-          @click="$emit('action-clicked')"
-          >{{ actionLabel }}</v-btn
-        >
+        <v-btn variant="text" color="primary" class="font-weight-bold" @click="$emit('action-clicked')">{{
+          actionLabel
+        }}</v-btn>
       </v-card-title>
 
       <div class="d-flex flex-column flex-grow-1">
@@ -157,7 +149,7 @@ onMounted(() => {
             <v-spacer></v-spacer>
             <div class="d-flex flex-column text-right">
               <div class="font-weight-bold">
-                <percent-trend :value="percentage" />
+                <PercentTrend :value="percentage" />
               </div>
               <div class="text-caption">{{ percentageLabel }}</div>
             </div>
@@ -165,12 +157,7 @@ onMounted(() => {
         </div>
       </div>
 
-      <apexchart
-        type="area"
-        height="120"
-        :options="chartOptions"
-        :series="series"
-      ></apexchart>
+      <apexchart type="area" height="120" :options="chartOptions" :series="series"></apexchart>
     </div>
   </v-card>
 </template>

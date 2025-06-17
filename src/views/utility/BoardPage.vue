@@ -2,12 +2,7 @@
   <v-container>
     <!-- board column -->
     <v-row style="min-width: 800px">
-      <v-col
-        cols="3"
-        v-for="column in columns"
-        :key="column.key"
-        class="pa-4 flex-fill"
-      >
+      <v-col cols="3" v-for="column in columns" :key="column.key" class="pa-4 flex-fill">
         <div class="d-flex align-center">
           <h5 class="font-weight-bold">{{ column.key }}</h5>
           <v-spacer></v-spacer>
@@ -38,24 +33,15 @@
             @keyup.esc="column.isAddVisible = false"
           ></v-text-field>
           <div class="mt-3 d-flex flex-md-row flex-column">
-            <v-btn
-              class="flex-fill ma-1"
-              size="small"
-              @click="column.isAddVisible = !column.isAddVisible"
+            <v-btn class="flex-fill ma-1" size="small" @click="column.isAddVisible = !column.isAddVisible"
               >Cancel</v-btn
             >
-            <v-btn
-              class="flex-fill ma-1"
-              size="small"
-              color="primary"
-              @click="addCard(column)"
-              >Add</v-btn
-            >
+            <v-btn class="flex-fill ma-1" size="small" color="primary" @click="addCard(column)">Add</v-btn>
           </div>
         </v-card>
 
         <!-- draggable cards -->
-        <vue-draggable
+        <VueDraggable
           v-model="column.cards"
           v-bind="dragOptions"
           class="list-group"
@@ -63,7 +49,7 @@
           itemKey="id"
         >
           <template #item="{ element, index }">
-            <board-card
+            <BoardCard
               :key="index"
               :card="element"
               class="board-item my-2 pa-2"
@@ -71,7 +57,7 @@
               @delete="showDelete(element)"
             />
           </template>
-        </vue-draggable>
+        </VueDraggable>
       </v-col>
     </v-row>
   </v-container>
@@ -130,9 +116,7 @@
       <v-card-text>DeleteDescription</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn variant="plain" color="primary" @click="deleteDialog = false"
-          >Cancel</v-btn
-        >
+        <v-btn variant="plain" color="primary" @click="deleteDialog = false">Cancel</v-btn>
         <v-btn variant="flat" color="error" @click="deleteCard()">Delete</v-btn>
       </v-card-actions>
     </v-card>
@@ -241,9 +225,7 @@ const parseCards = cards => {
   if (!cards) return columns.value.map(column => (column.cards = []));
 
   columns.value.forEach(column => {
-    column.cards = cards
-      .filter(card => card.state === column.key)
-      .sort((a, b) => (a.order < b.order ? -1 : 0));
+    column.cards = cards.filter(card => card.state === column.key).sort((a, b) => (a.order < b.order ? -1 : 0));
   });
 };
 
@@ -251,7 +233,7 @@ const parseCards = cards => {
 const addCard = column => {
   const { addTitle, key } = column;
   if (!addTitle) return;
-  let newCard = {
+  const newCard = {
     id: '_' + Math.random().toString(36).substring(2, 11),
     state: key,
     title: addTitle,
@@ -287,7 +269,7 @@ const showEdit = card => {
 };
 
 const saveCard = () => {
-  let targetCard = cards.value.find(card => card.id === cardToEdit.value.id);
+  const targetCard = cards.value.find(card => card.id === cardToEdit.value.id);
   console.log(targetCard);
   if (targetCard) {
     targetCard.title = title.value;
@@ -306,9 +288,7 @@ const showDelete = card => {
 
 const deleteCard = () => {
   deleteDialog.value = false;
-  const cardIndex = cards.value.findIndex(
-    card => card.id === cardToDelete.value.id
-  );
+  const cardIndex = cards.value.findIndex(card => card.id === cardToDelete.value.id);
 
   if (cardIndex !== -1) {
     cards.value.splice(cardIndex, 1);

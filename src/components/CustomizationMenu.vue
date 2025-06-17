@@ -68,13 +68,7 @@ const updatePrimaryColor = (newColor: Color) => {
       <v-icon class="text-white">mdi-cog-outline</v-icon>
     </div>
 
-    <v-navigation-drawer
-      v-model="themeDrawer"
-      location="right"
-      temporary
-      width="300"
-      class="theme-drawer"
-    >
+    <v-navigation-drawer v-model="themeDrawer" location="right" temporary width="300" class="theme-drawer">
       <div class="pa-5">
         <div class="top-area">
           <div class="d-flex align-center">
@@ -104,25 +98,9 @@ const updatePrimaryColor = (newColor: Color) => {
 
         <div class="primary-color-area">
           <b>Primary Colors</b>
-          <v-item-group
-            class="mt-3"
-            v-model="currentColor"
-            selected-class="elevation-12"
-            mandatory
-          >
-            <v-item
-              v-for="color in primaryColors"
-              :key="color.colorId"
-              :value="color"
-              v-slot="{ isSelected, toggle }"
-            >
-              <v-btn
-                @click="toggle"
-                class="text-white mr-1"
-                icon
-                size="30"
-                :color="color.colorValue"
-              >
+          <v-item-group class="mt-3" v-model="currentColor" selected-class="elevation-12" mandatory>
+            <v-item v-for="color in primaryColors" :key="color.colorId" :value="color" v-slot="{ isSelected, toggle }">
+              <v-btn @click="toggle" class="text-white mr-1" icon size="30" :color="color.colorValue">
                 <Icon width="22" v-if="isSelected" icon="line-md:confirm" />
               </v-btn>
             </v-item>
@@ -134,9 +112,7 @@ const updatePrimaryColor = (newColor: Color) => {
         </div>
         <hr class="mb-6" />
         <div>
-          <v-btn color="" class="gradient info" block size="large"
-            >Contact Me</v-btn
-          >
+          <v-btn color="" class="gradient info" block size="large">Contact Me</v-btn>
         </div>
         <div class="ml-5 mt-5 d-flex align-center">
           <v-icon color="primary" class="mr-6">mdi-email-outline</v-icon>
@@ -185,12 +161,7 @@ const updatePrimaryColor = (newColor: Color) => {
 }
 
 hr {
-  background-image: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 0, 0, 0.4),
-    transparent
-  ) !important;
+  background-image: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.4), transparent) !important;
   background-color: transparent;
   opacity: 0.25;
   border: none;

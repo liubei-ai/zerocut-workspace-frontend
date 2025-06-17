@@ -55,21 +55,18 @@ const createCompletion = async () => {
 
   try {
     // Create a completion (axios is not used here because it does not support streaming)
-    const completion = await fetch(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${myApikey.value}`,
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          messages: messages.value,
-          model: 'gpt-3.5-turbo',
-          stream: true,
-        }),
-      }
-    );
+    const completion = await fetch('https://api.openai.com/v1/chat/completions', {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${myApikey.value}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        messages: messages.value,
+        model: 'gpt-3.5-turbo',
+        stream: true,
+      }),
+    });
 
     // Handle errors
     if (!completion.ok) {
@@ -154,9 +151,7 @@ watch(
       </template>
     </perfect-scrollbar>
     <div class="no-message-container" v-else>
-      <h1 class="text-h2 text-blue-lighten-1 font-weight-bold">
-        Ask Me Any Thing
-      </h1>
+      <h1 class="text-h2 text-blue-lighten-1 font-weight-bold">Ask Me Any Thing</h1>
       <AnimationAi />
     </div>
 

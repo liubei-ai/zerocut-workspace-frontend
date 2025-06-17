@@ -21,9 +21,7 @@ onMounted(() => {
 
 const scrollToBottom = () => {
   const contentArea = document.querySelector('.v-navigation-drawer__content');
-  const activeItem = document.querySelector(
-    '.v-list-item--active'
-  ) as HTMLElement;
+  const activeItem = document.querySelector('.v-list-item--active') as HTMLElement;
 
   setTimeout(() => {
     contentArea?.scrollTo({
@@ -34,11 +32,7 @@ const scrollToBottom = () => {
 </script>
 
 <template>
-  <v-navigation-drawer
-    elevation="1"
-    v-model="customizeTheme.mainSidebar"
-    id="mainMenu"
-  >
+  <v-navigation-drawer elevation="1" v-model="customizeTheme.mainSidebar" id="mainMenu">
     <!-- ---------------------------------------------- -->
     <!---Top Area -->
     <!-- ---------------------------------------------- -->
@@ -67,7 +61,7 @@ const scrollToBottom = () => {
     <!---Nav List -->
     <!-- ---------------------------------------------- -->
     <div class="main-menu">
-      <main-menu :menu="navigation.menu"></main-menu>
+      <MainMenu :menu="navigation.menu"></MainMenu>
     </div>
     <!-- ---------------------------------------------- -->
     <!---Bottom Area -->
@@ -83,11 +77,7 @@ const scrollToBottom = () => {
   //   rgba(var(--v-theme-primary), 1),
   //   rgba(var(--v-theme-primary), 0.9)
   // );
-  background: linear-gradient(
-    270deg,
-    rgba(var(--v-theme-primary), 0.7) 0,
-    rgb(var(--v-theme-primary)) 100%
-  );
+  background: linear-gradient(270deg, rgba(var(--v-theme-primary), 0.7) 0, rgb(var(--v-theme-primary)) 100%);
   box-shadow: 0 2px 6px rgba(var(--v-theme-primary), 0.3);
 }
 

@@ -139,10 +139,7 @@ const startRecording = async () => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('model', 'whisper-1');
-        const res = await createTranscriptionApi(
-          formData,
-          chatGPTStore.getApiKey
-        );
+        const res = await createTranscriptionApi(formData, chatGPTStore.getApiKey);
         userMessage.value = res.data.text;
 
         // 停止媒体流的所有轨道
@@ -205,15 +202,12 @@ const clearMessages = () => {
           <div v-else-if="message.role === 'assistant'">
             <div class="pa-5 assistant-message">
               <v-avatar class="mr-4" rounded="sm" variant="elevated">
-                <img
-                  src="@/assets/images/avatars/avatar_assistant.jpg"
-                  alt="alt"
-                />
+                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
               </v-avatar>
 
               <v-card class="rounded-xl rounded-bs-0">
                 <div>
-                  <md-preview :modelValue="message.content" />
+                  <MdPreview :modelValue="message.content" />
                 </div>
               </v-card>
             </div>
@@ -230,9 +224,7 @@ const clearMessages = () => {
 
       <!-- No Message Content -->
       <div class="no-message-container" v-else>
-        <h1 class="text-h3 text-md-h2 font-weight-bold text-primary">
-          Talk With Me
-        </h1>
+        <h1 class="text-h3 text-md-h2 font-weight-bold text-primary">Talk With Me</h1>
 
         <AnimationAi :size="300" />
       </div>
@@ -244,34 +236,20 @@ const clearMessages = () => {
         </div>
         <div class="panel-center">
           <!-- Recording Animation -->
-          <AnimationRecording
-            v-if="state.isRecording"
-            @click="stopRecording"
-            :size="140"
-          />
+          <AnimationRecording v-if="state.isRecording" @click="stopRecording" :size="140" />
           <!-- Response Animation -->
           <AnimaitonCss02 v-else-if="state.isResponse" />
           <!-- Playing Animation -->
           <AnimaitonCss01 v-else-if="speechStore.isPlaying" />
           <!-- Recording Btn -->
-          <v-btn
-            v-else
-            size="x-large"
-            icon
-            variant="elevated"
-            color="primary"
-            @click="startRecording"
+          <v-btn v-else size="x-large" icon variant="elevated" color="primary" @click="startRecording"
             ><v-icon size="30">mdi-microphone</v-icon></v-btn
           >
         </div>
         <div class="panel-right">
           <v-btn icon variant="elevated" @click="clearMessages">
             <v-icon size="30" class="text-primary">mdi-broom</v-icon>
-            <v-tooltip
-              activator="parent"
-              location="top"
-              text="Clear"
-            ></v-tooltip>
+            <v-tooltip activator="parent" location="top" text="Clear"></v-tooltip>
           </v-btn>
         </div>
       </v-sheet>

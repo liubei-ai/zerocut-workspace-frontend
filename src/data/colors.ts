@@ -1,5 +1,5 @@
 // // exports.default = void 0;
-var red = Object.freeze({
+let red = Object.freeze({
   base: '#f44336',
   lighten5: '#ffebee',
   lighten4: '#ffcdd2',
@@ -15,7 +15,7 @@ var red = Object.freeze({
   accent3: '#ff1744',
   accent4: '#d50000',
 });
-var pink = Object.freeze({
+let pink = Object.freeze({
   base: '#e91e63',
   lighten5: '#fce4ec',
   lighten4: '#f8bbd0',
@@ -31,7 +31,7 @@ var pink = Object.freeze({
   accent3: '#f50057',
   accent4: '#c51162',
 });
-var purple = Object.freeze({
+let purple = Object.freeze({
   base: '#9c27b0',
   lighten5: '#f3e5f5',
   lighten4: '#e1bee7',
@@ -47,7 +47,7 @@ var purple = Object.freeze({
   accent3: '#d500f9',
   accent4: '#aa00ff',
 });
-var deepPurple = Object.freeze({
+let deepPurple = Object.freeze({
   base: '#673ab7',
   lighten5: '#ede7f6',
   lighten4: '#d1c4e9',
@@ -63,7 +63,7 @@ var deepPurple = Object.freeze({
   accent3: '#651fff',
   accent4: '#6200ea',
 });
-var indigo = Object.freeze({
+let indigo = Object.freeze({
   base: '#3f51b5',
   lighten5: '#e8eaf6',
   lighten4: '#c5cae9',
@@ -79,7 +79,7 @@ var indigo = Object.freeze({
   accent3: '#3d5afe',
   accent4: '#304ffe',
 });
-var blue = Object.freeze({
+let blue = Object.freeze({
   base: '#2196f3',
   lighten5: '#e3f2fd',
   lighten4: '#bbdefb',
@@ -95,7 +95,7 @@ var blue = Object.freeze({
   accent3: '#2979ff',
   accent4: '#2962ff',
 });
-var lightBlue = Object.freeze({
+let lightBlue = Object.freeze({
   base: '#03a9f4',
   lighten5: '#e1f5fe',
   lighten4: '#b3e5fc',
@@ -111,7 +111,7 @@ var lightBlue = Object.freeze({
   accent3: '#00b0ff',
   accent4: '#0091ea',
 });
-var cyan = Object.freeze({
+let cyan = Object.freeze({
   base: '#00bcd4',
   lighten5: '#e0f7fa',
   lighten4: '#b2ebf2',
@@ -127,7 +127,7 @@ var cyan = Object.freeze({
   accent3: '#00e5ff',
   accent4: '#00b8d4',
 });
-var teal = Object.freeze({
+let teal = Object.freeze({
   base: '#009688',
   lighten5: '#e0f2f1',
   lighten4: '#b2dfdb',
@@ -143,7 +143,7 @@ var teal = Object.freeze({
   accent3: '#1de9b6',
   accent4: '#00bfa5',
 });
-var green = Object.freeze({
+let green = Object.freeze({
   base: '#4caf50',
   lighten5: '#e8f5e9',
   lighten4: '#c8e6c9',
@@ -159,7 +159,7 @@ var green = Object.freeze({
   accent3: '#00e676',
   accent4: '#00c853',
 });
-var lightGreen = Object.freeze({
+let lightGreen = Object.freeze({
   base: '#8bc34a',
   lighten5: '#f1f8e9',
   lighten4: '#dcedc8',
@@ -175,7 +175,7 @@ var lightGreen = Object.freeze({
   accent3: '#76ff03',
   accent4: '#64dd17',
 });
-var lime = Object.freeze({
+let lime = Object.freeze({
   base: '#cddc39',
   lighten5: '#f9fbe7',
   lighten4: '#f0f4c3',
@@ -191,7 +191,7 @@ var lime = Object.freeze({
   accent3: '#c6ff00',
   accent4: '#aeea00',
 });
-var yellow = Object.freeze({
+let yellow = Object.freeze({
   base: '#ffeb3b',
   lighten5: '#fffde7',
   lighten4: '#fff9c4',
@@ -207,7 +207,7 @@ var yellow = Object.freeze({
   accent3: '#ffea00',
   accent4: '#ffd600',
 });
-var amber = Object.freeze({
+let amber = Object.freeze({
   base: '#ffc107',
   lighten5: '#fff8e1',
   lighten4: '#ffecb3',
@@ -223,7 +223,7 @@ var amber = Object.freeze({
   accent3: '#ffc400',
   accent4: '#ffab00',
 });
-var orange = Object.freeze({
+let orange = Object.freeze({
   base: '#ff9800',
   lighten5: '#fff3e0',
   lighten4: '#ffe0b2',
@@ -239,7 +239,7 @@ var orange = Object.freeze({
   accent3: '#ff9100',
   accent4: '#ff6d00',
 });
-var deepOrange = Object.freeze({
+let deepOrange = Object.freeze({
   base: '#ff5722',
   lighten5: '#fbe9e7',
   lighten4: '#ffccbc',
@@ -255,7 +255,7 @@ var deepOrange = Object.freeze({
   accent3: '#ff3d00',
   accent4: '#dd2c00',
 });
-var brown = Object.freeze({
+let brown = Object.freeze({
   base: '#795548',
   lighten5: '#efebe9',
   lighten4: '#d7ccc8',
@@ -267,7 +267,7 @@ var brown = Object.freeze({
   darken3: '#4e342e',
   darken4: '#3e2723',
 });
-var blueGrey = Object.freeze({
+let blueGrey = Object.freeze({
   base: '#607d8b',
   lighten5: '#eceff1',
   lighten4: '#cfd8dc',
@@ -279,7 +279,7 @@ var blueGrey = Object.freeze({
   darken3: '#37474f',
   darken4: '#263238',
 });
-var grey = Object.freeze({
+let grey = Object.freeze({
   base: '#9e9e9e',
   lighten5: '#fafafa',
   lighten4: '#f5f5f5',
@@ -291,7 +291,7 @@ var grey = Object.freeze({
   darken3: '#424242',
   darken4: '#212121',
 });
-var shades = Object.freeze({
+let shades = Object.freeze({
   black: '#000000',
   white: '#ffffff',
   transparent: 'transparent',

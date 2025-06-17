@@ -152,18 +152,11 @@ const previewImg = url => {
 
               <td>
                 <v-btn variant="flat" icon @click="downloadPhoto(item)">
-                  <img
-                    width="26"
-                    src="https://img.icons8.com/fluency/48/null/down.png"
-                  />
+                  <img width="26" src="https://img.icons8.com/fluency/48/null/down.png" />
                 </v-btn>
               </td>
               <td>
-                <v-chip
-                  size="small"
-                  :color="getLikesColor(item.likes)"
-                  class="font-weight-bold"
-                >
+                <v-chip size="small" :color="getLikesColor(item.likes)" class="font-weight-bold">
                   {{ item.likes }}</v-chip
                 >
               </td>
@@ -189,15 +182,8 @@ const previewImg = url => {
         </v-data-table-server>
       </div>
     </v-card>
-    <v-overlay
-      v-model="imgOverlay"
-      location-strategy="connected"
-      scroll-strategy="none"
-    >
-      <div
-        @click="imgOverlay = false"
-        class="w-screen h-screen d-flex align-center justify-center"
-      >
+    <v-overlay v-model="imgOverlay" location-strategy="connected" scroll-strategy="none">
+      <div @click="imgOverlay = false" class="w-screen h-screen d-flex align-center justify-center">
         <v-img height="80%" :src="imgSrc" />
       </div>
     </v-overlay>
