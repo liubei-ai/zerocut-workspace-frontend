@@ -1,99 +1,99 @@
-import { defineStore } from "pinia";
-import { Todo } from "./todoTypes";
+import { defineStore } from 'pinia';
+import { Todo } from './todoTypes';
 
 const todos = [
   {
     id: 1,
-    title: "Write a report",
-    detail: "Draft the quarterly update for the team",
+    title: 'Write a report',
+    detail: 'Draft the quarterly update for the team',
     completed: false,
-    tags: ["work"],
+    tags: ['work'],
   },
   {
     id: 2,
-    title: "Attend a meeting",
-    detail: "Join the conference call with the client",
+    title: 'Attend a meeting',
+    detail: 'Join the conference call with the client',
     completed: false,
-    tags: ["work"],
+    tags: ['work'],
   },
   {
     id: 3,
-    title: "Complete a project",
-    detail: "Finish the coding task before the deadline",
+    title: 'Complete a project',
+    detail: 'Finish the coding task before the deadline',
     completed: false,
-    tags: ["work"],
+    tags: ['work'],
   },
   {
     id: 4,
-    title: "Take a walk",
-    detail: "Explore the park and enjoy the nature",
+    title: 'Take a walk',
+    detail: 'Explore the park and enjoy the nature',
     completed: false,
-    tags: ["relaxation"],
+    tags: ['relaxation'],
   },
   {
     id: 5,
-    title: "Meditate",
-    detail: "Practice mindfulness for 15 minutes",
+    title: 'Meditate',
+    detail: 'Practice mindfulness for 15 minutes',
     completed: true,
-    tags: ["relaxation"],
+    tags: ['relaxation'],
   },
   {
     id: 6,
-    title: "Watch a movie",
-    detail: "Stream a comedy to lighten the mood",
+    title: 'Watch a movie',
+    detail: 'Stream a comedy to lighten the mood',
     completed: true,
-    tags: ["relaxation"],
+    tags: ['relaxation'],
   },
   {
     id: 7,
-    title: "Buy groceries",
-    detail: "Stock up on fruits, vegetables, and snacks",
+    title: 'Buy groceries',
+    detail: 'Stock up on fruits, vegetables, and snacks',
     completed: true,
-    tags: ["shopping"],
+    tags: ['shopping'],
   },
   {
     id: 8,
-    title: "Shop for clothes",
-    detail: "Look for a new outfit for the weekend",
+    title: 'Shop for clothes',
+    detail: 'Look for a new outfit for the weekend',
     completed: false,
-    tags: ["shopping"],
+    tags: ['shopping'],
   },
   {
     id: 9,
-    title: "Order supplies",
-    detail: "Get some office essentials for the team",
+    title: 'Order supplies',
+    detail: 'Get some office essentials for the team',
     completed: false,
-    tags: ["shopping", "relaxation"],
+    tags: ['shopping', 'relaxation'],
   },
   {
     id: 10,
-    title: "Buy gifts",
-    detail: "Get presents for friends and family",
+    title: 'Buy gifts',
+    detail: 'Get presents for friends and family',
     completed: false,
-    tags: ["shopping", "relaxation"],
+    tags: ['shopping', 'relaxation'],
   },
 ];
 
 export const useTodoStore = defineStore({
-  id: "todo",
+  id: 'todo',
   state: () => ({
     todList: todos,
-    currentLabel: "work",
+    currentLabel: 'work',
     labels: [
       {
-        id: "work",
-        title: "Work",
-        color: "orange",
+        id: 'work',
+        title: 'Work',
+        color: 'orange',
       },
       {
-        id: "relaxation",
-        title: "Relaxation",
-        color: "green",
+        id: 'relaxation',
+        title: 'Relaxation',
+        color: 'green',
       },
       {
-        id: "shopping",
-        title: "Shopping",
-        color: "blue",
+        id: 'shopping',
+        title: 'Shopping',
+        color: 'blue',
       },
     ],
   }),
@@ -130,7 +130,7 @@ export const useTodoStore = defineStore({
   actions: {
     // Add new todo
     addNewTodo(todo: Todo) {
-      todo.id = "_" + Math.random().toString(36).substring(2, 11);
+      todo.id = '_' + Math.random().toString(36).substring(2, 11);
       this.todList.push(todo);
     },
     // update todo

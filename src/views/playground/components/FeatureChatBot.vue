@@ -4,26 +4,26 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useSnackbarStore } from "@/stores/snackbarStore";
-import AnimationAi from "@/components/animations/AnimationBot2.vue";
-import { read } from "@/utils/aiUtils";
-import { MdPreview } from "md-editor-v3";
-import "md-editor-v3/lib/preview.css";
-import { useChatGPTStore } from "@/stores/chatGPTStore";
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import AnimationAi from '@/components/animations/AnimationBot2.vue';
+import { read } from '@/utils/aiUtils';
+import { MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
+import { useChatGPTStore } from '@/stores/chatGPTStore';
 const snackbarStore = useSnackbarStore();
 
 const chatGPTStore = useChatGPTStore();
 
 interface Message {
   content: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
 }
 
 // Message List
 const messages = ref<Message[]>([]);
 
 // User Input Message
-const userMessage = ref("");
+const userMessage = ref('');
 
 // Send Messsage
 const sendMessage = async () => {
@@ -31,13 +31,13 @@ const sendMessage = async () => {
     // Add the message to the list
     messages.value.push({
       content: userMessage.value,
-      role: "user",
+      role: 'user',
     });
 
     // Create a completion
     await createCompletion();
     // Clear the input
-    userMessage.value = "";
+    userMessage.value = '';
   }
 };
 
@@ -56,16 +56,16 @@ const createCompletion = async () => {
   try {
     // Create a completion (axios is not used here because it does not support streaming)
     const completion = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+      'https://api.openai.com/v1/chat/completions',
       {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${myApikey.value}`,
         },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           messages: messages.value,
-          model: "gpt-3.5-turbo",
+          model: 'gpt-3.5-turbo',
           stream: true,
         }),
       }
@@ -82,13 +82,13 @@ const createCompletion = async () => {
     // Create a reader
     const reader = completion.body?.getReader();
     if (!reader) {
-      snackbarStore.showErrorMessage("Cannot read the stream.");
+      snackbarStore.showErrorMessage('Cannot read the stream.');
     }
 
     // Add the bot message
     messages.value.push({
-      content: "",
-      role: "assistant",
+      content: '',
+      role: 'assistant',
     });
 
     // Read the stream
@@ -100,7 +100,7 @@ const createCompletion = async () => {
 
 // Scroll to the bottom of the message container
 const scrollToBottom = () => {
-  const container = document.querySelector(".message-container");
+  const container = document.querySelector('.message-container');
   setTimeout(() => {
     container?.scrollTo({
       top: container?.scrollHeight,
@@ -110,7 +110,7 @@ const scrollToBottom = () => {
 
 watch(
   () => messages.value,
-  (val) => {
+  val => {
     if (val) {
       scrollToBottom();
     }

@@ -25,7 +25,7 @@
 
 .loader::after,
 .loader::before {
-  content: "";
+  content: '';
   width: 8px;
   height: 40px;
   border-radius: 4px;

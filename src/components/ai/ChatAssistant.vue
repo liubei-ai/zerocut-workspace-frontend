@@ -4,34 +4,34 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
-import { useSnackbarStore } from "@/stores/snackbarStore";
-import AnimationAi from "@/components/animations/AnimationBot1.vue";
-import { read, countAndCompleteCodeBlocks } from "@/utils/aiUtils";
-import { scrollToBottom } from "@/utils/common";
-import { MdPreview } from "md-editor-v3";
-import "md-editor-v3/lib/preview.css";
+import { useDisplay } from 'vuetify';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import AnimationAi from '@/components/animations/AnimationBot1.vue';
+import { read, countAndCompleteCodeBlocks } from '@/utils/aiUtils';
+import { scrollToBottom } from '@/utils/common';
+import { MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 
-import { useChatGPTStore } from "@/stores/chatGPTStore";
+import { useChatGPTStore } from '@/stores/chatGPTStore';
 
 const snackbarStore = useSnackbarStore();
 const chatGPTStore = useChatGPTStore();
 
 interface Message {
   content: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
 }
 // User Input Message
-const userMessage = ref("");
+const userMessage = ref('');
 
 // Prompt Message
 const promptMessage = computed(() => {
-  console.log("chatGPTStore.propmpt", chatGPTStore.propmpt);
+  console.log('chatGPTStore.propmpt', chatGPTStore.propmpt);
 
   return [
     {
       content: chatGPTStore.propmpt,
-      role: "system",
+      role: 'system',
     },
   ];
 });
@@ -57,11 +57,11 @@ const sendMessage = async () => {
     // Add the message to the list
     messages.value.push({
       content: userMessage.value,
-      role: "user",
+      role: 'user',
     });
 
     // Clear the input
-    userMessage.value = "";
+    userMessage.value = '';
 
     // Create a completion
     await createCompletion();
@@ -81,10 +81,10 @@ const createCompletion = async () => {
       `${chatGPTStore.proxyUrl}/v1/chat/completions`,
       {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${chatGPTStore.getApiKey}`,
         },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           messages: requestMessages.value,
           model: chatGPTStore.model,
@@ -104,13 +104,13 @@ const createCompletion = async () => {
     // Create a reader
     const reader = completion.body?.getReader();
     if (!reader) {
-      snackbarStore.showErrorMessage("Cannot read the stream.");
+      snackbarStore.showErrorMessage('Cannot read the stream.');
     }
 
     // Add the bot message
     messages.value.push({
-      content: "",
-      role: "assistant",
+      content: '',
+      role: 'assistant',
     });
 
     // Read the stream
@@ -122,9 +122,9 @@ const createCompletion = async () => {
 
 watch(
   () => messages.value,
-  (val) => {
+  val => {
     if (val) {
-      scrollToBottom(document.querySelector(".message-container"));
+      scrollToBottom(document.querySelector('.message-container'));
     }
   },
   {
@@ -143,12 +143,12 @@ const displayMessages = computed(() => {
   return messagesCopy;
 });
 
-const handleKeydown = (e) => {
-  if (e.key === "Enter" && (e.altKey || e.shiftKey)) {
+const handleKeydown = e => {
+  if (e.key === 'Enter' && (e.altKey || e.shiftKey)) {
     // 当同时按下 alt或者shift 和 enter 时，插入一个换行符
     e.preventDefault();
-    userMessage.value += "\n";
-  } else if (e.key === "Enter") {
+    userMessage.value += '\n';
+  } else if (e.key === 'Enter') {
     // 当只按下 enter 时，发送消息
     e.preventDefault();
     sendMessage();

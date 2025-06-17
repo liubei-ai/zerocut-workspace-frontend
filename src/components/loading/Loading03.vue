@@ -17,7 +17,7 @@
   position: relative;
 }
 .loader:before {
-  content: "";
+  content: '';
   width: 48px;
   height: 5px;
   background: #000;
@@ -29,7 +29,7 @@
   animation: shadow 0.5s linear infinite;
 }
 .loader:after {
-  content: "";
+  content: '';
   width: 100%;
   height: 100%;
   background: #29b6f6;

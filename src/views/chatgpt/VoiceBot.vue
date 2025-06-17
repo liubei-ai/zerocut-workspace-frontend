@@ -4,37 +4,37 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useSnackbarStore } from "@/stores/snackbarStore";
-import AnimationAi from "@/components/animations/AnimationBot1.vue";
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import AnimationAi from '@/components/animations/AnimationBot1.vue';
 // import AnimationSpeech from "@/components/animations/AnimationSpeech.vue";
-import AnimationRecording from "@/components/animations/AnimationRecording.vue";
-import { MdPreview } from "md-editor-v3";
-import "md-editor-v3/lib/preview.css";
-import AnimaitonCss01 from "@/components/animations/AnimaitonCss01.vue";
-import AnimaitonCss02 from "@/components/animations/AnimaitonCss02.vue";
-import { useSpeechStore } from "@/stores/speechStore";
-import { createTranscriptionApi, createCompletionApi } from "@/api/aiApi";
-import VoiceConfigDialog from "@/components/ai/VoiceConfigDialog.vue";
-import { useChatGPTStore } from "@/stores/chatGPTStore";
+import AnimationRecording from '@/components/animations/AnimationRecording.vue';
+import { MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
+import AnimaitonCss01 from '@/components/animations/AnimaitonCss01.vue';
+import AnimaitonCss02 from '@/components/animations/AnimaitonCss02.vue';
+import { useSpeechStore } from '@/stores/speechStore';
+import { createTranscriptionApi, createCompletionApi } from '@/api/aiApi';
+import VoiceConfigDialog from '@/components/ai/VoiceConfigDialog.vue';
+import { useChatGPTStore } from '@/stores/chatGPTStore';
 const snackbarStore = useSnackbarStore();
 const speechStore = useSpeechStore();
 const chatGPTStore = useChatGPTStore();
 interface Message {
   content: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
 }
 
 // Message List
 const messages = ref<Message[]>([
   {
     content:
-      "想象我们是朋友,和我进行轻松有趣的对话。我们可以聊天天气、音乐、电影、运动或者日常生活等话题。请尽情地与我互动并回应我的问题,让我们像朋友一样自然地交流。并且我会多种语言,我会用不同的语言跟你交流,比如说我当前的问题是中文时,希望你下个回答用中文,我当前的问题是英文时,你的下个回答用英文,我当前的问题是日语时,你的下个回答是日语",
-    role: "system",
+      '想象我们是朋友,和我进行轻松有趣的对话。我们可以聊天天气、音乐、电影、运动或者日常生活等话题。请尽情地与我互动并回应我的问题,让我们像朋友一样自然地交流。并且我会多种语言,我会用不同的语言跟你交流,比如说我当前的问题是中文时,希望你下个回答用中文,我当前的问题是英文时,你的下个回答用英文,我当前的问题是日语时,你的下个回答是日语',
+    role: 'system',
   },
 ]);
 
 // User Input Message
-const userMessage = ref("");
+const userMessage = ref('');
 
 const isLoading = ref(false);
 
@@ -44,7 +44,7 @@ const sendMessage = async () => {
     // Add the message to the list
     messages.value.push({
       content: userMessage.value,
-      role: "user",
+      role: 'user',
     });
 
     state.isRecording = false;
@@ -53,7 +53,7 @@ const sendMessage = async () => {
     await createCompletion();
 
     // Clear the input
-    userMessage.value = "";
+    userMessage.value = '';
   }
 };
 
@@ -69,7 +69,7 @@ const createCompletion = async () => {
     const completion = await createCompletionApi(
       {
         messages: messages.value,
-        model: "gpt-3.5-turbo",
+        model: 'gpt-3.5-turbo',
         temperature: 1,
         n: 1,
       },
@@ -81,7 +81,7 @@ const createCompletion = async () => {
     // Add the bot message
     messages.value.push({
       content: completion.data.choices[0].message.content,
-      role: "assistant",
+      role: 'assistant',
     });
     state.isResponse = false;
     speechStore.ssmlToSpeak(completion.data.choices[0].message.content);
@@ -93,7 +93,7 @@ const createCompletion = async () => {
 
 // Scroll to the bottom of the message container
 const scrollToBottom = () => {
-  const container = document.querySelector(".message-container");
+  const container = document.querySelector('.message-container');
   setTimeout(() => {
     container?.scrollTo({
       top: container?.scrollHeight,
@@ -103,7 +103,7 @@ const scrollToBottom = () => {
 
 watch(
   () => messages.value,
-  (val) => {
+  val => {
     if (val) {
       scrollToBottom();
     }
@@ -118,7 +118,7 @@ const startRecording = async () => {
   // 获取用户媒体权限，视频的话参数{audio: true, video: true}
   navigator.mediaDevices
     .getUserMedia({ audio: true })
-    .then((stream) => {
+    .then(stream => {
       // 创建媒体流
       recorder.value = new MediaRecorder(stream);
       const audioChunks = <any>[];
@@ -132,13 +132,13 @@ const startRecording = async () => {
       };
       // 录音结束
       recorder.value.onstop = async (e: any) => {
-        const blob = new Blob(audioChunks, { type: "audio/wav" });
-        const file = new File([blob], "recording.wav", {
-          type: "audio/wav",
+        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+        const file = new File([blob], 'recording.wav', {
+          type: 'audio/wav',
         });
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append("model", "whisper-1");
+        formData.append('file', file);
+        formData.append('model', 'whisper-1');
         const res = await createTranscriptionApi(
           formData,
           chatGPTStore.getApiKey
@@ -146,7 +146,7 @@ const startRecording = async () => {
         userMessage.value = res.data.text;
 
         // 停止媒体流的所有轨道
-        stream.getTracks().forEach((track) => track.stop());
+        stream.getTracks().forEach(track => track.stop());
 
         if (userMessage.value) {
           sendMessage();
@@ -155,7 +155,7 @@ const startRecording = async () => {
         }
       };
     })
-    .catch((error) => {
+    .catch(error => {
       snackbarStore.showErrorMessage(error.message);
     });
 };
@@ -177,8 +177,8 @@ const clearMessages = () => {
   messages.value = [
     {
       content:
-        "想象我们是朋友,和我进行轻松有趣的对话。我们可以聊天天气、音乐、电影、运动或者日常生活等话题。请尽情地与我互动并回应我的问题,让我们像朋友一样自然地交流。并且我会多种语言,我会用不同的语言跟你交流,比如说我当前的问题是中文时,希望你下个回答用中文,我当前的问题是英文时,你的下个回答用英文,我当前的问题是日语时,你的下个回答是日语",
-      role: "system",
+        '想象我们是朋友,和我进行轻松有趣的对话。我们可以聊天天气、音乐、电影、运动或者日常生活等话题。请尽情地与我互动并回应我的问题,让我们像朋友一样自然地交流。并且我会多种语言,我会用不同的语言跟你交流,比如说我当前的问题是中文时,希望你下个回答用中文,我当前的问题是英文时,你的下个回答用英文,我当前的问题是日语时,你的下个回答是日语',
+      role: 'system',
     },
   ];
 };

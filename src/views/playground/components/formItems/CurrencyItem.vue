@@ -12,23 +12,23 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(['update:modelValue']);
 
 const formattedValue = computed(() => {
-  return props.modelValue !== null ? formatCurrency(props.modelValue) : "";
+  return props.modelValue !== null ? formatCurrency(props.modelValue) : '';
 });
 
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat("ja-JP", {
+const formatCurrency = value => {
+  return new Intl.NumberFormat('ja-JP', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   }).format(value);
 };
 
-const handleInput = (event) => {
-  const rawValue = event.target.value.replace(/^0+/, "").replace(/[^\d.]/g, "");
+const handleInput = event => {
+  const rawValue = event.target.value.replace(/^0+/, '').replace(/[^\d.]/g, '');
   const floatValue = parseFloat(rawValue);
-  emit("update:modelValue", isNaN(floatValue) ? null : floatValue);
+  emit('update:modelValue', isNaN(floatValue) ? null : floatValue);
 };
 </script>
 

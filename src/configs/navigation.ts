@@ -1,40 +1,40 @@
-import menuUI from "./menus/ui.menu";
-import menuApps from "./menus/apps.menu";
-import menuPages from "./menus/pages.menu";
-import menuCharts from "./menus/charts.menu";
-import menuUML from "./menus/uml.menu";
-import menuLanding from "./menus/landing.menu";
-import menuData from "./menus/data.menu";
-import menuAi from "./menus/ai.menu";
+import menuUI from './menus/ui.menu';
+import menuApps from './menus/apps.menu';
+import menuPages from './menus/pages.menu';
+import menuCharts from './menus/charts.menu';
+import menuUML from './menus/uml.menu';
+import menuLanding from './menus/landing.menu';
+import menuData from './menus/data.menu';
+import menuAi from './menus/ai.menu';
 
 export default {
   menu: [
     {
-      text: "",
-      key: "",
+      text: '',
+      key: '',
       items: [
         {
-          key: "menu.dashboard",
-          text: "Dashboard",
-          link: "/dashboard",
-          icon: "mdi-view-dashboard-outline",
+          key: 'menu.dashboard',
+          text: 'Dashboard',
+          link: '/dashboard',
+          icon: 'mdi-view-dashboard-outline',
         },
       ],
     },
     {
-      text: "chatgpt",
+      text: 'chatgpt',
       items: menuAi,
     },
     {
-      text: "Apps",
+      text: 'Apps',
       items: menuApps,
     },
     {
-      text: "Data",
+      text: 'Data',
       items: menuData,
     },
     {
-      text: "Landing",
+      text: 'Landing',
       items: [
         ...menuLanding,
         // {
@@ -47,21 +47,21 @@ export default {
     },
 
     {
-      text: "UI - Theme Preview",
+      text: 'UI - Theme Preview',
       items: menuUI,
     },
     {
-      text: "Pages",
-      key: "menu.pages",
+      text: 'Pages',
+      key: 'menu.pages',
       items: menuPages,
     },
     {
-      text: "Charts",
-      key: "menu.charts",
+      text: 'Charts',
+      key: 'menu.charts',
       items: menuCharts,
     },
     {
-      text: "UML",
+      text: 'UML',
       // key: "menu.uml",
       items: menuUML,
     },

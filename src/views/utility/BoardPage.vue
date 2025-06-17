@@ -139,82 +139,82 @@
   </v-dialog>
 </template>
 <script setup lang="ts">
-import VueDraggable from "vuedraggable";
-import BoardCard from "@/components/BoardCard.vue";
+import VueDraggable from 'vuedraggable';
+import BoardCard from '@/components/BoardCard.vue';
 
 const list1 = ref([
-  { title: "John", id: 1, description: "des" },
-  { title: "Joao", id: 2, description: "des" },
-  { title: "Jean", id: 3, description: "des" },
-  { title: "Gerard", id: 4, description: "des" },
+  { title: 'John', id: 1, description: 'des' },
+  { title: 'Joao', id: 2, description: 'des' },
+  { title: 'Jean', id: 3, description: 'des' },
+  { title: 'Gerard', id: 4, description: 'des' },
 ]);
 
 const list2 = ref([
-  { title: "Juan", id: 5, description: "des" },
-  { title: "Edgard", id: 6, description: "des" },
-  { title: "Johnson", id: 7, description: "des" },
+  { title: 'Juan', id: 5, description: 'des' },
+  { title: 'Edgard', id: 6, description: 'des' },
+  { title: 'Johnson', id: 7, description: 'des' },
 ]);
 
 const dragOptions = computed(() => {
   return {
     animation: 200,
-    group: "task",
+    group: 'task',
     disabled: false,
-    ghostClass: "ghost",
+    ghostClass: 'ghost',
   };
 });
 
 // board states
-const states = ref(["TODO", "INPROGRESS", "TESTING", "DONE"]);
+const states = ref(['TODO', 'INPROGRESS', 'TESTING', 'DONE']);
 const cards = ref([
   {
     id: 1,
-    title: "fix: 💭 channel label on chat app",
-    description: "we need it bolder",
+    title: 'fix: 💭 channel label on chat app',
+    description: 'we need it bolder',
     order: 1,
-    state: "TODO",
+    state: 'TODO',
   },
   {
     id: 2,
-    title: "feature: new emojis on board 🤘",
-    description: "we need it for reasons 🤤",
+    title: 'feature: new emojis on board 🤘',
+    description: 'we need it for reasons 🤤',
     order: 0,
-    state: "TODO",
+    state: 'TODO',
   },
   {
     id: 3,
-    title: "feature: add stripe account on signup",
-    description: "",
+    title: 'feature: add stripe account on signup',
+    description: '',
     order: 1,
-    state: "TESTING",
+    state: 'TESTING',
   },
   {
     id: 4,
-    title: "refactor: scroll 📜 directive on big pages",
-    description: "remember to check the scroll",
+    title: 'refactor: scroll 📜 directive on big pages',
+    description: 'remember to check the scroll',
     order: 0,
-    state: "INPROGRESS",
+    state: 'INPROGRESS',
   },
   {
     id: 5,
-    title: "feature: add big cards on dashboard",
-    description: "everyone loves cards",
+    title: 'feature: add big cards on dashboard',
+    description: 'everyone loves cards',
     order: 3,
-    state: "TODO",
+    state: 'TODO',
   },
   {
     id: 6,
-    title: "feature: add big cards on dashboard",
-    description: "everyone loves cards",
+    title: 'feature: add big cards on dashboard',
+    description: 'everyone loves cards',
     order: 3,
-    state: "TESTING",
+    state: 'TESTING',
   },
   {
     id: 7,
-    title: "feature: add big cards on dashboard",
-    description: "everyone loves cards",
+    title: 'feature: add big cards on dashboard',
+    description: 'everyone loves cards',
     order: 3,
-    state: "DONE",
+    state: 'DONE',
   },
 ]);
 
@@ -232,34 +232,34 @@ const initColumns = () => {
       key: state,
       cards: [],
       isAddVisible: false,
-      callback: (e) => changeState(e, index),
+      callback: e => changeState(e, index),
     });
   });
 };
 
-const parseCards = (cards) => {
-  if (!cards) return columns.value.map((column) => (column.cards = []));
+const parseCards = cards => {
+  if (!cards) return columns.value.map(column => (column.cards = []));
 
-  columns.value.forEach((column) => {
+  columns.value.forEach(column => {
     column.cards = cards
-      .filter((card) => card.state === column.key)
+      .filter(card => card.state === column.key)
       .sort((a, b) => (a.order < b.order ? -1 : 0));
   });
 };
 
 // Add
-const addCard = (column) => {
+const addCard = column => {
   const { addTitle, key } = column;
   if (!addTitle) return;
   let newCard = {
-    id: "_" + Math.random().toString(36).substring(2, 11),
+    id: '_' + Math.random().toString(36).substring(2, 11),
     state: key,
     title: addTitle,
-    description: "",
+    description: '',
     order: -1,
   };
   column.cards.unshift(newCard);
-  column.addTitle = "";
+  column.addTitle = '';
   column.isAddVisible = false;
 };
 
@@ -276,10 +276,10 @@ const changeState = (e, colIndex) => {
 
 // Edit
 const cardToEdit = ref(null);
-const title = ref("");
-const description = ref("");
+const title = ref('');
+const description = ref('');
 const editDialog = ref(false);
-const showEdit = (card) => {
+const showEdit = card => {
   cardToEdit.value = card;
   title.value = card.title;
   description.value = card.description;
@@ -287,7 +287,7 @@ const showEdit = (card) => {
 };
 
 const saveCard = () => {
-  let targetCard = cards.value.find((card) => card.id === cardToEdit.value.id);
+  let targetCard = cards.value.find(card => card.id === cardToEdit.value.id);
   console.log(targetCard);
   if (targetCard) {
     targetCard.title = title.value;
@@ -299,7 +299,7 @@ const saveCard = () => {
 // Delete
 const deleteDialog = ref(false);
 const cardToDelete = ref(null);
-const showDelete = (card) => {
+const showDelete = card => {
   cardToDelete.value = card;
   deleteDialog.value = true;
 };
@@ -307,7 +307,7 @@ const showDelete = (card) => {
 const deleteCard = () => {
   deleteDialog.value = false;
   const cardIndex = cards.value.findIndex(
-    (card) => card.id === cardToDelete.value.id
+    card => card.id === cardToDelete.value.id
   );
 
   if (cardIndex !== -1) {
@@ -315,7 +315,7 @@ const deleteCard = () => {
   }
 };
 
-watch(cards.value, (newCards) => {
+watch(cards.value, newCards => {
   parseCards(newCards);
 });
 </script>

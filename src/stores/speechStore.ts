@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import type { VoiceInfo } from "microsoft-cognitiveservices-speech-sdk";
+import { defineStore } from 'pinia';
+import type { VoiceInfo } from 'microsoft-cognitiveservices-speech-sdk';
 import {
   AudioConfig,
   SpeakerAudioDestination,
@@ -7,21 +7,21 @@ import {
   SpeechSynthesisOutputFormat,
   ResultReason,
   SpeechSynthesizer,
-} from "microsoft-cognitiveservices-speech-sdk";
+} from 'microsoft-cognitiveservices-speech-sdk';
 
 export const useSpeechStore = defineStore({
-  id: "speech",
+  id: 'speech',
   state: () => ({
     subscriptionKey: import.meta.env.VITE_TTS_KEY,
-    region: import.meta.env.VITE_TTS_REGION || "eastus",
-    speechRecognitionLanguage: "zh-CN",
-    speechSynthesisLanguage: "zh-CN",
-    speechSynthesisVoiceName: "zh-CN-XiaoxiaoNeural",
+    region: import.meta.env.VITE_TTS_REGION || 'eastus',
+    speechRecognitionLanguage: 'zh-CN',
+    speechSynthesisLanguage: 'zh-CN',
+    speechSynthesisVoiceName: 'zh-CN-XiaoxiaoNeural',
     isPlaying: false,
-    voiceEmotion: "",
+    voiceEmotion: '',
     voiceRate: 1,
     voiceConfigDialog: false,
-    localName: "晓晓",
+    localName: '晓晓',
     styleList: [],
   }),
 
@@ -31,11 +31,11 @@ export const useSpeechStore = defineStore({
       {
         storage: localStorage,
         paths: [
-          "speechSynthesisLanguage",
-          "speechSynthesisVoiceName",
-          "localName",
-          "voiceRate",
-          "voiceEmotion",
+          'speechSynthesisLanguage',
+          'speechSynthesisVoiceName',
+          'localName',
+          'voiceRate',
+          'voiceEmotion',
         ],
       },
     ],
@@ -65,7 +65,7 @@ export const useSpeechStore = defineStore({
       let _this = this;
       player.onAudioEnd = function (_) {
         _this.isPlaying = false;
-        console.log("playback finished");
+        console.log('playback finished');
       };
 
       const audioConfiga = AudioConfig.fromSpeakerOutput(player);
@@ -78,7 +78,7 @@ export const useSpeechStore = defineStore({
         const result = await new Promise((resolve, reject) => {
           synthesizer.speakTextAsync(
             text,
-            (speechResult) => {
+            speechResult => {
               if (
                 speechResult.reason === ResultReason.SynthesizingAudioCompleted
               ) {
@@ -92,7 +92,7 @@ export const useSpeechStore = defineStore({
                 );
               }
             },
-            (error) => {
+            error => {
               _this.isPlaying = false;
               reject(error);
             }
@@ -100,10 +100,10 @@ export const useSpeechStore = defineStore({
         });
 
         // 处理语音合成结果，例如播放音频或将其发送到客户端
-        console.log("Text-to-speech synthesis result:", result);
+        console.log('Text-to-speech synthesis result:', result);
       } catch (error) {
         _this.isPlaying = false;
-        console.error("Error during text-to-speech synthesis:", error);
+        console.error('Error during text-to-speech synthesis:', error);
       } finally {
         // 关闭语音合成器以释放资源
         synthesizer.close();
@@ -132,7 +132,7 @@ export const useSpeechStore = defineStore({
       let _this = this;
       player.onAudioEnd = function (_) {
         _this.isPlaying = false;
-        console.log("playback finished");
+        console.log('playback finished');
       };
 
       const audioConfiga = AudioConfig.fromSpeakerOutput(player);
@@ -157,7 +157,7 @@ export const useSpeechStore = defineStore({
         const result = await new Promise((resolve, reject) => {
           synthesizer.speakSsmlAsync(
             ssml,
-            (speechResult) => {
+            speechResult => {
               if (
                 speechResult.reason === ResultReason.SynthesizingAudioCompleted
               ) {
@@ -170,16 +170,16 @@ export const useSpeechStore = defineStore({
                 );
               }
             },
-            (error) => {
+            error => {
               reject(error);
             }
           );
         });
 
         // 处理语音合成结果，例如播放音频或将其发送到客户端
-        console.log("Text-to-speech synthesis result:", result);
+        console.log('Text-to-speech synthesis result:', result);
       } catch (error) {
-        console.error("Error during text-to-speech synthesis:", error);
+        console.error('Error during text-to-speech synthesis:', error);
       } finally {
         // 关闭语音合成器以释放资源
         synthesizer.close();
@@ -198,7 +198,7 @@ export const useSpeechStore = defineStore({
         }
       } else {
         this.styleList = [];
-        this.voiceEmotion = "";
+        this.voiceEmotion = '';
       }
     },
   },

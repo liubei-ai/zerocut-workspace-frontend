@@ -4,104 +4,104 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink } from 'vue-router';
 
 const navs = [
   {
-    title: "サービス",
-    icon: "mdi-home",
-    to: "/",
+    title: 'サービス',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "配送",
-        to: "/",
+        title: '配送',
+        to: '/',
       },
       {
-        title: "配送状況の確認",
-        to: "/",
+        title: '配送状況の確認',
+        to: '/',
       },
       {
-        title: "お支払い方法",
-        to: "/",
+        title: 'お支払い方法',
+        to: '/',
       },
       {
-        title: "プランニング",
-        to: "/",
+        title: 'プランニング',
+        to: '/',
       },
       {
-        title: "アプリ",
-        to: "/",
+        title: 'アプリ',
+        to: '/',
       },
       {
-        title: "ギフトリスト",
-        to: "/",
+        title: 'ギフトリスト',
+        to: '/',
       },
       {
-        title: "店舗検索",
-        to: "/",
+        title: '店舗検索',
+        to: '/',
       },
 
       {
-        title: "全て見る",
-        to: "/",
+        title: '全て見る',
+        to: '/',
       },
     ],
   },
   {
-    title: "サポート",
-    icon: "mdi-home",
-    to: "/",
+    title: 'サポート',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "よくある質問",
-        to: "/",
+        title: 'よくある質問',
+        to: '/',
       },
       {
-        title: "お問い合わせ",
-        to: "/",
+        title: 'お問い合わせ',
+        to: '/',
       },
       {
-        title: "返品",
-        to: "/",
+        title: '返品',
+        to: '/',
       },
       {
-        title: "品質保障",
-        to: "/",
+        title: '品質保障',
+        to: '/',
       },
       {
-        title: "ご意見.ご要望",
-        to: "/",
+        title: 'ご意見.ご要望',
+        to: '/',
       },
     ],
   },
   {
-    title: "イクラについて",
-    icon: "mdi-home",
-    to: "/",
+    title: 'イクラについて',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "イクラの理念",
-        to: "/",
+        title: 'イクラの理念',
+        to: '/',
       },
       {
-        title: "サステナビリティ",
-        to: "/",
+        title: 'サステナビリティ',
+        to: '/',
       },
       {
-        title: "採用情報",
-        to: "/",
+        title: '採用情報',
+        to: '/',
       },
       {
-        title: "ニュースルーム",
-        to: "/",
+        title: 'ニュースルーム',
+        to: '/',
       },
       {
-        title: "Life at Home Report",
-        to: "/",
+        title: 'Life at Home Report',
+        to: '/',
       },
       {
-        title: "IKEAカタログ",
-        to: "/",
+        title: 'IKEAカタログ',
+        to: '/',
       },
     ],
   },
@@ -109,61 +109,61 @@ const navs = [
 
 const socials = [
   {
-    icon: "mdi-facebook",
-    to: "/",
+    icon: 'mdi-facebook',
+    to: '/',
   },
   {
-    icon: "mdi-twitter",
-    to: "/",
+    icon: 'mdi-twitter',
+    to: '/',
   },
   {
-    icon: "mdi-instagram",
-    to: "/",
+    icon: 'mdi-instagram',
+    to: '/',
   },
   {
-    icon: "mdi-youtube",
-    to: "/",
+    icon: 'mdi-youtube',
+    to: '/',
   },
   {
-    icon: "mdi-linkedin",
-    to: "/",
+    icon: 'mdi-linkedin',
+    to: '/',
   },
   {
-    icon: "mdi-pinterest",
-    to: "/",
-  },
-
-  {
-    icon: "mdi-reddit",
-    to: "/",
+    icon: 'mdi-pinterest',
+    to: '/',
   },
 
   {
-    icon: "mdi-whatsapp",
-    to: "/",
+    icon: 'mdi-reddit',
+    to: '/',
   },
 
   {
-    icon: "mdi-wechat",
-    to: "/",
+    icon: 'mdi-whatsapp',
+    to: '/',
   },
 
   {
-    icon: "mdi-rss",
-    to: "/",
+    icon: 'mdi-wechat',
+    to: '/',
+  },
+
+  {
+    icon: 'mdi-rss',
+    to: '/',
   },
 ];
 
 const footerNavs = [
   {
-    title: "プライバシーポリシー ",
-    to: "/",
+    title: 'プライバシーポリシー ',
+    to: '/',
   },
-  { title: "利用規約 ", to: "/" },
-  { title: "Cookieポリシー ", to: "/" },
-  { title: "Cookie設定 ", to: "/" },
-  { title: "特定商取引法に基づく表記  ", to: "/" },
-  { title: "古物営業法に基づく表記 ", to: "/" },
+  { title: '利用規約 ', to: '/' },
+  { title: 'Cookieポリシー ', to: '/' },
+  { title: 'Cookie設定 ', to: '/' },
+  { title: '特定商取引法に基づく表記  ', to: '/' },
+  { title: '古物営業法に基づく表記 ', to: '/' },
 ];
 </script>
 

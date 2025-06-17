@@ -59,33 +59,33 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
+import { useDisplay } from 'vuetify';
 
-import { useWindowScroll } from "@vueuse/core";
+import { useWindowScroll } from '@vueuse/core';
 const { name } = useDisplay();
 
-const currentId = ref("images");
+const currentId = ref('images');
 
 const width = computed(() => {
   // name is reactive and
   // must use .value
   switch (name.value) {
-    case "md":
+    case 'md':
       return 125;
-    case "lg":
+    case 'lg':
       return 175;
-    case "xl":
+    case 'xl':
       return 275;
-    case "xxl":
+    case 'xxl':
       return 375;
   }
   console.log(name.value);
   return undefined;
 });
 
-const jumpToAnchor = (id) => {
+const jumpToAnchor = id => {
   let element = document.getElementById(id);
-  element?.scrollIntoView({ behavior: "smooth" });
+  element?.scrollIntoView({ behavior: 'smooth' });
 };
 
 const backToTop = () => {
@@ -93,15 +93,15 @@ const backToTop = () => {
 };
 
 const anchorList = ref([
-  { text: "高清图库", icon: "mdi-clock", id: "images" },
-  { text: "设计教程", icon: "mdi-account", id: "lessons" },
-  { text: "界面设计", icon: "mdi-flag", id: "design" },
+  { text: '高清图库', icon: 'mdi-clock', id: 'images' },
+  { text: '设计教程', icon: 'mdi-account', id: 'lessons' },
+  { text: '界面设计', icon: 'mdi-flag', id: 'design' },
 ]);
 
 const sections = ref([
-  { title: "高清图库", id: "images" },
-  { title: "设计教程", id: "lessons" },
-  { title: "界面设计", id: "design" },
+  { title: '高清图库', id: 'images' },
+  { title: '设计教程', id: 'lessons' },
+  { title: '界面设计', id: 'design' },
 ]);
 
 const { x, y } = useWindowScroll();

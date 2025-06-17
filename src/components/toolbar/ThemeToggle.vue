@@ -4,15 +4,15 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { useTheme } from "vuetify";
-import { useAppStore } from "../../stores/appStore";
+import { Icon } from '@iconify/vue';
+import { useTheme } from 'vuetify';
+import { useAppStore } from '../../stores/appStore';
 const appStore = useAppStore();
 
 const theme = useTheme();
 
 const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
   appStore.setTheme(theme.global.name.value);
 };
 

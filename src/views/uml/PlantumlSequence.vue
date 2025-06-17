@@ -5,13 +5,13 @@
 -->
 
 <script setup lang="ts">
-import { plantuml } from "@/plugins/plantuml";
-import FeatureCard from "@/components/FeatureCard.vue";
+import { plantuml } from '@/plugins/plantuml';
+import FeatureCard from '@/components/FeatureCard.vue';
 
 const umlData = [
   {
-    name: "Sequence Diagram - Basic",
-    size: "25vh",
+    name: 'Sequence Diagram - Basic',
+    size: '25vh',
     data: `
 Alice -> Bob: Authentication Request
 Bob --> Alice: Authentication Response
@@ -21,8 +21,8 @@ Alice <-- Bob: Another authentication Response
 `,
   },
   {
-    name: "Sequence Diagram - Activation",
-    size: "45vh",
+    name: 'Sequence Diagram - Activation',
+    size: '45vh',
     data: `
 alice -> bob ++ : hello
 bob -> bob ++ : self call
@@ -35,8 +35,8 @@ return success
 `,
   },
   {
-    name: "Sequence Diagram - Colorful, Twisted",
-    size: "40vh",
+    name: 'Sequence Diagram - Colorful, Twisted',
+    size: '40vh',
     data: `
 skinparam handwritten true
 
@@ -83,8 +83,8 @@ deactivate A
 `,
   },
   {
-    name: "Sequence Diagram - Complex",
-    size: "50vh",
+    name: 'Sequence Diagram - Complex',
+    size: '50vh',
     data: `
 
 participant Participant as Foo
@@ -107,13 +107,19 @@ Foo -> Foo7: To queue
 
 `,
   },
-]
+];
 </script>
 
 <template>
   <v-container v-for="uml in umlData">
-    <FeatureCard :title=uml.name>
-      <v-img :src="plantuml(uml.data)" width="100vw" :max-height=uml.size contain attrs="props" />
+    <FeatureCard :title="uml.name">
+      <v-img
+        :src="plantuml(uml.data)"
+        width="100vw"
+        :max-height="uml.size"
+        contain
+        attrs="props"
+      />
     </FeatureCard>
   </v-container>
 </template>

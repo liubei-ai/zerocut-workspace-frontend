@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { Vue3Lottie } from "vue3-lottie";
+import { Vue3Lottie } from 'vue3-lottie';
 const props = defineProps({
   size: {
     type: Number,

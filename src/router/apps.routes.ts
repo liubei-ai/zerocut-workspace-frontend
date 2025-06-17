@@ -1,101 +1,100 @@
-import unsplashRoutes from "@/views/app/unsplash/UnsplashRoutes";
-import todoRoutes from "@/views/app/todo/todoRoutes";
-import emailRoutes from "@/views/app/email/emailRoutes";
-
+import unsplashRoutes from '@/views/app/unsplash/UnsplashRoutes';
+import todoRoutes from '@/views/app/todo/todoRoutes';
+import emailRoutes from '@/views/app/email/emailRoutes';
 
 export default [
   {
-    path: "/apps/board",
-    name: "app-board",
+    path: '/apps/board',
+    name: 'app-board',
     component: () =>
       import(
-        /* webpackChunkName: "utility-board" */ "@/views/utility/BoardPage.vue"
+        /* webpackChunkName: "utility-board" */ '@/views/utility/BoardPage.vue'
       ),
     meta: {
       requiresAuth: true,
-      title: "Board",
-      layout: "ui",
-      category: "APP",
+      title: 'Board',
+      layout: 'ui',
+      category: 'APP',
     },
   },
   {
-    path: "/apps/email",
+    path: '/apps/email',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Email",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Email',
     },
     component: () =>
       import(
-        /* webpackChunkName: "app-email" */ "@/views/app/email/EmailApp.vue"
+        /* webpackChunkName: "app-email" */ '@/views/app/email/EmailApp.vue'
       ),
     children: [...emailRoutes],
   },
 
   {
-    path: "/apps/todo",
+    path: '/apps/todo',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Todo",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Todo',
     },
     component: () =>
-      import(/* webpackChunkName: "app-todo" */ "@/views/app/todo/TodoApp.vue"),
+      import(/* webpackChunkName: "app-todo" */ '@/views/app/todo/TodoApp.vue'),
     children: [...todoRoutes],
   },
   {
-    path: "/apps/nitori",
+    path: '/apps/nitori',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Nitori",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Nitori',
     },
     component: () =>
       import(
-        /* webpackChunkName: "app-nitori" */ "@/views/app/nitori/NitoriApp.vue"
+        /* webpackChunkName: "app-nitori" */ '@/views/app/nitori/NitoriApp.vue'
       ),
     children: [],
   },
   {
-    path: "/apps/booking",
+    path: '/apps/booking',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Booking",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Booking',
     },
     component: () =>
       import(
-        /* webpackChunkName: "app-booking" */ "@/views/app/booking/BookingApp.vue"
+        /* webpackChunkName: "app-booking" */ '@/views/app/booking/BookingApp.vue'
       ),
     children: [],
   },
   {
-    path: "/apps/ikea",
+    path: '/apps/ikea',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Ikea",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Ikea',
     },
     component: () =>
-      import(/* webpackChunkName: "app-ikea" */ "@/views/app/ikea/IkeaApp.vue"),
+      import(/* webpackChunkName: "app-ikea" */ '@/views/app/ikea/IkeaApp.vue'),
     children: [],
   },
   {
-    path: "/apps/unsplash",
+    path: '/apps/unsplash',
     meta: {
       requiresAuth: true,
-      layout: "ui",
-      category: "APP",
-      title: "Photos",
+      layout: 'ui',
+      category: 'APP',
+      title: 'Photos',
     },
     component: () =>
       import(
-        /* webpackChunkName: "app-unsplash" */ "@/views/app/unsplash/UnsplashApp.vue"
+        /* webpackChunkName: "app-unsplash" */ '@/views/app/unsplash/UnsplashApp.vue'
       ),
     children: [...unsplashRoutes],
   },

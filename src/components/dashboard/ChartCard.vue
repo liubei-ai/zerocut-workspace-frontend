@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 
-import BarChart1 from "@/views/chart/component/BarChart1.vue";
+import BarChart1 from '@/views/chart/component/BarChart1.vue';
 const loading = ref(true);
 
 onMounted(() => {

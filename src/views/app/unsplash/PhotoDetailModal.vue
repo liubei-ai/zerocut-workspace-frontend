@@ -4,35 +4,35 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { BASE_URL, ACCESS_KEY, config } from "./unsplashConfig";
-import PhotoCard from "./components/PhotoCard.vue";
-import PhotoInfoChartCard from "./components/PhotoInfoChartCard.vue";
-import CollectionCard from "./components/CollectionCard.vue";
-import axios from "axios";
-import { useDisplay } from "vuetify";
+import { BASE_URL, ACCESS_KEY, config } from './unsplashConfig';
+import PhotoCard from './components/PhotoCard.vue';
+import PhotoInfoChartCard from './components/PhotoInfoChartCard.vue';
+import CollectionCard from './components/CollectionCard.vue';
+import axios from 'axios';
+import { useDisplay } from 'vuetify';
 const { mdAndUp } = useDisplay();
 
 // Props
 const props = defineProps({
   photoId: {
     type: String,
-    default: "",
+    default: '',
     required: true,
   },
 });
 
 const photoDetailParam = reactive({
-  url: BASE_URL + "search/photos?",
+  url: BASE_URL + 'search/photos?',
   accessKey: ACCESS_KEY,
-  id: "",
+  id: '',
 });
 
 const photoUrl = computed(() => {
-  return BASE_URL + "photos/" + props.photoId;
+  return BASE_URL + 'photos/' + props.photoId;
 });
 
 const photoRelatedUrl = computed(() => {
-  return BASE_URL + "photos/" + props.photoId + "/related";
+  return BASE_URL + 'photos/' + props.photoId + '/related';
 });
 
 const photo = ref(null);
@@ -215,19 +215,32 @@ initData();
 .loader {
   width: 215px;
   height: 220px;
-  background: linear-gradient(0.25turn, transparent, #fff, transparent),
+  background:
+    linear-gradient(0.25turn, transparent, #fff, transparent),
     linear-gradient(#ddd, #ddd), linear-gradient(#ddd, #ddd),
     linear-gradient(#ddd, #ddd);
   background-color: #fff;
   background-repeat: no-repeat;
-  background-size: 215px 220px, 215px 130px, 100px 15px, 150px 15px;
-  background-position: -215px 0, 0 0, 15px 150px, 15px 180px;
+  background-size:
+    215px 220px,
+    215px 130px,
+    100px 15px,
+    150px 15px;
+  background-position:
+    -215px 0,
+    0 0,
+    15px 150px,
+    15px 180px;
   animation: loading 1.5s infinite;
 }
 
 @keyframes loading {
   to {
-    background-position: 215px 0, 0 0, 15px 150px, 15px 180px;
+    background-position:
+      215px 0,
+      0 0,
+      15px 150px,
+      15px 180px;
   }
 }
 </style>

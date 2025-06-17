@@ -4,14 +4,14 @@
 * @Description: Imitate Nitori App
 -->
 <script setup lang="ts">
-import FavoriteCard from "./components/FavoriteCard.vue";
-import PhotoDetail from "./PhotoDetailModal.vue";
-import UserCard from "./components/UserCard.vue";
-import { Icon, listIcons } from "@iconify/vue";
-import axios from "axios";
-import { useAxios } from "@vueuse/integrations/useAxios";
-import { useUnsplashStore } from "./unsplashStore";
-import { BASE_URL, ACCESS_KEY, config } from "./unsplashConfig";
+import FavoriteCard from './components/FavoriteCard.vue';
+import PhotoDetail from './PhotoDetailModal.vue';
+import UserCard from './components/UserCard.vue';
+import { Icon, listIcons } from '@iconify/vue';
+import axios from 'axios';
+import { useAxios } from '@vueuse/integrations/useAxios';
+import { useUnsplashStore } from './unsplashStore';
+import { BASE_URL, ACCESS_KEY, config } from './unsplashConfig';
 const unsplashStore = useUnsplashStore();
 const router = useRouter();
 
@@ -23,29 +23,29 @@ interface SearchParams {
 }
 
 const searchParams: SearchParams = reactive({
-  url: BASE_URL + "search?",
-  query: "blue",
+  url: BASE_URL + 'search?',
+  query: 'blue',
   perPage: 20,
   page: 1,
 });
 
 const photoParams: SearchParams = reactive({
-  url: BASE_URL + "search/photos?",
-  query: "blue",
+  url: BASE_URL + 'search/photos?',
+  query: 'blue',
   perPage: 20,
   page: 1,
 });
 
 const collectionParams: SearchParams = reactive({
-  url: BASE_URL + "search/collections?",
-  query: "blue",
+  url: BASE_URL + 'search/collections?',
+  query: 'blue',
   perPage: 20,
   page: 1,
 });
 
 const userParams: SearchParams = reactive({
-  url: BASE_URL + "search/users?",
-  query: "blue",
+  url: BASE_URL + 'search/users?',
+  query: 'blue',
   perPage: 20,
   page: 1,
 });
@@ -103,9 +103,9 @@ onMounted(() => {
 });
 
 const initData = () => {
-  photoData.photos.forEach((photo) => {
+  photoData.photos.forEach(photo => {
     photo.liked_by_user = unsplashStore.favoriteList.some(
-      (item) => item.id === photo.id
+      item => item.id === photo.id
     );
   });
 };
@@ -148,17 +148,17 @@ const searchRelated = (query: string) => {
 const snackbar = reactive({
   isShow: false,
   timeout: 1000,
-  text: "",
+  text: '',
 });
 
-const toggleLike = (item) => {
+const toggleLike = item => {
   if (!item.liked_by_user) {
-    snackbar.text = "Added to your favorite";
+    snackbar.text = 'Added to your favorite';
     snackbar.isShow = true;
     unsplashStore.addToFavorite(item);
     item.likes++;
   } else {
-    snackbar.text = "Removed from your favorite";
+    snackbar.text = 'Removed from your favorite';
     snackbar.isShow = true;
     unsplashStore.removeFromFavorite(item);
     item.likes--;
@@ -166,19 +166,19 @@ const toggleLike = (item) => {
   item.liked_by_user = !item.liked_by_user;
 };
 
-const downloadPhoto = (photo) => {
-  const a = document.createElement("a");
-  a.href = photo.links.download + "&force=true";
-  a.download = photo.id + ".jpg";
+const downloadPhoto = photo => {
+  const a = document.createElement('a');
+  a.href = photo.links.download + '&force=true';
+  a.download = photo.id + '.jpg';
   a.click();
-  snackbar.text = "Downloading now, please wait";
+  snackbar.text = 'Downloading now, please wait';
   snackbar.timeout = 2000;
   snackbar.isShow = true;
   snackbar.timeout = 1000;
 };
 
 const photoDialog = ref(false);
-const photoId = ref("");
+const photoId = ref('');
 const openPhotoDialog = (id: string) => {
   photoId.value = id;
   photoDialog.value = true;

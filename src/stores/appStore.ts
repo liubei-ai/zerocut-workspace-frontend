@@ -1,7 +1,7 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
 export const useAppStore = defineStore({
-  id: "app",
+  id: 'app',
   state: () => ({
     theme: 'light',
     mainSidebar: true,
@@ -9,17 +9,17 @@ export const useAppStore = defineStore({
 
   persist: {
     enabled: true,
-    strategies: [{ storage: localStorage, paths: ["theme"], }],
+    strategies: [{ storage: localStorage, paths: ['theme'] }],
   },
 
   getters: {},
   actions: {
     toggleSidebar() {
-      this.mainSidebar = !this.mainSidebar
+      this.mainSidebar = !this.mainSidebar;
     },
 
     setTheme(theme: string) {
-      this.theme = theme
-    }
+      this.theme = theme;
+    },
   },
 });

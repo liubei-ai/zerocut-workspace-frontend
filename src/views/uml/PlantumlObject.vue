@@ -5,13 +5,13 @@
 -->
 
 <script setup lang="ts">
-import { plantuml } from "@/plugins/plantuml";
-import FeatureCard from "@/components/FeatureCard.vue";
+import { plantuml } from '@/plugins/plantuml';
+import FeatureCard from '@/components/FeatureCard.vue';
 
 const umlData = [
   {
-    name: "Object Diagram - Basic",
-    size: "35vh",
+    name: 'Object Diagram - Basic',
+    size: '35vh',
     data: `
 left to right direction
 ' Horizontal lines: -->, <--, <-->
@@ -44,8 +44,8 @@ task.4 --> task.5 : Label 4
 `,
   },
   {
-    name: "Object Diagram - Deployment",
-    size: "20vh",
+    name: 'Object Diagram - Deployment',
+    size: '20vh',
     data: `
 cloud cloud1
 cloud cloud2
@@ -60,8 +60,8 @@ cloud1 -(0)- cloud5
 `,
   },
   {
-    name: "Object Diagram - Port",
-    size: "65vh",
+    name: 'Object Diagram - Port',
+    size: '65vh',
     data: `
 [i]
 node node {
@@ -86,14 +86,19 @@ po3 --> o
 f1 --> po1
 `,
   },
-
-]
+];
 </script>
 
 <template>
   <v-container v-for="uml in umlData">
-    <FeatureCard :title=uml.name>
-      <v-img :src="plantuml(uml.data)" width="100vw" :max-height=uml.size contain attrs="props" />
+    <FeatureCard :title="uml.name">
+      <v-img
+        :src="plantuml(uml.data)"
+        width="100vw"
+        :max-height="uml.size"
+        contain
+        attrs="props"
+      />
     </FeatureCard>
   </v-container>
 </template>

@@ -4,20 +4,20 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import axios from "axios";
-import { BASE_URL, config } from "../unsplashConfig";
-import { Photo } from "../unsplashTypes";
-import VChart from "vue-echarts";
-import { use } from "echarts/core";
-import { CanvasRenderer } from "echarts/renderers";
-import { BarChart } from "echarts/charts";
+import axios from 'axios';
+import { BASE_URL, config } from '../unsplashConfig';
+import { Photo } from '../unsplashTypes';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { BarChart } from 'echarts/charts';
 
 import {
   TitleComponent,
   TooltipComponent,
   LegendComponent,
   GridComponent,
-} from "echarts/components";
+} from 'echarts/components';
 
 use([
   GridComponent,
@@ -34,7 +34,7 @@ const props = defineProps<{
 }>();
 
 const photoStatisticsUrl = computed(() => {
-  return BASE_URL + "photos/" + props.photo.id + "/statistics";
+  return BASE_URL + 'photos/' + props.photo.id + '/statistics';
 });
 
 const photoStatistics = ref(null);
@@ -52,11 +52,11 @@ const initData = async () => {
   photoStatistics.value = photoStatisticsResponse.data;
 
   xAxis.value = photoStatistics.value.downloads.historical.values.map(
-    (value) => value.date
+    value => value.date
   );
 
   downloadsData.value = photoStatistics.value.downloads.historical.values.map(
-    (value) => value.value
+    value => value.value
   );
 
   //   likesData.value = photoStatistics.value.likes.historical.values.map(
@@ -64,7 +64,7 @@ const initData = async () => {
   //   );
 
   viewsData.value = photoStatistics.value.views.historical.values.map(
-    (value) => value.value
+    value => value.value
   );
 
   chartData.value = viewsData.value;
@@ -81,20 +81,20 @@ const chartOptions = computed(() => {
       text: chartTitle.value,
     },
     tooltip: {
-      trigger: "axis",
+      trigger: 'axis',
       axisPointer: {
-        type: "shadow",
+        type: 'shadow',
       },
     },
     // legend: {},
     grid: {
-      left: "2%",
-      right: "2%",
-      bottom: "2%",
+      left: '2%',
+      right: '2%',
+      bottom: '2%',
       containLabel: true,
     },
     xAxis: {
-      type: "category",
+      type: 'category',
       data: xAxis.value,
       axisLabel: {
         show: false,
@@ -104,7 +104,7 @@ const chartOptions = computed(() => {
       },
     },
     yAxis: {
-      type: "value",
+      type: 'value',
       axisLabel: {
         show: false,
       },
@@ -118,29 +118,29 @@ const chartOptions = computed(() => {
     series: [
       {
         name: chartDataName.value,
-        type: "bar",
+        type: 'bar',
         data: chartData.value,
         itemStyle: {
-          color: "#46A3F3",
+          color: '#46A3F3',
         },
       },
     ],
   };
 });
 
-const themeColors = ["#ee8a6a", "#0cb9c5", "#fec90f", "#05b187", "#fc4b6c"];
-const chartDataName = ref("Views");
+const themeColors = ['#ee8a6a', '#0cb9c5', '#fec90f', '#05b187', '#fc4b6c'];
+const chartDataName = ref('Views');
 const chartData = ref([]);
-const chartTitle = ref("");
-const currentChart = ref("view");
-const changeChart = (type) => {
+const chartTitle = ref('');
+const currentChart = ref('view');
+const changeChart = type => {
   currentChart.value = type;
-  if (type === "view") {
-    chartDataName.value = "Views";
+  if (type === 'view') {
+    chartDataName.value = 'Views';
     chartData.value = viewsData.value;
     chartTitle.value = `Photo Info (Total Views: ${photoStatistics.value.views.total})`;
   } else {
-    chartDataName.value = "Downloads";
+    chartDataName.value = 'Downloads';
     chartData.value = downloadsData.value;
     chartTitle.value = `Photo Info (Total Downloads: ${photoStatistics.value.downloads.total})`;
   }

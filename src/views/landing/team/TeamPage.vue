@@ -4,10 +4,10 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Team1 from "./components/Team1.vue";
-import Team2 from "./components/Team2.vue";
-import Team3 from "./components/Team3.vue";
-import Team4 from "./components/Team4.vue";
+import Team1 from './components/Team1.vue';
+import Team2 from './components/Team2.vue';
+import Team3 from './components/Team3.vue';
+import Team4 from './components/Team4.vue';
 </script>
 
 <template>

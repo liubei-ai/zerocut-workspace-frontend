@@ -7,69 +7,69 @@
 const articles = [
   {
     id: 1,
-    title: "Rev",
+    title: 'Rev',
     image:
-      "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60",
-    createAt: "4/22/2022",
-    lastReadAt: "1/13/2023",
-    author: "afisbburne0",
+      'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60',
+    createAt: '4/22/2022',
+    lastReadAt: '1/13/2023',
+    author: 'afisbburne0',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
   {
     id: 2,
-    title: "Rev",
+    title: 'Rev',
     image:
-      "https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
-    createAt: "7/12/2022",
-    lastReadAt: "11/13/2022",
-    author: "bbickerstasse1",
+      'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60',
+    createAt: '7/12/2022',
+    lastReadAt: '11/13/2022',
+    author: 'bbickerstasse1',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
   {
     id: 3,
-    title: "Honorable",
+    title: 'Honorable',
     image:
-      "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
-    createAt: "6/21/2022",
-    lastReadAt: "10/7/2022",
-    author: "bruffy2",
+      'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60',
+    createAt: '6/21/2022',
+    lastReadAt: '10/7/2022',
+    author: 'bruffy2',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
   {
     id: 4,
-    title: "Rev",
+    title: 'Rev',
     image:
-      "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60",
-    createAt: "4/22/2022",
-    lastReadAt: "1/13/2023",
-    author: "afisbburne0",
+      'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YXJ0aWNsZXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=600&q=60',
+    createAt: '4/22/2022',
+    lastReadAt: '1/13/2023',
+    author: 'afisbburne0',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
   {
     id: 5,
-    title: "Rev",
+    title: 'Rev',
     image:
-      "https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
-    createAt: "7/12/2022",
-    lastReadAt: "11/13/2022",
-    author: "bbickerstasse1",
+      'https://images.unsplash.com/photo-1476242906366-d8eb64c2f661?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60',
+    createAt: '7/12/2022',
+    lastReadAt: '11/13/2022',
+    author: 'bbickerstasse1',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
   {
     id: 6,
-    title: "Honorable",
+    title: 'Honorable',
     image:
-      "https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60",
-    createAt: "6/21/2022",
-    lastReadAt: "10/7/2022",
-    author: "bruffy2",
+      'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fGFydGljbGV8ZW58MHx8MHx8&auto=format&fit=crop&w=600&q=60',
+    createAt: '6/21/2022',
+    lastReadAt: '10/7/2022',
+    author: 'bruffy2',
     content:
-      "is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.",
+      'is a modular Vue UI kit to build and prototype your projects faster. It features rich and responsive layouts and components, is built with Vue CLI on top of Vuetify, and is pre-loaded with support for Vuex and Vue Router. Comes with a Vue and a Nuxt starter template.',
   },
 ];
 </script>

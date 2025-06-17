@@ -1,5 +1,5 @@
-import type { VoiceInfo } from "microsoft-cognitiveservices-speech-sdk";
-import { useSpeechStore } from "@/stores/speechStore";
+import type { VoiceInfo } from 'microsoft-cognitiveservices-speech-sdk';
+import { useSpeechStore } from '@/stores/speechStore';
 import {
   AudioConfig,
   SpeechSynthesisOutputFormat,
@@ -7,17 +7,17 @@ import {
   SpeechConfig,
   SpeechSynthesizer,
   ResultReason,
-} from "microsoft-cognitiveservices-speech-sdk";
+} from 'microsoft-cognitiveservices-speech-sdk';
 
 interface Config {
   langs?: readonly [
-    "fr-FR",
-    "ja-JP",
-    "en-US",
-    "zh-CN",
-    "zh-HK",
-    "ko-KR",
-    "de-DE"
+    'fr-FR',
+    'ja-JP',
+    'en-US',
+    'zh-CN',
+    'zh-HK',
+    'ko-KR',
+    'de-DE',
   ];
   isFetchAllVoice?: boolean;
 }
@@ -30,11 +30,11 @@ export function useSpeechService() {
   player.onAudioStart = function (_) {
     // 在开始语音合成之前设置为 true
     // state.isPlaying = true;
-    console.log("playback started");
+    console.log('playback started');
   };
   player.onAudioEnd = function (_) {
     // state.isPlaying = false;
-    console.log("playback finished");
+    console.log('playback finished');
   };
 
   const audioConfiga = AudioConfig.fromSpeakerOutput(player);
@@ -55,7 +55,7 @@ export function useSpeechService() {
         synthesizer;
         synthesizer.speakTextAsync(
           text,
-          (speechResult) => {
+          speechResult => {
             if (
               speechResult.reason === ResultReason.SynthesizingAudioCompleted
             ) {
@@ -68,18 +68,18 @@ export function useSpeechService() {
               );
             }
           },
-          (error) => {
+          error => {
             reject(error);
           }
         );
       });
 
       // 处理语音合成结果，例如播放音频或将其发送到客户端
-      console.log("Text-to-speech synthesis result:", result);
+      console.log('Text-to-speech synthesis result:', result);
 
       return result;
     } catch (error) {
-      console.error("Error during text-to-speech synthesis:", error);
+      console.error('Error during text-to-speech synthesis:', error);
       throw error;
     } finally {
       // 关闭语音合成器以释放资源

@@ -1,11 +1,11 @@
-@forward "./variables";
+@forward './variables';
 
-@forward "tailwindcss";
+@forward 'tailwindcss';
 
 @forward 'vuetify/styles';
 
-@forward "./override";
-@forward "./common/gradients";
-@forward "./common/animation";
-@forward "./common/beautify";
+@forward './override';
+@forward './common/gradients';
+@forward './common/animation';
+@forward './common/beautify';
 @forward './pages/editor';

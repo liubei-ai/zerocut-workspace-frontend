@@ -4,9 +4,9 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useUnsplashStore } from "../unsplashStore";
-import { Photo } from "../unsplashTypes";
-import PhotoDetailModal from "../PhotoDetailModal.vue";
+import { useUnsplashStore } from '../unsplashStore';
+import { Photo } from '../unsplashTypes';
+import PhotoDetailModal from '../PhotoDetailModal.vue';
 
 const unsplashStore = useUnsplashStore();
 const props = defineProps<{
@@ -16,17 +16,17 @@ const props = defineProps<{
 const snackbar = reactive({
   isShow: false,
   timeout: 1000,
-  text: "",
+  text: '',
 });
 
 const toggleLike = (photo: Photo) => {
   if (!photo.liked_by_user) {
-    snackbar.text = "Added to your favorite";
+    snackbar.text = 'Added to your favorite';
     snackbar.isShow = true;
     unsplashStore.addToFavorite(photo);
     photo.likes++;
   } else {
-    snackbar.text = "Removed from your favorite";
+    snackbar.text = 'Removed from your favorite';
     snackbar.isShow = true;
     unsplashStore.removeFromFavorite(photo);
     photo.likes--;
@@ -35,11 +35,11 @@ const toggleLike = (photo: Photo) => {
 };
 
 const downloadPhoto = (photo: Photo) => {
-  const a = document.createElement("a");
-  a.href = photo.links.download + "&force=true";
-  a.download = photo.id + ".jpg";
+  const a = document.createElement('a');
+  a.href = photo.links.download + '&force=true';
+  a.download = photo.id + '.jpg';
   a.click();
-  snackbar.text = "Downloading now, please wait";
+  snackbar.text = 'Downloading now, please wait';
   snackbar.timeout = 2000;
   snackbar.isShow = true;
   snackbar.timeout = 1000;

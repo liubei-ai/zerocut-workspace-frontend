@@ -4,10 +4,10 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Footer1 from "./components/Footer1.vue";
-import Footer2 from "./components/Footer2.vue";
-import Footer3 from "./components/Footer3.vue";
-import Footer4 from "./components/Footer4.vue";
+import Footer1 from './components/Footer1.vue';
+import Footer2 from './components/Footer2.vue';
+import Footer3 from './components/Footer3.vue';
+import Footer4 from './components/Footer4.vue';
 </script>
 
 <template>

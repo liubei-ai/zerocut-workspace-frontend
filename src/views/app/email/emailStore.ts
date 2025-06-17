@@ -1,28 +1,28 @@
-import { defineStore } from "pinia";
-import { Email } from "./emailTypes";
-import { inboxList, starredList } from "./emailData";
+import { defineStore } from 'pinia';
+import { Email } from './emailTypes';
+import { inboxList, starredList } from './emailData';
 
 export const useEmailStore = defineStore({
-  id: "email",
+  id: 'email',
   state: () => ({
     inbox: inboxList,
     starred: starredList,
-    currentLabel: "work",
+    currentLabel: 'work',
     labels: [
       {
-        id: "work",
-        title: "Work",
-        color: "primary",
+        id: 'work',
+        title: 'Work',
+        color: 'primary',
       },
       {
-        id: "relaxation",
-        title: "Relaxation",
-        color: "green",
+        id: 'relaxation',
+        title: 'Relaxation',
+        color: 'green',
       },
       {
-        id: "shopping",
-        title: "Shopping",
-        color: "teal",
+        id: 'shopping',
+        title: 'Shopping',
+        color: 'teal',
       },
     ],
   }),
@@ -50,7 +50,7 @@ export const useEmailStore = defineStore({
     // Add new todo
     addNewEmail(todo: Email) {
       const newEmail = {
-        id: "_" + Math.random().toString(36).substring(2, 11),
+        id: '_' + Math.random().toString(36).substring(2, 11),
         ...todo,
       };
       this.inbox.push(newEmail);

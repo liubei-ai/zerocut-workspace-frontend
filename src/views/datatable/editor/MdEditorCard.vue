@@ -4,9 +4,9 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { MdPreview } from "md-editor-v3";
+import { MdPreview } from 'md-editor-v3';
 
-import "md-editor-v3/lib/preview.css";
+import 'md-editor-v3/lib/preview.css';
 const content = ref(`
 <h2>Hi there,</h2>
 <p>

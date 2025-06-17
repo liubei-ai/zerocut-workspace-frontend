@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 onMounted(() => {
   initPhotos();
 });
@@ -21,7 +21,7 @@ const getPhotoHeight = (index: number) => {
 
 const initPhotos = () => {
   photos.value = Array.from({ length: 15 }, (value, index) => ({
-    id: index + "",
+    id: index + '',
     url: faker.image.animals(undefined, getPhotoHeight(index), true),
     title: faker.lorem.word(),
     description: faker.lorem.text(),
@@ -39,7 +39,7 @@ const initPhotos = () => {
 //   );
 // };
 
-const onScroll = (e) => {
+const onScroll = e => {
   const target = e.target;
   const scrollBottom =
     target.scrollHeight - target.scrollTop - target.clientHeight;

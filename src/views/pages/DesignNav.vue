@@ -109,24 +109,24 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
-import sitesData from "@data/sites.json";
-import { useWindowScroll } from "@vueuse/core";
+import { useDisplay } from 'vuetify';
+import sitesData from '@data/sites.json';
+import { useWindowScroll } from '@vueuse/core';
 const { name } = useDisplay();
 
-const currentId = ref("images");
+const currentId = ref('images');
 
 const width = computed(() => {
   // name is reactive and
   // must use .value
   switch (name.value) {
-    case "md":
+    case 'md':
       return 125;
-    case "lg":
+    case 'lg':
       return 175;
-    case "xl":
+    case 'xl':
       return 275;
-    case "xxl":
+    case 'xxl':
       return 375;
   }
   console.log(name.value);
@@ -135,12 +135,12 @@ const width = computed(() => {
 
 watch(
   () => name.value,
-  (newVal) => {}
+  newVal => {}
 );
 
-const jumpToAnchor = (id) => {
+const jumpToAnchor = id => {
   let element = document.getElementById(id);
-  element.scrollIntoView({ behavior: "smooth" });
+  element.scrollIntoView({ behavior: 'smooth' });
 };
 
 const backToTop = () => {
@@ -148,15 +148,15 @@ const backToTop = () => {
 };
 
 const anchorList = ref([
-  { text: "高清图库", icon: "mdi-clock", id: "images" },
-  { text: "设计教程", icon: "mdi-account", id: "lessons" },
-  { text: "界面设计", icon: "mdi-flag", id: "design" },
+  { text: '高清图库', icon: 'mdi-clock', id: 'images' },
+  { text: '设计教程', icon: 'mdi-account', id: 'lessons' },
+  { text: '界面设计', icon: 'mdi-flag', id: 'design' },
 ]);
 
 const sections = ref([
-  { title: "高清图库", id: "images" },
-  { title: "设计教程", id: "lessons" },
-  { title: "界面设计", id: "design" },
+  { title: '高清图库', id: 'images' },
+  { title: '设计教程', id: 'lessons' },
+  { title: '界面设计', id: 'design' },
 ]);
 
 const { x, y } = useWindowScroll();
@@ -170,19 +170,19 @@ onMounted(() => {
 
 const categoryList = computed(() => {
   return uniqueArray(
-    sites.value.map((item) => {
+    sites.value.map(item => {
       return {
         category_id: item.category_id,
         category_name: item.category_name,
         category_name_cn: item.category_name_cn,
       };
     }),
-    "category_id"
+    'category_id'
   );
 });
 
 const siteList = computed(() => {
-  let sitesObject = groupByKey(sites.value, "category_id");
+  let sitesObject = groupByKey(sites.value, 'category_id');
 
   let list = [];
   for (const key in sitesObject) {
@@ -200,8 +200,8 @@ const siteList = computed(() => {
 // 创建一个只包含唯一 id 值的对象的新数组
 let uniqueArray = (objectArr, key) => {
   // 利用 map 和 Set 对象实现对象数组的去重
-  return [...new Set(objectArr.map((item) => item[key]))].map((id) => {
-    return objectArr.find((item) => item[key] === id);
+  return [...new Set(objectArr.map(item => item[key]))].map(id => {
+    return objectArr.find(item => item[key] === id);
   });
 };
 

@@ -4,15 +4,15 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { txt2imgApi } from "@/api/stableDiffusionApi";
-import { useStableDiffusionStore } from "@/stores/stableDiffusionStore";
+import { txt2imgApi } from '@/api/stableDiffusionApi';
+import { useStableDiffusionStore } from '@/stores/stableDiffusionStore';
 const sdStore = useStableDiffusionStore();
 const params = reactive({
   seed: -1,
   enable_hr: false,
   height: 200,
-  negative_prompt: "",
-  prompt: "1cat",
+  negative_prompt: '',
+  prompt: '1cat',
   width: 200,
   steps: 20,
 });

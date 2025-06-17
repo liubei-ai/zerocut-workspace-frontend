@@ -4,7 +4,7 @@
 * @Description:
 -->
 <script setup lang="ts">
-import members from "@/data/members";
+import members from '@/data/members';
 </script>
 
 <template>

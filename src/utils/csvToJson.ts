@@ -213,15 +213,15 @@ const csvText = `site_id,category_id,category_name,category_name_cn,site_name,de
 `;
 
 // 使用split方法将文本按行分割
-const lines = csvText.split("\n");
+const lines = csvText.split('\n');
 
 // 定义JSON对象的键名数组
-const keys = lines[0].split(",");
+const keys = lines[0].split(',');
 
 // 使用map方法将其余行转换为JSON对象
-const json = lines.slice(1).map((line) => {
+const json = lines.slice(1).map(line => {
   // 将行按逗号分割
-  const values = line.split(",");
+  const values = line.split(',');
   // 返回一个对象，其键名对应keys数组中的值，键值对应values数组中的值
   return keys.reduce((obj, key, i) => ({ ...obj, [key]: values[i] }), {});
 });

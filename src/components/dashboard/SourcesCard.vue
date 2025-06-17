@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import PieChart1 from "@/views/chart/component/PieChart1.vue";
+import PieChart1 from '@/views/chart/component/PieChart1.vue';
 </script>
 
 <style lang="scss" scoped></style>

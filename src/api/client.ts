@@ -41,11 +41,12 @@ const handleAuthFailure = async (currentPath?: string) => {
 
     // 跳转到登录页面，保存当前路径用于登录后重定向
     const routerInstance = await getRouter();
-    const redirectPath = currentPath || routerInstance.currentRoute.value.fullPath;
+    const redirectPath =
+      currentPath || routerInstance.currentRoute.value.fullPath;
 
     await routerInstance.push({
       name: 'auth-signin',
-      query: { redirect: redirectPath }
+      query: { redirect: redirectPath },
     });
   } catch (error) {
     console.error('Handle auth failure error:', error);
@@ -56,11 +57,11 @@ const handleAuthFailure = async (currentPath?: string) => {
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  (config) => {
+  config => {
     // Add any request modifications here
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );

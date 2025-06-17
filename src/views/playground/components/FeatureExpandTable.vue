@@ -7,25 +7,25 @@
 const expanded = ref([]);
 const dessertHeaders = ref([
   {
-    title: "Dessert (100g serving)",
-    key: "name",
-    width: "300",
+    title: 'Dessert (100g serving)',
+    key: 'name',
+    width: '300',
     fixed: true,
   },
   {
-    title: "Calories",
-    key: "calories",
-    width: "300",
+    title: 'Calories',
+    key: 'calories',
+    width: '300',
   },
-  { title: "Fat (g)", key: "fat", width: "300" },
-  { title: "Carbs (g)", key: "carbs", width: "300" },
-  { title: "Protein (g)", key: "protein", width: "300" },
-  { title: "Iron (%)", key: "iron", width: "300" },
-  { title: "action", key: "data-table-expand", width: "300" },
+  { title: 'Fat (g)', key: 'fat', width: '300' },
+  { title: 'Carbs (g)', key: 'carbs', width: '300' },
+  { title: 'Protein (g)', key: 'protein', width: '300' },
+  { title: 'Iron (%)', key: 'iron', width: '300' },
+  { title: 'action', key: 'data-table-expand', width: '300' },
 ]);
 const desserts = ref([
   {
-    name: "Frozen Yogurt",
+    name: 'Frozen Yogurt',
     calories: 159,
     fat: 6.0,
     carbs: 24,
@@ -33,7 +33,7 @@ const desserts = ref([
     iron: 1,
   },
   {
-    name: "Ice cream sandwich",
+    name: 'Ice cream sandwich',
     calories: 237,
     fat: 9.0,
     carbs: 37,
@@ -41,7 +41,7 @@ const desserts = ref([
     iron: 1,
   },
   {
-    name: "Eclair",
+    name: 'Eclair',
     calories: 262,
     fat: 16.0,
     carbs: 23,
@@ -49,7 +49,7 @@ const desserts = ref([
     iron: 7,
   },
   {
-    name: "Cupcake",
+    name: 'Cupcake',
     calories: 305,
     fat: 3.7,
     carbs: 67,
@@ -57,7 +57,7 @@ const desserts = ref([
     iron: 8,
   },
   {
-    name: "Gingerbread",
+    name: 'Gingerbread',
     calories: 356,
     fat: 16.0,
     carbs: 49,
@@ -65,7 +65,7 @@ const desserts = ref([
     iron: 16,
   },
   {
-    name: "Jelly bean",
+    name: 'Jelly bean',
     calories: 375,
     fat: 0.0,
     carbs: 94,
@@ -73,7 +73,7 @@ const desserts = ref([
     iron: 0,
   },
   {
-    name: "Lollipop",
+    name: 'Lollipop',
     calories: 392,
     fat: 0.2,
     carbs: 98,
@@ -81,7 +81,7 @@ const desserts = ref([
     iron: 2,
   },
   {
-    name: "Honeycomb",
+    name: 'Honeycomb',
     calories: 408,
     fat: 3.2,
     carbs: 87,
@@ -89,7 +89,7 @@ const desserts = ref([
     iron: 45,
   },
   {
-    name: "Donut",
+    name: 'Donut',
     calories: 452,
     fat: 25.0,
     carbs: 51,
@@ -97,7 +97,7 @@ const desserts = ref([
     iron: 22,
   },
   {
-    name: "KitKat",
+    name: 'KitKat',
     calories: 518,
     fat: 26.0,
     carbs: 65,
@@ -106,7 +106,7 @@ const desserts = ref([
   },
 ]);
 
-const expandeFn = (val) => {
+const expandeFn = val => {
   console.log(val);
 };
 </script>

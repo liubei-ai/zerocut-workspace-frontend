@@ -4,12 +4,12 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useUnsplashStore } from "..//unsplashStore";
+import { useUnsplashStore } from '..//unsplashStore';
 const unsplashStore = useUnsplashStore();
 
 const showAdd = ref(false);
 
-const removePhoto = (photo) => {
+const removePhoto = photo => {
   unsplashStore.removeFromFavorite(photo);
 };
 </script>

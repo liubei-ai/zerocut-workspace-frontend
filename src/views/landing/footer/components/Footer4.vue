@@ -4,82 +4,82 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink } from 'vue-router';
 
 const navs = [
   {
-    title: "Product",
-    icon: "mdi-home",
-    to: "/",
+    title: 'Product',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "Overview",
-        to: "/",
+        title: 'Overview',
+        to: '/',
       },
       {
-        title: "Features",
-        to: "/",
+        title: 'Features',
+        to: '/',
       },
       {
-        title: "Pricing",
-        to: "/",
+        title: 'Pricing',
+        to: '/',
       },
     ],
   },
   {
-    title: "Resources",
-    icon: "mdi-home",
-    to: "/",
+    title: 'Resources',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "Documentation",
-        to: "/",
+        title: 'Documentation',
+        to: '/',
       },
       {
-        title: "News",
-        to: "/",
+        title: 'News',
+        to: '/',
       },
       {
-        title: "FAQ",
-        to: "/",
+        title: 'FAQ',
+        to: '/',
       },
     ],
   },
   {
-    title: "Company",
-    icon: "mdi-home",
-    to: "/",
+    title: 'Company',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "About us",
-        to: "/",
+        title: 'About us',
+        to: '/',
       },
       {
-        title: "Carrers",
-        to: "/",
+        title: 'Carrers',
+        to: '/',
       },
       {
-        title: "Press",
-        to: "/",
+        title: 'Press',
+        to: '/',
       },
     ],
   },
   {
-    title: "Contact",
-    icon: "mdi-home",
-    to: "/",
+    title: 'Contact',
+    icon: 'mdi-home',
+    to: '/',
     subNavs: [
       {
-        title: "Contact us",
-        to: "/",
+        title: 'Contact us',
+        to: '/',
       },
       {
-        title: "Offices",
-        to: "/",
+        title: 'Offices',
+        to: '/',
       },
       {
-        title: "Twitter",
-        to: "/",
+        title: 'Twitter',
+        to: '/',
       },
     ],
   },

@@ -7,10 +7,10 @@
 const chartOptions = computed(() => {
   return {
     chart: {
-      type: "area",
+      type: 'area',
       height: 300,
       fontFamily: `inherit`,
-      foreColor: "#adb0bb",
+      foreColor: '#adb0bb',
       zoom: {
         enabled: true,
       },
@@ -18,24 +18,24 @@ const chartOptions = computed(() => {
         show: false,
       },
     },
-    colors: ["#4782FB", "#47C4F4"],
+    colors: ['#4782FB', '#47C4F4'],
     dataLabels: {
       enabled: false,
     },
     stroke: {
-      width: "3",
-      curve: "smooth",
+      width: '3',
+      curve: 'smooth',
     },
     xaxis: {
-      type: "datetime",
+      type: 'datetime',
       categories: [
-        "2018-09-19T00:00:00",
-        "2018-09-19T01:30:00",
-        "2018-09-19T02:30:00",
-        "2018-09-19T03:30:00",
-        "2018-09-19T04:30:00",
-        "2018-09-19T05:30:00",
-        "2018-09-19T06:30:00",
+        '2018-09-19T00:00:00',
+        '2018-09-19T01:30:00',
+        '2018-09-19T02:30:00',
+        '2018-09-19T03:30:00',
+        '2018-09-19T04:30:00',
+        '2018-09-19T05:30:00',
+        '2018-09-19T06:30:00',
       ],
     },
     yaxis: {
@@ -46,14 +46,14 @@ const chartOptions = computed(() => {
     },
     legend: {
       show: true,
-      position: "bottom",
-      width: "50px",
+      position: 'bottom',
+      width: '50px',
     },
     grid: {
       show: false,
     },
     tooltip: {
-      theme: "dark",
+      theme: 'dark',
     },
   };
 });
@@ -61,11 +61,11 @@ const chartOptions = computed(() => {
 const areaChart = {
   series: [
     {
-      name: "Open Rate",
+      name: 'Open Rate',
       data: [0, 5, 6, 8, 25, 9, 8, 24],
     },
     {
-      name: "Recurring Payments",
+      name: 'Recurring Payments',
       data: [0, 3, 1, 2, 8, 1, 5, 1],
     },
   ],

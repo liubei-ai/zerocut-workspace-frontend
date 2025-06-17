@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import usersData from "@/data/users";
-import { Icon } from "@iconify/vue";
+import usersData from '@/data/users';
+import { Icon } from '@iconify/vue';
 </script>
 
 <template>

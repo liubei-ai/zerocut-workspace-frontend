@@ -4,11 +4,11 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useChatHistoryStore } from "@/stores/chatHistoryStore";
+import { useChatHistoryStore } from '@/stores/chatHistoryStore';
 const chatHistory = useChatHistoryStore();
 const router = useRouter();
 
-const navigateTo = (id) => {
+const navigateTo = id => {
   chatHistory.activeChatMenuId = id;
   router.push(`/chat/${id}`);
 };
@@ -21,7 +21,7 @@ const handleDelete = (id: number) => {
 };
 
 const confirmDelete = () => {
-  console.log("deleteId.value", deleteId.value);
+  console.log('deleteId.value', deleteId.value);
 
   chatHistory.deleteMenu(deleteId.value);
   deleteDialog.value = false;
@@ -29,7 +29,7 @@ const confirmDelete = () => {
 
 const deleteDialog = ref(false);
 
-const handleEdit = (id) => {
+const handleEdit = id => {
   chatHistory.updateMenu(id);
 };
 </script>

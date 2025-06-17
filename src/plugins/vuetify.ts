@@ -5,17 +5,16 @@
  */
 
 // Styles
-import "@mdi/font/css/materialdesignicons.css";
-import "vuetify/styles";
+import '@mdi/font/css/materialdesignicons.css';
+import 'vuetify/styles';
 // Composables
-import { createVuetify } from "vuetify";
-import type { ThemeDefinition } from "vuetify";
+import { createVuetify } from 'vuetify';
+import type { ThemeDefinition } from 'vuetify';
 
-import * as directives from "vuetify/directives";
-import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n";
-import { useI18n } from "vue-i18n";
-import i18n from "@/plugins/i18n";
-
+import * as directives from 'vuetify/directives';
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
+import { useI18n } from 'vue-i18n';
+import i18n from '@/plugins/i18n';
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 
@@ -66,7 +65,7 @@ const light = {
     // Shadows
     'shadow-key-umbra-color': '#2F2B3D',
   },
-}
+};
 
 const dark = {
   dark: true,
@@ -119,27 +118,26 @@ const dark = {
     // Shadows
     'shadow-key-umbra-color': '#0F1422',
   },
-}
+};
 
 export default createVuetify({
-
   directives,
   theme: {
-    defaultTheme: "light",
+    defaultTheme: 'light',
     themes: {
       light,
-      dark
+      dark,
     },
   },
   defaults: {
     VBtn: {
-      rounded: "md",
+      rounded: 'md',
     },
     VCheckbox: {
-      color: "primary",
+      color: 'primary',
     },
     VCard: {
-      rounded: "lg",
+      rounded: 'lg',
     },
   },
   locale: {

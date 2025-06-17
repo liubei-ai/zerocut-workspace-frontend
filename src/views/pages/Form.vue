@@ -162,15 +162,15 @@
 
 <script setup lang="ts">
 const formStyle = reactive({
-  labelColor: "3B64A0",
-  mainColor: "#3F69F4",
-  borderColor: "#42a5f5",
-  bgColor: "#fff",
-  density: "comfortable", //	'default' | 'comfortable' | 'compact'
-  variant: "outlined", // 'flat' | 'elevated' | 'tonal' | 'outlined' | 'text' | 'plain'
+  labelColor: '3B64A0',
+  mainColor: '#3F69F4',
+  borderColor: '#42a5f5',
+  bgColor: '#fff',
+  density: 'comfortable', //	'default' | 'comfortable' | 'compact'
+  variant: 'outlined', // 'flat' | 'elevated' | 'tonal' | 'outlined' | 'text' | 'plain'
 });
 
-const toggleDensity = ref("");
+const toggleDensity = ref('');
 </script>
 
 <style scoped>

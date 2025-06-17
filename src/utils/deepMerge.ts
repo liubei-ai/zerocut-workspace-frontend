@@ -1,4 +1,4 @@
-const isObject = (val: any): boolean => val && typeof val === "object";
+const isObject = (val: any): boolean => val && typeof val === 'object';
 const mergeArrayWithDedupe = (a: string[], b: string[]): string[] =>
   Array.from(new Set([...a, ...b]));
 
@@ -19,7 +19,7 @@ function deepMerge(target: Object, obj: Object): Object {
       target[key] = deepMerge(oldVal, newVal);
     } else if (Array.isArray(oldVal) && Array.isArray(newVal)) {
       target[key] = mergeArrayWithDedupe(oldVal, newVal);
-    } else if (typeof oldVal === "undefined") {
+    } else if (typeof oldVal === 'undefined') {
       target[key] = newVal;
     }
   }

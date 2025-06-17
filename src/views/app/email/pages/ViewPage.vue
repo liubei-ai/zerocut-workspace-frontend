@@ -4,10 +4,10 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import EmailEditor from "../components/EmailEditor.vue";
+import EmailEditor from '../components/EmailEditor.vue';
 
 const messagePanel = ref([3]);
-const content = ref("");
+const content = ref('');
 const submit = () => {
   console.log(content.value);
 };

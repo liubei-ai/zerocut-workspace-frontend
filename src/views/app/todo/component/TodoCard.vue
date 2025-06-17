@@ -4,14 +4,14 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { Todo } from "../todoTypes";
-import { useTodoStore } from "../todoStore";
+import { Todo } from '../todoTypes';
+import { useTodoStore } from '../todoStore';
 const todoStore = useTodoStore();
 const dialog = ref(false);
 const task = ref<Todo>({
-  id: "",
-  title: "",
-  detail: "",
+  id: '',
+  title: '',
+  detail: '',
   tags: [],
   completed: false,
 });
@@ -37,7 +37,7 @@ const save = () => {
   <v-dialog v-model="dialog" width="600">
     <v-card>
       <v-card-title class="pa-2">
-        {{ isEdit ? "Edit Task" : "Add Task" }}
+        {{ isEdit ? 'Edit Task' : 'Add Task' }}
         <v-spacer></v-spacer>
         <v-btn icon @click="dialog = false">
           <v-icon>mdi-close</v-icon>

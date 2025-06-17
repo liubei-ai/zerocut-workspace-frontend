@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 const generateMessage = () => {
   return {
     avatar: faker.internet.avatar(),
@@ -13,7 +13,7 @@ const generateMessage = () => {
 
 const list = ref(
   Array.from({ length: 5000 }, (value, index) => ({
-    id: index + "",
+    id: index + '',
     ...generateMessage(),
   }))
 );

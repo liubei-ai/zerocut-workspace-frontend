@@ -48,10 +48,10 @@ declare namespace ThemeConfig {
     isRTL: boolean;
 
     // dark theme colors
-    dark: import("vuetify").ThemeDefinition;
+    dark: import('vuetify').ThemeDefinition;
 
     // light theme colors
-    light: import("vuetify").ThemeDefinition;
+    light: import('vuetify').ThemeDefinition;
   }
 }
 

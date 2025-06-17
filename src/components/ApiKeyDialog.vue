@@ -4,11 +4,11 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useChatGPTStore } from "@/stores/chatGPTStore";
-import { useLocale } from "vuetify";
-import promptsZh from "@/data/ai/prompts-zh.json";
-import promptsEn from "@/data/ai/prompts-en.json";
-import promptsJa from "@/data/ai/prompts-ja.json";
+import { useChatGPTStore } from '@/stores/chatGPTStore';
+import { useLocale } from 'vuetify';
+import promptsZh from '@/data/ai/prompts-zh.json';
+import promptsEn from '@/data/ai/prompts-en.json';
+import promptsJa from '@/data/ai/prompts-ja.json';
 const { current } = useLocale();
 const chatGPTStore = useChatGPTStore();
 
@@ -19,13 +19,13 @@ const close = () => {
 const apiKeyShow = ref(false);
 
 const promptList = computed(() => {
-  if (current.value === "zhHans") {
+  if (current.value === 'zhHans') {
     return promptsZh;
   }
-  if (current.value === "en") {
+  if (current.value === 'en') {
     return promptsEn;
   }
-  if (current.value === "ja") {
+  if (current.value === 'ja') {
     return promptsJa;
   }
 });
@@ -35,7 +35,7 @@ const promptList = computed(() => {
   <v-dialog v-model="chatGPTStore.configDialog" width="600">
     <v-card>
       <v-card-title class="font-weight-bold pa-5">
-        {{ $t("chatgpt.config.title") }}</v-card-title
+        {{ $t('chatgpt.config.title') }}</v-card-title
       >
       <v-divider />
       <v-card-text>
@@ -44,7 +44,7 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
 
         <v-label class="font-weight-medium mb-2 ml-2">{{
-          $t("chatgpt.config.apikey")
+          $t('chatgpt.config.apikey')
         }}</v-label>
         <v-text-field
           color="primary"
@@ -63,7 +63,7 @@ const promptList = computed(() => {
         <!-- Proxy Url -->
         <!-- ---------------------------------------------- -->
         <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t("chatgpt.config.proxyUrl")
+          $t('chatgpt.config.proxyUrl')
         }}</v-label>
         <v-text-field
           color="primary"
@@ -82,7 +82,7 @@ const promptList = computed(() => {
         <!-- Model -->
         <!-- ---------------------------------------------- -->
         <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t("chatgpt.config.model")
+          $t('chatgpt.config.model')
         }}</v-label>
         <v-card variant="outlined" style="width: 430px" class="flex ml-2 pa-2">
           <v-btn
@@ -109,7 +109,7 @@ const promptList = computed(() => {
         <!-- Language -->
         <!-- ---------------------------------------------- -->
         <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
-          $t("chatgpt.config.role")
+          $t('chatgpt.config.role')
         }}</v-label>
 
         <v-select

@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 const isVisible = ref(false);
 
 const handleScroll = () => {
@@ -12,15 +12,15 @@ const handleScroll = () => {
 };
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener('scroll', handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener('scroll', handleScroll);
 });
 
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 </script>
 

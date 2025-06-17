@@ -4,30 +4,30 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { searchCollectionsApi } from "@/api/unsplashApi";
-import CopyLabel from "@/components/common/CopyLabel.vue";
-import moment from "moment";
-import type { Collection } from "./types";
+import { searchCollectionsApi } from '@/api/unsplashApi';
+import CopyLabel from '@/components/common/CopyLabel.vue';
+import moment from 'moment';
+import type { Collection } from './types';
 const loading = ref(true);
 const totalRows = ref(0);
 
 const queryOptions = reactive({
-  query: "cat",
+  query: 'cat',
   page: 1,
   per_page: 10,
 });
 
 const headers = [
-  { title: "ID", key: "id" },
-  { title: "Title", key: "title" },
-  { title: "Owner", key: "user" },
-  { title: "Total", key: "total_photos" },
+  { title: 'ID', key: 'id' },
+  { title: 'Title', key: 'title' },
+  { title: 'Owner', key: 'user' },
+  { title: 'Total', key: 'total_photos' },
 
-  { title: "cover", key: "cover_photo" },
-  { title: "preview", key: "preview_photos" },
-  { title: "link", key: "links" },
-  { title: "tags", key: "tags", width: "300px" },
-  { title: "publish", key: "published_at" },
+  { title: 'cover', key: 'cover_photo' },
+  { title: 'preview', key: 'preview_photos' },
+  { title: 'link', key: 'links' },
+  { title: 'tags', key: 'tags', width: '300px' },
+  { title: 'publish', key: 'published_at' },
 ];
 
 const collectionList = ref<Collection[]>([]);
@@ -37,7 +37,7 @@ const getCollections = async () => {
   const params = queryOptions;
   const collectionsResponse = await searchCollectionsApi(params);
 
-  collectionList.value = collectionsResponse.data.results.map((collection) => {
+  collectionList.value = collectionsResponse.data.results.map(collection => {
     return {
       id: collection.id,
       title: collection.title,
@@ -48,7 +48,7 @@ const getCollections = async () => {
       preview_photos: collection.preview_photos,
       links: collection.links,
       tags: collection.tags,
-      published_at: moment(collection.published_at).format("YYYY/MM/DD"),
+      published_at: moment(collection.published_at).format('YYYY/MM/DD'),
     };
   });
 
@@ -56,7 +56,7 @@ const getCollections = async () => {
   loading.value = false;
 };
 
-const onUpdateOptions = async (options) => {
+const onUpdateOptions = async options => {
   if (!queryOptions.query) return;
   queryOptions.per_page = options.itemsPerPage;
   queryOptions.page = options.page;
@@ -64,8 +64,8 @@ const onUpdateOptions = async (options) => {
 };
 
 const imgOverlay = ref(false);
-const imgSrc = ref("");
-const previewImg = (url) => {
+const imgSrc = ref('');
+const previewImg = url => {
   imgSrc.value = url;
   imgOverlay.value = true;
 };

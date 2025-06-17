@@ -12,12 +12,12 @@ type Person = {
   sex: string;
 };
 
-type MyPerson = myPick<Person, "name">;
+type MyPerson = myPick<Person, 'name'>;
 
 const reads = (person: MyPerson) => {
   console.log(person.name);
 };
 
 reads({
-  name: "yjk",
+  name: 'yjk',
 });

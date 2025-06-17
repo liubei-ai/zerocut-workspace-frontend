@@ -4,7 +4,7 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Logos1 from "./components/Logos1.vue";
+import Logos1 from './components/Logos1.vue';
 </script>
 
 <template>

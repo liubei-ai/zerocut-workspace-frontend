@@ -4,9 +4,9 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { computed } from "vue";
-import { useAuthStore } from "@/stores/authStore";
-import StatusMenu from "./StatusMenu.vue";
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
+import StatusMenu from './StatusMenu.vue';
 
 const authStore = useAuthStore();
 
@@ -14,16 +14,16 @@ const authStore = useAuthStore();
 const currentUser = computed(() => authStore.user);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const userName = computed(() => {
-  if (!isAuthenticated.value) return "Guest";
-  return authStore.userName || "Unknown User";
+  if (!isAuthenticated.value) return 'Guest';
+  return authStore.userName || 'Unknown User';
 });
 
 const userEmail = computed(() => {
-  if (!isAuthenticated.value) return "Please login";
+  if (!isAuthenticated.value) return 'Please login';
   // 由于当前 User 类型只有 username，暂时显示用户名作为邮箱
   return currentUser.value?.username
     ? `${currentUser.value.username}@example.com`
-    : "No email";
+    : 'No email';
 });
 
 // 生成用户头像（当前 User 类型没有 avatar 字段，使用默认逻辑）
@@ -35,10 +35,10 @@ const userAvatar = computed(() => {
 // 获取用户名首字母用于头像显示
 const userInitials = computed(() => {
   const name = userName.value;
-  if (name && name !== "Guest" && name !== "Unknown User") {
+  if (name && name !== 'Guest' && name !== 'Unknown User') {
     return name.charAt(0).toUpperCase();
   }
-  return isAuthenticated.value ? "U" : "G"; // 已登录显示 U (User)，未登录显示 G (Guest)
+  return isAuthenticated.value ? 'U' : 'G'; // 已登录显示 U (User)，未登录显示 G (Guest)
 });
 
 const handleLogout = () => {
@@ -47,40 +47,40 @@ const handleLogout = () => {
 
 const navs = [
   {
-    title: "Profile Details",
-    key: "menu.profileDetails",
-    link: "/profile",
-    icon: "mdi-account-box-outline",
+    title: 'Profile Details',
+    key: 'menu.profileDetails',
+    link: '/profile',
+    icon: 'mdi-account-box-outline',
   },
   {
-    title: "Plans and Billing",
-    key: "menu.plansAndBilling",
-    link: "/plans-and-billing",
-    icon: "mdi-credit-card-outline",
+    title: 'Plans and Billing',
+    key: 'menu.plansAndBilling',
+    link: '/plans-and-billing',
+    icon: 'mdi-credit-card-outline',
   },
   {
-    title: "Team",
-    key: "menu.team",
-    link: "/team",
-    icon: "mdi-account-group-outline",
+    title: 'Team',
+    key: 'menu.team',
+    link: '/team',
+    icon: 'mdi-account-group-outline',
   },
   {
-    title: "API Dashboard",
-    key: "menu.apiDashboard",
-    link: "/api-dashboard",
-    icon: "mdi-monitor-dashboard",
+    title: 'API Dashboard',
+    key: 'menu.apiDashboard',
+    link: '/api-dashboard',
+    icon: 'mdi-monitor-dashboard',
   },
   {
-    title: "Integrations",
-    key: "menu.integrations",
-    link: "/integrations",
-    icon: "mdi-puzzle-outline",
+    title: 'Integrations',
+    key: 'menu.integrations',
+    link: '/integrations',
+    icon: 'mdi-puzzle-outline',
   },
   {
-    title: "Ask the Community",
-    key: "menu.askCommunity",
-    link: "/ask-the-community",
-    icon: "mdi-help-circle-outline",
+    title: 'Ask the Community',
+    key: 'menu.askCommunity',
+    link: '/ask-the-community',
+    icon: 'mdi-help-circle-outline',
   },
 ];
 </script>
@@ -189,7 +189,7 @@ const navs = [
 
           <div>
             <v-list-item-subtitle class="text-body-2">
-              {{ $t("menu.logout") }}
+              {{ $t('menu.logout') }}
             </v-list-item-subtitle>
           </div>
         </v-list-item>

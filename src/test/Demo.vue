@@ -7,7 +7,7 @@
 defineProps({
   name: {
     type: String,
-    default: "J.K. Yang",
+    default: 'J.K. Yang',
   },
 });
 </script>

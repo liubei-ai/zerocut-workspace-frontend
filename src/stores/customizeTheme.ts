@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia';
 
 interface Color {
   colorId: number;
@@ -15,16 +15,16 @@ interface State {
 }
 
 export const useCustomizeThemeStore = defineStore({
-  id: "customizeTheme",
+  id: 'customizeTheme',
   state: (): State => ({
     miniSidebar: false,
     darkTheme: false,
     primaryColor: {
       colorId: 2,
-      colorName: "grey",
-      colorValue: "#344767",
+      colorName: 'grey',
+      colorValue: '#344767',
     },
-    localCode: "en",
+    localCode: 'en',
     mainSidebar: true,
     // mainSidebar: isMobile() ? false : true,
   }),
@@ -34,7 +34,7 @@ export const useCustomizeThemeStore = defineStore({
     strategies: [
       {
         storage: localStorage,
-        paths: ["darkTheme", "primaryColor", "localCode", "mainSidebar"],
+        paths: ['darkTheme', 'primaryColor', 'localCode', 'mainSidebar'],
       },
     ],
   },

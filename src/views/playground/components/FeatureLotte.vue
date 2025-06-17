@@ -4,9 +4,9 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { Vue3Lottie } from "vue3-lottie";
-import AnimationSearch1 from "@/components/animations/AnimationSearch1.vue";
-import AnimationSearch2 from "@/components/animations/AnimationSearch2.vue";
+import { Vue3Lottie } from 'vue3-lottie';
+import AnimationSearch1 from '@/components/animations/AnimationSearch1.vue';
+import AnimationSearch2 from '@/components/animations/AnimationSearch2.vue';
 </script>
 
 <template>

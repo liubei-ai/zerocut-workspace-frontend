@@ -6,32 +6,32 @@
 <script setup lang="ts">
 const items = [
   {
-    title: "1.9s",
+    title: '1.9s',
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.",
-    subTitle: "0-60 mph",
-    icon: "mdi-clock-outline",
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.',
+    subTitle: '0-60 mph',
+    icon: 'mdi-clock-outline',
   },
   {
-    title: "+250mph",
+    title: '+250mph',
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.",
-    subTitle: "Top Speed",
-    icon: "mdi-clock-outline",
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.',
+    subTitle: 'Top Speed',
+    icon: 'mdi-clock-outline',
   },
   {
-    title: "620mi",
+    title: '620mi',
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.",
-    icon: "mdi-clock-outline",
-    subTitle: "Range",
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.',
+    icon: 'mdi-clock-outline',
+    subTitle: 'Range',
   },
   {
-    title: "10k Nm",
+    title: '10k Nm',
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.",
-    icon: "mdi-clock-outline",
-    subTitle: "Torque",
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Esse expedita fugit.',
+    icon: 'mdi-clock-outline',
+    subTitle: 'Torque',
   },
 ];
 </script>

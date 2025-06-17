@@ -5,13 +5,13 @@
 -->
 
 <script setup lang="ts">
-import { plantuml } from "@/plugins/plantuml";
-import FeatureCard from "@/components/FeatureCard.vue";
+import { plantuml } from '@/plugins/plantuml';
+import FeatureCard from '@/components/FeatureCard.vue';
 
 const umlData = [
   {
-    name: "Timing Diagram - Basic",
-    size: "45vh",
+    name: 'Timing Diagram - Basic',
+    size: '45vh',
     data: `
     @startuml
 clock   "Clock_0"   as C0 with period 50
@@ -41,8 +41,8 @@ A is 1
 `,
   },
   {
-    name: "Timing Diagram - Binary",
-    size: "15vh",
+    name: 'Timing Diagram - Binary',
+    size: '15vh',
     data: `
     @startuml
 clock "Clock" as C with period 2
@@ -63,8 +63,8 @@ EN is low
 `,
   },
   {
-    name: "Timing Diagram - Highlighted ",
-    size: "25vh",
+    name: 'Timing Diagram - Highlighted ',
+    size: '25vh',
     data: `
     @startuml
 robust "Web Browser" as WB
@@ -98,8 +98,8 @@ highlight 600 to 700 : This is another\\nhighlight
 `,
   },
   {
-    name: "Timing Diagram - Digital ",
-    size: "35vh",
+    name: 'Timing Diagram - Digital ',
+    size: '35vh',
     data: `
 
     @startuml
@@ -164,16 +164,19 @@ db@:write_beg-1 -> addr@:write_end+1 : hold
 
 `,
   },
-]
-
-
-
+];
 </script>
 
 <template>
   <v-container v-for="uml in umlData">
-    <FeatureCard :title=uml.name>
-      <v-img :src="plantuml(uml.data)" width="100vw" :max-height=uml.size contain attrs="props" />
+    <FeatureCard :title="uml.name">
+      <v-img
+        :src="plantuml(uml.data)"
+        width="100vw"
+        :max-height="uml.size"
+        contain
+        attrs="props"
+      />
     </FeatureCard>
   </v-container>
 </template>

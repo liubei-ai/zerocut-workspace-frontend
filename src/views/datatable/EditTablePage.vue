@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { faker } from "@faker-js/faker";
-import moment from "moment";
+import { faker } from '@faker-js/faker';
+import moment from 'moment';
 
 const chooseColor = () => {
-  let colors = ["red", "indigo", "blue", "cyan", "teal"];
+  let colors = ['red', 'indigo', 'blue', 'cyan', 'teal'];
   let randomColor = colors[Math.floor(Math.random() * colors.length)];
   return randomColor;
 };
@@ -15,7 +15,7 @@ const generateMessage = () => {
     username: faker.internet.userName(),
     usermail: faker.internet.email(),
     phone: faker.phone.number(),
-    jdate: moment(faker.date.past()).format("YYYY/MM/DD"),
+    jdate: moment(faker.date.past()).format('YYYY/MM/DD'),
     role: faker.name.jobTitle(),
     rolestatus: chooseColor(),
   };
@@ -24,7 +24,7 @@ const generateMessage = () => {
 const list = () => {
   let list = [] as any[];
   list = Array.from({ length: 20 }, (value, index) => ({
-    id: "#1000" + index + "",
+    id: '#1000' + index + '',
     ...generateMessage(),
   }));
   return list;
@@ -35,35 +35,35 @@ onMounted(() => {
 });
 
 const dialog = ref(false);
-const search = ref("");
-const rolesbg = ref(["primary", "secondary", "error", "success", "warning"]);
+const search = ref('');
+const rolesbg = ref(['primary', 'secondary', 'error', 'success', 'warning']);
 const desserts = ref(list());
 const editedIndex = ref(-1);
 const refForm = ref();
 const editedItem = ref({
-  id: "",
-  avatar: "1.jpg",
-  username: "",
-  usermail: "",
-  phone: "",
-  jdate: "",
-  role: "",
-  rolestatus: "",
+  id: '',
+  avatar: '1.jpg',
+  username: '',
+  usermail: '',
+  phone: '',
+  jdate: '',
+  role: '',
+  rolestatus: '',
 });
 const defaultItem = ref({
-  id: "",
+  id: '',
   avatar: faker.internet.avatar(),
-  username: "",
-  usermail: "",
-  phone: "",
-  jdate: "",
-  role: "",
-  rolestatus: "",
+  username: '',
+  usermail: '',
+  phone: '',
+  jdate: '',
+  role: '',
+  rolestatus: '',
 });
 
 const nameRules = [
-  (v) => !!v || "Name is required",
-  (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+  v => !!v || 'Name is required',
+  v => (v && v.length <= 10) || 'Name must be less than 10 characters',
 ];
 
 //Methods
@@ -80,7 +80,7 @@ function editItem(item: any) {
 }
 function deleteItem(item: any) {
   const index = desserts.value.indexOf(item);
-  confirm("Are you sure you want to delete this item?") &&
+  confirm('Are you sure you want to delete this item?') &&
     desserts.value.splice(index, 1);
   ``;
 }
@@ -104,7 +104,7 @@ function save() {
 
 //Computed Property
 const formTitle = computed(() => {
-  return editedIndex.value === -1 ? "New Contact" : "Edit Contact";
+  return editedIndex.value === -1 ? 'New Contact' : 'Edit Contact';
 });
 </script>
 <template>

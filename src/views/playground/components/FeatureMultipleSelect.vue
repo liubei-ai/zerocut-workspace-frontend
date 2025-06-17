@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-const items = ref(["foooooooooo", "bar", "fizz", "buzz"]);
+const items = ref(['foooooooooo', 'bar', 'fizz', 'buzz']);
 const selected = ref([]);
 </script>
 

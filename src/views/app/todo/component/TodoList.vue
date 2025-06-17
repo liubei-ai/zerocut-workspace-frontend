@@ -4,26 +4,26 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useTodoStore } from "../todoStore";
-import { Todo } from "../todoTypes";
+import { useTodoStore } from '../todoStore';
+import { Todo } from '../todoTypes';
 
 const props = defineProps<{
   tasks: Todo[];
 }>();
 
 const todoStore = useTodoStore();
-const searchKey = ref("");
+const searchKey = ref('');
 
 const getLabelColor = (id: string) => {
   // Find the label by id from the labels array
-  const label = todoStore.labels.find((l) => l.id === id);
+  const label = todoStore.labels.find(l => l.id === id);
   // Return the color for that label, or an empty string
-  return label ? label.color : "";
+  return label ? label.color : '';
 };
 
 // filterdTodoList is a computed value that will filter the todoList based on the searchKey value
 const filterdTodoList = computed(() => {
-  return props.tasks.filter((todo) => {
+  return props.tasks.filter(todo => {
     return todo.title.toLowerCase().includes(searchKey.value.toLowerCase());
   });
 });

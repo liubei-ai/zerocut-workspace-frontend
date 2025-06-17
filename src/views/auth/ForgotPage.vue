@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const email = ref("");
+const email = ref('');
 </script>
 <template>
   <div>

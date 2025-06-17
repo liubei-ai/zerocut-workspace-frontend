@@ -4,14 +4,14 @@
 * @Description:
 -->
 <script setup lang="ts">
-import ImageToImage from "./SDComponents/ImageToImage.vue";
-import TextToImage from "./SDComponents/TextToImage.vue";
-import { useStableDiffusionStore } from "@/stores/stableDiffusionStore";
+import ImageToImage from './SDComponents/ImageToImage.vue';
+import TextToImage from './SDComponents/TextToImage.vue';
+import { useStableDiffusionStore } from '@/stores/stableDiffusionStore';
 const sdStore = useStableDiffusionStore();
 
 onMounted(() => {});
 
-const panelTab = ref("textToImage");
+const panelTab = ref('textToImage');
 </script>
 
 <template>

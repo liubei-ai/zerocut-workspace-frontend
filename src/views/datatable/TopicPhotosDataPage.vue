@@ -4,50 +4,50 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 const router = useRouter();
 const fn = () => {
   console.log(router);
 };
 
 const colors = ref([
-  "primary",
-  "secondary",
-  "success",
-  "info",
-  "warning",
-  "error",
-  "purple",
-  "pink",
-  "orange",
-  "teal",
-  "green",
-  "blue",
-  "indigo",
-  "deep-purple",
-  "deep-orange",
-  "cyan",
-  "light-green",
-  "light-blue",
-  "lime",
-  "amber",
-  "brown",
-  "grey",
-  "blue-grey",
-  "black",
-  "white",
+  'primary',
+  'secondary',
+  'success',
+  'info',
+  'warning',
+  'error',
+  'purple',
+  'pink',
+  'orange',
+  'teal',
+  'green',
+  'blue',
+  'indigo',
+  'deep-purple',
+  'deep-orange',
+  'cyan',
+  'light-green',
+  'light-blue',
+  'lime',
+  'amber',
+  'brown',
+  'grey',
+  'blue-grey',
+  'black',
+  'white',
 ]);
 
-const currentColor = ref("primary");
+const currentColor = ref('primary');
 
 const user = reactive({
-  name: "John",
+  name: 'John',
   age: 30,
   address: {
-    street: "123 Main St",
-    city: "Anytown",
-    state: "CA",
-    zip: "12345",
+    street: '123 Main St',
+    city: 'Anytown',
+    state: 'CA',
+    zip: '12345',
   },
 });
 </script>

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/authStore";
-import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from '@/stores/authStore';
+import { useRoute, useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 
 const refLoginForm = ref();
-const username = ref("alice01");
-const password = ref("123456");
+const username = ref('alice01');
+const password = ref('123456');
 const isFormValid = ref(true);
 
 // show password field
@@ -36,19 +36,19 @@ const handleLogin = async () => {
 
 // Validation Rules
 const usernameRules = ref([
-  (v: string) => !!v || "Username is required",
+  (v: string) => !!v || 'Username is required',
   (v: string) =>
-    (v && v.length >= 3) || "Username must be at least 3 characters",
+    (v && v.length >= 3) || 'Username must be at least 3 characters',
   (v: string) =>
-    (v && v.length <= 50) || "Username must be less than 50 characters",
+    (v && v.length <= 50) || 'Username must be less than 50 characters',
 ]);
 
 const passwordRules = ref([
-  (v: string) => !!v || "Password is required",
+  (v: string) => !!v || 'Password is required',
   (v: string) =>
-    (v && v.length >= 6) || "Password must be at least 6 characters",
+    (v && v.length >= 6) || 'Password must be at least 6 characters',
   (v: string) =>
-    (v && v.length <= 50) || "Password must be less than 50 characters",
+    (v && v.length <= 50) || 'Password must be less than 50 characters',
 ]);
 </script>
 <template>
@@ -113,7 +113,7 @@ const passwordRules = ref([
           color="primary"
           @click="handleLogin"
           class="mt-2"
-          >{{ $t("login.button") }}</v-btn
+          >{{ $t('login.button') }}</v-btn
         >
 
         <div v-if="authStore.error" class="error--text my-2">

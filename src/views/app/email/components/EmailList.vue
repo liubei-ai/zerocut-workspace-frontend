@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useEmailStore } from "../emailStore";
-import { Email } from "../emailTypes";
+import { useEmailStore } from '../emailStore';
+import { Email } from '../emailTypes';
 const router = useRouter();
 
 const props = defineProps<{
@@ -13,18 +13,18 @@ const props = defineProps<{
 }>();
 
 const emailStore = useEmailStore();
-const searchKey = ref("");
+const searchKey = ref('');
 
 const getLabelColor = (id: string) => {
   // Find the label by id from the labels array
-  const label = emailStore.labels.find((l) => l.id === id);
+  const label = emailStore.labels.find(l => l.id === id);
   // Return the color for that label, or an empty string
-  return label ? label.color : "";
+  return label ? label.color : '';
 };
 
 // filterdEmailList is a computed value that will filter the emailList based on the searchKey value
 const filterdEmailList = computed(() => {
-  return props.emails.filter((email) => {
+  return props.emails.filter(email => {
     return email.title.toLowerCase().includes(searchKey.value.toLowerCase());
   });
 });

@@ -4,13 +4,13 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useDisplay } from "vuetify";
-import { useCustomizeThemeStore } from "@/stores/customizeTheme";
-import LanguageSwitcher from "@/components/toolbar/LanguageSwitcher.vue";
-import ToolbarNotifications from "./ToolbarNotifications.vue";
-import ToolbarUser from "./ToolbarUser.vue";
-import { useTodoStore } from "@/views/app/todo/todoStore";
-import ThemeToggle from "./ThemeToggle.vue";
+import { useDisplay } from 'vuetify';
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
+import LanguageSwitcher from '@/components/toolbar/LanguageSwitcher.vue';
+import ToolbarNotifications from './ToolbarNotifications.vue';
+import ToolbarUser from './ToolbarUser.vue';
+import { useTodoStore } from '@/views/app/todo/todoStore';
+import ThemeToggle from './ThemeToggle.vue';
 const { mdAndUp } = useDisplay();
 const todoStore = useTodoStore();
 const customizeTheme = useCustomizeThemeStore();

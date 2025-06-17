@@ -5,32 +5,32 @@
 -->
 \
 <script setup lang="ts">
-import { Ref } from "vue";
-import type { EChartsOption } from "echarts";
-import { useChart, RenderType, ThemeType } from "@/plugins/echarts";
+import { Ref } from 'vue';
+import type { EChartsOption } from 'echarts';
+import { useChart, RenderType, ThemeType } from '@/plugins/echarts';
 
-const textTitle = ref("EchartPie");
+const textTitle = ref('EchartPie');
 const dataSet = ref([
-  { value: 335, name: "Direct" },
-  { value: 310, name: "Email" },
-  { value: 274, name: "Union Ads" },
-  { value: 235, name: "Video Ads" },
-  { value: 400, name: "Search Engine" },
+  { value: 335, name: 'Direct' },
+  { value: 310, name: 'Email' },
+  { value: 274, name: 'Union Ads' },
+  { value: 235, name: 'Video Ads' },
+  { value: 400, name: 'Search Engine' },
 ]);
 
 const option = computed<EChartsOption>(() => ({
   // ...chart option
-  backgroundColor: "#2c343c",
+  backgroundColor: '#2c343c',
   title: {
     text: textTitle.value,
-    left: "center",
+    left: 'center',
     top: 20,
     textStyle: {
-      color: "#ccc",
+      color: '#ccc',
     },
   },
   tooltip: {
-    trigger: "item",
+    trigger: 'item',
   },
   visualMap: {
     show: false,
@@ -42,30 +42,30 @@ const option = computed<EChartsOption>(() => ({
   },
   series: [
     {
-      name: "Access From",
-      type: "pie",
-      radius: "55%",
-      center: ["50%", "50%"],
+      name: 'Access From',
+      type: 'pie',
+      radius: '55%',
+      center: ['50%', '50%'],
       data: dataSet.value,
-      roseType: "radius",
+      roseType: 'radius',
       label: {
-        color: "rgba(255, 255, 255, 0.3)",
+        color: 'rgba(255, 255, 255, 0.3)',
       },
       labelLine: {
         lineStyle: {
-          color: "rgba(255, 255, 255, 0.3)",
+          color: 'rgba(255, 255, 255, 0.3)',
         },
         smooth: 0.2,
         length: 10,
         length2: 20,
       },
       itemStyle: {
-        color: "#c23531",
+        color: '#c23531',
         shadowBlur: 200,
-        shadowColor: "rgba(0, 0, 0, 0.5)",
+        shadowColor: 'rgba(0, 0, 0, 0.5)',
       },
-      animationType: "scale",
-      animationEasing: "elasticOut",
+      animationType: 'scale',
+      animationEasing: 'elasticOut',
       animationDelay: function (idx) {
         return Math.random() * 200;
       },
@@ -95,7 +95,7 @@ onMounted(() => {
 
 watch(
   () => option.value,
-  (newVal) => {
+  newVal => {
     setOption(newVal);
   },
   { deep: true }
@@ -104,7 +104,7 @@ watch(
 const add = () => {
   dataSet.value.push({
     value: Math.round(Math.random() * 1000),
-    name: "new data",
+    name: 'new data',
   });
 };
 </script>

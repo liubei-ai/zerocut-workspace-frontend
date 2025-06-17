@@ -1,36 +1,36 @@
-import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "@/stores/authStore";
-import UserRoutes from "./user.routes";
-import AuthRoutes from "./auth.routes";
-import UIRoutes from "./ui.routes";
-import LandingRoutes from "./landing.routes";
-import UtilityRoutes from "./utility.routes";
-import PagesRoutes from "./pages.routes";
-import ChartsRoutes from "./charts.routes";
-import UmlRoutes from "./uml.routes";
-import AppsRoutes from "./apps.routes";
-import DataRoutes from "./data.routes";
-import AiRoutes from "./ai.routes";
+import { createRouter, createWebHistory } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
+import UserRoutes from './user.routes';
+import AuthRoutes from './auth.routes';
+import UIRoutes from './ui.routes';
+import LandingRoutes from './landing.routes';
+import UtilityRoutes from './utility.routes';
+import PagesRoutes from './pages.routes';
+import ChartsRoutes from './charts.routes';
+import UmlRoutes from './uml.routes';
+import AppsRoutes from './apps.routes';
+import DataRoutes from './data.routes';
+import AiRoutes from './ai.routes';
 
 export const routes = [
   {
-    path: "/",
-    redirect: "/dashboard",
+    path: '/',
+    redirect: '/dashboard',
     meta: {},
   } as any,
   {
-    path: "/dashboard",
+    path: '/dashboard',
     meta: {
       requiresAuth: true,
-      layout: "landing",
+      layout: 'landing',
     },
-    component: () => import("@/views/pages/DashBoard.vue"),
+    component: () => import('@/views/pages/DashBoard.vue'),
   },
   {
-    path: "/:pathMatch(.*)*",
-    name: "error",
+    path: '/:pathMatch(.*)*',
+    name: 'error',
     component: () =>
-      import(/* webpackChunkName: "error" */ "@/views/errors/NotFoundPage.vue"),
+      import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
   },
   ...UserRoutes,
   ...LandingRoutes,
@@ -76,7 +76,7 @@ router.beforeEach(async (to, from, next) => {
       // 如果本地没有认证状态，直接跳转到登录页
       next({
         name: 'auth-signin',
-        query: { redirect: to.fullPath }
+        query: { redirect: to.fullPath },
       });
       return;
     }

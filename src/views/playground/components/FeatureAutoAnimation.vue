@@ -4,9 +4,9 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useAutoAnimate } from "@formkit/auto-animate/vue";
+import { useAutoAnimate } from '@formkit/auto-animate/vue';
 
-const items = ref(["React", "Vue", "Svelte", "Angular"]);
+const items = ref(['React', 'Vue', 'Svelte', 'Angular']);
 
 function sortAsc() {
   items.value.sort();

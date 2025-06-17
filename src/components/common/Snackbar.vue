@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useSnackbarStore } from "@/stores/snackbarStore";
+import { useSnackbarStore } from '@/stores/snackbarStore';
 const snackbarStore = useSnackbarStore();
 
-const getIcon = (type) => {
+const getIcon = type => {
   const icon = {
-    info: "mdi-information",
-    success: "mdi-check-circle",
-    error: "mdi-alert-circle",
-    warning: "mdi-alert",
+    info: 'mdi-information',
+    success: 'mdi-check-circle',
+    error: 'mdi-alert-circle',
+    warning: 'mdi-alert',
   };
 
   return icon[type];

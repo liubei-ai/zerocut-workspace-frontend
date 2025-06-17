@@ -15,14 +15,14 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["update:uploadFileList", "update:fileInfoList"]);
+const emit = defineEmits(['update:uploadFileList', 'update:fileInfoList']);
 
 const uploadFileList = computed({
   get() {
     return props.uploadFileList;
   },
   set(value) {
-    emit("update:uploadFileList", value);
+    emit('update:uploadFileList', value);
   },
 });
 
@@ -31,7 +31,7 @@ const fileInfoList = computed({
     return props.fileInfoList;
   },
   set(value) {
-    emit("update:fileInfoList", value);
+    emit('update:fileInfoList', value);
   },
 });
 
@@ -42,7 +42,7 @@ const triggerFileInput = () => {
 };
 
 // ファイル選択
-const handleInputChange = (event) => {
+const handleInputChange = event => {
   addFiles(event.target.files);
 };
 
@@ -52,7 +52,7 @@ function handleDrop(event) {
 }
 
 // ファイルを追加
-const addFiles = (newFiles) => {
+const addFiles = newFiles => {
   if (!newFiles) {
     return;
   }

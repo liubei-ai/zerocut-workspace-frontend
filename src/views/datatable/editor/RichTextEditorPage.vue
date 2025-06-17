@@ -4,10 +4,10 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useEditor, EditorContent } from "@tiptap/vue-3";
-import StarterKit from "@tiptap/starter-kit";
-import EditorMenubar from "@/components/RichEditorMenubar.vue";
-import MdEditorCard from "./MdEditorCard.vue";
+import { useEditor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import EditorMenubar from '@/components/RichEditorMenubar.vue';
+import MdEditorCard from './MdEditorCard.vue';
 const editor = useEditor({
   extensions: [StarterKit],
   content: `

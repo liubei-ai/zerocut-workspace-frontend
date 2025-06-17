@@ -4,30 +4,30 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { searchUsersApi } from "@/api/unsplashApi";
-import CopyLabel from "@/components/common/CopyLabel.vue";
+import { searchUsersApi } from '@/api/unsplashApi';
+import CopyLabel from '@/components/common/CopyLabel.vue';
 
 const loading = ref(true);
 const totalRows = ref(0);
 
 const queryOptions = reactive({
-  query: "cat",
+  query: 'cat',
   page: 1,
   per_page: 25,
 });
 
 const headers = [
-  { title: "用户名", key: "username" },
-  { title: "头像", key: "avatar" },
-  { title: "用户id", key: "id" },
-  { title: "全名", key: "name" },
-  { title: "位置", key: "location", width: "200px" },
-  { title: "是否可用", key: "for_hire", align: "center" },
-  { title: "收藏数", key: "total_collections" },
-  { title: "喜欢数", key: "total_likes" },
-  { title: "照片数", key: "total_photos" },
-  { title: "接受条款", key: "accepted_tos", align: "center" },
-  { title: "作品集", key: "portfolio_url" },
+  { title: '用户名', key: 'username' },
+  { title: '头像', key: 'avatar' },
+  { title: '用户id', key: 'id' },
+  { title: '全名', key: 'name' },
+  { title: '位置', key: 'location', width: '200px' },
+  { title: '是否可用', key: 'for_hire', align: 'center' },
+  { title: '收藏数', key: 'total_collections' },
+  { title: '喜欢数', key: 'total_likes' },
+  { title: '照片数', key: 'total_photos' },
+  { title: '接受条款', key: 'accepted_tos', align: 'center' },
+  { title: '作品集', key: 'portfolio_url' },
 ];
 
 const usersList = ref([]);
@@ -37,7 +37,7 @@ const getUsers = async () => {
   const params = queryOptions;
   const usersResponse = await searchUsersApi(params);
 
-  usersList.value = usersResponse.data.results.map((user) => {
+  usersList.value = usersResponse.data.results.map(user => {
     return {
       id: user.id,
       avatar: user.profile_image.small,
@@ -57,16 +57,16 @@ const getUsers = async () => {
   loading.value = false;
 };
 
-const onUpdateOptions = async (options) => {
+const onUpdateOptions = async options => {
   queryOptions.per_page = options.itemsPerPage;
   queryOptions.page = options.page;
   await getUsers();
 };
 
-const getLikesColor = (likes) => {
-  if (likes > 400) return "red";
-  else if (likes > 200) return "orange";
-  else return "grey";
+const getLikesColor = likes => {
+  if (likes > 400) return 'red';
+  else if (likes > 200) return 'orange';
+  else return 'grey';
 };
 </script>
 
@@ -121,7 +121,7 @@ const getLikesColor = (likes) => {
                   :color="item.columns.for_hire ? 'blue' : 'grey'"
                   class="font-weight-bold"
                 >
-                  {{ item.columns.for_hire ? "Hire" : "No Hire" }}</v-chip
+                  {{ item.columns.for_hire ? 'Hire' : 'No Hire' }}</v-chip
                 >
               </td>
               <td>
@@ -154,7 +154,7 @@ const getLikesColor = (likes) => {
                     "
                   ></v-icon>
                   {{
-                    item.columns.accepted_tos ? "Accepted" : "Not Accepted"
+                    item.columns.accepted_tos ? 'Accepted' : 'Not Accepted'
                   }}</v-chip
                 >
               </td>

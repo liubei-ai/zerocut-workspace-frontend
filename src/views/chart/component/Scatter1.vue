@@ -5,9 +5,9 @@
 -->
 \
 <script setup lang="ts">
-import { Ref } from "vue";
-import type { EChartsOption } from "echarts";
-import echarts, { useChart, RenderType, ThemeType } from "@/plugins/echarts";
+import { Ref } from 'vue';
+import type { EChartsOption } from 'echarts';
+import echarts, { useChart, RenderType, ThemeType } from '@/plugins/echarts';
 
 // Generate data
 let category: string[] = [];
@@ -20,7 +20,7 @@ for (let i = 0; i < 20; i++) {
     date.getFullYear(),
     date.getMonth() + 1,
     date.getDate(),
-  ].join("-");
+  ].join('-');
   category.push(dateStr);
   let b = Math.random() * 200;
   let d = Math.random() * 200;
@@ -28,17 +28,17 @@ for (let i = 0; i < 20; i++) {
   lineData.push(d + b);
 }
 const option = computed<EChartsOption>(() => ({
-  backgroundColor: "#0f375f",
+  backgroundColor: '#0f375f',
   tooltip: {
-    trigger: "axis",
+    trigger: 'axis',
     axisPointer: {
-      type: "shadow",
+      type: 'shadow',
     },
   },
   legend: {
-    data: ["line", "bar", "line", "dotted"],
+    data: ['line', 'bar', 'line', 'dotted'],
     textStyle: {
-      color: "#ccc",
+      color: '#ccc',
     },
     padding: [30, 0, 0, 0],
   },
@@ -46,7 +46,7 @@ const option = computed<EChartsOption>(() => ({
     data: category,
     axisLine: {
       lineStyle: {
-        color: "#ccc",
+        color: '#ccc',
       },
     },
   },
@@ -54,54 +54,54 @@ const option = computed<EChartsOption>(() => ({
     splitLine: { show: false },
     axisLine: {
       lineStyle: {
-        color: "#ccc",
+        color: '#ccc',
       },
     },
   },
   series: [
     {
-      name: "line",
-      type: "line",
+      name: 'line',
+      type: 'line',
       smooth: true,
       showAllSymbol: true,
-      symbol: "emptyCircle",
+      symbol: 'emptyCircle',
       symbolSize: 15,
       data: lineData,
     },
     {
-      name: "bar",
-      type: "bar",
+      name: 'bar',
+      type: 'bar',
       barWidth: 10,
       itemStyle: {
         borderRadius: 5,
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "#14c8d4" },
-          { offset: 1, color: "#43eec6" },
+          { offset: 0, color: '#14c8d4' },
+          { offset: 1, color: '#43eec6' },
         ]),
       },
       data: barData,
     },
     {
-      name: "line",
-      type: "bar",
-      barGap: "-100%",
+      name: 'line',
+      type: 'bar',
+      barGap: '-100%',
       barWidth: 10,
       itemStyle: {
         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "rgba(20,200,212,0.5)" },
-          { offset: 0.2, color: "rgba(20,200,212,0.2)" },
-          { offset: 1, color: "rgba(20,200,212,0)" },
+          { offset: 0, color: 'rgba(20,200,212,0.5)' },
+          { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
+          { offset: 1, color: 'rgba(20,200,212,0)' },
         ]),
       },
       z: -12,
       data: lineData,
     },
     {
-      name: "dotted",
-      type: "pictorialBar",
-      symbol: "rect",
+      name: 'dotted',
+      type: 'pictorialBar',
+      symbol: 'rect',
       itemStyle: {
-        color: "#0f375f",
+        color: '#0f375f',
       },
       symbolRepeat: true,
       symbolSize: [12, 4],
@@ -134,7 +134,7 @@ onMounted(() => {
 
 watch(
   () => option.value,
-  (newVal) => {
+  newVal => {
     setOption(newVal);
   },
   { deep: true }

@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import EmailMenu from "@/views/app/email/components/EmailMenu.vue";
+import EmailMenu from '@/views/app/email/components/EmailMenu.vue';
 </script>
 
 <template>

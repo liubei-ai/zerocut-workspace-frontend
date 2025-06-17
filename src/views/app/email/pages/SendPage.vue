@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import EmailList from "../components/EmailList.vue";
-import { useEmailStore } from "../emailStore";
+import EmailList from '../components/EmailList.vue';
+import { useEmailStore } from '../emailStore';
 const emailStore = useEmailStore();
 </script>
 

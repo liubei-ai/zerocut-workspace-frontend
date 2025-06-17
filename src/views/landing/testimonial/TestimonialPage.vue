@@ -4,10 +4,10 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Testimonial1 from "./components/Testimonial1.vue";
-import Testimonial2 from "./components/Testimonial2.vue";
-import Testimonial3 from "./components/Testimonial3.vue";
-import Testimonial4 from "./components/Testimonial4.vue";
+import Testimonial1 from './components/Testimonial1.vue';
+import Testimonial2 from './components/Testimonial2.vue';
+import Testimonial3 from './components/Testimonial3.vue';
+import Testimonial4 from './components/Testimonial4.vue';
 </script>
 
 <template>

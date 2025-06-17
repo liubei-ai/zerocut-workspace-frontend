@@ -7,11 +7,11 @@
 import clipboard from '@/utils/clipboardUtils';
 
 // ToolTip
-const tooltip = ref("Copy");
+const tooltip = ref('Copy');
 // SnackBar
 const snackbar = ref(false);
-const timeout = ref("1000");
-const copiedText = "Copied to clipboard!";
+const timeout = ref('1000');
+const copiedText = 'Copied to clipboard!';
 // Copy Animation Flag
 const heartBeat = ref(false);
 // Props
@@ -19,7 +19,7 @@ const props = defineProps({
   // Text to copy to clipboard
   text: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 
@@ -30,10 +30,10 @@ const copyText = (text: string, event: Event) => {
   clipboard(text, event);
   heartBeat.value = true;
   snackbar.value = true;
-  tooltip.value = "Copied!";
+  tooltip.value = 'Copied!';
   setTimeout(() => {
     heartBeat.value = false;
-    tooltip.value = "Copy!";
+    tooltip.value = 'Copy!';
   }, 1000);
 };
 </script>

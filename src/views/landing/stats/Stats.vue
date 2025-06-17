@@ -4,8 +4,8 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Stats1 from "./components/Stats1.vue";
-import Stats2 from "./components/Stats2.vue";
+import Stats1 from './components/Stats1.vue';
+import Stats2 from './components/Stats2.vue';
 </script>
 
 <template>

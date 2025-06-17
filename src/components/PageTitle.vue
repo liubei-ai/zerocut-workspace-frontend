@@ -5,7 +5,7 @@
 <script setup lang="ts">
 const route = useRoute();
 
-const title = ref("");
+const title = ref('');
 
 watchEffect(() => {
   if (route.meta && route.meta.title) {

@@ -4,9 +4,9 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Newsletter1 from "./components/Newsletter1.vue";
-import Newsletter2 from "./components/Newsletter2.vue";
-import Newsletter3 from "./components/Newsletter3.vue";
+import Newsletter1 from './components/Newsletter1.vue';
+import Newsletter2 from './components/Newsletter2.vue';
+import Newsletter3 from './components/Newsletter3.vue';
 </script>
 
 <template>

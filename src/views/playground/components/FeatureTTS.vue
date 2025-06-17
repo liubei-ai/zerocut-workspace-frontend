@@ -4,17 +4,17 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import * as sdk from "microsoft-cognitiveservices-speech-sdk";
-import type { VoiceInfo } from "microsoft-cognitiveservices-speech-sdk";
-import { useSpeechService } from "@/hooks/useSpeechService";
-import { useSpeechStore } from "@/stores/speechStore";
+import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
+import type { VoiceInfo } from 'microsoft-cognitiveservices-speech-sdk';
+import { useSpeechService } from '@/hooks/useSpeechService';
+import { useSpeechStore } from '@/stores/speechStore';
 const speechStore = useSpeechStore();
 // import { supportLanguageMap } from "@/configs/azure";
 
 // const currentLang = ref("en-US");
 
 const subscriptionKey = ref(import.meta.env.VITE_TTS_KEY);
-const region = ref("eastus");
+const region = ref('eastus');
 
 // 创建语音配置对象
 const speechConfig = sdk.SpeechConfig.fromSubscription(
@@ -69,22 +69,22 @@ const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
 //   }
 // }
 
-const text = ref("Hello, this is an example of text-to-speech synthesis.");
+const text = ref('Hello, this is an example of text-to-speech synthesis.');
 
-const languages = ref(["ja-JP", "en-US", "zh-CN", "zh-HK"]);
+const languages = ref(['ja-JP', 'en-US', 'zh-CN', 'zh-HK']);
 
 const allVoices = ref<VoiceInfo[]>([]);
 
 // 获取语音列表
 const getVoices = async () => {
   const res = await synthesizer.getVoicesAsync();
-  allVoices.value = res.voices.filter((voice) =>
+  allVoices.value = res.voices.filter(voice =>
     languages.value.includes(voice.locale)
   );
 
   // fr-FR 法语 ja-JP 日语 en-US 英语 zh-CN 中文 zh-HK 粤语 ko-KR 韩语 de-DE 德语
 
-  console.log("allVoices", allVoices.value);
+  console.log('allVoices', allVoices.value);
 };
 
 const { textToSpeech } = useSpeechService();
@@ -92,11 +92,11 @@ const { textToSpeech } = useSpeechService();
 async function handleTextToSpeech(text: string) {
   try {
     await textToSpeech(text);
-    console.log("Start");
+    console.log('Start');
   } catch (error) {
-    console.error("Error during text-to-speech:", error);
+    console.error('Error during text-to-speech:', error);
   } finally {
-    console.log("End");
+    console.log('End');
   }
 }
 

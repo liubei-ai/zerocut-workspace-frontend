@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useTheme } from "vuetify";
-import { useCustomizeThemeStore } from "@/stores/customizeTheme";
-import { Icon } from "@iconify/vue";
+import { useTheme } from 'vuetify';
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
+import { Icon } from '@iconify/vue';
 interface Color {
   colorId: number;
   colorName: string;
@@ -12,45 +12,45 @@ const theme = useTheme();
 const themeDrawer = ref(false);
 const currentColor = ref<Color>({
   colorId: 1,
-  colorName: "purple",
-  colorValue: "#705CF6",
+  colorName: 'purple',
+  colorValue: '#705CF6',
 });
 const primaryColors = ref([
   {
     colorId: 1,
-    colorName: "purple",
-    colorValue: "#705CF6",
+    colorName: 'purple',
+    colorValue: '#705CF6',
   },
   {
     colorId: 2,
-    colorName: "grey",
-    colorValue: "#344767",
+    colorName: 'grey',
+    colorValue: '#344767',
   },
   {
     colorId: 3,
-    colorName: "info",
-    colorValue: "#17C1E8",
+    colorName: 'info',
+    colorValue: '#17C1E8',
   },
   {
     colorId: 4,
-    colorName: "success",
-    colorValue: "#82D616",
+    colorName: 'success',
+    colorValue: '#82D616',
   },
   {
     colorId: 5,
-    colorName: "warning",
-    colorValue: "#F2825A",
+    colorName: 'warning',
+    colorValue: '#F2825A',
   },
   {
     colorId: 6,
-    colorName: "error",
-    colorValue: "#EA0606",
+    colorName: 'error',
+    colorValue: '#EA0606',
   },
 ]);
 
 onMounted(() => updatePrimaryColor(customizeTheme.primaryColor));
 
-watch(currentColor, (newVal) => {
+watch(currentColor, newVal => {
   updatePrimaryColor(newVal);
 });
 

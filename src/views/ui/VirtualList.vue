@@ -77,22 +77,22 @@
   </v-container>
 </template>
 <script setup lang="ts">
-import { useVirtualList } from "@vueuse/core";
+import { useVirtualList } from '@vueuse/core';
 
 const index = ref(2);
-const search = ref("");
+const search = ref('');
 
 // This is a function that returns an array of objects with a height and size property.
 // The height property is either 42 or 84 and the size property is either "small" or "large"
 
-const allItems = Array.from(Array(9999).keys()).map((i) => ({
+const allItems = Array.from(Array(9999).keys()).map(i => ({
   // generate array of objects with height and size properties
   height: i % 2 === 0 ? 42 : 84, // if index is even, height is 42, otherwise 84
-  size: i % 2 === 0 ? "small" : "large", // if index is even, size is small, otherwise large
+  size: i % 2 === 0 ? 'small' : 'large', // if index is even, size is small, otherwise large
 }));
 
 const filteredItems = computed(() => {
-  return allItems.filter((item) =>
+  return allItems.filter(item =>
     item.size.startsWith(search.value.toLowerCase())
   );
 });
@@ -100,7 +100,7 @@ const filteredItems = computed(() => {
 const { list, containerProps, wrapperProps, scrollTo } = useVirtualList(
   filteredItems,
   {
-    itemHeight: (i) => filteredItems.value[i].height + 8,
+    itemHeight: i => filteredItems.value[i].height + 8,
     overscan: 10,
   }
 );

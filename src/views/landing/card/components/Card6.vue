@@ -4,7 +4,7 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 </script>
 
 <template>
@@ -60,7 +60,7 @@ import { Icon } from "@iconify/vue";
     height: 7px;
     background-color: #e2eaf1;
     border-radius: 0 0 5px 5px;
-    content: "";
+    content: '';
   }
   &:before {
     position: absolute;
@@ -70,7 +70,7 @@ import { Icon } from "@iconify/vue";
     height: 7px;
     background-color: #cfd5e3;
     border-radius: 0 0 5px 5px;
-    content: "";
+    content: '';
     box-shadow: 0 5px 60px rgba(0, 0, 0, 0.5);
   }
 

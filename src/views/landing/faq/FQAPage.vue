@@ -4,7 +4,7 @@
 * @Description:
 -->
 <script setup lang="ts">
-import FAQ1 from "./components/FAQ1.vue";
+import FAQ1 from './components/FAQ1.vue';
 </script>
 
 <template>

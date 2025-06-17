@@ -4,30 +4,30 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { getTopicsApi } from "@/api/unsplashApi";
-import CopyLabel from "@/components/common/CopyLabel.vue";
-import moment from "moment";
-import type { Topic } from "./types";
+import { getTopicsApi } from '@/api/unsplashApi';
+import CopyLabel from '@/components/common/CopyLabel.vue';
+import moment from 'moment';
+import type { Topic } from './types';
 const loading = ref(true);
 const totalRows = ref(0);
 
 const queryOptions = reactive({
-  query: "cat",
+  query: 'cat',
   page: 1,
   per_page: 19,
 });
 
 const headers = [
-  { title: "ID", key: "id" },
-  { title: "Title", key: "title" },
-  { title: "Cover", key: "cover_photo" },
-  { title: "Preview", key: "preview_photos" },
-  { title: "Photos", key: "total_photos" },
-  { title: "Description", key: "description", width: "500px" },
+  { title: 'ID', key: 'id' },
+  { title: 'Title', key: 'title' },
+  { title: 'Cover', key: 'cover_photo' },
+  { title: 'Preview', key: 'preview_photos' },
+  { title: 'Photos', key: 'total_photos' },
+  { title: 'Description', key: 'description', width: '500px' },
 
-  { title: "Link", key: "links" },
-  { title: "Publish", key: "published_at" },
-  { title: "", key: "data-table-expand" },
+  { title: 'Link', key: 'links' },
+  { title: 'Publish', key: 'published_at' },
+  { title: '', key: 'data-table-expand' },
 ];
 
 const topicList = ref<Topic[]>([]);
@@ -37,7 +37,7 @@ const getTopics = async () => {
   const params = queryOptions;
   const topicsResponse = await getTopicsApi(params);
 
-  topicList.value = topicsResponse.data.map((topic) => {
+  topicList.value = topicsResponse.data.map(topic => {
     return {
       id: topic.id,
       title: topic.title,
@@ -46,7 +46,7 @@ const getTopics = async () => {
       cover_photo: topic.cover_photo,
       preview_photos: topic.preview_photos,
       links: topic.links,
-      published_at: moment(topic.published_at).format("YYYY/MM/DD"),
+      published_at: moment(topic.published_at).format('YYYY/MM/DD'),
     };
   });
 
@@ -54,7 +54,7 @@ const getTopics = async () => {
   loading.value = false;
 };
 
-const onUpdateOptions = async (options) => {
+const onUpdateOptions = async options => {
   if (!queryOptions.query) return;
   queryOptions.per_page = options.itemsPerPage;
   queryOptions.page = options.page;
@@ -62,8 +62,8 @@ const onUpdateOptions = async (options) => {
 };
 
 const imgOverlay = ref(false);
-const imgSrc = ref("");
-const previewImg = (url) => {
+const imgSrc = ref('');
+const previewImg = url => {
   imgSrc.value = url;
   imgOverlay.value = true;
 };

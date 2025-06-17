@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Animation404 from "@/components/animations/Animation404.vue";
+import Animation404 from '@/components/animations/Animation404.vue';
 </script>
 <template>
   <v-card

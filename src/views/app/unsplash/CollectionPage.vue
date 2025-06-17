@@ -4,20 +4,20 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { BASE_URL, config } from "./unsplashConfig";
-import axios, { AxiosResponse } from "axios";
+import { BASE_URL, config } from './unsplashConfig';
+import axios, { AxiosResponse } from 'axios';
 const route = useRoute();
 
 const collectionUrl = computed(() => {
-  return BASE_URL + "collections/" + route.params.id;
+  return BASE_URL + 'collections/' + route.params.id;
 });
 
 const collectionPhotosUrl = computed(() => {
-  return BASE_URL + "collections/" + route.params.id + "/photos";
+  return BASE_URL + 'collections/' + route.params.id + '/photos';
 });
 
 const collectionSimilarUrl = computed(() => {
-  return BASE_URL + "collections/" + route.params.id + "/similar";
+  return BASE_URL + 'collections/' + route.params.id + '/similar';
 });
 
 const isLoading = ref(false);
@@ -36,7 +36,7 @@ const getCollection = async () => {
     .then((response: AxiosResponse) => {
       console.log(response.data);
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error);
     });
 };
@@ -47,7 +47,7 @@ const getCollectionPhotos = async () => {
     .then((response: AxiosResponse) => {
       console.log(response.data);
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error);
     });
 };
@@ -58,7 +58,7 @@ const getCollectionSimilar = async () => {
     .then((response: AxiosResponse) => {
       console.log(response.data);
     })
-    .catch((error) => {
+    .catch(error => {
       console.log(error);
     });
 };

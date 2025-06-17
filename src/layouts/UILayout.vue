@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Breadcrumb from "@/components/Breadcrumb.vue";
-import PageTitle from "@/components/PageTitle.vue";
-import MainSidevar from "@/components/navigation/MainSidebar.vue";
-import MainAppbar from "@/components/toolbar/MainAppbar.vue";
-import ToolBox from "@/components/Toolbox.vue";
-import { useCustomizeThemeStore } from "@/stores/customizeTheme";
+import Breadcrumb from '@/components/Breadcrumb.vue';
+import PageTitle from '@/components/PageTitle.vue';
+import MainSidevar from '@/components/navigation/MainSidebar.vue';
+import MainAppbar from '@/components/toolbar/MainAppbar.vue';
+import ToolBox from '@/components/Toolbox.vue';
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 const customizeTheme = useCustomizeThemeStore();
 
 // import GlobalLoading from "@/components/GlobalLoading.vue";

@@ -12,7 +12,7 @@ const TIMEOUT = 5;
 const isLoading = ref(false);
 const disabled = ref(true);
 const times = ref(0);
-const seconds = ref("");
+const seconds = ref('');
 const secondsToEnable = ref(TIMEOUT);
 const resendInterval = ref();
 
@@ -23,7 +23,7 @@ const setTimer = () => {
   resendInterval.value = setInterval(() => {
     if (secondsToEnable.value === 0) {
       clearInterval(resendInterval.value);
-      seconds.value = "";
+      seconds.value = '';
       disabled.value = false;
     } else {
       seconds.value = `( ${secondsToEnable.value} )`;

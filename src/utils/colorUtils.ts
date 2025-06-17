@@ -22,7 +22,7 @@ const isRGBA = (rgba: string) =>
 // Purpose: Checks if the parameter is a valid RGBA color
 // Return: boolean
 
-const parseRGB = (rgb: string) => rgb.match(/\((.*?)\)/)?.[1].split(",");
+const parseRGB = (rgb: string) => rgb.match(/\((.*?)\)/)?.[1].split(',');
 // Function name: parseRGB
 // Parameters: rgb
 // Purpose: Parses the RGB color into an array of numbers
@@ -32,11 +32,11 @@ const hexToRGB = (hex: string) =>
   hex
     .replace(
       /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-      (m, r, g, b) => "#" + r + r + g + g + b + b
+      (m, r, g, b) => '#' + r + r + g + g + b + b
     )
     .substring(1)
     .match(/.{2}/g)
-    ?.map((x) => parseInt(x, 16));
+    ?.map(x => parseInt(x, 16));
 // Function name: hexToRGB
 // Parameters: hex
 // Purpose: Converts a hex color to an RGB color
@@ -47,7 +47,7 @@ export const setOpacity = (color: string, opacity: number) => {
     0, 0, 0,
   ];
 
-  return "rgba" + "(" + r + "," + g + "," + b + "," + opacity + ")";
+  return 'rgba' + '(' + r + ',' + g + ',' + b + ',' + opacity + ')';
 };
 
 export const isValidColor = (color: string) =>
@@ -77,13 +77,13 @@ export const colorShade = (color: string, percentage: number) => {
 
   // Return the color
   return (
-    "rgb" +
-    (a ? "a(" : "(") +
+    'rgb' +
+    (a ? 'a(' : '(') +
     red +
-    "," +
+    ',' +
     green +
-    "," +
+    ',' +
     blue +
-    (a ? "," + a : ")")
+    (a ? ',' + a : ')')
   );
 };

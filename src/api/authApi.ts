@@ -1,5 +1,9 @@
 import apiClient from './client';
-import type { LoginRequest, LoginResponse, UserStatusResponse } from '@/types/api';
+import type {
+  LoginRequest,
+  LoginResponse,
+  UserStatusResponse,
+} from '@/types/api';
 
 /**
  * Authentication API functions
@@ -10,7 +14,10 @@ export const authApi = {
    * Server will set httpOnly cookie on successful login
    */
   async login(credentials: LoginRequest): Promise<LoginResponse> {
-    const response = await apiClient.post<LoginResponse>('/user/login', credentials);
+    const response = await apiClient.post<LoginResponse>(
+      '/user/login',
+      credentials
+    );
     return response.data;
   },
 

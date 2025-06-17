@@ -4,10 +4,10 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Hero1 from "./components/Hero1.vue";
-import Hero2 from "./components/Hero2.vue";
-import Hero3 from "./components/Hero3.vue";
-import Hero4 from "./components/Hero4.vue";
+import Hero1 from './components/Hero1.vue';
+import Hero2 from './components/Hero2.vue';
+import Hero3 from './components/Hero3.vue';
+import Hero4 from './components/Hero4.vue';
 </script>
 
 <template>

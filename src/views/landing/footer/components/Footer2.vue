@@ -4,40 +4,40 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink } from 'vue-router';
 
 const navs = [
   {
-    title: "Home",
-    icon: "mdi-home",
-    to: "/",
+    title: 'Home',
+    icon: 'mdi-home',
+    to: '/',
   },
   {
-    title: "About Us",
-    icon: "mdi-account",
-    to: "/",
+    title: 'About Us',
+    icon: 'mdi-account',
+    to: '/',
   },
   {
-    title: "Services",
-    icon: "mdi-account",
-    to: "/",
+    title: 'Services',
+    icon: 'mdi-account',
+    to: '/',
   },
   {
-    title: "Contact Us",
-    icon: "mdi-account",
-    to: "/",
+    title: 'Contact Us',
+    icon: 'mdi-account',
+    to: '/',
   },
   // Team
   {
-    title: "Team",
-    icon: "mdi-account",
-    to: "/",
+    title: 'Team',
+    icon: 'mdi-account',
+    to: '/',
   },
   // Blog
   {
-    title: "Blog",
-    icon: "mdi-account",
-    to: "/",
+    title: 'Blog',
+    icon: 'mdi-account',
+    to: '/',
   },
 ];
 </script>

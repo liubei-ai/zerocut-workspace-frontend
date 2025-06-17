@@ -47,7 +47,7 @@
   </v-card>
 </template>
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 
 const props = defineProps({
   // Card content to display

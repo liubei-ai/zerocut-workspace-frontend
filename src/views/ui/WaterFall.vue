@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 onMounted(() => {
   initPhotos();
 });
@@ -19,7 +19,7 @@ const getPhotoHeight = (index: number) => {
 
 const initPhotos = () => {
   photos.value = Array.from({ length: 25 }, (value, index) => ({
-    id: index + "",
+    id: index + '',
     url: faker.image.business(undefined, getPhotoHeight(index), true),
     title: faker.lorem.word(),
     description: faker.lorem.text(),

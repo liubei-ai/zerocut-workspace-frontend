@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useUnsplashStore } from "../unsplashStore";
-import { User } from "../unsplashTypes";
+import { useUnsplashStore } from '../unsplashStore';
+import { User } from '../unsplashTypes';
 
 const unsplashStore = useUnsplashStore();
 const props = defineProps<{
@@ -15,7 +15,7 @@ const props = defineProps<{
 const snackbar = reactive({
   isShow: false,
   timeout: 1000,
-  text: "",
+  text: '',
 });
 </script>
 

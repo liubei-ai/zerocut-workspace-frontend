@@ -39,73 +39,73 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { useRouter } from 'vue-router';
 const router = useRouter();
-const searchKey = ref("");
+const searchKey = ref('');
 const loaded = ref(false);
 const loading = ref(false);
 const faqs = ref([
   {
-    id: "general",
-    title: "General Resources",
+    id: 'general',
+    title: 'General Resources',
     items: [
       {
         title:
-          "Can I use a purchased item in a freelance project or contract work for a client?",
+          'Can I use a purchased item in a freelance project or contract work for a client?',
         content:
-          "Yes. However, if the client intends to charge End Users in any way from the End Product you create, you will need to purchase an Extended License. If you create the End Product for a client, your rights to purchased Items are transferred from you to your client.",
+          'Yes. However, if the client intends to charge End Users in any way from the End Product you create, you will need to purchase an Extended License. If you create the End Product for a client, your rights to purchased Items are transferred from you to your client.',
       },
       {
-        title: "What is an End Product?",
+        title: 'What is an End Product?',
         content:
-          "An End Product is work that is designed or developed for a single, paid client. This website can not be resold as a product to multiple users. For more information on selling products to multiple users.",
+          'An End Product is work that is designed or developed for a single, paid client. This website can not be resold as a product to multiple users. For more information on selling products to multiple users.',
       },
       {
-        title: "What are the End Product requirements?",
+        title: 'What are the End Product requirements?',
         content:
-          "An End Product must be a unique implementation of the Item, often requiring limited copy and content changes. For example, if you purchase a resume template, you may use the Item for yourself or a client after having input personal information (you may not resell it as stock).",
+          'An End Product must be a unique implementation of the Item, often requiring limited copy and content changes. For example, if you purchase a resume template, you may use the Item for yourself or a client after having input personal information (you may not resell it as stock).',
       },
       {
         title:
-          "What is Personal Use, Commerical Work, Contracted Work, Client Work, etc.?",
+          'What is Personal Use, Commerical Work, Contracted Work, Client Work, etc.?',
         content:
-          "If the created site can not charge users in any way, it is considered for Personal Use and a Regular License can be used. For End Products that can charge users, such as a Software as a Service application, or an e-commerce site, you should use an Extended License. For any End Products that will be sold in its entirety, such as creating software that is distributed digitally, use an Unlimited License.",
+          'If the created site can not charge users in any way, it is considered for Personal Use and a Regular License can be used. For End Products that can charge users, such as a Software as a Service application, or an e-commerce site, you should use an Extended License. For any End Products that will be sold in its entirety, such as creating software that is distributed digitally, use an Unlimited License.',
       },
       {
-        title: "What is Personal Use?",
+        title: 'What is Personal Use?',
         content:
-          "A Personal Use License can only be used for 1 End Product that does not charge users in any way.",
+          'A Personal Use License can only be used for 1 End Product that does not charge users in any way.',
       },
       {
-        title: "What is Commerical Use?",
+        title: 'What is Commerical Use?',
         content:
-          "A Commercial Use License can only be used for 1 End Product that charges or will charge users.",
+          'A Commercial Use License can only be used for 1 End Product that charges or will charge users.',
       },
       {
-        title: "What is Unlimited Use?",
+        title: 'What is Unlimited Use?',
         content:
-          "An Extended Use License can be used for any number of Personal and Commercial projects.",
+          'An Extended Use License can be used for any number of Personal and Commercial projects.',
       },
     ],
   },
   {
-    id: "licenses",
-    title: "Licenses",
+    id: 'licenses',
+    title: 'Licenses',
     items: [
       {
-        title: "Personal Use",
+        title: 'Personal Use',
         content:
-          "Digital products purchased under the Standard License may be used one time in an End Product for Personal Use (an End Product that does not charge End Users).",
+          'Digital products purchased under the Standard License may be used one time in an End Product for Personal Use (an End Product that does not charge End Users).',
       },
       {
-        title: "Commercial Use",
+        title: 'Commercial Use',
         content:
-          "Digital products purchased under the Extended License may be used an unlimited amount of times for Personal Use, and one time to create a single End Product that does charge End Users.",
+          'Digital products purchased under the Extended License may be used an unlimited amount of times for Personal Use, and one time to create a single End Product that does charge End Users.',
       },
       {
-        title: "Unlimited Use",
+        title: 'Unlimited Use',
         content:
-          "An Unlimited License can be used an unlimited amount of times for Personal Use, Commercial Use, and Commercial End Products.",
+          'An Unlimited License can be used an unlimited amount of times for Personal Use, Commercial Use, and Commercial End Products.',
       },
     ],
   },
@@ -113,8 +113,8 @@ const faqs = ref([
 
 const computedFaqs = computed(() => {
   let filteredFaqs = [];
-  faqs.value.forEach((faq) => {
-    let filteredItem = faq.items.filter((item) =>
+  faqs.value.forEach(faq => {
+    let filteredItem = faq.items.filter(item =>
       item.title?.toLowerCase().includes(searchKey.value)
     );
     if (filteredItem) {
@@ -136,8 +136,8 @@ const search = () => {
   }, 2000);
 };
 
-const goTo = (id) => {
-  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+const goTo = id => {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
 };
 </script>
 

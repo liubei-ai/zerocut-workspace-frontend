@@ -6,20 +6,20 @@
 <script setup lang="ts">
 const headers = [
   {
-    title: "Dessert (100g serving)",
+    title: 'Dessert (100g serving)',
 
     sortable: false,
-    key: "name",
+    key: 'name',
   },
-  { title: "Calories", key: "calories" },
-  { title: "Fat (g)", key: "fat" },
-  { title: "Carbs (g)", key: "carbs" },
-  { title: "Protein (g)", key: "protein" },
-  { title: "Iron (%)", key: "iron" },
+  { title: 'Calories', key: 'calories' },
+  { title: 'Fat (g)', key: 'fat' },
+  { title: 'Carbs (g)', key: 'carbs' },
+  { title: 'Protein (g)', key: 'protein' },
+  { title: 'Iron (%)', key: 'iron' },
 ];
 const desserts = [
   {
-    name: "Frozen Yogurt",
+    name: 'Frozen Yogurt',
     calories: 159,
     fat: 6,
     carbs: 24,
@@ -27,7 +27,7 @@ const desserts = [
     iron: 1,
   },
   {
-    name: "Ice cream sandwich",
+    name: 'Ice cream sandwich',
     calories: 237,
     fat: 9,
     carbs: 37,
@@ -35,7 +35,7 @@ const desserts = [
     iron: 1,
   },
   {
-    name: "Eclair",
+    name: 'Eclair',
     calories: 262,
     fat: 16,
     carbs: 23,
@@ -43,7 +43,7 @@ const desserts = [
     iron: 7,
   },
   {
-    name: "Cupcake",
+    name: 'Cupcake',
     calories: 305,
     fat: 3.7,
     carbs: 67,
@@ -51,7 +51,7 @@ const desserts = [
     iron: 8,
   },
   {
-    name: "Gingerbread",
+    name: 'Gingerbread',
     calories: 356,
     fat: 16,
     carbs: 49,
@@ -59,7 +59,7 @@ const desserts = [
     iron: 16,
   },
   {
-    name: "Jelly bean",
+    name: 'Jelly bean',
     calories: 375,
     fat: 0,
     carbs: 94,
@@ -67,7 +67,7 @@ const desserts = [
     iron: 0,
   },
   {
-    name: "Lollipop",
+    name: 'Lollipop',
     calories: 392,
     fat: 0.2,
     carbs: 98,
@@ -75,7 +75,7 @@ const desserts = [
     iron: 2,
   },
   {
-    name: "Honeycomb",
+    name: 'Honeycomb',
     calories: 408,
     fat: 3.2,
     carbs: 87,
@@ -83,7 +83,7 @@ const desserts = [
     iron: 45,
   },
   {
-    name: "Donut",
+    name: 'Donut',
     calories: 452,
     fat: 25,
     carbs: 51,
@@ -91,7 +91,7 @@ const desserts = [
     iron: 22,
   },
   {
-    name: "KitKat",
+    name: 'KitKat',
     calories: 518,
     fat: 26,
     carbs: 65,

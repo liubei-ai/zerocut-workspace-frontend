@@ -4,11 +4,11 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Feature1 from "./components/Feature1.vue";
-import Feature2 from "./components/Feature2.vue";
-import Feature3 from "./components/Feature3.vue";
-import Feature4 from "./components/Feature4.vue";
-import Feature5 from "./components/Feature5.vue";
+import Feature1 from './components/Feature1.vue';
+import Feature2 from './components/Feature2.vue';
+import Feature3 from './components/Feature3.vue';
+import Feature4 from './components/Feature4.vue';
+import Feature5 from './components/Feature5.vue';
 </script>
 
 <template>

@@ -8,15 +8,15 @@ import clipboard from '@/utils/clipboardUtils';
 
 // SnackBar
 const snackbar = ref(false);
-const timeout = ref("1000");
-const copiedText = "Copied to clipboard!";
+const timeout = ref('1000');
+const copiedText = 'Copied to clipboard!';
 
 // Props
 const props = defineProps({
   // Text to copy to clipboard
   text: {
     type: String,
-    default: "",
+    default: '',
   },
 });
 

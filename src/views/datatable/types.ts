@@ -12,7 +12,6 @@ export type User = {
   portfolio_url: string | undefined; // assuming this can be a string or null if the user does not have a portfolio
 };
 
-
 export type Topic = {
   id: string;
   title: string;
@@ -22,8 +21,7 @@ export type Topic = {
   preview_photos: any[];
   links: any;
   published_at: string;
-}
-
+};
 
 export type Collection = {
   id: string;
@@ -35,8 +33,7 @@ export type Collection = {
   links: any; // 根据实际情况，可以使用适当的类型替换 any
   tags: any[]; // 根据实际情况，可以使用适当的类型替换 any
   published_at: string;
-}
-
+};
 
 export type Photo = {
   id: string;
@@ -51,6 +48,4 @@ export type Photo = {
   tags: any[]; // 根据实际情况，可以使用适当的类型替换 any
   created_at: string;
   created_at2: string;
-}
-
-
+};

@@ -1,34 +1,34 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { getPublicEventsApi } from "@/api/githubApi";
-import moment from "moment";
+import { Icon } from '@iconify/vue';
+import { getPublicEventsApi } from '@/api/githubApi';
+import moment from 'moment';
 const loading = ref(false);
-const username = ref("yangjiakai");
+const username = ref('yangjiakai');
 const activityList = ref([
   {
     id: 1,
-    type: "PushEvent",
-    user: "yangjiakai",
-    avatar: "https://avatars.githubusercontent.com/u/35951244?",
-    repo: "yangjiakai/lux-admin-vuetify3",
-    content: "Update Readme",
-    created_at: "2023-04-06T16:01:30Z",
+    type: 'PushEvent',
+    user: 'yangjiakai',
+    avatar: 'https://avatars.githubusercontent.com/u/35951244?',
+    repo: 'yangjiakai/lux-admin-vuetify3',
+    content: 'Update Readme',
+    created_at: '2023-04-06T16:01:30Z',
   },
   {
     id: 2,
-    type: "IssuesEvent",
-    user: "yangjiakai",
-    avatar: "https://avatars.githubusercontent.com/u/35951244?",
-    repo: "yangjiakai/lux-admin-vuetify3",
-    content: "全局的配置管理，比如dev配置，和pro配置隔离开",
-    created_at: "2023-04-06T16:01:30Z",
+    type: 'IssuesEvent',
+    user: 'yangjiakai',
+    avatar: 'https://avatars.githubusercontent.com/u/35951244?',
+    repo: 'yangjiakai/lux-admin-vuetify3',
+    content: '全局的配置管理，比如dev配置，和pro配置隔离开',
+    created_at: '2023-04-06T16:01:30Z',
   },
 ]);
 const getPublicEvent = async () => {
   loading.value = true;
   const response = await getPublicEventsApi(username.value);
 
-  activityList.value = response.data.map((activity) => {
+  activityList.value = response.data.map(activity => {
     return {
       id: activity.id,
       type: activity.type,
@@ -37,7 +37,7 @@ const getPublicEvent = async () => {
       repo: activity.repo?.name,
       content: getContent(activity),
       action:
-        activity.type === "IssuesEvent" ? activity.payload.action : "Commit",
+        activity.type === 'IssuesEvent' ? activity.payload.action : 'Commit',
       created_at: activity.created_at,
     };
   });
@@ -49,26 +49,26 @@ const getPublicEvent = async () => {
 };
 
 const getContent = (activity: any) => {
-  if (activity.type === "PushEvent") {
+  if (activity.type === 'PushEvent') {
     return convertToHtml(activity.payload.commits[0].message);
-  } else if (activity.type === "CreateEvent") {
+  } else if (activity.type === 'CreateEvent') {
     return activity.payload.ref_type;
-  } else if (activity.type === "IssuesEvent") {
+  } else if (activity.type === 'IssuesEvent') {
     return activity.payload.issue.title;
   } else {
-    return "";
+    return '';
   }
 };
 
-const convertToHtml = (text) => {
-  const lines = text.split("\n");
-  let html = "";
+const convertToHtml = text => {
+  const lines = text.split('\n');
+  let html = '';
 
-  lines.forEach((line) => {
-    if (line.startsWith("- ")) {
+  lines.forEach(line => {
+    if (line.startsWith('- ')) {
       html += `<div><span class='mr-1'>✅</span> ${line.slice(2)}</div>`;
-    } else if (line.trim() === "") {
-      html += "<br/>";
+    } else if (line.trim() === '') {
+      html += '<br/>';
     } else {
       html += `<p>${line}</p>`;
     }
@@ -78,12 +78,12 @@ const convertToHtml = (text) => {
 };
 
 const getTagColor = (activity: any) => {
-  if (activity.type === "PushEvent") {
-    return "green";
-  } else if (activity.type === "IssuesEvent") {
-    return "red";
+  if (activity.type === 'PushEvent') {
+    return 'green';
+  } else if (activity.type === 'IssuesEvent') {
+    return 'red';
   } else {
-    return "blue";
+    return 'blue';
   }
 };
 
@@ -161,14 +161,14 @@ onMounted(() => {
             </v-avatar>
           </template>
           <template v-slot:opposite>
-            <span>{{ moment(activity.created_at).format("MM,DD hh:mm") }}</span>
+            <span>{{ moment(activity.created_at).format('MM,DD hh:mm') }}</span>
           </template>
           <div class="mb-1">
             <span class="text-h6 font-weight-bold">
               {{ activity.user }}
             </span>
             <span class="ml-2 text-grey">{{
-              moment(activity.created_at).format("MM,DD hh:mm")
+              moment(activity.created_at).format('MM,DD hh:mm')
             }}</span>
           </div>
 

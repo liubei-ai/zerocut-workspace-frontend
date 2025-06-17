@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useTodoStore } from "@/views/app/todo/todoStore";
-import EmailCompose from "./EmailCompose.vue";
+import { useTodoStore } from '@/views/app/todo/todoStore';
+import EmailCompose from './EmailCompose.vue';
 const todoStore = useTodoStore();
 </script>
 

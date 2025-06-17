@@ -66,82 +66,82 @@
 const loading = ref(true);
 
 const headers = [
-  { text: "Order Id", align: "start", value: "id" },
+  { text: 'Order Id', align: 'start', value: 'id' },
   {
-    text: "User",
+    text: 'User',
     sortable: false,
-    value: "user",
+    value: 'user',
   },
-  { text: "Date", value: "date" },
-  { text: "Company", value: "company" },
-  { text: "Amount", value: "amount" },
-  { text: "Status", value: "status" },
-  { text: "", sortable: false, align: "right", value: "action" },
+  { text: 'Date', value: 'date' },
+  { text: 'Company', value: 'company' },
+  { text: 'Amount', value: 'amount' },
+  { text: 'Status', value: 'status' },
+  { text: '', sortable: false, align: 'right', value: 'action' },
 ];
 const items = [
   {
-    id: "2837",
+    id: '2837',
     user: {
-      name: "John Simon",
-      email: "johnsimon@blobhill.com",
-      avatar: "https://i.pravatar.cc/150?img=1",
+      name: 'John Simon',
+      email: 'johnsimon@blobhill.com',
+      avatar: 'https://i.pravatar.cc/150?img=1',
     },
-    date: "2020-05-10",
-    company: "BlobHill",
+    date: '2020-05-10',
+    company: 'BlobHill',
     amount: 52877,
-    status: "PAID",
+    status: 'PAID',
   },
   {
-    id: "2838",
+    id: '2838',
     user: {
-      name: "Greg Cool J",
-      email: "cool@caprimooner.com",
-      avatar: "https://i.pravatar.cc/150?img=2",
+      name: 'Greg Cool J',
+      email: 'cool@caprimooner.com',
+      avatar: 'https://i.pravatar.cc/150?img=2',
     },
-    date: "2020-05-11",
-    company: "Caprimooner",
+    date: '2020-05-11',
+    company: 'Caprimooner',
     amount: 2123,
-    status: "PENDING",
+    status: 'PENDING',
   },
   {
-    id: "2839",
+    id: '2839',
     user: {
-      name: "Samantha Bush",
-      email: "bush@catloveisstilllove.com",
-      avatar: "https://i.pravatar.cc/150?img=3",
+      name: 'Samantha Bush',
+      email: 'bush@catloveisstilllove.com',
+      avatar: 'https://i.pravatar.cc/150?img=3',
     },
-    date: "2020-05-11",
-    company: "CatLovers",
+    date: '2020-05-11',
+    company: 'CatLovers',
     amount: 12313,
-    status: "PENDING",
+    status: 'PENDING',
   },
   {
-    id: "2840",
+    id: '2840',
     user: {
-      name: "Ben Howard",
-      email: "ben@indiecoolers.com",
-      avatar: "https://i.pravatar.cc/150?img=4",
+      name: 'Ben Howard',
+      email: 'ben@indiecoolers.com',
+      avatar: 'https://i.pravatar.cc/150?img=4',
     },
-    date: "2020-05-12",
-    company: "IndieCoolers",
+    date: '2020-05-12',
+    company: 'IndieCoolers',
     amount: 9873,
-    status: "PAID",
+    status: 'PAID',
   },
   {
-    id: "2841",
+    id: '2841',
     user: {
-      name: "Jack Candy",
-      email: "jack@candylooove.com",
-      avatar: "https://i.pravatar.cc/150?img=5",
+      name: 'Jack Candy',
+      email: 'jack@candylooove.com',
+      avatar: 'https://i.pravatar.cc/150?img=5',
     },
-    date: "2020-05-13",
-    company: "CandyLooove",
+    date: '2020-05-13',
+    company: 'CandyLooove',
     amount: 29573,
-    status: "PAID",
+    status: 'PAID',
   },
 ];
 
-const open = (item) => {};
+const open = item => {};
 
 onMounted(() => {
   setTimeout(() => {
@@ -167,7 +167,9 @@ onMounted(() => {
 
     tbody {
       tr {
-        transition: box-shadow 0.2s, transform 0.2s;
+        transition:
+          box-shadow 0.2s,
+          transform 0.2s;
 
         &:not(.v-data-table__selected):hover {
           box-shadow: 0 3px 15px -2px rgba(0, 0, 0, 0.12);

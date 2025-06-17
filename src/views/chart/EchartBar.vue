@@ -5,8 +5,8 @@
 -->
 
 <script setup lang="ts">
-import BarChart1 from "./component/BarChart1.vue";
-import BarChart2 from "./component/BarChart2.vue";
+import BarChart1 from './component/BarChart1.vue';
+import BarChart2 from './component/BarChart2.vue';
 </script>
 
 <template>

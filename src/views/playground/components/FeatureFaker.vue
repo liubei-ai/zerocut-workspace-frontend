@@ -280,204 +280,204 @@
 // preposition
 // verb
 
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 
 // Address Data
 const address = reactive({
   city: {
-    label: "city",
+    label: 'city',
     value: faker.address.city(),
-    code: "faker.address.city()",
+    code: 'faker.address.city()',
   },
 
   streetName: {
-    label: "streetName",
+    label: 'streetName',
     value: faker.address.streetName(),
-    code: "faker.address.streetName()",
+    code: 'faker.address.streetName()',
   },
   streetAddress: {
-    label: "streetAddress",
+    label: 'streetAddress',
     value: faker.address.streetAddress(),
-    code: "faker.address.streetAddress()",
+    code: 'faker.address.streetAddress()',
   },
   streetSuffix: {
-    label: "streetSuffix",
+    label: 'streetSuffix',
     value: faker.address.streetSuffix(),
-    code: "faker.address.streetSuffix()",
+    code: 'faker.address.streetSuffix()',
   },
   streetPrefix: {
-    label: "streetPrefix",
+    label: 'streetPrefix',
     value: faker.address.streetPrefix(),
-    code: "faker.address.streetPrefix()",
+    code: 'faker.address.streetPrefix()',
   },
   secondaryAddress: {
-    label: "secondaryAddress",
+    label: 'secondaryAddress',
     value: faker.address.secondaryAddress(),
-    code: "faker.address.secondaryAddress()",
+    code: 'faker.address.secondaryAddress()',
   },
   county: {
-    label: "county",
+    label: 'county',
     value: faker.address.county(),
-    code: "faker.address.county()",
+    code: 'faker.address.county()',
   },
   country: {
-    label: "country",
+    label: 'country',
     value: faker.address.country(),
-    code: "faker.address.country()",
+    code: 'faker.address.country()',
   },
   countryCode: {
-    label: "countryCode",
+    label: 'countryCode',
     value: faker.address.countryCode(),
-    code: "faker.address.countryCode()",
+    code: 'faker.address.countryCode()',
   },
   state: {
-    label: "state",
+    label: 'state',
     value: faker.address.state(),
-    code: "faker.address.state()",
+    code: 'faker.address.state()',
   },
   stateAbbr: {
-    label: "stateAbbr",
+    label: 'stateAbbr',
     value: faker.address.stateAbbr(),
-    code: "faker.address.stateAbbr()",
+    code: 'faker.address.stateAbbr()',
   },
   latitude: {
-    label: "latitude",
+    label: 'latitude',
     value: faker.address.latitude(),
-    code: "faker.address.latitude()",
+    code: 'faker.address.latitude()',
   },
   longitude: {
-    label: "longitude",
+    label: 'longitude',
     value: faker.address.longitude(),
-    code: "faker.address.longitude()",
+    code: 'faker.address.longitude()',
   },
   direction: {
-    label: "direction",
+    label: 'direction',
     value: faker.address.direction(),
-    code: "faker.address.direction()",
+    code: 'faker.address.direction()',
   },
   cardinalDirection: {
-    label: "cardinalDirection",
+    label: 'cardinalDirection',
     value: faker.address.cardinalDirection(),
-    code: "faker.address.cardinalDirection()",
+    code: 'faker.address.cardinalDirection()',
   },
   ordinalDirection: {
-    label: "ordinalDirection",
+    label: 'ordinalDirection',
     value: faker.address.ordinalDirection(),
-    code: "faker.address.ordinalDirection()",
+    code: 'faker.address.ordinalDirection()',
   },
   nearbyGPSCoordinate: {
-    label: "nearbyGPSCoordinate",
+    label: 'nearbyGPSCoordinate',
     value: faker.address.nearbyGPSCoordinate(),
-    code: "faker.address.nearbyGPSCoordinate()",
+    code: 'faker.address.nearbyGPSCoordinate()',
   },
   timeZone: {
-    label: "timeZone",
+    label: 'timeZone',
     value: faker.address.timeZone(),
-    code: "faker.address.timeZone()",
+    code: 'faker.address.timeZone()',
   },
 });
 
 // Animal Data(label,value,code)
 const animal = reactive({
   cat: {
-    label: "cat",
+    label: 'cat',
     value: faker.animal.cat(),
-    code: "faker.animal.cat()",
+    code: 'faker.animal.cat()',
   },
   dog: {
-    label: "dog",
+    label: 'dog',
     value: faker.animal.dog(),
-    code: "faker.animal.dog()",
+    code: 'faker.animal.dog()',
   },
   snake: {
-    label: "snake",
+    label: 'snake',
     value: faker.animal.snake(),
-    code: "faker.animal.snake()",
+    code: 'faker.animal.snake()',
   },
   bear: {
-    label: "bear",
+    label: 'bear',
     value: faker.animal.bear(),
-    code: "faker.animal.bear()",
+    code: 'faker.animal.bear()',
   },
   lion: {
-    label: "lion",
+    label: 'lion',
     value: faker.animal.lion(),
-    code: "faker.animal.lion()",
+    code: 'faker.animal.lion()',
   },
   crocodilia: {
-    label: "crocodilia",
+    label: 'crocodilia',
     value: faker.animal.crocodilia(),
-    code: "faker.animal.crocodilia()",
+    code: 'faker.animal.crocodilia()',
   },
   bird: {
-    label: "bird",
+    label: 'bird',
     value: faker.animal.bird(),
-    code: "faker.animal.bird()",
+    code: 'faker.animal.bird()',
   },
   cow: {
-    label: "cow",
+    label: 'cow',
     value: faker.animal.cow(),
-    code: "faker.animal.cow()",
+    code: 'faker.animal.cow()',
   },
   horse: {
-    label: "horse",
+    label: 'horse',
     value: faker.animal.horse(),
-    code: "faker.animal.horse()",
+    code: 'faker.animal.horse()',
   },
   rabbit: {
-    label: "rabbit",
+    label: 'rabbit',
     value: faker.animal.rabbit(),
-    code: "faker.animal.rabbit()",
+    code: 'faker.animal.rabbit()',
   },
 
   fish: {
-    label: "fish",
+    label: 'fish',
     value: faker.animal.fish(),
-    code: "faker.animal.fish()",
+    code: 'faker.animal.fish()',
   },
   insect: {
-    label: "insect",
+    label: 'insect',
     value: faker.animal.insect(),
-    code: "faker.animal.insect()",
+    code: 'faker.animal.insect()',
   },
 });
 
 // Commerce Data(label,value,code)
 const commerce = reactive({
   color: {
-    label: "color",
+    label: 'color',
     value: faker.commerce.color(),
-    code: "faker.commerce.color()",
+    code: 'faker.commerce.color()',
   },
   department: {
-    label: "department",
+    label: 'department',
     value: faker.commerce.department(),
-    code: "faker.commerce.department()",
+    code: 'faker.commerce.department()',
   },
   productName: {
-    label: "productName",
+    label: 'productName',
     value: faker.commerce.productName(),
-    code: "faker.commerce.productName()",
+    code: 'faker.commerce.productName()',
   },
   price: {
-    label: "price",
+    label: 'price',
     value: faker.commerce.price(),
-    code: "faker.commerce.price()",
+    code: 'faker.commerce.price()',
   },
   productAdjective: {
-    label: "productAdjective",
+    label: 'productAdjective',
     value: faker.commerce.productAdjective(),
-    code: "faker.commerce.productAdjective()",
+    code: 'faker.commerce.productAdjective()',
   },
   productMaterial: {
-    label: "productMaterial",
+    label: 'productMaterial',
     value: faker.commerce.productMaterial(),
-    code: "faker.commerce.productMaterial()",
+    code: 'faker.commerce.productMaterial()',
   },
   product: {
-    label: "product",
+    label: 'product',
     value: faker.commerce.product(),
-    code: "faker.commerce.product()",
+    code: 'faker.commerce.product()',
   },
 });
 
@@ -496,240 +496,240 @@ const commerce = reactive({
 
 const color = reactive({
   cmyk: {
-    label: "cmyk",
+    label: 'cmyk',
     value: faker.color.cmyk(),
-    code: "faker.color.cmyk()",
+    code: 'faker.color.cmyk()',
   },
   colorByCSSColorSpace: {
-    label: "colorByCSSColorSpace",
+    label: 'colorByCSSColorSpace',
     value: faker.color.colorByCSSColorSpace(),
-    code: "faker.color.colorByCSSColorSpace()",
+    code: 'faker.color.colorByCSSColorSpace()',
   },
   cssSupportedFunction: {
-    label: "cssSupportedFunction",
+    label: 'cssSupportedFunction',
     value: faker.color.cssSupportedFunction(),
-    code: "faker.color.cssSupportedFunction()",
+    code: 'faker.color.cssSupportedFunction()',
   },
   cssSupportedSpace: {
-    label: "cssSupportedSpace",
+    label: 'cssSupportedSpace',
     value: faker.color.cssSupportedSpace(),
-    code: "faker.color.cssSupportedSpace()",
+    code: 'faker.color.cssSupportedSpace()',
   },
   hsl: {
-    label: "hsl",
+    label: 'hsl',
     value: faker.color.hsl(),
-    code: "faker.color.hsl()",
+    code: 'faker.color.hsl()',
   },
   human: {
-    label: "human",
+    label: 'human',
     value: faker.color.human(),
-    code: "faker.color.human()",
+    code: 'faker.color.human()',
   },
   hwb: {
-    label: "hwb",
+    label: 'hwb',
     value: faker.color.hwb(),
-    code: "faker.color.hwb()",
+    code: 'faker.color.hwb()',
   },
   lab: {
-    label: "lab",
+    label: 'lab',
     value: faker.color.lab(),
-    code: "faker.color.lab()",
+    code: 'faker.color.lab()',
   },
   lch: {
-    label: "lch",
+    label: 'lch',
     value: faker.color.lch(),
-    code: "faker.color.lch()",
+    code: 'faker.color.lch()',
   },
   rgb: {
-    label: "rgb",
+    label: 'rgb',
     value: faker.color.rgb(),
-    code: "faker.color.rgb()",
+    code: 'faker.color.rgb()',
   },
   space: {
-    label: "space",
+    label: 'space',
     value: faker.color.space(),
-    code: "faker.color.space()",
+    code: 'faker.color.space()',
   },
 });
 
 // Company Data(label,value,code)
 const company = reactive({
   suffixes: {
-    label: "suffixes",
+    label: 'suffixes',
     value: faker.company.suffixes(),
-    code: "faker.company.suffixes()",
+    code: 'faker.company.suffixes()',
   },
   companyName: {
-    label: "companyName",
+    label: 'companyName',
     value: faker.company.companyName(),
-    code: "faker.company.companyName()",
+    code: 'faker.company.companyName()',
   },
   companySuffix: {
-    label: "companySuffix",
+    label: 'companySuffix',
     value: faker.company.companySuffix(),
-    code: "faker.company.companySuffix()",
+    code: 'faker.company.companySuffix()',
   },
   catchPhrase: {
-    label: "catchPhrase",
+    label: 'catchPhrase',
     value: faker.company.catchPhrase(),
-    code: "faker.company.catchPhrase()",
+    code: 'faker.company.catchPhrase()',
   },
   bs: {
-    label: "bs",
+    label: 'bs',
     value: faker.company.bs(),
-    code: "faker.company.bs()",
+    code: 'faker.company.bs()',
   },
   catchPhraseAdjective: {
-    label: "catchPhraseAdjective",
+    label: 'catchPhraseAdjective',
     value: faker.company.catchPhraseAdjective(),
-    code: "faker.company.catchPhraseAdjective()",
+    code: 'faker.company.catchPhraseAdjective()',
   },
   catchPhraseDescriptor: {
-    label: "catchPhraseDescriptor",
+    label: 'catchPhraseDescriptor',
     value: faker.company.catchPhraseDescriptor(),
-    code: "faker.company.catchPhraseDescriptor()",
+    code: 'faker.company.catchPhraseDescriptor()',
   },
   catchPhraseNoun: {
-    label: "catchPhraseNoun",
+    label: 'catchPhraseNoun',
     value: faker.company.catchPhraseNoun(),
-    code: "faker.company.catchPhraseNoun()",
+    code: 'faker.company.catchPhraseNoun()',
   },
   bsAdjective: {
-    label: "bsAdjective",
+    label: 'bsAdjective',
     value: faker.company.bsAdjective(),
-    code: "faker.company.bsAdjective()",
+    code: 'faker.company.bsAdjective()',
   },
   bsBuzz: {
-    label: "bsBuzz",
+    label: 'bsBuzz',
     value: faker.company.bsBuzz(),
-    code: "faker.company.bsBuzz()",
+    code: 'faker.company.bsBuzz()',
   },
   bsNoun: {
-    label: "bsNoun",
+    label: 'bsNoun',
     value: faker.company.bsNoun(),
-    code: "faker.company.bsNoun()",
+    code: 'faker.company.bsNoun()',
   },
 });
 
 // Database Data(label,value,code)
 const database = reactive({
   column: {
-    label: "column",
+    label: 'column',
     value: faker.database.column(),
-    code: "faker.database.column()",
+    code: 'faker.database.column()',
   },
   type: {
-    label: "type",
+    label: 'type',
     value: faker.database.type(),
-    code: "faker.database.type()",
+    code: 'faker.database.type()',
   },
   collation: {
-    label: "collation",
+    label: 'collation',
     value: faker.database.collation(),
-    code: "faker.database.collation()",
+    code: 'faker.database.collation()',
   },
   engine: {
-    label: "engine",
+    label: 'engine',
     value: faker.database.engine(),
-    code: "faker.database.engine()",
+    code: 'faker.database.engine()',
   },
 });
 
 // Date Data(label,value,code)
 const date = reactive({
   past: {
-    label: "past",
+    label: 'past',
     value: faker.date.past(),
-    code: "faker.date.past()",
+    code: 'faker.date.past()',
   },
   future: {
-    label: "future",
+    label: 'future',
     value: faker.date.future(),
-    code: "faker.date.future()",
+    code: 'faker.date.future()',
   },
   recent: {
-    label: "recent",
+    label: 'recent',
     value: faker.date.recent(),
-    code: "faker.date.recent()",
+    code: 'faker.date.recent()',
   },
   soon: {
-    label: "soon",
+    label: 'soon',
     value: faker.date.soon(),
-    code: "faker.date.soon()",
+    code: 'faker.date.soon()',
   },
   month: {
-    label: "month",
+    label: 'month',
     value: faker.date.month(),
-    code: "faker.date.month()",
+    code: 'faker.date.month()',
   },
   weekday: {
-    label: "weekday",
+    label: 'weekday',
     value: faker.date.weekday(),
-    code: "faker.date.weekday()",
+    code: 'faker.date.weekday()',
   },
 });
 
 // Finance Data(label,value,code)
 const finance = reactive({
   account: {
-    label: "account",
+    label: 'account',
     value: faker.finance.account(),
-    code: "faker.finance.account()",
+    code: 'faker.finance.account()',
   },
   accountName: {
-    label: "accountName",
+    label: 'accountName',
     value: faker.finance.accountName(),
-    code: "faker.finance.accountName()",
+    code: 'faker.finance.accountName()',
   },
   mask: {
-    label: "mask",
+    label: 'mask',
     value: faker.finance.mask(),
-    code: "faker.finance.mask()",
+    code: 'faker.finance.mask()',
   },
   amount: {
-    label: "amount",
+    label: 'amount',
     value: faker.finance.amount(),
-    code: "faker.finance.amount()",
+    code: 'faker.finance.amount()',
   },
   transactionType: {
-    label: "transactionType",
+    label: 'transactionType',
     value: faker.finance.transactionType(),
-    code: "faker.finance.transactionType()",
+    code: 'faker.finance.transactionType()',
   },
   currencyCode: {
-    label: "currencyCode",
+    label: 'currencyCode',
     value: faker.finance.currencyCode(),
-    code: "faker.finance.currencyCode()",
+    code: 'faker.finance.currencyCode()',
   },
   currencyName: {
-    label: "currencyName",
+    label: 'currencyName',
     value: faker.finance.currencyName(),
-    code: "faker.finance.currencyName()",
+    code: 'faker.finance.currencyName()',
   },
   currencySymbol: {
-    label: "currencySymbol",
+    label: 'currencySymbol',
     value: faker.finance.currencySymbol(),
-    code: "faker.finance.currencySymbol()",
+    code: 'faker.finance.currencySymbol()',
   },
   bitcoinAddress: {
-    label: "bitcoinAddress",
+    label: 'bitcoinAddress',
     value: faker.finance.bitcoinAddress(),
-    code: "faker.finance.bitcoinAddress()",
+    code: 'faker.finance.bitcoinAddress()',
   },
   ethereumAddress: {
-    label: "ethereumAddress",
+    label: 'ethereumAddress',
     value: faker.finance.ethereumAddress(),
-    code: "faker.finance.ethereumAddress()",
+    code: 'faker.finance.ethereumAddress()',
   },
   iban: {
-    label: "iban",
+    label: 'iban',
     value: faker.finance.iban(),
-    code: "faker.finance.iban()",
+    code: 'faker.finance.iban()',
   },
   bic: {
-    label: "bic",
+    label: 'bic',
     value: faker.finance.bic(),
-    code: "faker.finance.bic()",
+    code: 'faker.finance.bic()',
   },
 });
 
@@ -737,294 +737,294 @@ const finance = reactive({
 
 const helpers = reactive({
   arrayElement: {
-    label: "arrayElement",
+    label: 'arrayElement',
     value: faker.helpers.arrayElement(),
-    code: "faker.helpers.arrayElement()",
+    code: 'faker.helpers.arrayElement()',
   },
   arrayElements: {
-    label: "arrayElements",
+    label: 'arrayElements',
     value: faker.helpers.arrayElements(),
-    code: "faker.helpers.arrayElements()",
+    code: 'faker.helpers.arrayElements()',
   },
 });
 
 // Hacker Data(label,value,code)
 const hacker = reactive({
   abbreviation: {
-    label: "abbreviation",
+    label: 'abbreviation',
     value: faker.hacker.abbreviation(),
-    code: "faker.hacker.abbreviation()",
+    code: 'faker.hacker.abbreviation()',
   },
   adjective: {
-    label: "adjective",
+    label: 'adjective',
     value: faker.hacker.adjective(),
-    code: "faker.hacker.adjective()",
+    code: 'faker.hacker.adjective()',
   },
   noun: {
-    label: "noun",
+    label: 'noun',
     value: faker.hacker.noun(),
-    code: "faker.hacker.noun()",
+    code: 'faker.hacker.noun()',
   },
   verb: {
-    label: "verb",
+    label: 'verb',
     value: faker.hacker.verb(),
-    code: "faker.hacker.verb()",
+    code: 'faker.hacker.verb()',
   },
   ingverb: {
-    label: "ingverb",
+    label: 'ingverb',
     value: faker.hacker.ingverb(),
-    code: "faker.hacker.ingverb()",
+    code: 'faker.hacker.ingverb()',
   },
   phrase: {
-    label: "phrase",
+    label: 'phrase',
     value: faker.hacker.phrase(),
-    code: "faker.hacker.phrase()",
+    code: 'faker.hacker.phrase()',
   },
 });
 
 // Image Data(label,value,code)
 const image = reactive({
   image: {
-    label: "image",
+    label: 'image',
     value: faker.image.image(),
-    code: "faker.image.image()",
+    code: 'faker.image.image()',
   },
   avatar: {
-    label: "avatar",
+    label: 'avatar',
     value: faker.image.avatar(),
-    code: "faker.image.avatar()",
+    code: 'faker.image.avatar()',
   },
   imageUrl: {
-    label: "imageUrl",
+    label: 'imageUrl',
     value: faker.image.imageUrl(),
-    code: "faker.image.imageUrl()",
+    code: 'faker.image.imageUrl()',
   },
   abstract: {
-    label: "abstract",
+    label: 'abstract',
     value: faker.image.abstract(),
-    code: "faker.image.abstract()",
+    code: 'faker.image.abstract()',
   },
   animals: {
-    label: "animals",
+    label: 'animals',
     value: faker.image.animals(),
-    code: "faker.image.animals()",
+    code: 'faker.image.animals()',
   },
   business: {
-    label: "business",
+    label: 'business',
     value: faker.image.business(),
-    code: "faker.image.business()",
+    code: 'faker.image.business()',
   },
   cats: {
-    label: "cats",
+    label: 'cats',
     value: faker.image.cats(),
-    code: "faker.image.cats()",
+    code: 'faker.image.cats()',
   },
   city: {
-    label: "city",
+    label: 'city',
     value: faker.image.city(),
-    code: "faker.image.city()",
+    code: 'faker.image.city()',
   },
   food: {
-    label: "food",
+    label: 'food',
     value: faker.image.food(),
-    code: "faker.image.food()",
+    code: 'faker.image.food()',
   },
   nightlife: {
-    label: "nightlife",
+    label: 'nightlife',
     value: faker.image.nightlife(),
-    code: "faker.image.nightlife()",
+    code: 'faker.image.nightlife()',
   },
   fashion: {
-    label: "fashion",
+    label: 'fashion',
     value: faker.image.fashion(),
-    code: "faker.image.fashion()",
+    code: 'faker.image.fashion()',
   },
   people: {
-    label: "people",
+    label: 'people',
     value: faker.image.people(),
-    code: "faker.image.people()",
+    code: 'faker.image.people()',
   },
   nature: {
-    label: "nature",
+    label: 'nature',
     value: faker.image.nature(),
-    code: "faker.image.nature()",
+    code: 'faker.image.nature()',
   },
   sports: {
-    label: "sports",
+    label: 'sports',
     value: faker.image.sports(),
-    code: "faker.image.sports()",
+    code: 'faker.image.sports()',
   },
   technics: {
-    label: "technics",
+    label: 'technics',
     value: faker.image.technics(),
-    code: "faker.image.technics()",
+    code: 'faker.image.technics()',
   },
   transport: {
-    label: "transport",
+    label: 'transport',
     value: faker.image.transport(),
-    code: "faker.image.transport()",
+    code: 'faker.image.transport()',
   },
   dataUri: {
-    label: "dataUri",
+    label: 'dataUri',
     value: faker.image.dataUri(),
-    code: "faker.image.dataUri()",
+    code: 'faker.image.dataUri()',
   },
 });
 
 // Internet Data(label,value,code)
 const internet = reactive({
   avatar: {
-    label: "avatar",
+    label: 'avatar',
     value: faker.internet.avatar(),
-    code: "faker.internet.avatar()",
+    code: 'faker.internet.avatar()',
   },
   email: {
-    label: "email",
+    label: 'email',
     value: faker.internet.email(),
-    code: "faker.internet.email()",
+    code: 'faker.internet.email()',
   },
   exampleEmail: {
-    label: "exampleEmail",
+    label: 'exampleEmail',
     value: faker.internet.exampleEmail(),
-    code: "faker.internet.exampleEmail()",
+    code: 'faker.internet.exampleEmail()',
   },
   userName: {
-    label: "userName",
+    label: 'userName',
     value: faker.internet.userName(),
-    code: "faker.internet.userName()",
+    code: 'faker.internet.userName()',
   },
   protocol: {
-    label: "protocol",
+    label: 'protocol',
     value: faker.internet.protocol(),
-    code: "faker.internet.protocol()",
+    code: 'faker.internet.protocol()',
   },
   url: {
-    label: "url",
+    label: 'url',
     value: faker.internet.url(),
-    code: "faker.internet.url()",
+    code: 'faker.internet.url()',
   },
   domainName: {
-    label: "domainName",
+    label: 'domainName',
     value: faker.internet.domainName(),
-    code: "faker.internet.domainName()",
+    code: 'faker.internet.domainName()',
   },
   domainSuffix: {
-    label: "domainSuffix",
+    label: 'domainSuffix',
     value: faker.internet.domainSuffix(),
-    code: "faker.internet.domainSuffix()",
+    code: 'faker.internet.domainSuffix()',
   },
   domainWord: {
-    label: "domainWord",
+    label: 'domainWord',
     value: faker.internet.domainWord(),
-    code: "faker.internet.domainWord()",
+    code: 'faker.internet.domainWord()',
   },
   ip: {
-    label: "ip",
+    label: 'ip',
     value: faker.internet.ip(),
-    code: "faker.internet.ip()",
+    code: 'faker.internet.ip()',
   },
   ipv6: {
-    label: "ipv6",
+    label: 'ipv6',
     value: faker.internet.ipv6(),
-    code: "faker.internet.ipv6()",
+    code: 'faker.internet.ipv6()',
   },
   userAgent: {
-    label: "userAgent",
+    label: 'userAgent',
     value: faker.internet.userAgent(),
-    code: "faker.internet.userAgent()",
+    code: 'faker.internet.userAgent()',
   },
   color: {
-    label: "color",
+    label: 'color',
     value: faker.internet.color(),
-    code: "faker.internet.color()",
+    code: 'faker.internet.color()',
   },
   mac: {
-    label: "mac",
+    label: 'mac',
     value: faker.internet.mac(),
-    code: "faker.internet.mac()",
+    code: 'faker.internet.mac()',
   },
   password: {
-    label: "password",
+    label: 'password',
     value: faker.internet.password(),
-    code: "faker.internet.password()",
+    code: 'faker.internet.password()',
   },
 });
 
 // Lorem Data(label,value,code)
 const lorem = reactive({
   word: {
-    label: "word",
+    label: 'word',
     value: faker.lorem.word(),
-    code: "faker.lorem.word()",
+    code: 'faker.lorem.word()',
   },
   words: {
-    label: "words",
+    label: 'words',
     value: faker.lorem.words(),
-    code: "faker.lorem.words()",
+    code: 'faker.lorem.words()',
   },
   sentence: {
-    label: "sentence",
+    label: 'sentence',
     value: faker.lorem.sentence(),
-    code: "faker.lorem.sentence()",
+    code: 'faker.lorem.sentence()',
   },
   slug: {
-    label: "slug",
+    label: 'slug',
     value: faker.lorem.slug(),
-    code: "faker.lorem.slug()",
+    code: 'faker.lorem.slug()',
   },
   sentences: {
-    label: "sentences",
+    label: 'sentences',
     value: faker.lorem.sentences(),
-    code: "faker.lorem.sentences()",
+    code: 'faker.lorem.sentences()',
   },
   paragraph: {
-    label: "paragraph",
+    label: 'paragraph',
     value: faker.lorem.paragraph(),
-    code: "faker.lorem.paragraph()",
+    code: 'faker.lorem.paragraph()',
   },
   paragraphs: {
-    label: "paragraphs",
+    label: 'paragraphs',
     value: faker.lorem.paragraphs(),
-    code: "faker.lorem.paragraphs()",
+    code: 'faker.lorem.paragraphs()',
   },
   text: {
-    label: "text",
+    label: 'text',
     value: faker.lorem.text(),
-    code: "faker.lorem.text()",
+    code: 'faker.lorem.text()',
   },
   lines: {
-    label: "lines",
+    label: 'lines',
     value: faker.lorem.lines(),
-    code: "faker.lorem.lines()",
+    code: 'faker.lorem.lines()',
   },
 });
 
 // Git Data(label,value,code)
 const git = reactive({
   branch: {
-    label: "branch",
+    label: 'branch',
     value: faker.git.branch(),
-    code: "faker.git.branch()",
+    code: 'faker.git.branch()',
   },
   commitEntry: {
-    label: "commitEntry",
+    label: 'commitEntry',
     value: faker.git.commitEntry(),
-    code: "faker.git.commitEntry()",
+    code: 'faker.git.commitEntry()',
   },
   commitMessage: {
-    label: "commitMessage",
+    label: 'commitMessage',
     value: faker.git.commitMessage(),
-    code: "faker.git.commitMessage()",
+    code: 'faker.git.commitMessage()',
   },
   commitSha: {
-    label: "commitSha",
+    label: 'commitSha',
     value: faker.git.commitSha(),
-    code: "faker.git.commitSha()",
+    code: 'faker.git.commitSha()',
   },
   shortSha: {
-    label: "shortSha",
+    label: 'shortSha',
     value: faker.git.shortSha(),
-    code: "faker.git.shortSha()",
+    code: 'faker.git.shortSha()',
   },
 });
 
@@ -1047,14 +1047,14 @@ const git = reactive({
 // suffix
 const name = reactive({
   findName: {
-    label: "findName",
+    label: 'findName',
     value: faker.name.findName(),
-    code: "faker.name.findName()",
+    code: 'faker.name.findName()',
   },
   firstName: {
-    label: "firstName",
+    label: 'firstName',
     value: faker.name.firstName(),
-    code: "faker.name.firstName()",
+    code: 'faker.name.firstName()',
   },
 });
 
@@ -1062,14 +1062,14 @@ const name = reactive({
 
 const phone = reactive({
   imei: {
-    label: "imei",
+    label: 'imei',
     value: faker.phone.imei(),
-    code: "faker.phone.imei()",
+    code: 'faker.phone.imei()',
   },
   number: {
-    label: "number",
+    label: 'number',
     value: faker.phone.number(),
-    code: "faker.phone.number()",
+    code: 'faker.phone.number()',
   },
 });
 
@@ -1077,49 +1077,49 @@ const phone = reactive({
 
 const system = reactive({
   fileName: {
-    label: "fileName",
+    label: 'fileName',
     value: faker.system.fileName(),
-    code: "faker.system.fileName()",
+    code: 'faker.system.fileName()',
   },
   commonFileName: {
-    label: "commonFileName",
+    label: 'commonFileName',
     value: faker.system.commonFileName(),
-    code: "faker.system.commonFileName()",
+    code: 'faker.system.commonFileName()',
   },
   commonFileType: {
-    label: "commonFileType",
+    label: 'commonFileType',
     value: faker.system.commonFileType(),
-    code: "faker.system.commonFileType()",
+    code: 'faker.system.commonFileType()',
   },
   commonFileExt: {
-    label: "commonFileExt",
+    label: 'commonFileExt',
     value: faker.system.commonFileExt(),
-    code: "faker.system.commonFileExt()",
+    code: 'faker.system.commonFileExt()',
   },
   fileType: {
-    label: "fileType",
+    label: 'fileType',
     value: faker.system.fileType(),
-    code: "faker.system.fileType()",
+    code: 'faker.system.fileType()',
   },
   fileExt: {
-    label: "fileExt",
+    label: 'fileExt',
     value: faker.system.fileExt(),
-    code: "faker.system.fileExt()",
+    code: 'faker.system.fileExt()',
   },
   directoryPath: {
-    label: "directoryPath",
+    label: 'directoryPath',
     value: faker.system.directoryPath(),
-    code: "faker.system.directoryPath()",
+    code: 'faker.system.directoryPath()',
   },
   filePath: {
-    label: "filePath",
+    label: 'filePath',
     value: faker.system.filePath(),
-    code: "faker.system.filePath()",
+    code: 'faker.system.filePath()',
   },
   semver: {
-    label: "semver",
+    label: 'semver',
     value: faker.system.semver(),
-    code: "faker.system.semver()",
+    code: 'faker.system.semver()',
   },
 });
 </script>

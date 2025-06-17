@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import IkeaFooter from "./component/IkeaFooter.vue";
+import IkeaFooter from './component/IkeaFooter.vue';
 
 // import axios from "axios";
 // const errorMsg = ref("");

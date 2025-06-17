@@ -1,136 +1,136 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue';
 // import EditorMenu from "./EditorMenu.vue";
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue';
 const props = defineProps({ editor: Object });
 const items = ref([
   {
-    icon: " mdi-format-bold",
-    title: "Bold",
+    icon: ' mdi-format-bold',
+    title: 'Bold',
     action: () => props.editor.chain().focus().toggleBold().run(),
-    isActive: () => props.editor.isActive("bold"),
+    isActive: () => props.editor.isActive('bold'),
   },
   {
-    icon: " mdi-format-italic",
-    title: "Italic",
+    icon: ' mdi-format-italic',
+    title: 'Italic',
     action: () => props.editor.chain().focus().toggleItalic().run(),
-    isActive: () => props.editor.isActive("italic"),
+    isActive: () => props.editor.isActive('italic'),
   },
   {
-    icon: " mdi-format-strikethrough-variant",
-    title: "Strike",
+    icon: ' mdi-format-strikethrough-variant',
+    title: 'Strike',
     action: () => props.editor.chain().focus().toggleStrike().run(),
 
-    isActive: () => props.editor.isActive("strike"),
+    isActive: () => props.editor.isActive('strike'),
   },
   {
-    icon: " mdi-code-tags",
-    title: "Code",
+    icon: ' mdi-code-tags',
+    title: 'Code',
     action: () => props.editor.chain().focus().toggleCode().run(),
 
-    isActive: () => props.editor.isActive("code"),
+    isActive: () => props.editor.isActive('code'),
   },
   {
-    icon: " mdi-format-color-text",
-    title: "Highlight",
+    icon: ' mdi-format-color-text',
+    title: 'Highlight',
     action: () => props.editor.chain().focus()?.toggleHighlight().run(),
 
-    isActive: () => props.editor.isActive("highlight"),
+    isActive: () => props.editor.isActive('highlight'),
   },
   {
-    type: "divider",
+    type: 'divider',
   },
   {
-    icon: "mdi-format-header-1",
-    title: "Heading 1",
+    icon: 'mdi-format-header-1',
+    title: 'Heading 1',
     action: () =>
       props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
 
-    isActive: () => props.editor.isActive("heading", { level: 1 }),
+    isActive: () => props.editor.isActive('heading', { level: 1 }),
   },
   {
-    icon: "mdi-format-header-2",
-    title: "Heading 2",
+    icon: 'mdi-format-header-2',
+    title: 'Heading 2',
     action: () =>
       props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
 
-    isActive: () => props.editor.isActive("heading", { level: 2 }),
+    isActive: () => props.editor.isActive('heading', { level: 2 }),
   },
   {
-    icon: "mdi-format-paragraph",
-    title: "Paragraph",
+    icon: 'mdi-format-paragraph',
+    title: 'Paragraph',
     action: () => props.editor.chain().focus().setParagraph().run(),
 
-    isActive: () => props.editor.isActive("paragraph"),
+    isActive: () => props.editor.isActive('paragraph'),
   },
   {
-    icon: "mdi-format-list-bulleted",
-    title: "Bullet List",
+    icon: 'mdi-format-list-bulleted',
+    title: 'Bullet List',
     action: () => props.editor.chain().focus().toggleBulletList().run(),
 
-    isActive: () => props.editor.isActive("bulletList"),
+    isActive: () => props.editor.isActive('bulletList'),
   },
   {
-    icon: "mdi-format-list-numbered",
-    title: "Ordered List",
+    icon: 'mdi-format-list-numbered',
+    title: 'Ordered List',
     action: () => props.editor.chain().focus().toggleOrderedList().run(),
 
-    isActive: () => props.editor.isActive("orderedList"),
+    isActive: () => props.editor.isActive('orderedList'),
   },
   {
-    icon: "mdi-format-list-checks",
-    title: "Task List",
+    icon: 'mdi-format-list-checks',
+    title: 'Task List',
     action: () => props.editor.chain().focus()?.toggleTaskList().run(),
 
-    isActive: () => props.editor.isActive("taskList"),
+    isActive: () => props.editor.isActive('taskList'),
   },
   {
-    icon: "mdi-code-braces",
-    title: "Code Block",
+    icon: 'mdi-code-braces',
+    title: 'Code Block',
     action: () => props.editor.chain().focus().toggleCodeBlock().run(),
 
-    isActive: () => props.editor.isActive("codeBlock"),
+    isActive: () => props.editor.isActive('codeBlock'),
   },
   {
-    type: "divider",
+    type: 'divider',
   },
   {
-    icon: "mdi-format-quote-open",
-    title: "Blockquote",
+    icon: 'mdi-format-quote-open',
+    title: 'Blockquote',
     action: () => props.editor.chain().focus().toggleBlockquote().run(),
 
-    isActive: () => props.editor.isActive("blockquote"),
+    isActive: () => props.editor.isActive('blockquote'),
   },
   {
-    icon: "mdi-minus",
-    title: "Horizontal Rule",
+    icon: 'mdi-minus',
+    title: 'Horizontal Rule',
     action: () => props.editor.chain().focus().setHorizontalRule().run(),
   },
   {
-    type: "divider",
+    type: 'divider',
   },
   {
-    icon: "mdi-wrap",
-    title: "Hard Break",
+    icon: 'mdi-wrap',
+    title: 'Hard Break',
     action: () => props.editor.chain().focus().setHardBreak().run(),
   },
   {
-    title: "Clear Format",
-    icon: "mdi-format-clear",
+    title: 'Clear Format',
+    icon: 'mdi-format-clear',
     action: () =>
       props.editor.chain().focus().clearNodes().unsetAllMarks().run(),
   },
   {
-    type: "divider",
+    type: 'divider',
   },
   {
-    icon: "mdi-undo",
-    title: "Undo",
+    icon: 'mdi-undo',
+    title: 'Undo',
     action: () => props.editor.chain().focus().undo().run(),
   },
   {
-    icon: "mdi-redo",
-    title: "Redo",
+    icon: 'mdi-redo',
+    title: 'Redo',
     action: () => props.editor.chain().focus().redo().run(),
   },
 ]);

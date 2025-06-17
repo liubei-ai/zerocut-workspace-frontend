@@ -4,9 +4,9 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import moment from "moment";
-import { formatFileSize } from "@/utils/common";
-import AnimationUpload from "@/components/animations/AnimationUpload.vue";
+import moment from 'moment';
+import { formatFileSize } from '@/utils/common';
+import AnimationUpload from '@/components/animations/AnimationUpload.vue';
 
 // Refs
 const files = ref<any[]>([]);
@@ -30,11 +30,11 @@ const updatePreviews = async () => {
           resolve({
             name: file.name,
             size: formatFileSize(file.size),
-            imageSize: width + "x" + height,
+            imageSize: width + 'x' + height,
             type: file.type,
-            suffix: file.name.split(".").pop(),
+            suffix: file.name.split('.').pop(),
             lastModifiedDate: moment(file.lastModifiedDate).format(
-              "YYYY-MM-DD HH:mm:ss"
+              'YYYY-MM-DD HH:mm:ss'
             ),
             link: reader.result,
             previewEnabled: true,
@@ -62,28 +62,28 @@ const clearFiles = () => {
 };
 
 // View Mode
-const viewMode = ref("grid");
+const viewMode = ref('grid');
 const toggleViewMode = () => {
-  viewMode.value = viewMode.value === "grid" ? "list" : "grid";
+  viewMode.value = viewMode.value === 'grid' ? 'list' : 'grid';
 };
 
 // List View
 const headers = [
-  { title: "FileName", key: "name", align: "center" },
-  { title: "ImageSize", key: "imageSize", align: "center" },
-  { title: "Suffix", key: "suffix", align: "center" },
-  { title: "TYPE", key: "type", align: "center" },
-  { title: "FileSize", key: "size", align: "center" },
-  { title: "Created", key: "lastModifiedDate", align: "center" },
-  { title: "Preview", key: "link", align: "center" },
-  { title: "PreviewEnabled", key: "previewEnabled", align: "center" },
+  { title: 'FileName', key: 'name', align: 'center' },
+  { title: 'ImageSize', key: 'imageSize', align: 'center' },
+  { title: 'Suffix', key: 'suffix', align: 'center' },
+  { title: 'TYPE', key: 'type', align: 'center' },
+  { title: 'FileSize', key: 'size', align: 'center' },
+  { title: 'Created', key: 'lastModifiedDate', align: 'center' },
+  { title: 'Preview', key: 'link', align: 'center' },
+  { title: 'PreviewEnabled', key: 'previewEnabled', align: 'center' },
 ];
 
 // Search
-const searchKey = ref("");
+const searchKey = ref('');
 const filterdFileInfos = computed(() => {
   return fileInfos.value.filter(
-    (fileInfo) =>
+    fileInfo =>
       fileInfo.name.includes(searchKey.value) ||
       fileInfo.suffix.includes(searchKey.value)
   );

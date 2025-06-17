@@ -8,26 +8,26 @@ const comments = [
   {
     content:
       "Extremely down-to-earth and relaxed atmosphere within the company, it's extremely easy to talk to anyone, including C-level executives.The company as a whole is inclusive of the cultural values everyone promotes and shares.",
-    name: "Derrick Mehaffy",
-    position: "Solutions Engineer",
+    name: 'Derrick Mehaffy',
+    position: 'Solutions Engineer',
     avatar:
-      "https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png",
+      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
   },
   {
     content:
       "That's so inspiring to see a company fighting so hard for its values! If you take care, for example, the emergency days are still blowing up my mind. Strapi considers employees as a whole, not just workers. ",
-    name: "Noémie Nana Gassa",
-    position: "Talent Acquisition Manager",
+    name: 'Noémie Nana Gassa',
+    position: 'Talent Acquisition Manager',
     avatar:
-      "https://d2zv2ciw0ln4h1.cloudfront.net/uploads/1631195677739_050c18b591.jfif",
+      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/1631195677739_050c18b591.jfif',
   },
   {
     content:
       "In the US, people tend to value the Hustle culture: 'work, work, work.' In this context, it's easy to forget to take care of yourself. At Strapi, they really put people first and encourage us to take care of ourselves.",
-    name: "Paul Bratslavsky",
-    position: "Developer Advocate",
+    name: 'Paul Bratslavsky',
+    position: 'Developer Advocate',
     avatar:
-      "https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png",
+      'https://d2zv2ciw0ln4h1.cloudfront.net/uploads/Derrick_4ec7a55385_1da25a0d9d.png',
   },
 ];
 </script>

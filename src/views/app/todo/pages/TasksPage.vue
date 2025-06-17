@@ -4,8 +4,8 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import TodoList from "@/views/app/todo/component/TodoList.vue";
-import { useTodoStore } from "@/views/app/todo/todoStore";
+import TodoList from '@/views/app/todo/component/TodoList.vue';
+import { useTodoStore } from '@/views/app/todo/todoStore';
 const todoStore = useTodoStore();
 </script>
 

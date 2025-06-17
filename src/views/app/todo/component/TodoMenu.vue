@@ -4,7 +4,7 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useTodoStore } from "@/views/app/todo/todoStore";
+import { useTodoStore } from '@/views/app/todo/todoStore';
 const todoStore = useTodoStore();
 </script>
 

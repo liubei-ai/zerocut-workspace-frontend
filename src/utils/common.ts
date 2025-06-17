@@ -1,4 +1,4 @@
-import { useLocale } from "vuetify";
+import { useLocale } from 'vuetify';
 // Debounce
 
 export const debounce = (func: Function, wait: number): Function => {
@@ -24,7 +24,7 @@ export const throttle = (func: Function, wait: number): Function => {
 
 // Format file size
 export const formatFileSize = (size: number): string => {
-  const units = ["B", "KB", "MB", "GB", "TB"];
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let unitIndex = 0;
 
   while (size >= 1024 && unitIndex < units.length - 1) {
@@ -42,18 +42,18 @@ export const isMobile = (): boolean => {
 
 // scroll to top
 interface ScrollOptions {
-  behavior?: "auto" | "smooth";
-  block?: "start" | "center" | "end" | "nearest";
-  inline?: "start" | "center" | "end" | "nearest";
+  behavior?: 'auto' | 'smooth';
+  block?: 'start' | 'center' | 'end' | 'nearest';
+  inline?: 'start' | 'center' | 'end' | 'nearest';
   top?: number;
 }
 
 export const scrollToTop = (
   element: HTMLElement | null,
-  options: ScrollOptions = { top: 0, behavior: "auto" }
+  options: ScrollOptions = { top: 0, behavior: 'auto' }
 ): void => {
   if (!element) {
-    console.error("Element not found");
+    console.error('Element not found');
     return;
   }
   element.scrollTo({
@@ -64,12 +64,10 @@ export const scrollToTop = (
 // scroll to bottom
 export const scrollToBottom = (
   element: HTMLElement | null,
-  options: ScrollOptions = { behavior: "auto" }
+  options: ScrollOptions = { behavior: 'auto' }
 ): void => {
   element?.scrollTo({
     ...options,
     top: element.scrollHeight,
   });
 };
-
-

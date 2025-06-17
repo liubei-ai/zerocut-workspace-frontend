@@ -4,8 +4,8 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Pricing1 from "./components/Pricing1.vue";
-import Pricing2 from "./components/Pricing2.vue";
+import Pricing1 from './components/Pricing1.vue';
+import Pricing2 from './components/Pricing2.vue';
 </script>
 
 <template>

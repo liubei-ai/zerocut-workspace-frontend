@@ -4,14 +4,14 @@
 * @Description:
 -->
 <script setup lang="ts">
-import Card1 from "./components/Card1.vue";
-import Card2 from "./components/Card2.vue";
-import Card3 from "./components/Card3.vue";
-import Card4 from "./components/Card4.vue";
-import Card5 from "./components/Card5.vue";
-import Card6 from "./components/Card6.vue";
-import Card7 from "./components/Card7.vue";
-import Card8 from "./components/Card8.vue";
+import Card1 from './components/Card1.vue';
+import Card2 from './components/Card2.vue';
+import Card3 from './components/Card3.vue';
+import Card4 from './components/Card4.vue';
+import Card5 from './components/Card5.vue';
+import Card6 from './components/Card6.vue';
+import Card7 from './components/Card7.vue';
+import Card8 from './components/Card8.vue';
 </script>
 
 <template>

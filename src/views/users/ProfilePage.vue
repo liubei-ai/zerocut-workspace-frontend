@@ -5,19 +5,19 @@
 -->
 
 <script setup lang="ts">
-import { useProfileStore } from "@/stores/profileStore";
-import { Icon } from "@iconify/vue";
+import { useProfileStore } from '@/stores/profileStore';
+import { Icon } from '@iconify/vue';
 const profileStore = useProfileStore();
 const basic = reactive({
-  username: "",
-  realname: "",
-  email: "",
-  avatar: "",
-  location: "",
-  role: "",
+  username: '',
+  realname: '',
+  email: '',
+  avatar: '',
+  location: '',
+  role: '',
   disabled: false,
-  about: "",
-  lastSignIn: "2019-09-20T01:11:13Z",
+  about: '',
+  lastSignIn: '2019-09-20T01:11:13Z',
 });
 
 const authorized = reactive({
@@ -31,9 +31,9 @@ const notifications = reactive({
 });
 
 const passwords = reactive({
-  currentPassword: "123456",
-  newPassword: "",
-  confirmPassword: "",
+  currentPassword: '123456',
+  newPassword: '',
+  confirmPassword: '',
 });
 
 const currentPasswordShow = ref(false);

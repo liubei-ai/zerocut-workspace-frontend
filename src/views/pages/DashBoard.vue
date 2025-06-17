@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import SalesCard from "@/components/dashboard/SalesCard.vue";
-import SourcesCard from "@/components/dashboard/SourcesCard.vue";
-import ActivityCard from "@/components/dashboard/ActivityCard.vue";
-import TableCard from "@/components/dashboard/TableCard.vue";
-import TicketsCard from "@/components/dashboard/TicketsCard.vue";
+import SalesCard from '@/components/dashboard/SalesCard.vue';
+import SourcesCard from '@/components/dashboard/SourcesCard.vue';
+import ActivityCard from '@/components/dashboard/ActivityCard.vue';
+import TableCard from '@/components/dashboard/TableCard.vue';
+import TicketsCard from '@/components/dashboard/TicketsCard.vue';
 // import TrackCard from "@/components/dashboard/TrackCard.vue";
-import TodoCard from "@/components/dashboard/TodoCard.vue";
-import TaskCard from "@/components/dashboard/ChartCard.vue";
-import apiClient from "@/api/client";
+import TodoCard from '@/components/dashboard/TodoCard.vue';
+import TaskCard from '@/components/dashboard/ChartCard.vue';
+import apiClient from '@/api/client';
 
 // 测试 401 错误处理的方法
 const testAuthFailure = async () => {
   try {
     // 调用一个需要认证的接口，如果 cookie 过期会返回 401
-    await apiClient.get("/user/profile");
+    await apiClient.get('/user/profile');
   } catch (error) {
-    console.log("Expected 401 error caught:", error);
+    console.log('Expected 401 error caught:', error);
   }
 };
 </script>

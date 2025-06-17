@@ -1,7 +1,7 @@
-import { Ref } from "vue";
-import type { EChartsOption } from "echarts";
-import { SVGRenderer, CanvasRenderer } from "echarts/renderers";
-import * as echarts from "echarts/core";
+import { Ref } from 'vue';
+import type { EChartsOption } from 'echarts';
+import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
+import * as echarts from 'echarts/core';
 import {
   BarChart,
   LineChart,
@@ -10,7 +10,7 @@ import {
   PictorialBarChart,
   RadarChart,
   ScatterChart,
-} from "echarts/charts";
+} from 'echarts/charts';
 
 import {
   TitleComponent,
@@ -27,7 +27,7 @@ import {
   TimelineComponent,
   CalendarComponent,
   GraphicComponent,
-} from "echarts/components";
+} from 'echarts/components';
 
 echarts.use([
   LegendComponent,
@@ -57,14 +57,14 @@ echarts.use([
 export default echarts;
 
 export enum RenderType {
-  SVGRenderer = "SVGRenderer",
-  CanvasRenderer = "CanvasRenderer",
+  SVGRenderer = 'SVGRenderer',
+  CanvasRenderer = 'CanvasRenderer',
 }
 
 export enum ThemeType {
-  Light = "light",
-  Dark = "dark",
-  Default = "default",
+  Light = 'light',
+  Dark = 'dark',
+  Default = 'default',
 }
 
 export function useChart(
@@ -118,9 +118,9 @@ export function useChart(
   function watchEl() {
     // 给元素添加过渡
     if (animation) {
-      elRef.value.style.transition = "width 1s, height 1s";
+      elRef.value.style.transition = 'width 1s, height 1s';
     }
-    const resizeObserver = new ResizeObserver((entries) => resize());
+    const resizeObserver = new ResizeObserver(entries => resize());
     resizeObserver.observe(elRef.value);
   }
 
@@ -140,12 +140,12 @@ export function useChart(
   }
 
   onMounted(() => {
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
     if (autoChartSize) watchEl();
   });
 
   onUnmounted(() => {
-    window.removeEventListener("resize", resize);
+    window.removeEventListener('resize', resize);
   });
 
   return {

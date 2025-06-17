@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { getPublicEventsApi } from "@/api/githubApi";
-import moment from "moment";
+import { Icon } from '@iconify/vue';
+import { getPublicEventsApi } from '@/api/githubApi';
+import moment from 'moment';
 const loading = ref(false);
-const username = ref("yangjiakai");
+const username = ref('yangjiakai');
 const activityList = ref([
   {
-    id: "29003260817",
-    type: "PushEvent",
-    user: "yangjiakai",
-    avatar: "https://avatars.githubusercontent.com/u/35951244?",
-    repo: "yangjiakai/lux-admin-vuetify3",
+    id: '29003260817',
+    type: 'PushEvent',
+    user: 'yangjiakai',
+    avatar: 'https://avatars.githubusercontent.com/u/35951244?',
+    repo: 'yangjiakai/lux-admin-vuetify3',
     content:
       "<p>Update Dashboard View</p><br/><div><span class='mr-1'>✅</span> Add PieChart1</div>",
-    action: "Commit",
-    created_at: "2023-05-12T14:06:59Z",
+    action: 'Commit',
+    created_at: '2023-05-12T14:06:59Z',
   },
 ]);
 
 const mockAcitvitys = [
   {
-    id: "29003260817",
-    type: "PushEvent",
-    user: "yangjiakai",
-    avatar: "https://avatars.githubusercontent.com/u/35951244?",
-    repo: "yangjiakai/lux-admin-vuetify3",
+    id: '29003260817',
+    type: 'PushEvent',
+    user: 'yangjiakai',
+    avatar: 'https://avatars.githubusercontent.com/u/35951244?',
+    repo: 'yangjiakai/lux-admin-vuetify3',
     content:
       "<p> Update Dashboard View</p><br/><div><span class='mr-1'>✅</span> Add PieChart1</div><div><span class='mr-1'>✅</span> Add PieChart2</div><div><span class='mr-1'>✅</span> Update ActivityCard,SalesCard,SOurcesCard</div>",
-    action: "Commit",
-    created_at: "2023-05-12T14:06:59Z",
+    action: 'Commit',
+    created_at: '2023-05-12T14:06:59Z',
   },
   {
-    id: "29003260817",
-    type: "PushEvent",
-    user: "yangjiakai",
-    avatar: "https://avatars.githubusercontent.com/u/35951244?",
-    repo: "yangjiakai/lux-admin-vuetify3",
+    id: '29003260817',
+    type: 'PushEvent',
+    user: 'yangjiakai',
+    avatar: 'https://avatars.githubusercontent.com/u/35951244?',
+    repo: 'yangjiakai/lux-admin-vuetify3',
     content:
       "<p>Update ChatBot</p><br/><div><span class='mr-1'>✅</span> Chatbot1 Add Stream</div><div><span class='mr-1'>✅</span> Add ScrollToBottom Common Method</div>",
-    action: "Commit",
-    created_at: "2023-05-11T14:06:59Z",
+    action: 'Commit',
+    created_at: '2023-05-11T14:06:59Z',
   },
 ];
 
@@ -69,26 +69,26 @@ const getPublicEvent = async () => {
 };
 
 const getContent = (activity: any) => {
-  if (activity.type === "PushEvent") {
+  if (activity.type === 'PushEvent') {
     return convertToHtml(activity.payload.commits[0].message);
-  } else if (activity.type === "CreateEvent") {
+  } else if (activity.type === 'CreateEvent') {
     return activity.payload.ref_type;
-  } else if (activity.type === "IssuesEvent") {
+  } else if (activity.type === 'IssuesEvent') {
     return activity.payload.issue.title;
   } else {
-    return "";
+    return '';
   }
 };
 
-const convertToHtml = (text) => {
-  const lines = text.split("\n");
-  let html = "";
+const convertToHtml = text => {
+  const lines = text.split('\n');
+  let html = '';
 
-  lines.forEach((line) => {
-    if (line.startsWith("- ")) {
+  lines.forEach(line => {
+    if (line.startsWith('- ')) {
       html += `<div><span class='mr-1'>✅</span> ${line.slice(2)}</div>`;
-    } else if (line.trim() === "") {
-      html += "<br/>";
+    } else if (line.trim() === '') {
+      html += '<br/>';
     } else {
       html += `<p>${line}</p>`;
     }
@@ -98,12 +98,12 @@ const convertToHtml = (text) => {
 };
 
 const getTagColor = (activity: any) => {
-  if (activity.type === "PushEvent") {
-    return "green";
-  } else if (activity.type === "IssuesEvent") {
-    return "red";
+  if (activity.type === 'PushEvent') {
+    return 'green';
+  } else if (activity.type === 'IssuesEvent') {
+    return 'red';
   } else {
-    return "blue";
+    return 'blue';
   }
 };
 
@@ -181,14 +181,14 @@ onMounted(() => {
             </v-avatar>
           </template>
           <template v-slot:opposite>
-            <span>{{ moment(activity.created_at).format("MM,DD hh:mm") }}</span>
+            <span>{{ moment(activity.created_at).format('MM,DD hh:mm') }}</span>
           </template>
           <div class="mb-1">
             <span class="text-h6 font-weight-bold">
               {{ activity.user }}
             </span>
             <span class="ml-2 text-grey">{{
-              moment(activity.created_at).format("MM,DD hh:mm")
+              moment(activity.created_at).format('MM,DD hh:mm')
             }}</span>
           </div>
 

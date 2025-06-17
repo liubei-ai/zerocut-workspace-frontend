@@ -267,89 +267,89 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { useTheme } from "vuetify";
+import { Icon } from '@iconify/vue';
+import { useTheme } from 'vuetify';
 
 const theme = useTheme();
 
 const toggleTheme = () => {
-  theme.global.name.value = theme.global.current.value.dark ? "light" : "dark";
+  theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark';
 };
 const newsCards = [
   {
     id: 1,
-    title: "Alfresco",
-    icon: "logos:alfresco",
-    content: "Secure Content Management Solutions for a Distributed Workforce",
+    title: 'Alfresco',
+    icon: 'logos:alfresco',
+    content: 'Secure Content Management Solutions for a Distributed Workforce',
   },
   {
     id: 2,
-    title: "Zulip",
-    icon: "logos:zulip-icon",
-    content: "Chat for distributed teams.",
+    title: 'Zulip',
+    icon: 'logos:zulip-icon',
+    content: 'Chat for distributed teams.',
   },
   {
     id: 3,
-    title: "Authy",
-    icon: "logos:authy",
-    content: "Enable 2FA for your favorite sites",
+    title: 'Authy',
+    icon: 'logos:authy',
+    content: 'Enable 2FA for your favorite sites',
   },
   {
     id: 4,
-    title: "Appveyor",
-    icon: "logos:appveyor",
-    content: "Build, test, deploy your apps faster, on any platform.",
+    title: 'Appveyor',
+    icon: 'logos:appveyor',
+    content: 'Build, test, deploy your apps faster, on any platform.',
   },
   {
     id: 5,
-    title: "Ant-design",
-    icon: "logos:ant-design",
+    title: 'Ant-design',
+    icon: 'logos:ant-design',
     content:
-      "Help designers/developers building beautiful products more flexible and working with happiness",
+      'Help designers/developers building beautiful products more flexible and working with happiness',
   },
 ];
 
-const favoriteRadios = ref("Duckduckgo");
+const favoriteRadios = ref('Duckduckgo');
 
 const desserts = [
   {
-    name: "Frozen Yogurt",
+    name: 'Frozen Yogurt',
     calories: 159,
   },
   {
-    name: "Ice cream sandwich",
+    name: 'Ice cream sandwich',
     calories: 237,
   },
   {
-    name: "Eclair",
+    name: 'Eclair',
     calories: 262,
   },
   {
-    name: "Cupcake",
+    name: 'Cupcake',
     calories: 305,
   },
   {
-    name: "Gingerbread",
+    name: 'Gingerbread',
     calories: 356,
   },
   {
-    name: "Jelly bean",
+    name: 'Jelly bean',
     calories: 375,
   },
   {
-    name: "Lollipop",
+    name: 'Lollipop',
     calories: 392,
   },
   {
-    name: "Honeycomb",
+    name: 'Honeycomb',
     calories: 408,
   },
   {
-    name: "Donut",
+    name: 'Donut',
     calories: 452,
   },
   {
-    name: "KitKat",
+    name: 'KitKat',
     calories: 518,
   },
 ];

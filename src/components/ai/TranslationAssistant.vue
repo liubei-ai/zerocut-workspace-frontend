@@ -4,71 +4,71 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { createTranscriptionApi } from "@/api/aiApi";
-import { useChatGPTStore } from "@/stores/chatGPTStore";
-import CopyBtn from "@/components/common/CopyBtn.vue";
-import { useDisplay } from "vuetify";
-import { read } from "@/utils/aiUtils";
-import { useSnackbarStore } from "@/stores/snackbarStore";
-import { useSpeechStore } from "@/stores/speechStore";
-import { Icon } from "@iconify/vue";
+import { createTranscriptionApi } from '@/api/aiApi';
+import { useChatGPTStore } from '@/stores/chatGPTStore';
+import CopyBtn from '@/components/common/CopyBtn.vue';
+import { useDisplay } from 'vuetify';
+import { read } from '@/utils/aiUtils';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useSpeechStore } from '@/stores/speechStore';
+import { Icon } from '@iconify/vue';
 const speechStore = useSpeechStore();
 const snackbarStore = useSnackbarStore();
 const chatGPTStore = useChatGPTStore();
 const langs = [
   {
-    code: "en",
-    name: "English",
-    label: "English",
+    code: 'en',
+    name: 'English',
+    label: 'English',
   },
   {
-    code: "zh-CN",
-    name: "Chinese Simplified",
-    label: "中文(简体)",
+    code: 'zh-CN',
+    name: 'Chinese Simplified',
+    label: '中文(简体)',
   },
   {
-    code: "zh-TW",
-    name: "Chinese Traditional",
-    label: "中文(繁體)",
+    code: 'zh-TW',
+    name: 'Chinese Traditional',
+    label: '中文(繁體)',
   },
   {
-    code: "ja",
-    name: "Japanese",
-    label: "日本語",
+    code: 'ja',
+    name: 'Japanese',
+    label: '日本語',
   },
   {
-    code: "ko",
-    name: "Korean",
-    label: "한국어",
+    code: 'ko',
+    name: 'Korean',
+    label: '한국어',
   },
   {
-    code: "fr",
-    name: "French",
-    label: "Français",
+    code: 'fr',
+    name: 'French',
+    label: 'Français',
   },
   {
-    code: "de",
-    name: "German",
-    label: "Deutsch",
+    code: 'de',
+    name: 'German',
+    label: 'Deutsch',
   },
   {
-    code: "es",
-    name: "Spanish",
-    label: "Español",
+    code: 'es',
+    name: 'Spanish',
+    label: 'Español',
   },
 ];
 
 const currentLang = ref({
-  code: "en",
-  name: "English",
-  label: "English",
+  code: 'en',
+  name: 'English',
+  label: 'English',
 });
 const setLang = (lang: any) => {
   currentLang.value = lang;
 };
 
-const baseContent = ref("");
-const targetContent = ref("");
+const baseContent = ref('');
+const targetContent = ref('');
 
 const prompt = computed(() => {
   return `Translate into ${currentLang.value.name}`;
@@ -77,8 +77,8 @@ const prompt = computed(() => {
 
 const isLoading = ref(false);
 const translate = async () => {
-  if (baseContent.value === "") {
-    snackbarStore.showErrorMessage("请输入要翻译的内容");
+  if (baseContent.value === '') {
+    snackbarStore.showErrorMessage('请输入要翻译的内容');
     return;
   }
 
@@ -92,14 +92,14 @@ const translate = async () => {
       `${chatGPTStore.proxyUrl}/v1/chat/completions`,
       {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${chatGPTStore.getApiKey}`,
         },
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           messages: [
-            { role: "user", content: prompt.value },
-            { role: "user", content: baseContent.value },
+            { role: 'user', content: prompt.value },
+            { role: 'user', content: baseContent.value },
           ],
           model: chatGPTStore.model,
           stream: true,
@@ -118,12 +118,12 @@ const translate = async () => {
     // Create a reader
     const reader = completion.body?.getReader();
     if (!reader) {
-      snackbarStore.showErrorMessage("Cannot read the stream.");
+      snackbarStore.showErrorMessage('Cannot read the stream.');
       isLoading.value = false;
     }
 
     // Clear the target content
-    targetContent.value = "";
+    targetContent.value = '';
 
     // Read the stream
     read(reader, targetContent);
@@ -141,7 +141,7 @@ const startRecording = async () => {
   // 获取用户媒体权限，视频的话参数{audio: true, video: true}
   navigator.mediaDevices
     .getUserMedia({ audio: true })
-    .then((stream) => {
+    .then(stream => {
       // 创建媒体流
       recorder.value = new MediaRecorder(stream);
       const audioChunks = <any>[];
@@ -154,13 +154,13 @@ const startRecording = async () => {
       };
       // 录音结束
       recorder.value.onstop = async (e: any) => {
-        const blob = new Blob(audioChunks, { type: "audio/wav" });
-        const file = new File([blob], "recording.wav", {
-          type: "audio/wav",
+        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+        const file = new File([blob], 'recording.wav', {
+          type: 'audio/wav',
         });
         const formData = new FormData();
-        formData.append("file", file);
-        formData.append("model", "whisper-1");
+        formData.append('file', file);
+        formData.append('model', 'whisper-1');
         const res = await createTranscriptionApi(
           formData,
           chatGPTStore.getApiKey
@@ -168,7 +168,7 @@ const startRecording = async () => {
         baseContent.value = res.data.text;
       };
     })
-    .catch((error) => {
+    .catch(error => {
       snackbarStore.showErrorMessage(error.message);
     });
 };
@@ -223,7 +223,7 @@ const readText = () => {
               />
             </v-avatar>
 
-            OpenAi {{ $t("toolbox.translationAssistant.title") }}
+            OpenAi {{ $t('toolbox.translationAssistant.title') }}
           </span>
 
           <v-spacer></v-spacer>
@@ -234,7 +234,7 @@ const readText = () => {
         <v-divider />
         <v-card-actions class="px-5">
           <span class="text-body-2"
-            >{{ $t("toolbox.translationAssistant.targetLanguage") }}:</span
+            >{{ $t('toolbox.translationAssistant.targetLanguage') }}:</span
           >
           <!-- <v-btn-toggle
             v-model="currentLang"
@@ -274,7 +274,7 @@ const readText = () => {
             variant="elevated"
             color="primary"
             @click="translate"
-            >{{ $t("toolbox.translationAssistant.translate") }}</v-btn
+            >{{ $t('toolbox.translationAssistant.translate') }}</v-btn
           >
         </v-card-actions>
         <v-divider />

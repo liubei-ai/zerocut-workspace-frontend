@@ -4,27 +4,27 @@
 * @Description: Page Of User 
 -->
 <script setup lang="ts">
-import { BASE_URL, config } from "./unsplashConfig";
-import axios from "axios";
-import { useUnsplashStore } from "./unsplashStore";
-import PhotoCard from "./components/PhotoCard.vue";
-import CollectionCard from "./components/CollectionCard.vue";
+import { BASE_URL, config } from './unsplashConfig';
+import axios from 'axios';
+import { useUnsplashStore } from './unsplashStore';
+import PhotoCard from './components/PhotoCard.vue';
+import CollectionCard from './components/CollectionCard.vue';
 const unsplashStore = useUnsplashStore();
 const route = useRoute();
 const userProfileUrl = computed(() => {
-  return BASE_URL + "users/" + route.params.username;
+  return BASE_URL + 'users/' + route.params.username;
 });
 
 const userPhotosUrl = computed(() => {
-  return BASE_URL + "users/" + route.params.username + "/photos";
+  return BASE_URL + 'users/' + route.params.username + '/photos';
 });
 
 const userLikesUrl = computed(() => {
-  return BASE_URL + "users/" + route.params.username + "/likes";
+  return BASE_URL + 'users/' + route.params.username + '/likes';
 });
 
 const userCollectionsUrl = computed(() => {
-  return BASE_URL + "users/" + route.params.username + "/collections";
+  return BASE_URL + 'users/' + route.params.username + '/collections';
 });
 
 const userProfileData = ref(null);
@@ -54,28 +54,28 @@ const initData = async () => {
 const snackbar = reactive({
   isShow: false,
   timeout: 1000,
-  text: "",
+  text: '',
 });
 
-const downloadPhoto = (photo) => {
-  const a = document.createElement("a");
-  a.href = photo.links.download + "&force=true";
-  a.download = photo.id + ".jpg";
+const downloadPhoto = photo => {
+  const a = document.createElement('a');
+  a.href = photo.links.download + '&force=true';
+  a.download = photo.id + '.jpg';
   a.click();
-  snackbar.text = "Downloading now, please wait";
+  snackbar.text = 'Downloading now, please wait';
   snackbar.timeout = 2000;
   snackbar.isShow = true;
   snackbar.timeout = 1000;
 };
 
-const toggleLike = (item) => {
+const toggleLike = item => {
   if (!item.liked_by_user) {
-    snackbar.text = "Added to your favorite";
+    snackbar.text = 'Added to your favorite';
     snackbar.isShow = true;
     unsplashStore.addToFavorite(item);
     item.likes++;
   } else {
-    snackbar.text = "Removed from your favorite";
+    snackbar.text = 'Removed from your favorite';
     snackbar.isShow = true;
     unsplashStore.removeFromFavorite(item);
     item.likes--;

@@ -4,9 +4,9 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { useSpeechStore } from "@/stores/speechStore";
-import type { VoiceInfo } from "microsoft-cognitiveservices-speech-sdk";
-import { useSpeechService } from "@/hooks/useSpeechService";
+import { useSpeechStore } from '@/stores/speechStore';
+import type { VoiceInfo } from 'microsoft-cognitiveservices-speech-sdk';
+import { useSpeechService } from '@/hooks/useSpeechService';
 const { getVoices } = useSpeechService();
 const speechStore = useSpeechStore();
 
@@ -15,15 +15,13 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
   speechStore.updateVoiceInfo(voiceInfo);
 };
 
-const languages = ref(["ja-JP", "en-US", "zh-CN", "zh-HK"]);
+const languages = ref(['ja-JP', 'en-US', 'zh-CN', 'zh-HK']);
 const getVoiceInfo = async () => {
   const res = await getVoices();
-  allVoices.value = res.filter((voice) =>
-    languages.value.includes(voice.locale)
-  );
+  allVoices.value = res.filter(voice => languages.value.includes(voice.locale));
 
   const currentVoice = allVoices.value.find(
-    (voice) => voice.shortName === speechStore.speechSynthesisVoiceName
+    voice => voice.shortName === speechStore.speechSynthesisVoiceName
   ) as VoiceInfo;
 
   speechStore.updateVoiceInfo(currentVoice);

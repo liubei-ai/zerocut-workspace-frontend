@@ -4,30 +4,30 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { searchPhotosApi } from "@/api/unsplashApi";
-import CopyLabel from "@/components/common/CopyLabel.vue";
-import moment from "moment";
-import type { Photo } from "./types";
+import { searchPhotosApi } from '@/api/unsplashApi';
+import CopyLabel from '@/components/common/CopyLabel.vue';
+import moment from 'moment';
+import type { Photo } from './types';
 const loading = ref(true);
 const totalRows = ref(0);
 
 const queryOptions = reactive({
-  query: "cat",
+  query: 'cat',
   page: 1,
   per_page: 25,
 });
 
 const headers = [
-  { title: "ID", key: "id" },
-  { title: "USER", key: "user" },
-  { title: "COLOR", key: "color" },
-  { title: "SIZE", key: "size" },
-  { title: "DESCRIPTION", key: "alt_description" },
-  { title: "THUMB", key: "thumb" },
-  { title: "DOWNLOAD", key: "download" },
-  { title: "LIKES", key: "likes" },
-  { title: "TAGS", key: "tags" },
-  { title: "CREATED", key: "created_at" },
+  { title: 'ID', key: 'id' },
+  { title: 'USER', key: 'user' },
+  { title: 'COLOR', key: 'color' },
+  { title: 'SIZE', key: 'size' },
+  { title: 'DESCRIPTION', key: 'alt_description' },
+  { title: 'THUMB', key: 'thumb' },
+  { title: 'DOWNLOAD', key: 'download' },
+  { title: 'LIKES', key: 'likes' },
+  { title: 'TAGS', key: 'tags' },
+  { title: 'CREATED', key: 'created_at' },
 ];
 
 const photosList = ref<Photo[]>([]);
@@ -37,20 +37,20 @@ const getPhotos = async () => {
   const params = queryOptions;
   const photosResponse = await searchPhotosApi(params);
 
-  photosList.value = photosResponse.data.results.map((photo) => {
+  photosList.value = photosResponse.data.results.map(photo => {
     return {
       id: photo.id,
       // avatar: photo.user.profile_image.small,
       user: photo.user,
       color: photo.color,
-      size: photo.width + " x " + photo.height,
+      size: photo.width + ' x ' + photo.height,
       alt_description: photo.alt_description,
       thumb: photo.urls,
       download: photo.links.download,
       likes: photo.likes,
       tags: photo.tags,
-      created_at: moment(photo.created_at).format("YYYY/MM/DD"),
-      created_at2: moment(photo.created_at).format("YYYY/MM/DD"),
+      created_at: moment(photo.created_at).format('YYYY/MM/DD'),
+      created_at2: moment(photo.created_at).format('YYYY/MM/DD'),
     };
   });
 
@@ -58,7 +58,7 @@ const getPhotos = async () => {
   loading.value = false;
 };
 
-const onUpdateOptions = async (options) => {
+const onUpdateOptions = async options => {
   if (!queryOptions.query) return;
   queryOptions.page = options.page;
   queryOptions.per_page = options.itemsPerPage;
@@ -66,22 +66,22 @@ const onUpdateOptions = async (options) => {
   await getPhotos();
 };
 
-const getLikesColor = (likes) => {
-  if (likes > 400) return "red";
-  else if (likes > 200) return "orange";
-  else return "grey";
+const getLikesColor = likes => {
+  if (likes > 400) return 'red';
+  else if (likes > 200) return 'orange';
+  else return 'grey';
 };
 
-const downloadPhoto = (photo) => {
-  const a = document.createElement("a");
-  a.href = photo.download + "&force=true";
-  a.download = photo.id + ".jpg";
+const downloadPhoto = photo => {
+  const a = document.createElement('a');
+  a.href = photo.download + '&force=true';
+  a.download = photo.id + '.jpg';
   a.click();
 };
 
 const imgOverlay = ref(false);
-const imgSrc = ref("");
-const previewImg = (url) => {
+const imgSrc = ref('');
+const previewImg = url => {
   imgSrc.value = url;
   imgOverlay.value = true;
 };

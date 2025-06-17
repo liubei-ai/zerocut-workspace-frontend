@@ -4,8 +4,8 @@
 * @Description:
 -->
 <script setup lang="ts">
-import CallToAction1 from "./components/CallToAction1.vue";
-import CallToAction2 from "./components/CallToAction2.vue";
+import CallToAction1 from './components/CallToAction1.vue';
+import CallToAction2 from './components/CallToAction2.vue';
 </script>
 
 <template>

@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
-import router from "@/router";
-import { authApi } from "@/api/authApi";
-import type { User, LoginRequest, ApiError } from "@/types/api";
+import { defineStore } from 'pinia';
+import router from '@/router';
+import { authApi } from '@/api/authApi';
+import type { User, LoginRequest, ApiError } from '@/types/api';
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
     isLoggedIn: false,
     user: null as User | null,
@@ -13,21 +13,22 @@ export const useAuthStore = defineStore("auth", {
 
   persist: {
     enabled: true,
-    strategies: [
-      { storage: localStorage, paths: ["isLoggedIn", "user"] },
-    ],
+    strategies: [{ storage: localStorage, paths: ['isLoggedIn', 'user'] }],
   },
 
   getters: {
-    isAuthenticated: (state) => state.isLoggedIn && !!state.user,
-    userName: (state) => state.user?.username || ''
+    isAuthenticated: state => state.isLoggedIn && !!state.user,
+    userName: state => state.user?.username || '',
   },
 
   actions: {
     /**
      * Login with username and password
      */
-    async loginWithUsernameAndPassword(username: string, password: string): Promise<boolean> {
+    async loginWithUsernameAndPassword(
+      username: string,
+      password: string
+    ): Promise<boolean> {
       this.loading = true;
       this.error = null;
 
@@ -43,7 +44,7 @@ export const useAuthStore = defineStore("auth", {
         // await this.fetchCurrentUser();
 
         // Navigate to dashboard
-        router.push("/dashboard");
+        router.push('/dashboard');
 
         return true;
       } catch (error) {
@@ -96,7 +97,7 @@ export const useAuthStore = defineStore("auth", {
 
         // 只有在不是由 API 层调用时才跳转（避免重复跳转）
         if (router.currentRoute.value.name !== 'auth-signin') {
-          router.push({ name: "auth-signin" });
+          router.push({ name: 'auth-signin' });
         }
       }
     },
@@ -115,14 +116,14 @@ export const useAuthStore = defineStore("auth", {
      */
     handleAuthError(error: ApiError) {
       if (error.code === 401) {
-        this.error = "Invalid username or password";
+        this.error = 'Invalid username or password';
         this.clearAuthState();
       } else if (error.code === 403) {
-        this.error = "Access denied";
+        this.error = 'Access denied';
       } else if (error.code === 0) {
-        this.error = "Network error. Please check your connection.";
+        this.error = 'Network error. Please check your connection.';
       } else {
-        this.error = error.message || "Login failed. Please try again.";
+        this.error = error.message || 'Login failed. Please try again.';
       }
     },
 

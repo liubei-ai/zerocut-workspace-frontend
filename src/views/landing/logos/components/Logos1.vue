@@ -4,7 +4,7 @@
 * @Description:
 -->
 <script setup lang="ts">
-import logos from "@/data/logos";
+import logos from '@/data/logos';
 </script>
 
 <template>

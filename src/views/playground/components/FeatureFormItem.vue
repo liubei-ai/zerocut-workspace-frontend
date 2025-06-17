@@ -4,24 +4,24 @@
 * @Description:
 -->
 <script setup lang="ts">
-import CurrencyItem from "./formItems/CurrencyItem.vue";
-import MultiFileUpload from "./formItems/MultiFileUpload.vue";
+import CurrencyItem from './formItems/CurrencyItem.vue';
+import MultiFileUpload from './formItems/MultiFileUpload.vue';
 
 const price = ref(2000);
 const fileList = ref<any[]>([]);
-const select = ref({ state: "Florida", abbr: "FL" });
+const select = ref({ state: 'Florida', abbr: 'FL' });
 const items = ref([
-  { state: "Florida", abbr: "FL" },
-  { state: "Georgia", abbr: "GA" },
-  { state: "Nebraska", abbr: "NE" },
-  { state: "California", abbr: "CA" },
-  { state: "New York", abbr: "NY" },
+  { state: 'Florida', abbr: 'FL' },
+  { state: 'Georgia', abbr: 'GA' },
+  { state: 'Nebraska', abbr: 'NE' },
+  { state: 'California', abbr: 'CA' },
+  { state: 'New York', abbr: 'NY' },
 ]);
 
 onMounted(() => {
-  const canvas = document.getElementById("ca") as HTMLCanvasElement;
-  const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
-  ctx.fillStyle = "red";
+  const canvas = document.getElementById('ca') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  ctx.fillStyle = 'red';
   ctx.fillRect(0, 0, 100, 100);
 
   draw();

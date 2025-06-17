@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTodoStore } from "@/views/app/todo/todoStore";
+import { useTodoStore } from '@/views/app/todo/todoStore';
 const todoStore = useTodoStore();
 
 const loading = ref(true);
@@ -9,18 +9,18 @@ onMounted(() => {
   }, 1000);
 });
 
-const searchKey = ref("");
+const searchKey = ref('');
 const filterdTodoList = computed(() => {
-  return todoStore.getTodoList.filter((todo) => {
+  return todoStore.getTodoList.filter(todo => {
     return todo.title.toLowerCase().includes(searchKey.value.toLowerCase());
   });
 });
 
 const getLabelColor = (id: string) => {
   // Find the label by id from the labels array
-  const label = todoStore.labels.find((l) => l.id === id);
+  const label = todoStore.labels.find(l => l.id === id);
   // Return the color for that label, or an empty string
-  return label ? label.color : "";
+  return label ? label.color : '';
 };
 </script>
 <template>

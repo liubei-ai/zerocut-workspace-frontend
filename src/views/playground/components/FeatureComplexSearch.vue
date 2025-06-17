@@ -4,66 +4,66 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { eagleResourseData } from "@/data/eagle";
+import { eagleResourseData } from '@/data/eagle';
 // 领域
 // UI 设计 平面设计 插画设计 游戏设计 室内设计 工业设计
 const fieldLabelList = ref<string[]>([
-  "全部",
-  "UI 设计",
-  "平面设计",
-  "插画设计",
-  "游戏设计",
-  "室内设计",
-  "工业设计",
+  '全部',
+  'UI 设计',
+  '平面设计',
+  '插画设计',
+  '游戏设计',
+  '室内设计',
+  '工业设计',
 ]);
-const currentFieldLabel = ref<string>("全部");
+const currentFieldLabel = ref<string>('全部');
 
 // 分类
 // 全部 图标 插画 游戏原画 字体 界面 样机
 const categoryLabelList = ref<string[]>([
-  "全部",
-  "图标",
-  "插画",
-  "游戏原画",
-  "字体",
-  "界面",
-  "样机",
+  '全部',
+  '图标',
+  '插画',
+  '游戏原画',
+  '字体',
+  '界面',
+  '样机',
 ]);
 
-const currentCategoryLabel = ref<string>("全部");
+const currentCategoryLabel = ref<string>('全部');
 
 // 排序
 // 默认 最新 最旧 浏览数 下载数 收藏数 精选
 const sortList = ref<string[]>([
-  "默认",
-  "最新",
-  "最旧",
-  "浏览数",
-  "下载数",
-  "收藏数",
-  "精选",
+  '默认',
+  '最新',
+  '最旧',
+  '浏览数',
+  '下载数',
+  '收藏数',
+  '精选',
 ]);
 
 // 当前选中的分类
-const currentSort = ref<string>("默认");
+const currentSort = ref<string>('默认');
 const sortBtnActive = computed<boolean>(() => {
-  return currentSort.value !== "默认";
+  return currentSort.value !== '默认';
 });
 
 // 类型
 // 全部 灵感参考 素材分享
-const typeList = ref<string[]>(["全部", "灵感参考", "素材分享"]);
-const currentType = ref<string>("全部");
+const typeList = ref<string[]>(['全部', '灵感参考', '素材分享']);
+const currentType = ref<string>('全部');
 const typeBtnActive = computed<boolean>(() => {
-  return currentType.value !== "全部";
+  return currentType.value !== '全部';
 });
 
 // 版权
 // 全部 免费 付费
-const licenseList = ref<string[]>(["全部", "免费", "付费"]);
-const currentLicense = ref<string>("全部");
+const licenseList = ref<string[]>(['全部', '免费', '付费']);
+const currentLicense = ref<string>('全部');
 const licenseBtnActive = computed<boolean>(() => {
-  return currentLicense.value !== "全部";
+  return currentLicense.value !== '全部';
 });
 
 // 我的最爱
@@ -72,7 +72,7 @@ const myFavorateKey = ref<boolean>(false);
 
 const eagleList = ref(eagleResourseData);
 const filteredList = computed(() => {
-  return eagleList.value.filter((item) => {
+  return eagleList.value.filter(item => {
     return (
       (item.thumbnail && item.title.includes(search.value)) ||
       item.author.includes(search.value)
@@ -81,7 +81,7 @@ const filteredList = computed(() => {
 });
 
 // 搜索
-const search = ref<string>("");
+const search = ref<string>('');
 </script>
 
 <template>
@@ -277,11 +277,11 @@ const search = ref<string>("");
                   <span>
                     <span class="mr-2"
                       ><v-icon>mdi-download</v-icon>
-                      {{ item.downloadsAndViews?.split("\n")[0] }}</span
+                      {{ item.downloadsAndViews?.split('\n')[0] }}</span
                     >
                     <span
                       ><v-icon>mdi-eye</v-icon>
-                      {{ item.downloadsAndViews?.split("\n")[1] }}</span
+                      {{ item.downloadsAndViews?.split('\n')[1] }}</span
                     >
                   </span>
                 </div>

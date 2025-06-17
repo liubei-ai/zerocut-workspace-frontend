@@ -13,41 +13,41 @@ interface UserStatus {
 
 const userStatusList = [
   {
-    code: "online",
-    name: "us",
-    label: "Online",
-    color: "success",
+    code: 'online',
+    name: 'us',
+    label: 'Online',
+    color: 'success',
   },
   {
-    code: "away",
-    name: "cn",
-    label: "Away",
-    color: "warning",
+    code: 'away',
+    name: 'cn',
+    label: 'Away',
+    color: 'warning',
   },
   {
-    code: "busy",
-    name: "jp",
-    label: "Busy",
-    color: "error",
+    code: 'busy',
+    name: 'jp',
+    label: 'Busy',
+    color: 'error',
   },
   {
-    code: "offline",
-    name: "kr",
-    label: "Offline",
-    color: "grey",
+    code: 'offline',
+    name: 'kr',
+    label: 'Offline',
+    color: 'grey',
   },
 ];
 
 const currentStatus = ref<UserStatus>({
-  code: "online",
-  name: "us",
-  label: "Online",
-  color: "success",
+  code: 'online',
+  name: 'us',
+  label: 'Online',
+  color: 'success',
 });
 
 const setStatus = (status: string) => {
   currentStatus.value = userStatusList.find(
-    (userStatus) => userStatus.code === status
+    userStatus => userStatus.code === status
   ) as UserStatus;
 };
 </script>

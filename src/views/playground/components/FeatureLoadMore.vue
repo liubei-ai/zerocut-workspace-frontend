@@ -4,14 +4,14 @@
 * @Description: 
 -->
 <script setup lang="ts">
-import { searchPhotosApi } from "@/api/unsplashApi";
-import { Icon } from "@iconify/vue";
-import { useSnackbarStore } from "@/stores/snackbarStore";
-import CopyLabel from "@/components/common/CopyLabel.vue";
+import { searchPhotosApi } from '@/api/unsplashApi';
+import { Icon } from '@iconify/vue';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import CopyLabel from '@/components/common/CopyLabel.vue';
 const snackbarStore = useSnackbarStore();
 
 const queryOptions = reactive({
-  query: "vue",
+  query: 'vue',
   page: 1,
   per_page: 25,
 });
@@ -24,7 +24,7 @@ const loadMore = async () => {
 
   if (!hasMore.value) {
     loading.value = false;
-    snackbarStore.showMessage("没有更多了");
+    snackbarStore.showMessage('没有更多了');
     return;
   }
 
@@ -42,7 +42,7 @@ onMounted(() => {
 
 const scrollBottom = ref(0);
 
-const onScroll = (e) => {
+const onScroll = e => {
   const target = e.target;
   scrollBottom.value =
     target.scrollHeight - target.scrollTop - target.clientHeight;
