@@ -4,31 +4,31 @@
 * @Description:
 -->
 <script setup lang="ts">
-import type { User } from "./types";
-import { searchUsersApi } from "@/api/unsplashApi";
-import CopyLabel from "@/components/common/CopyLabel.vue";
+import type { User } from './types';
+import { searchUsersApi } from '@/api/unsplashApi';
+import CopyLabel from '@/components/common/CopyLabel.vue';
 
 const loading = ref(true);
 const totalRows = ref(0);
 
 const queryOptions = reactive({
-  query: "cat",
+  query: 'cat',
   page: 1,
   per_page: 25,
 });
 
 const headers = ref([
-  { title: "用户名", key: "username" },
-  { title: "头像", key: "avatar" },
-  { title: "用户id", key: "id" },
-  { title: "全名", key: "name" },
-  { title: "位置", key: "location", width: "200px" },
-  { title: "是否可用", key: "for_hire" },
-  { title: "收藏数", key: "total_collections" },
-  { title: "喜欢数", key: "total_likes" },
-  { title: "照片数", key: "total_photos" },
-  { title: "接受条款", key: "accepted_tos" },
-  { title: "作品集", key: "portfolio_url" },
+  { title: '用户名', key: 'username' },
+  { title: '头像', key: 'avatar' },
+  { title: '用户id', key: 'id' },
+  { title: '全名', key: 'name' },
+  { title: '位置', key: 'location', width: '200px' },
+  { title: '是否可用', key: 'for_hire' },
+  { title: '收藏数', key: 'total_collections' },
+  { title: '喜欢数', key: 'total_likes' },
+  { title: '照片数', key: 'total_photos' },
+  { title: '接受条款', key: 'accepted_tos' },
+  { title: '作品集', key: 'portfolio_url' },
 ]);
 
 const usersList = ref<User[]>([]);
@@ -39,7 +39,7 @@ const getUsers = async () => {
 
   const usersResponse = await searchUsersApi(params);
 
-  usersList.value = usersResponse.data.results.map((user) => {
+  usersList.value = usersResponse.data.results.map(user => {
     return {
       id: user.id,
       avatar: user.profile_image.small,
@@ -62,17 +62,17 @@ const getUsers = async () => {
   loading.value = false;
 };
 
-const onUpdateOptions = async (options) => {
+const onUpdateOptions = async options => {
   if (!queryOptions.query) return;
   queryOptions.per_page = options.itemsPerPage;
   queryOptions.page = options.page;
   await getUsers();
 };
 
-const getLikesColor = (likes) => {
-  if (likes > 400) return "red";
-  else if (likes > 200) return "orange";
-  else return "grey";
+const getLikesColor = likes => {
+  if (likes > 400) return 'red';
+  else if (likes > 200) return 'orange';
+  else return 'grey';
 };
 </script>
 
@@ -132,7 +132,7 @@ const getLikesColor = (likes) => {
                   :color="item.for_hire ? 'blue' : 'grey'"
                   class="font-weight-bold"
                 >
-                  {{ item.for_hire ? "Hire" : "No Hire" }}</v-chip
+                  {{ item.for_hire ? 'Hire' : 'No Hire' }}</v-chip
                 >
               </td>
               <td>
@@ -162,7 +162,7 @@ const getLikesColor = (likes) => {
                       item.accepted_tos ? 'mdi-security ' : 'mdi-close-octagon'
                     "
                   ></v-icon>
-                  {{ item.accepted_tos ? "Accepted" : "Not Accepted" }}</v-chip
+                  {{ item.accepted_tos ? 'Accepted' : 'Not Accepted' }}</v-chip
                 >
               </td>
               <td>
@@ -175,6 +175,6 @@ const getLikesColor = (likes) => {
         </v-data-table-server>
       </v-card-text>
     </v-card>
-  </div class="pa-5">
+  </div>
 </template>
 <style lang="scss" scoped></style>
