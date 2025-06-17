@@ -28,11 +28,6 @@ export interface LoginResponse extends User {
   expiresIn: string;
 }
 
-export interface UserStatusResponse {
-  isAuthenticated: boolean;
-  user: User | null;
-}
-
 // Error Types
 export interface ApiError {
   code: number;

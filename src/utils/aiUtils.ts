@@ -2,45 +2,71 @@ import { Ref } from 'vue';
 
 // Read the stream from the server
 export const read = async (
-  reader: any,
+  reader: ReadableStreamDefaultReader<Uint8Array>,
   target: Ref<string> | Ref<any[]>
-): Promise<any> => {
+): Promise<void> => {
   // TextDecoder is a built-in object that allows you to convert a stream of bytes into a string
   const decoder = new TextDecoder('utf-8');
-  // Destructure the value returned by reader.read()
-  const { done, value } = await reader.read();
-  // If the stream is done reading, release the lock on the reader
-  if (done) return reader.releaseLock();
-  // Convert the stream of bytes into a string
-  const chunk = decoder.decode(value, { stream: true });
-  // Split the string into an array of strings
-  const jsons = chunk
-    .split('data:')
-    .map(data => {
-      // Trim any whitespace
-      const trimData = data.trim();
-      // If the string is empty, return undefined
-      if (trimData === '') return undefined;
-      // If the string is [DONE], return undefined
-      if (trimData === '[DONE]') return undefined;
-      // Otherwise, parse the string as JSON
-      return JSON.parse(data.trim());
-    })
-    // Filter out any undefined values
-    .filter(data => data);
-  // Combine the data into a single string
-  const streamMessage = jsons
-    .map(jn => jn.choices.map((choice: any) => choice.delta.content).join(''))
-    .join('');
-  // Update the ref to the target element with the new string
-  const response = streamMessage;
-  if (target.value instanceof Array) {
-    target.value[target.value.length - 1].content += response;
-  } else {
-    target.value = target.value += response;
+  let buffer = '';
+
+  while (true) {
+    // 读取流数据
+    const { done, value } = await reader.read();
+
+    // 如果流已结束，则退出循环
+    if (done) break;
+
+    // 解码当前块数据
+    const chunk = decoder.decode(value, { stream: true });
+    buffer += chunk;
+
+    // 处理数据行
+    const lines = buffer.split('\n');
+    buffer = lines.pop() || '';
+
+    let eventId = '';
+    let eventType = '';
+    let eventData = '';
+
+    for (const line of lines) {
+      // 跳过空行和注释
+      if (!line.trim() || line.trim() === '' || line.startsWith(':')) {
+        continue;
+      }
+
+      if (line.startsWith('id:')) {
+        eventId = line.substring(3).trim();
+      } else if (line.startsWith('event:')) {
+        eventType = line.substring(6).trim();
+      } else if (line.startsWith('data:')) {
+        eventData = line.substring(5).trim();
+      }
+
+      // 只处理message类型的事件
+      if (eventType === 'message' && eventData) {
+        try {
+          const parsedData = JSON.parse(eventData);
+          if (parsedData.data && parsedData.data.delta) {
+            const deltaContent = parsedData.data.delta;
+            if (target.value instanceof Array) {
+              target.value[target.value.length - 1].content += deltaContent;
+            } else {
+              target.value = target.value += deltaContent;
+            }
+          }
+        } catch (error) {
+          console.error('解析事件数据失败:', error, eventData);
+        } finally {
+          eventId = '';
+          eventType = '';
+          eventData = '';
+        }
+      }
+    }
   }
-  // Repeat the process
-  return read(reader, target);
+
+  // 流处理完成，释放锁
+  reader.releaseLock();
 };
 
 // Count the number of code blocks and complete the last one if it is not completed
