@@ -5,8 +5,8 @@ interface Message {
   content: string;
   role: 'user' | 'assistant' | 'system';
 }
-export const useChatHistoryStore = defineStore({
-  id: 'chatHistory',
+
+export const useChatHistoryStore = defineStore('chatHistory', {
   state: () => ({
     activeChatMenuId: 1,
     chatMenus: [
@@ -25,15 +25,13 @@ export const useChatHistoryStore = defineStore({
   }),
 
   persist: {
-    enabled: true,
-    strategies: [{ storage: localStorage, paths: ['chatMenus'] }],
+    storage: localStorage,
+    pick: ['chatMenus', 'activeChatMenuId', 'chatHistory'],
   },
 
   getters: {
     getHistoryActive: state => () => {
-      const history = state.chatHistory.find(
-        item => item.id === state.activeChatMenuId
-      );
+      const history = state.chatHistory.find(item => item.id === state.activeChatMenuId);
       if (history) {
         return history.messages;
       }
@@ -48,6 +46,7 @@ export const useChatHistoryStore = defineStore({
       return [];
     },
   },
+
   actions: {
     addMenu(id: number) {
       this.chatMenus.unshift({

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 
-export const useChatGPTStore = defineStore({
-  id: 'chatGPT',
+export const useChatGPTStore = defineStore('chatGPT', {
   state: () => ({
     propmpt: '',
     configDialog: false,
@@ -11,13 +10,8 @@ export const useChatGPTStore = defineStore({
   }),
 
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        paths: ['propmpt', 'apiKey', 'proxyUrl', 'model'],
-      },
-    ],
+    storage: localStorage,
+    pick: ['propmpt', 'apiKey', 'proxyUrl', 'model'],
   },
 
   getters: {

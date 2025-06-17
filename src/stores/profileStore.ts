@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia';
 
-export const useProfileStore = defineStore({
-  id: 'userProfile',
+export const useProfileStore = defineStore('userProfile', {
   state: () => ({
     basic: {
       username: 'shirabako',
       realname: 'yang J. K.',
       email: 'yjkabko@gmail.com',
-      avatar:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s',
+      avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s',
       location: 'Tokyo,Japan',
       role: 'Admin',
       disabled: false,
@@ -24,6 +22,7 @@ export const useProfileStore = defineStore({
       followerUpdates: true,
     },
   }),
+
   actions: {
     getProfile() {
       return {
@@ -45,5 +44,10 @@ export const useProfileStore = defineStore({
     updateNotificationSettings(settings) {
       this.notifications = { ...this.notifications, ...settings };
     },
+  },
+
+  persist: {
+    storage: localStorage,
+    pick: ['basic', 'authorized', 'notifications'],
   },
 });

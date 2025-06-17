@@ -9,8 +9,7 @@ import {
   SpeechSynthesizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
 
-export const useSpeechStore = defineStore({
-  id: 'speech',
+export const useSpeechStore = defineStore('speech', {
   state: () => ({
     subscriptionKey: import.meta.env.VITE_TTS_KEY,
     region: import.meta.env.VITE_TTS_REGION || 'eastus',
@@ -26,36 +25,21 @@ export const useSpeechStore = defineStore({
   }),
 
   persist: {
-    enabled: true,
-    strategies: [
-      {
-        storage: localStorage,
-        paths: [
-          'speechSynthesisLanguage',
-          'speechSynthesisVoiceName',
-          'localName',
-          'voiceRate',
-          'voiceEmotion',
-        ],
-      },
-    ],
+    storage: localStorage,
+    pick: ['speechSynthesisLanguage', 'speechSynthesisVoiceName', 'localName', 'voiceRate', 'voiceEmotion'],
   },
 
   getters: {},
   actions: {
     async textToSpeech(text: string) {
       this.isPlaying = true;
-      const speechConfig = SpeechConfig.fromSubscription(
-        this.subscriptionKey,
-        this.region
-      );
+      const speechConfig = SpeechConfig.fromSubscription(this.subscriptionKey, this.region);
       speechConfig.speechRecognitionLanguage = this.speechRecognitionLanguage;
       speechConfig.speechSynthesisLanguage = this.speechSynthesisLanguage;
       speechConfig.speechSynthesisVoiceName = this.speechSynthesisVoiceName;
 
       // 设置输出音频格式
-      speechConfig.speechSynthesisOutputFormat =
-        SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+      speechConfig.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
 
       // 通过playback结束事件来判断播放结束
       const player = new SpeakerAudioDestination();
@@ -79,17 +63,11 @@ export const useSpeechStore = defineStore({
           synthesizer.speakTextAsync(
             text,
             speechResult => {
-              if (
-                speechResult.reason === ResultReason.SynthesizingAudioCompleted
-              ) {
+              if (speechResult.reason === ResultReason.SynthesizingAudioCompleted) {
                 resolve(speechResult);
               } else {
                 _this.isPlaying = false;
-                reject(
-                  new Error(
-                    `Speech synthesis failed with reason: ${speechResult.reason}`
-                  )
-                );
+                reject(new Error(`Speech synthesis failed with reason: ${speechResult.reason}`));
               }
             },
             error => {
@@ -112,17 +90,13 @@ export const useSpeechStore = defineStore({
 
     async ssmlToSpeak(text: string) {
       this.isPlaying = true;
-      const speechConfig = SpeechConfig.fromSubscription(
-        this.subscriptionKey,
-        this.region
-      );
+      const speechConfig = SpeechConfig.fromSubscription(this.subscriptionKey, this.region);
       speechConfig.speechRecognitionLanguage = this.speechRecognitionLanguage;
       speechConfig.speechSynthesisLanguage = this.speechSynthesisLanguage;
       speechConfig.speechSynthesisVoiceName = this.speechSynthesisVoiceName;
 
       // 设置输出音频格式
-      speechConfig.speechSynthesisOutputFormat =
-        SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+      speechConfig.speechSynthesisOutputFormat = SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
 
       // 通过playback结束事件来判断播放结束
       const player = new SpeakerAudioDestination();
@@ -158,16 +132,10 @@ export const useSpeechStore = defineStore({
           synthesizer.speakSsmlAsync(
             ssml,
             speechResult => {
-              if (
-                speechResult.reason === ResultReason.SynthesizingAudioCompleted
-              ) {
+              if (speechResult.reason === ResultReason.SynthesizingAudioCompleted) {
                 resolve(speechResult);
               } else {
-                reject(
-                  new Error(
-                    `Speech synthesis failed with reason: ${speechResult.reason}`
-                  )
-                );
+                reject(new Error(`Speech synthesis failed with reason: ${speechResult.reason}`));
               }
             },
             error => {

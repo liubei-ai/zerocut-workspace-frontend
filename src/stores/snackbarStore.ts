@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia';
 
-type MessageType = '' | 'info' | 'success' | 'error' | 'warning';
-
-export const useSnackbarStore = defineStore({
-  id: 'snackbarStore',
+export const useSnackbarStore = defineStore('snackbarStore', {
   state: () => ({
     isShow: false,
     message: '',
@@ -11,11 +8,12 @@ export const useSnackbarStore = defineStore({
   }),
 
   persist: {
-    enabled: true,
-    strategies: [{ storage: localStorage, paths: [''] }],
+    storage: localStorage,
+    pick: ['isShow', 'message', 'type'],
   },
 
   getters: {},
+
   actions: {
     showMessage(message) {
       this.isShow = true;
