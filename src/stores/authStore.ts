@@ -11,11 +11,6 @@ export const useAuthStore = defineStore('auth', {
     error: null as string | null,
   }),
 
-  persist: {
-    enabled: true,
-    strategies: [{ storage: localStorage, paths: ['isLoggedIn', 'user'] }],
-  },
-
   getters: {
     isAuthenticated: state => state.isLoggedIn && !!state.user,
     userName: state => state.user?.username || '',
@@ -25,10 +20,7 @@ export const useAuthStore = defineStore('auth', {
     /**
      * Login with username and password
      */
-    async loginWithUsernameAndPassword(
-      username: string,
-      password: string
-    ): Promise<boolean> {
+    async loginWithUsernameAndPassword(username: string, password: string): Promise<boolean> {
       this.loading = true;
       this.error = null;
 
@@ -53,30 +45,6 @@ export const useAuthStore = defineStore('auth', {
         return false;
       } finally {
         this.loading = false;
-      }
-    },
-
-    /**
-     * Fetch current user status from server (deprecated)
-     * 注意：由于采用了 API 层统一处理 401 错误的方案，
-     * 这个方法不再需要在路由守卫中使用，保留仅供特殊场景使用
-     */
-    async fetchCurrentUser(): Promise<boolean> {
-      try {
-        const response = await authApi.getCurrentUser();
-
-        if (response.isAuthenticated && response.user) {
-          this.user = response.user;
-          this.isLoggedIn = true;
-          return true;
-        } else {
-          this.clearAuthState();
-          return false;
-        }
-      } catch (error) {
-        console.error('Failed to fetch current user:', error);
-        this.clearAuthState();
-        return false;
       }
     },
 
@@ -133,11 +101,10 @@ export const useAuthStore = defineStore('auth', {
     clearError() {
       this.error = null;
     },
+  },
 
-    // Legacy methods for backward compatibility
-    loginWithEmailAndPassword(email: string, password: string) {
-      // Redirect to new username-based login
-      return this.loginWithUsernameAndPassword(email, password);
-    },
+  persist: {
+    storage: localStorage,
+    pick: ['isLoggedIn', 'user'],
   },
 });
