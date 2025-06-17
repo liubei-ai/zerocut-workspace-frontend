@@ -7,6 +7,17 @@ import TicketsCard from "@/components/dashboard/TicketsCard.vue";
 // import TrackCard from "@/components/dashboard/TrackCard.vue";
 import TodoCard from "@/components/dashboard/TodoCard.vue";
 import TaskCard from "@/components/dashboard/ChartCard.vue";
+import apiClient from "@/api/client";
+
+// 测试 401 错误处理的方法
+const testAuthFailure = async () => {
+  try {
+    // 调用一个需要认证的接口，如果 cookie 过期会返回 401
+    await apiClient.get("/user/profile");
+  } catch (error) {
+    console.log("Expected 401 error caught:", error);
+  }
+};
 </script>
 <template>
   <div class="pa-5">
@@ -74,6 +85,10 @@ import TaskCard from "@/components/dashboard/ChartCard.vue";
         </v-card>
       </v-col>
     </v-row>
+    <!-- 在适当位置添加测试按钮 -->
+    <v-btn color="warning" @click="testAuthFailure" class="mb-4">
+      测试 401 错误处理
+    </v-btn>
   </div>
 </template>
 <style lang="scss" scoped></style>

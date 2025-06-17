@@ -56,8 +56,9 @@ export const useAuthStore = defineStore("auth", {
     },
 
     /**
-     * Fetch current user status from server
-     * Used to validate authentication state
+     * Fetch current user status from server (deprecated)
+     * 注意：由于采用了 API 层统一处理 401 错误的方案，
+     * 这个方法不再需要在路由守卫中使用，保留仅供特殊场景使用
      */
     async fetchCurrentUser(): Promise<boolean> {
       try {
@@ -92,7 +93,11 @@ export const useAuthStore = defineStore("auth", {
       } finally {
         this.clearAuthState();
         this.loading = false;
-        router.push({ name: "auth-signin" });
+
+        // 只有在不是由 API 层调用时才跳转（避免重复跳转）
+        if (router.currentRoute.value.name !== 'auth-signin') {
+          router.push({ name: "auth-signin" });
+        }
       }
     },
 

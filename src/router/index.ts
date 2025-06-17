@@ -71,27 +71,16 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
   if (requiresAuth) {
-    // If user is not logged in locally, try to fetch current user from server
+    // 简化逻辑：只检查本地状态，401错误由API层统一处理
     if (!authStore.isAuthenticated) {
-      try {
-        const isAuthenticated = await authStore.fetchCurrentUser();
-        if (!isAuthenticated) {
-          // Redirect to login page
-          next({
-            name: 'auth-signin',
-            query: { redirect: to.fullPath }
-          });
-          return;
-        }
-      } catch (error) {
-        console.error('Authentication check failed:', error);
-        next({
-          name: 'auth-signin',
-          query: { redirect: to.fullPath }
-        });
-        return;
-      }
+      // 如果本地没有认证状态，直接跳转到登录页
+      next({
+        name: 'auth-signin',
+        query: { redirect: to.fullPath }
+      });
+      return;
     }
+    // 如果本地有认证状态，继续访问，如果服务端验证失败会在API层处理
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard

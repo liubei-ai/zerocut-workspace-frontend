@@ -11,6 +11,49 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
+// 避免循环依赖，延迟导入
+let router: any = null;
+let authStore: any = null;
+
+// 延迟导入函数
+const getRouter = async () => {
+  if (!router) {
+    const { default: routerInstance } = await import('@/router');
+    router = routerInstance;
+  }
+  return router;
+};
+
+const getAuthStore = async () => {
+  if (!authStore) {
+    const { useAuthStore } = await import('@/stores/authStore');
+    authStore = useAuthStore();
+  }
+  return authStore;
+};
+
+// 处理认证失败的函数
+const handleAuthFailure = async (currentPath?: string) => {
+  try {
+    // 清空认证状态
+    const store = await getAuthStore();
+    store.logout();
+
+    // 跳转到登录页面，保存当前路径用于登录后重定向
+    const routerInstance = await getRouter();
+    const redirectPath = currentPath || routerInstance.currentRoute.value.fullPath;
+
+    await routerInstance.push({
+      name: 'auth-signin',
+      query: { redirect: redirectPath }
+    });
+  } catch (error) {
+    console.error('Handle auth failure error:', error);
+    // 如果出错，直接跳转到登录页面
+    window.location.href = '/auth/signin';
+  }
+};
+
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
@@ -31,8 +74,20 @@ apiClient.interceptors.response.use(
     if (code === 200 || code === 0) {
       // Return the data directly for successful responses
       return { ...response, data: data };
+    } else if (code === 401) {
+      // Handle authentication failure
+      console.warn('Authentication failed, redirecting to login page');
+      handleAuthFailure();
+
+      // Still reject the promise so the calling code can handle it
+      const apiError: ApiError = {
+        code,
+        message: message || 'Authentication failed',
+        details: data,
+      };
+      return Promise.reject(apiError);
     } else {
-      // Handle API-level errors
+      // Handle other API-level errors
       const apiError: ApiError = {
         code,
         message,
@@ -44,9 +99,17 @@ apiClient.interceptors.response.use(
   (error: AxiosError) => {
     // Handle HTTP-level errors
     if (error.response) {
+      const status = error.response.status;
+
+      // Handle HTTP 401 Unauthorized
+      if (status === 401) {
+        console.warn('HTTP 401 Unauthorized, redirecting to login page');
+        handleAuthFailure();
+      }
+
       // Server responded with error status
       const apiError: ApiError = {
-        code: error.response.status,
+        code: status,
         message: error.response.statusText || 'Request failed',
         details: error.response.data,
       };
