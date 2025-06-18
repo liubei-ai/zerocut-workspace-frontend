@@ -24,9 +24,11 @@ export const read = async (
     const lines = buffer.split('\n');
     buffer = lines.pop() || '';
 
-    let eventId = '';
     let eventType = '';
     let eventData = '';
+
+    const eventPrefix = 'event:';
+    const dataPrefix = 'data:';
 
     for (const line of lines) {
       // 跳过空行和注释
@@ -34,12 +36,10 @@ export const read = async (
         continue;
       }
 
-      if (line.startsWith('id:')) {
-        eventId = line.substring(3).trim();
-      } else if (line.startsWith('event:')) {
-        eventType = line.substring(6).trim();
-      } else if (line.startsWith('data:')) {
-        eventData = line.substring(5).trim();
+      if (line.startsWith(eventPrefix)) {
+        eventType = line.substring(eventPrefix.length).trim();
+      } else if (line.startsWith(dataPrefix)) {
+        eventData = line.substring(dataPrefix.length).trim();
       }
 
       // 只处理message类型的事件
@@ -57,7 +57,6 @@ export const read = async (
         } catch (error) {
           console.error('解析事件数据失败:', error, eventData);
         } finally {
-          eventId = '';
           eventType = '';
           eventData = '';
         }

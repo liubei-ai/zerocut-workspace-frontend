@@ -6,11 +6,11 @@ import UIRoutes from './ui.routes';
 import LandingRoutes from './landing.routes';
 import UtilityRoutes from './utility.routes';
 import PagesRoutes from './pages.routes';
-import ChartsRoutes from './charts.routes';
-import UmlRoutes from './uml.routes';
-import AppsRoutes from './apps.routes';
-import DataRoutes from './data.routes';
 import AiRoutes from './ai.routes';
+// import ChartsRoutes from './charts.routes';
+// import UmlRoutes from './uml.routes';
+// import AppsRoutes from './apps.routes';
+// import DataRoutes from './data.routes';
 
 export const routes = [
   {
@@ -29,8 +29,7 @@ export const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: 'error',
-    component: () =>
-      import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
+    component: () => import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
   },
   ...UserRoutes,
   ...LandingRoutes,
@@ -38,11 +37,11 @@ export const routes = [
   ...PagesRoutes,
   ...UtilityRoutes,
   ...UIRoutes,
-  ...ChartsRoutes,
-  ...UmlRoutes,
-  ...AppsRoutes,
-  ...DataRoutes,
   ...AiRoutes,
+  // ...AppsRoutes,
+  // ...DataRoutes,
+  // ...ChartsRoutes,
+  // ...UmlRoutes,
 ];
 
 // 动态路由，基于用户权限动态去加载

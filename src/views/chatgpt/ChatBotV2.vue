@@ -27,7 +27,7 @@ const userMessage = ref('');
 const promptMessage = computed(() => {
   return [
     {
-      content: chatGPTStore.propmpt,
+      content: chatGPTStore.prompt,
       role: 'system',
     },
   ];
@@ -98,6 +98,7 @@ const createCompletion = async () => {
     const reader = completion.body?.getReader();
     if (!reader) {
       snackbarStore.showErrorMessage('Cannot read the stream.');
+      return;
     }
 
     // Add the bot message
@@ -107,7 +108,7 @@ const createCompletion = async () => {
     });
 
     // Read the stream
-    read(reader, messages);
+    await read(reader, messages);
   } catch (error) {
     snackbarStore.showErrorMessage(error.message);
   }
