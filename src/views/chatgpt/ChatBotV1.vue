@@ -115,9 +115,18 @@ const createCompletionForModel = async (modelName: string) => {
     // 标记该模型为加载中
     loadingModels.value.add(modelName);
 
+    // 过滤消息，只包含:
+    // 1. 系统提示消息
+    // 2. 用户消息
+    // 3. 当前模型自己的回复
+    const filteredMessages = [
+      ...promptMessage.value,
+      ...messages.value.filter(msg => msg.role === 'user' || (msg.role === 'assistant' && msg.modelName === modelName)),
+    ];
+
     // 使用chatApi中的createStreamChatConnection方法
     const completion = await createStreamChatConnection({
-      messages: requestMessages.value,
+      messages: filteredMessages,
       model: modelName,
       transportType: 'sse',
     });
