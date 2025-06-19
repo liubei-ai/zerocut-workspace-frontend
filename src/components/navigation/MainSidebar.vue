@@ -1,8 +1,3 @@
-<!--
-* @Component:
-* @Maintainer: J.K. Yang
-* @Description:
--->
 <script setup lang="ts">
 import configs from '@/configs';
 import MainMenu from '@/components/navigation/MainMenu.vue';
@@ -10,10 +5,6 @@ import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 import { Icon } from '@iconify/vue';
 const customizeTheme = useCustomizeThemeStore();
 const navigation = ref(configs.navigation);
-
-const openGithubSite = () => {
-  window.open('https://github.com/yangjiakai', '_blank');
-};
 
 onMounted(() => {
   scrollToBottom();
@@ -38,21 +29,9 @@ const scrollToBottom = () => {
     <!-- ---------------------------------------------- -->
     <template v-if="!customizeTheme.miniSidebar" v-slot:prepend>
       <v-card height="100" class="logo-card">
-        <!-- <img
-          v-if="customizeTheme.darkTheme"
-          width="200"
-          src="@/assets/logo_dark.svg"
-          alt=""
-        />
-        <img
-          v-else="customizeTheme.darkTheme"
-          width="200"
-          src="@/assets/logo_light.svg"
-          alt=""
-        /> -->
         <h1 class="logo-text h-full">
           <Icon class="mr-2" width="40" icon="solar:plain-bold-duotone" />
-          <span>Lux-UI</span>
+          <span>LiuBei AI</span>
         </h1>
       </v-card>
     </template>
@@ -72,11 +51,6 @@ const scrollToBottom = () => {
 
 <style scoped lang="scss">
 .gradient-card {
-  // background: linear-gradient(
-  //   to bottom,
-  //   rgba(var(--v-theme-primary), 1),
-  //   rgba(var(--v-theme-primary), 0.9)
-  // );
   background: linear-gradient(270deg, rgba(var(--v-theme-primary), 0.7) 0, rgb(var(--v-theme-primary)) 100%);
   box-shadow: 0 2px 6px rgba(var(--v-theme-primary), 0.3);
 }

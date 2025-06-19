@@ -3,7 +3,8 @@ import { Ref } from 'vue';
 // Read the stream from the server
 export const read = async (
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  target: Ref<string> | Ref<any[]>
+  target: Ref<string> | Ref<any[]>,
+  messageIndex?: number
 ): Promise<void> => {
   // TextDecoder is a built-in object that allows you to convert a stream of bytes into a string
   const decoder = new TextDecoder('utf-8');
@@ -49,7 +50,10 @@ export const read = async (
           if (parsedData.data && parsedData.data.delta) {
             const deltaContent = parsedData.data.delta;
             if (target.value instanceof Array) {
-              target.value[target.value.length - 1].content += deltaContent;
+              // 如果提供了特定的消息索引，则更新该索引的消息
+              // 否则使用默认的最后一个消息
+              const indexToUpdate = typeof messageIndex === 'number' ? messageIndex : target.value.length - 1;
+              target.value[indexToUpdate].content += deltaContent;
             } else {
               target.value = target.value += deltaContent;
             }

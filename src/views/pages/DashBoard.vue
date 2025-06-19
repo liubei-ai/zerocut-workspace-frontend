@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useChatGPTStore } from '@/stores/chatGPTStore';
 import { ChatModel } from '@/api/chatApi';
 
-// 获取store
+// 获取store和router
+const router = useRouter();
 const chatStore = useChatGPTStore();
 
 // 定义当前选中的标签页
@@ -12,6 +14,7 @@ const tabs = ['创意策划', '文生图', '图生视频'];
 
 // 用户输入
 const userInput = ref('');
+const isLoading = ref(false);
 
 // 选择/取消选择模型
 const selectedModels = ref<ChatModel[]>([]);
@@ -38,16 +41,35 @@ onMounted(() => {
   chatStore.fetchAvailableModels();
 });
 
-// 提交问题
-const submitQuestion = () => {
+// 发送消息并跳转到聊天页面
+const sendMessage = () => {
   if (!userInput.value.trim() || selectedModels.value.length === 0) return;
 
-  // 实现提问逻辑
-  console.log('提问:', userInput.value);
-  console.log('选中的模型:', selectedModels.value);
+  isLoading.value = true;
+
+  // 1. 保存用户输入和选择的模型
+  const userPrompt = userInput.value;
+
+  // 2. 将选择的第一个模型设置为当前模型
+  if (selectedModels.value.length > 0) {
+    chatStore.updateModel(selectedModels.value[0].modelName);
+  }
+
+  // 3. 收集所有选中模型的modelName
+  const selectedModelNames = selectedModels.value.map(model => model.modelName);
+
+  // 4. 跳转到聊天页面，并传递初始消息和选中的模型
+  router.push({
+    path: '/ai/chatbot_v1',
+    query: {
+      initialMessage: userPrompt,
+      models: selectedModelNames.join(','), // 用逗号分隔多个模型名称
+    },
+  });
 
   // 重置输入
   userInput.value = '';
+  isLoading.value = false;
 };
 </script>
 
@@ -137,15 +159,23 @@ const submitQuestion = () => {
               hide-details
               class="input-textarea px-4 pt-4 pb-12"
               placeholder="描述您的创意需求，例如：'我需要一个科技感十足的Logo设计方案' 或 '帮我策划一个环保主题的营销活动'"
-              @keydown.ctrl.enter="submitQuestion"
+              @keydown.enter="sendMessage"
               no-resize
               auto-grow
               bg-color="background"
             ></v-textarea>
 
             <div class="send-button-container">
-              <v-btn class="mb-1" color="primary" variant="elevated" icon :loading="isLoading" :disabled="isLoading">
-                <v-icon @click="sendMessage">mdi-send</v-icon>
+              <v-btn
+                class="mb-1"
+                color="primary"
+                variant="elevated"
+                icon
+                :loading="isLoading"
+                :disabled="isLoading || !userInput.trim() || selectedModels.length === 0"
+                @click="sendMessage"
+              >
+                <v-icon>mdi-send</v-icon>
               </v-btn>
             </div>
           </v-card-text>

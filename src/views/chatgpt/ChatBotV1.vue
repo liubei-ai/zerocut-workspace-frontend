@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted } from 'vue';
 import { MdPreview } from 'md-editor-v3';
+import { useRoute } from 'vue-router';
 import { scrollToBottom } from '@/utils/common';
 import { useChatGPTStore } from '@/stores/chatGPTStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
@@ -16,8 +17,14 @@ import { createStreamChatConnection, type Message } from '@/api/chatApi';
 import ApiKeyDialog from '@/components/ApiKeyDialog.vue';
 import 'md-editor-v3/lib/preview.css';
 
+// 扩展消息接口，支持多模型
+interface ExtendedMessage extends Message {
+  modelName?: string; // 回答来自哪个模型
+}
+
 const snackbarStore = useSnackbarStore();
 const chatGPTStore = useChatGPTStore();
+const route = useRoute();
 
 // User Input Message
 const userMessage = ref('');
@@ -33,7 +40,7 @@ const promptMessage = computed<Message[]>(() => {
 });
 
 // Message List
-const messages = ref<Message[]>([]);
+const messages = ref<ExtendedMessage[]>([]);
 
 const requestMessages = computed(() => {
   if (messages.value.length <= 10) {
@@ -45,72 +52,113 @@ const requestMessages = computed(() => {
   }
 });
 
-const isLoading = ref(false);
+// 记录每个模型的加载状态
+const loadingModels = ref(new Set<string>());
+const isLoading = computed(() => loadingModels.value.size > 0);
 
-// 初始化时加载模型列表
+// 记录查询参数中的模型列表
+const selectedModelNames = ref<string[]>([]);
+
+// 初始化时加载模型列表和处理初始消息
 onMounted(async () => {
   await chatGPTStore.fetchAvailableModels();
+
+  // 获取查询参数中的模型列表
+  const modelsParam = route.query.models as string;
+  if (modelsParam) {
+    selectedModelNames.value = modelsParam.split(',');
+  } else {
+    // 如果没有传递模型参数，使用当前选定的模型
+    selectedModelNames.value = [chatGPTStore.model];
+  }
+
+  // 处理从Dashboard传递来的初始消息
+  const initialMessage = route.query.initialMessage as string;
+  if (initialMessage) {
+    // 直接添加初始消息并发送
+    messages.value.push({
+      content: initialMessage,
+      role: 'user',
+    });
+
+    // 为每个选中的模型创建AI回复
+    await createMultiModelCompletions(initialMessage);
+  }
 });
 
 // Send Messsage
 const sendMessage = async () => {
   if (userMessage.value) {
+    const message = userMessage.value;
+
     // Add the message to the list
     messages.value.push({
-      content: userMessage.value,
+      content: message,
       role: 'user',
     });
 
     // Clear the input
     userMessage.value = '';
 
-    // Create a completion
-    await createCompletion();
+    // Create completions for multiple models
+    await createMultiModelCompletions(message);
   }
 };
 
-const createCompletion = async () => {
-  try {
-    isLoading.value = true;
+// 为每个模型创建单独的回复
+const createMultiModelCompletions = async (message: string) => {
+  // 使用查询参数中的模型列表进行回复
+  const modelPromises = selectedModelNames.value.map(modelName => createCompletionForModel(modelName));
 
-    // 使用当前选择的模型
-    const currentModel = chatGPTStore.model || 'moonshot-v1-8k';
+  // 并行处理所有模型的响应，这样模型之间不会互相等待
+  await Promise.all(modelPromises);
+};
+
+// 为单个模型创建回复
+const createCompletionForModel = async (modelName: string) => {
+  try {
+    // 标记该模型为加载中
+    loadingModels.value.add(modelName);
 
     // 使用chatApi中的createStreamChatConnection方法
     const completion = await createStreamChatConnection({
       messages: requestMessages.value,
-      model: currentModel,
+      model: modelName,
       transportType: 'sse',
     });
 
     // Handle errors
     if (!completion.ok) {
       const errorData = await completion.json();
-      snackbarStore.showErrorMessage(errorData.message || '请求失败');
-      isLoading.value = false;
+      snackbarStore.showErrorMessage(`${modelName} 回复失败: ${errorData.message || '请求失败'}`);
+      loadingModels.value.delete(modelName);
       return;
     }
 
     // Create a reader
     const reader = completion.body?.getReader();
     if (!reader) {
-      snackbarStore.showErrorMessage('无法读取流式响应');
-      isLoading.value = false;
+      snackbarStore.showErrorMessage(`${modelName} 无法读取流式响应`);
+      loadingModels.value.delete(modelName);
       return;
     }
 
-    // Add the bot message
+    // Add the bot message with model name and track its position
+    const messageIndex = messages.value.length;
     messages.value.push({
       content: '',
       role: 'assistant',
+      modelName: modelName, // 标记哪个模型的回复
     });
 
-    // Read the stream
-    await read(reader, messages);
-    isLoading.value = false;
+    // Read the stream and specify which message to update
+    await read(reader, messages, messageIndex);
+
+    // 完成后移除加载状态
+    loadingModels.value.delete(modelName);
   } catch (error: any) {
-    snackbarStore.showErrorMessage(error.message || '请求失败');
-    isLoading.value = false;
+    snackbarStore.showErrorMessage(`${modelName} 回复失败: ${error.message || '请求失败'}`);
+    loadingModels.value.delete(modelName);
   }
 };
 
@@ -132,18 +180,24 @@ const displayMessages = computed(() => {
   if (messages.value.length === 0) return [];
 
   const messagesCopy = messages.value.slice(); // 创建原始数组的副本
-  const lastMessage = messagesCopy[messagesCopy.length - 1];
 
-  if (lastMessage) {
-    const updatedLastMessage = {
-      ...lastMessage,
-      content: countAndCompleteCodeBlocks(lastMessage.content),
-    };
-    messagesCopy[messagesCopy.length - 1] = updatedLastMessage;
-  }
-
-  return messagesCopy;
+  // 处理每条消息，确保代码块完整
+  return messagesCopy.map(message => {
+    if (message.role === 'assistant') {
+      return {
+        ...message,
+        content: countAndCompleteCodeBlocks(message.content),
+      };
+    }
+    return message;
+  });
 });
+
+// 获取模型的显示名称
+const getModelDisplayName = (modelName: string) => {
+  const model = chatGPTStore.availableModels.find(m => m.modelName === modelName);
+  return model ? model.modelName : modelName;
+};
 
 const handleKeydown = e => {
   if (e.key === 'Enter' && (e.altKey || e.shiftKey)) {
@@ -158,56 +212,63 @@ const handleKeydown = e => {
 };
 
 const inputRow = ref(1);
-
-// 模型选择相关
-const modelSelectOpen = ref(false);
-const isModelLoading = computed(() => chatGPTStore.isLoadingModels);
-const availableModels = computed(() => chatGPTStore.availableModels);
-const selectedModel = computed({
-  get: () => chatGPTStore.model,
-  set: value => chatGPTStore.updateModel(value),
-});
-
-// 刷新模型列表
-const refreshModels = async () => {
-  await chatGPTStore.fetchAvailableModels();
-};
 </script>
 
 <template>
   <div class="chat-bot">
     <div class="messsage-area">
       <perfect-scrollbar v-if="messages.length > 0" class="message-container">
-        <template v-for="message in displayMessages">
+        <template v-for="(message, index) in displayMessages" :key="index">
+          <!-- 用户消息 -->
           <div v-if="message.role === 'user'">
             <div class="pa-4 user-message">
               <v-avatar class="ml-4" rounded="sm" variant="elevated">
-                <img src="@/assets/images/avatars/avatar_user.jpg" alt="alt" />
+                <img src="@/assets/images/avatars/avatar_user.jpg" alt="user" />
               </v-avatar>
               <v-card class="gradient gray text-pre-wrap" theme="dark">
                 <v-card-text>
-                  <b> {{ message.content }}</b></v-card-text
-                >
+                  <b>{{ message.content }}</b>
+                </v-card-text>
               </v-card>
             </div>
           </div>
-          <div v-else>
+
+          <!-- AI回复 -->
+          <div v-else-if="message.role === 'assistant'">
             <div class="pa-2 pa-md-5 assistant-message">
               <v-avatar class="d-none d-md-block mr-2 mr-md-4" rounded="sm" variant="elevated">
-                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
+                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="ai" />
               </v-avatar>
-              <v-card>
-                <div>
-                  <MdPreview :modelValue="message.content" class="font-1" />
+              <div class="d-flex flex-column" style="width: 100%">
+                <!-- 显示模型名称 -->
+                <div class="mb-1 text-caption text-medium-emphasis" v-if="message.modelName">
+                  <v-chip size="small" color="primary" variant="flat" class="mb-2">
+                    {{ getModelDisplayName(message.modelName) }}
+                  </v-chip>
                 </div>
-              </v-card>
+                <v-card>
+                  <div>
+                    <MdPreview :modelValue="message.content" class="font-1" />
+                  </div>
+                </v-card>
+              </div>
             </div>
           </div>
         </template>
+
+        <!-- 加载状态显示 -->
         <div v-if="isLoading">
           <div class="pa-6">
             <div class="message">
               <AnimationAi :size="100" />
+              <div v-if="loadingModels.size > 0" class="mt-2 text-center">
+                <template v-for="modelName in Array.from(loadingModels)" :key="modelName">
+                  <v-chip size="small" color="primary" variant="outlined" class="mr-1 mb-1">
+                    {{ getModelDisplayName(modelName) }}
+                  </v-chip>
+                </template>
+                <span class="ml-1">正在思考...</span>
+              </div>
             </div>
           </div>
         </div>
@@ -218,36 +279,6 @@ const refreshModels = async () => {
       </div>
     </div>
     <div class="input-area">
-      <v-sheet color="transparent" elevation="0" class="model-selector mb-2 d-flex align-center">
-        <v-select
-          v-model="selectedModel"
-          :items="availableModels"
-          item-title="modelName"
-          item-value="modelName"
-          variant="outlined"
-          density="compact"
-          label="选择模型"
-          :loading="isModelLoading"
-          class="model-select"
-          hide-details
-        >
-          <template v-slot:prepend>
-            <v-icon color="primary">mdi-robot</v-icon>
-          </template>
-          <template v-slot:append>
-            <v-btn
-              icon="mdi-refresh"
-              variant="text"
-              density="compact"
-              size="small"
-              color="primary"
-              @click="refreshModels"
-              :loading="isModelLoading"
-            ></v-btn>
-          </template>
-        </v-select>
-      </v-sheet>
-
       <v-sheet color="transparent" elevation="0" class="input-panel d-flex align-end pa-1">
         <transition name="fade">
           <v-textarea
