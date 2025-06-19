@@ -1,8 +1,3 @@
-<!--
-* @Component:
-* @Maintainer: J.K. Yang
-* @Description:
--->
 <script setup lang="ts">
 import { nextTick, onMounted } from 'vue';
 import { MdPreview } from 'md-editor-v3';

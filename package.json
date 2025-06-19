@@ -91,5 +91,10 @@
     "*.{scss,css,md,json}": [
       "prettier --write"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=10.12.1"
+  },
+  "packageManager": "pnpm@10.12.1"
 }
