@@ -7,12 +7,14 @@
 ## 主要改进
 
 ### 1. 动态用户信息显示
+
 - ✅ 显示实际登录用户的用户名
 - ✅ 根据用户名生成邮箱地址（临时方案）
 - ✅ 支持用户头像或首字母头像
 - ✅ 区分登录和未登录状态
 
 ### 2. 头像系统
+
 - **有头像**: 显示用户实际头像
 - **无头像**: 显示用户名首字母的彩色头像
 - **未登录**: 显示 "G" (Guest) 灰色头像
@@ -21,42 +23,45 @@
 ### 3. 用户信息逻辑
 
 #### 用户名显示
+
 ```typescript
 const userName = computed(() => {
-  if (!isAuthenticated.value) return "Guest";
-  return authStore.userName || "Unknown User";
+  if (!isAuthenticated.value) return 'Guest';
+  return authStore.userName || 'Unknown User';
 });
 ```
 
 #### 邮箱显示
+
 ```typescript
 const userEmail = computed(() => {
-  if (!isAuthenticated.value) return "Please login";
-  return currentUser.value?.username
-    ? `${currentUser.value.username}@example.com`
-    : "No email";
+  if (!isAuthenticated.value) return 'Please login';
+  return currentUser.value?.username ? `${currentUser.value.username}@example.com` : 'No email';
 });
 ```
 
 #### 头像首字母
+
 ```typescript
 const userInitials = computed(() => {
   const name = userName.value;
-  if (name && name !== "Guest" && name !== "Unknown User") {
+  if (name && name !== 'Guest' && name !== 'Unknown User') {
     return name.charAt(0).toUpperCase();
   }
-  return isAuthenticated.value ? "U" : "G";
+  return isAuthenticated.value ? 'U' : 'G';
 });
 ```
 
 ## 显示效果
 
 ### 登录状态
+
 - **用户名**: 显示实际用户名（如：admin）
 - **邮箱**: 显示生成的邮箱（如：admin@example.com）
 - **头像**: 显示用户名首字母（如：A）或实际头像
 
 ### 未登录状态
+
 - **用户名**: Guest
 - **邮箱**: Please login
 - **头像**: G (Guest)
@@ -83,6 +88,7 @@ const userInitials = computed(() => {
 ```
 
 无需传递任何 props，组件会自动：
+
 1. 检测用户登录状态
 2. 获取用户信息
 3. 显示相应的用户界面
@@ -91,11 +97,13 @@ const userInitials = computed(() => {
 ## 后续优化建议
 
 1. **完善用户类型**
+
    - 添加 email 字段到 User 接口
    - 添加 avatar 字段支持真实头像
    - 添加 name 字段支持显示名称
 
 2. **增强功能**
+
    - 添加用户状态指示器
    - 支持用户资料快速编辑
    - 添加最近活动显示
@@ -108,15 +116,17 @@ const userInitials = computed(() => {
 ## 测试建议
 
 1. **登录测试**
+
    - 使用 admin/123456 登录
    - 检查用户名是否正确显示
    - 验证头像首字母是否为 "A"
 
 2. **登出测试**
+
    - 点击登出按钮
    - 检查是否显示 Guest 状态
    - 验证头像是否变为 "G"
 
 3. **多语言测试**
    - 切换语言
-   - 检查登出按钮翻译是否正确 
+   - 检查登出按钮翻译是否正确
