@@ -39,6 +39,12 @@
 - **Day.js**: 轻量级日期库，国际化支持
 - **EventSource**: 服务器发送事件，实时数据流
 
+### 认证集成
+
+- **Authing Vue.js SDK**: 前端认证集成，用户状态管理
+- **Authing Guard**: 登录注册组件，支持多种登录方式
+- **Authing Management SDK**: 用户管理和权限控制
+
 ## 后端技术栈
 
 ### 核心框架
@@ -55,8 +61,9 @@
 
 ### 认证与安全
 
-- **JWT**: 无状态认证，跨域支持
-- **bcrypt**: 密码哈希，安全加密
+- **Authing SaaS**: 企业级身份认证和用户管理服务
+- **Authing Node.js SDK**: 后端认证集成
+- **JWT**: 无状态认证，跨域支持 (由 Authing 提供)
 - **express-session**: 会话管理
 - **Joi**: 数据验证，请求参数校验
 

@@ -483,7 +483,19 @@ interface GitHooksConfig {
 
 // 提交信息验证
 interface CommitLintRules {
-  'type-enum': ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'chore', 'revert', 'build', 'ci'];
+  'type-enum': [
+    'feat',
+    'fix',
+    'docs',
+    'style',
+    'refactor',
+    'perf',
+    'test',
+    'chore',
+    'revert',
+    'build',
+    'ci',
+  ];
   'type-case': 'lower-case';
   'subject-case': 'sentence-case' | 'start-case' | 'pascal-case' | 'upper-case';
   'header-max-length': 72;
@@ -660,11 +672,18 @@ class ResultCache {
 
 ## 安全架构
 
-### 1. API密钥管理
+### 1. 用户认证层 (基于 Authing SaaS)
+
+- @authing/guard-vue3 authing vue.js sdk 集成
+
+### 2. API密钥管理
 
 ```typescript
 // 环境变量配置
 interface APIKeys {
+  VITE_AUTHING_APP_ID: string;
+  VITE_AUTHING_APP_HOST: string;
+
   VITE_DEEPSEEK_API_KEY: string;
   VITE_DOUBAO_API_KEY: string;
   VITE_KIMI_API_KEY: string;
@@ -693,7 +712,7 @@ class APIKeyManager {
   private loadKeys(): void {
     // 安全地加载环境变量
     Object.entries(import.meta.env).forEach(([key, value]) => {
-      if (key.startsWith('VITE_') && key.includes('API_KEY')) {
+      if (key.startsWith('VITE_') && (key.includes('API_KEY') || key.includes('AUTHING'))) {
         const provider = this.extractProvider(key);
         this.keys.set(provider, value as string);
       }
@@ -702,7 +721,7 @@ class APIKeyManager {
 }
 ```
 
-### 2. 数据验证架构
+### 3. 数据验证架构
 
 ```typescript
 // 输入验证
@@ -837,14 +856,48 @@ graph TB
 
 ## 安全架构模式
 
-### 1. 多层安全防护
+### 1. 多层安全防护 (基于 Authing)
 
-- **前端安全**: CSP策略、XSS防护、敏感信息加密存储
-- **传输安全**: HTTPS强制、API签名验证、请求频率限制
-- **后端安全**: JWT认证、RBAC权限控制、SQL注入防护
-- **数据安全**: 数据库加密、敏感字段脱敏、审计日志
+- **前端安全**: CSP策略、XSS防护、Authing Guard 组件保护
+- **认证安全**: Authing SaaS 企业级认证、MFA 支持、SSO 集成
+- **传输安全**: HTTPS强制、Authing Token 验证、请求频率限制
+- **后端安全**: Authing JWT 认证、RBAC权限控制、SQL注入防护
+- **数据安全**: 数据库加密、敏感字段脱敏、Authing 审计日志
 
-### 2. API密钥管理
+### 2. Authing 认证架构
+
+```typescript
+// Authing 认证流程
+interface AuthingAuthFlow {
+  // 用户登录流程
+  login: {
+    step1: 'Authing Guard 组件渲染';
+    step2: 'Authing 服务验证凭据';
+    step3: 'JWT Token 生成';
+    step4: '用户信息返回';
+    step5: '工作空间自动关联';
+  };
+
+  // Token 验证流程
+  tokenValidation: {
+    step1: '前端发送带 Token 的请求';
+    step2: '后端中间件拦截验证';
+    step3: 'Authing API 验证 Token';
+    step4: '返回用户信息和权限';
+    step5: '继续业务逻辑处理';
+  };
+
+  // 权限检查流程
+  permissionCheck: {
+    step1: '获取用户角色信息';
+    step2: '检查工作空间权限';
+    step3: '验证资源访问权限';
+    step4: '记录访问日志';
+  };
+}
+```
+
+### 3. API密钥管理
 
 ```typescript
 interface ApiKeyManagement {

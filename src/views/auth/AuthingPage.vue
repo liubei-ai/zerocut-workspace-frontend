@@ -37,7 +37,7 @@ guard.on('login', async (authingUser: User) => {
     }
 
     // 刷新页面以解决样式冲突问题
-    window.location.reload();
+    // window.location.reload();
   } catch (error) {
     console.error('Login failed:', error);
     // 可以在这里显示错误消息

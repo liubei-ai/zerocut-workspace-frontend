@@ -2,96 +2,119 @@ import router from '@/router';
 import type { ApiError, User } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    loading: false,
-    error: null as string | null,
-    isLoggedIn: false,
+export const useAuthStore = defineStore(
+  'auth',
+  () => {
+    // 状态
+    const loading = ref(false);
+    const error = ref<string | null>(null);
+    const isLoggedIn = ref(false);
+    const user = ref<User | null>(null);
 
-    user: null as User | null,
-  }),
+    // 在 store 顶层初始化 composable
+    const guard = useGuard();
 
-  getters: {
-    isAuthenticated: state => state.isLoggedIn && !!state.user,
-    userName: state => state.user?.username || '',
-  },
+    // 计算属性
+    const isAuthenticated = computed(() => isLoggedIn.value && !!user.value);
+    const userName = computed(() => user.value?.username || '');
 
-  actions: {
     /**
      * Handle Authing login success
      */
-    async setAuthingUser(authingUser: AuthingUser) {
+    const setAuthingUser = async (authingUser: AuthingUser) => {
       // 将 Authing 用户信息转换为应用的用户格式
-      const user: User = {
+      const userData: User = {
         username: authingUser.username || '',
       };
 
-      this.user = user;
-      this.isLoggedIn = true;
-      this.error = null;
+      user.value = userData;
+      isLoggedIn.value = true;
+      error.value = null;
 
-      console.log('Authing 用户登录成功:', user);
-    },
+      console.log('Authing 用户登录成功:', userData);
+    };
 
     /**
      * Logout user
      */
-    async logout(): Promise<void> {
-      this.loading = true;
+    const logout = async (): Promise<void> => {
+      loading.value = true;
 
       try {
-        const guard = useGuard();
+        // 直接使用已初始化的 guard 实例
         await guard.logout();
-      } catch (error) {
-        console.error('Logout failed:', error);
+      } catch (err) {
+        console.error('Logout failed:', err);
         // Continue with local logout even if server logout fails
       } finally {
-        this.clearAuthState();
-        this.loading = false;
+        clearAuthState();
+        loading.value = false;
 
         // 只有在不是由 API 层调用时才跳转（避免重复跳转）
-        if (router.currentRoute.value.name !== 'auth-signin') {
-          router.push({ name: 'auth-signin' });
+        if (router.currentRoute.value.name !== 'auth-authing') {
+          router.push({ name: 'auth-authing' });
         }
       }
-    },
+    };
 
     /**
      * Clear authentication state
      */
-    clearAuthState() {
-      this.isLoggedIn = false;
-      this.user = null;
-      this.error = null;
-    },
+    const clearAuthState = () => {
+      isLoggedIn.value = false;
+      user.value = null;
+      error.value = null;
+    };
 
     /**
      * Handle authentication errors
      */
-    handleAuthError(error: ApiError) {
-      if (error.code === 401) {
-        this.error = 'Invalid username or password';
-        this.clearAuthState();
-      } else if (error.code === 403) {
-        this.error = 'Access denied';
-      } else if (error.code === 0) {
-        this.error = 'Network error. Please check your connection.';
+    const handleAuthError = (apiError: ApiError) => {
+      if (apiError.code === 401) {
+        error.value = 'Invalid username or password';
+        clearAuthState();
+      } else if (apiError.code === 403) {
+        error.value = 'Access denied';
+      } else if (apiError.code === 0) {
+        error.value = 'Network error. Please check your connection.';
       } else {
-        this.error = error.message || 'Login failed. Please try again.';
+        error.value = apiError.message || 'Login failed. Please try again.';
       }
-    },
+    };
 
     /**
      * Clear error state
      */
-    clearError() {
-      this.error = null;
-    },
-  },
+    const clearError = () => {
+      error.value = null;
+    };
 
-  persist: {
-    storage: localStorage,
-    pick: ['isLoggedIn', 'user'],
+    // 返回所有状态、计算属性和方法
+    return {
+      // 状态
+      loading,
+      error,
+      isLoggedIn,
+      user,
+
+      // 计算属性
+      isAuthenticated,
+      userName,
+
+      // 方法
+      setAuthingUser,
+      logout,
+      clearAuthState,
+      handleAuthError,
+      clearError,
+    };
   },
-});
+  {
+    persist: {
+      storage: localStorage,
+      pick: ['isLoggedIn', 'user'],
+    },
+  }
+);

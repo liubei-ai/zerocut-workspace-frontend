@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
-import UserRoutes from './user.routes';
-import AuthRoutes from './auth.routes';
-import UIRoutes from './ui.routes';
-import LandingRoutes from './landing.routes';
-import UtilityRoutes from './utility.routes';
-import PagesRoutes from './pages.routes';
+import { createRouter, createWebHistory } from 'vue-router';
 import AiRoutes from './ai.routes';
+import AuthRoutes from './auth.routes';
+import LandingRoutes from './landing.routes';
+import PagesRoutes from './pages.routes';
+import UIRoutes from './ui.routes';
+import UserRoutes from './user.routes';
+import UtilityRoutes from './utility.routes';
 // import ChartsRoutes from './charts.routes';
 // import UmlRoutes from './uml.routes';
 // import AppsRoutes from './apps.routes';
@@ -74,7 +74,7 @@ router.beforeEach(async (to, from, next) => {
     if (!authStore.isAuthenticated) {
       // 如果本地没有认证状态，直接跳转到登录页
       next({
-        name: 'auth-signin',
+        name: 'auth-authing',
         query: { redirect: to.fullPath },
       });
       return;
