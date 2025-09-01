@@ -28,7 +28,7 @@ const props = defineProps({
               <Icon class="mx-2 mr-5" width="20" :icon="menuItem.icon" />
             </template>
             <v-list-item-title
-              v-text="$t(menuItem.key)"
+              v-text="menuItem.text || $t(menuItem.key)"
               class="font-weight-bold"
             ></v-list-item-title>
           </v-list-item>

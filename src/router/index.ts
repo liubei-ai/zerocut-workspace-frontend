@@ -1,16 +1,17 @@
 import { useAuthStore } from '@/stores/authStore';
 import { createRouter, createWebHistory } from 'vue-router';
 import AiRoutes from './ai.routes';
+import AppsRoutes from './apps.routes';
 import AuthRoutes from './auth.routes';
+import ChartsRoutes from './charts.routes';
+import DataRoutes from './data.routes';
 import LandingRoutes from './landing.routes';
 import PagesRoutes from './pages.routes';
 import UIRoutes from './ui.routes';
+import UmlRoutes from './uml.routes';
 import UserRoutes from './user.routes';
 import UtilityRoutes from './utility.routes';
-// import ChartsRoutes from './charts.routes';
-// import UmlRoutes from './uml.routes';
-// import AppsRoutes from './apps.routes';
-// import DataRoutes from './data.routes';
+import ZerocutRoutes from './zerocut.routes';
 
 export const routes = [
   {
@@ -38,10 +39,11 @@ export const routes = [
   ...UtilityRoutes,
   ...UIRoutes,
   ...AiRoutes,
-  // ...AppsRoutes,
-  // ...DataRoutes,
-  // ...ChartsRoutes,
-  // ...UmlRoutes,
+  ...ZerocutRoutes,
+  ...AppsRoutes,
+  ...DataRoutes,
+  ...ChartsRoutes,
+  ...UmlRoutes,
 ];
 
 // 动态路由，基于用户权限动态去加载
