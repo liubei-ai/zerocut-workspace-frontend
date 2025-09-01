@@ -1,17 +1,30 @@
 export default [
   {
-    path: '/auth/signin',
-    name: 'auth-signin',
+    path: '/auth/authing',
+    name: 'auth-authing',
     component: () =>
       import(
-        /* webpackChunkName: "auth-signin" */ '@/views/auth/SigninPage.vue'
+        /* webpackChunkName: "auth-authing" */
+        '@/views/auth/AuthingPage.vue'
       ),
     meta: {
       layout: 'auth',
-      title: 'SignIn',
+      title: 'Authing认证',
     },
   },
   // 注释掉不需要的认证路由
+  // {
+  //   path: '/auth/signin',
+  //   name: 'auth-signin',
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "auth-signin" */ '@/views/auth/SigninPage.vue'
+  //     ),
+  //   meta: {
+  //     layout: 'auth',
+  //     title: 'SignIn',
+  //   },
+  // },
   // {
   //   path: "/auth/signup",
   //   name: "auth-signup",

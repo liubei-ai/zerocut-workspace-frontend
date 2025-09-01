@@ -7,20 +7,21 @@
 import App from './App.vue';
 
 // Composables
-import { createApp } from 'vue';
-import vuetify from './plugins/vuetify';
+import '@/styles/main.scss';
+import { createGuard } from '@authing/guard-vue3';
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue';
 import MasonryWall from '@yeger/vue-masonry-wall';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import { createApp } from 'vue';
 import VueVirtualScroller from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import VueApexCharts from 'vue3-apexcharts';
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import Vue3Lottie from 'vue3-lottie';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 import 'vue3-perfect-scrollbar/style.css';
-import '@/styles/main.scss';
-import router from './router';
 import i18n from './plugins/i18n';
-import Vue3Lottie from 'vue3-lottie';
-import { autoAnimatePlugin } from '@formkit/auto-animate/vue';
+import vuetify from './plugins/vuetify';
+import router from './router';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -35,6 +36,7 @@ app.use(pinia);
 app.use(i18n);
 app.use(Vue3Lottie, { name: 'LottieAnimation' });
 app.use(autoAnimatePlugin);
+app.use(createGuard({ appId: '68aed701dc9d45f8f1a17ba0' }));
 
 app.use(vuetify);
 app.mount('#app');

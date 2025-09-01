@@ -1,41 +1,42 @@
+<!--
+* @Component:
+* @Maintainer: J.K. Yang
+* @Description:
+-->
 <script setup lang="ts">
-import { nextTick, onMounted } from 'vue';
-import { MdPreview } from 'md-editor-v3';
-import { useRoute } from 'vue-router';
-import { scrollToBottom } from '@/utils/common';
+import AnimationAi from '@/components/animations/AnimationBot1.vue';
+import AnimationChat from '@/components/animations/AnimationChat1.vue';
+import ApiKeyDialog from '@/components/ApiKeyDialog.vue';
 import { useChatGPTStore } from '@/stores/chatGPTStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import { read, countAndCompleteCodeBlocks } from '@/utils/aiUtils';
-import AnimationChat from '@/components/animations/AnimationChat1.vue';
-import AnimationAi from '@/components/animations/AnimationBot1.vue';
-import { createStreamChatConnection, type Message } from '@/api/chatApi';
-import ApiKeyDialog from '@/components/ApiKeyDialog.vue';
+import { countAndCompleteCodeBlocks, read } from '@/utils/aiUtils';
+import { scrollToBottom } from '@/utils/common';
+import { MdPreview } from 'md-editor-v3';
 import 'md-editor-v3/lib/preview.css';
-
-// 扩展消息接口，支持多模型
-interface ExtendedMessage extends Message {
-  modelName?: string; // 回答来自哪个模型
-}
-
 const snackbarStore = useSnackbarStore();
 const chatGPTStore = useChatGPTStore();
-const route = useRoute();
 
+interface Message {
+  content: string;
+  role: 'user' | 'assistant' | 'system';
+}
 // User Input Message
 const userMessage = ref('');
 
 // Prompt Message
-const promptMessage = computed<Message[]>(() => {
+const promptMessage = computed(() => {
+  console.log('chatGPTStore.propmpt', chatGPTStore.propmpt);
+
   return [
     {
-      content: chatGPTStore.prompt,
-      role: 'system' as const,
+      content: chatGPTStore.propmpt,
+      role: 'system',
     },
   ];
 });
 
 // Message List
-const messages = ref<ExtendedMessage[]>([]);
+const messages = ref<Message[]>([]);
 
 const requestMessages = computed(() => {
   if (messages.value.length <= 10) {
@@ -47,122 +48,73 @@ const requestMessages = computed(() => {
   }
 });
 
-// 记录每个模型的加载状态
-const loadingModels = ref(new Set<string>());
-const isLoading = computed(() => loadingModels.value.size > 0);
-
-// 记录查询参数中的模型列表
-const selectedModelNames = ref<string[]>([]);
-
-// 初始化时加载模型列表和处理初始消息
-onMounted(async () => {
-  await chatGPTStore.fetchAvailableModels();
-
-  // 获取查询参数中的模型列表
-  const modelsParam = route.query.models as string;
-  if (modelsParam) {
-    selectedModelNames.value = modelsParam.split(',');
-  } else {
-    // 如果没有传递模型参数，使用当前选定的模型
-    selectedModelNames.value = [chatGPTStore.model];
-  }
-
-  // 处理从Dashboard传递来的初始消息
-  const initialMessage = route.query.initialMessage as string;
-  if (initialMessage) {
-    // 直接添加初始消息并发送
-    messages.value.push({
-      content: initialMessage,
-      role: 'user',
-    });
-
-    // 为每个选中的模型创建AI回复
-    await createMultiModelCompletions(initialMessage);
-  }
-});
+const isLoading = ref(false);
 
 // Send Messsage
 const sendMessage = async () => {
   if (userMessage.value) {
-    const message = userMessage.value;
-
     // Add the message to the list
     messages.value.push({
-      content: message,
+      content: userMessage.value,
       role: 'user',
     });
 
     // Clear the input
     userMessage.value = '';
 
-    // Create completions for multiple models
-    await createMultiModelCompletions(message);
+    // Create a completion
+    await createCompletion();
   }
 };
 
-// 为每个模型创建单独的回复
-const createMultiModelCompletions = async (message: string) => {
-  // 使用查询参数中的模型列表进行回复
-  const modelPromises = selectedModelNames.value.map(modelName => createCompletionForModel(modelName));
+const createCompletion = async () => {
+  // Check if the API key is set
+  // if (!chatGPTStore.getApiKey) {
+  //   snackbarStore.showErrorMessage("请先输入API KEY");
+  //   return;
+  // }
 
-  // 并行处理所有模型的响应，这样模型之间不会互相等待
-  await Promise.all(modelPromises);
-};
-
-// 为单个模型创建回复
-const createCompletionForModel = async (modelName: string) => {
+  const proxyUrl = chatGPTStore.proxyUrl ? chatGPTStore.proxyUrl : 'https://api.openai-proxy.com';
   try {
-    // 标记该模型为加载中
-    loadingModels.value.add(modelName);
-
-    // 过滤消息，只包含:
-    // 1. 系统提示消息
-    // 2. 用户消息
-    // 3. 当前模型自己的回复
-    const filteredMessages = [
-      ...promptMessage.value,
-      ...messages.value.filter(msg => msg.role === 'user' || (msg.role === 'assistant' && msg.modelName === modelName)),
-    ];
-
-    // 使用chatApi中的createStreamChatConnection方法
-    const completion = await createStreamChatConnection({
-      messages: filteredMessages,
-      model: modelName,
-      transportType: 'sse',
+    // Create a completion (axios is not used here because it does not support streaming)
+    const completion = await fetch(`${proxyUrl}/v1/chat/completions`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${chatGPTStore.getApiKey}`,
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        messages: requestMessages.value,
+        model: chatGPTStore.model,
+        stream: true,
+      }),
     });
 
     // Handle errors
     if (!completion.ok) {
       const errorData = await completion.json();
-      snackbarStore.showErrorMessage(`${modelName} 回复失败: ${errorData.message || '请求失败'}`);
-      loadingModels.value.delete(modelName);
+      snackbarStore.showErrorMessage(errorData.error.message);
+
       return;
     }
 
     // Create a reader
     const reader = completion.body?.getReader();
     if (!reader) {
-      snackbarStore.showErrorMessage(`${modelName} 无法读取流式响应`);
-      loadingModels.value.delete(modelName);
+      snackbarStore.showErrorMessage('Cannot read the stream.');
       return;
     }
 
-    // Add the bot message with model name and track its position
-    const messageIndex = messages.value.length;
+    // Add the bot message
     messages.value.push({
       content: '',
       role: 'assistant',
-      modelName: modelName, // 标记哪个模型的回复
     });
 
-    // Read the stream and specify which message to update
-    await read(reader, messages, messageIndex);
-
-    // 完成后移除加载状态
-    loadingModels.value.delete(modelName);
-  } catch (error: any) {
-    snackbarStore.showErrorMessage(`${modelName} 回复失败: ${error.message || '请求失败'}`);
-    loadingModels.value.delete(modelName);
+    // Read the stream
+    read(reader, messages);
+  } catch (error) {
+    snackbarStore.showErrorMessage(error.message);
   }
 };
 
@@ -170,9 +122,7 @@ watch(
   () => messages.value,
   val => {
     if (val) {
-      nextTick(() => {
-        scrollToBottom(document.querySelector('.message-container'));
-      });
+      scrollToBottom(document.querySelector('.message-container'));
     }
   },
   {
@@ -181,27 +131,15 @@ watch(
 );
 
 const displayMessages = computed(() => {
-  if (messages.value.length === 0) return [];
-
   const messagesCopy = messages.value.slice(); // 创建原始数组的副本
-
-  // 处理每条消息，确保代码块完整
-  return messagesCopy.map(message => {
-    if (message.role === 'assistant') {
-      return {
-        ...message,
-        content: countAndCompleteCodeBlocks(message.content),
-      };
-    }
-    return message;
-  });
+  const lastMessage = messagesCopy[messagesCopy.length - 1];
+  const updatedLastMessage = {
+    ...lastMessage,
+    content: countAndCompleteCodeBlocks(lastMessage.content),
+  };
+  messagesCopy[messagesCopy.length - 1] = updatedLastMessage;
+  return messagesCopy;
 });
-
-// 获取模型的显示名称
-const getModelDisplayName = (modelName: string) => {
-  const model = chatGPTStore.availableModels.find(m => m.modelName === modelName);
-  return model ? model.modelName : modelName;
-};
 
 const handleKeydown = e => {
   if (e.key === 'Enter' && (e.altKey || e.shiftKey)) {
@@ -222,57 +160,36 @@ const inputRow = ref(1);
   <div class="chat-bot">
     <div class="messsage-area">
       <perfect-scrollbar v-if="messages.length > 0" class="message-container">
-        <template v-for="(message, index) in displayMessages" :key="index">
-          <!-- 用户消息 -->
+        <template v-for="message in displayMessages">
           <div v-if="message.role === 'user'">
             <div class="pa-4 user-message">
               <v-avatar class="ml-4" rounded="sm" variant="elevated">
-                <img src="@/assets/images/avatars/avatar_user.jpg" alt="user" />
+                <img src="@/assets/images/avatars/avatar_user.jpg" alt="alt" />
               </v-avatar>
               <v-card class="gradient gray text-pre-wrap" theme="dark">
                 <v-card-text>
-                  <b>{{ message.content }}</b>
-                </v-card-text>
+                  <b> {{ message.content }}</b></v-card-text
+                >
               </v-card>
             </div>
           </div>
-
-          <!-- AI回复 -->
-          <div v-else-if="message.role === 'assistant'">
+          <div v-else>
             <div class="pa-2 pa-md-5 assistant-message">
               <v-avatar class="d-none d-md-block mr-2 mr-md-4" rounded="sm" variant="elevated">
-                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="ai" />
+                <img src="@/assets/images/avatars/avatar_assistant.jpg" alt="alt" />
               </v-avatar>
-              <div class="d-flex flex-column" style="width: 100%">
-                <!-- 显示模型名称 -->
-                <div class="mb-1 text-caption text-medium-emphasis" v-if="message.modelName">
-                  <v-chip size="small" color="primary" variant="flat" class="mb-2">
-                    {{ getModelDisplayName(message.modelName) }}
-                  </v-chip>
+              <v-card>
+                <div>
+                  <MdPreview :modelValue="message.content" class="font-1" />
                 </div>
-                <v-card>
-                  <div>
-                    <MdPreview :modelValue="message.content" class="font-1" />
-                  </div>
-                </v-card>
-              </div>
+              </v-card>
             </div>
           </div>
         </template>
-
-        <!-- 加载状态显示 -->
         <div v-if="isLoading">
           <div class="pa-6">
             <div class="message">
               <AnimationAi :size="100" />
-              <div v-if="loadingModels.size > 0" class="mt-2 text-center">
-                <template v-for="modelName in Array.from(loadingModels)" :key="modelName">
-                  <v-chip size="small" color="primary" variant="outlined" class="mr-1 mb-1">
-                    {{ getModelDisplayName(modelName) }}
-                  </v-chip>
-                </template>
-                <span class="ml-1">正在思考...</span>
-              </div>
             </div>
           </div>
         </div>
@@ -284,6 +201,10 @@ const inputRow = ref(1);
     </div>
     <div class="input-area">
       <v-sheet color="transparent" elevation="0" class="input-panel d-flex align-end pa-1">
+        <v-btn class="mb-1" variant="elevated" icon @click="chatGPTStore.configDialog = true">
+          <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
+          <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>
+        </v-btn>
         <transition name="fade">
           <v-textarea
             class="mx-2"
@@ -303,7 +224,7 @@ const inputRow = ref(1);
           </v-textarea>
         </transition>
 
-        <v-btn class="mb-1" color="primary" variant="elevated" icon :loading="isLoading" :disabled="isLoading">
+        <v-btn class="mb-1" color="primary" variant="elevated" icon>
           <v-icon @click="sendMessage">mdi-send</v-icon>
         </v-btn>
       </v-sheet>
@@ -337,17 +258,6 @@ const inputRow = ref(1);
       max-width: 1200px;
       margin: 0 auto;
     }
-
-    .model-selector {
-      border-radius: 5px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 0.5rem;
-
-      .model-select {
-        max-width: 300px;
-      }
-    }
   }
 }
 
@@ -372,7 +282,7 @@ const inputRow = ref(1);
 }
 
 .message-container {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 154px);
 }
 
 .no-message-container {
@@ -400,18 +310,6 @@ const inputRow = ref(1);
   :deep(#md-editor-v3-preview),
   .user-message {
     font-size: 14px !important;
-  }
-
-  .message-container {
-    height: calc(100vh - 220px);
-  }
-
-  .input-area {
-    .model-selector {
-      .model-select {
-        max-width: 100%;
-      }
-    }
   }
 }
 </style>

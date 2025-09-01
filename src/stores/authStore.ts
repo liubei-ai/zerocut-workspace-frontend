@@ -1,14 +1,15 @@
-import { defineStore } from 'pinia';
 import router from '@/router';
-import { authApi } from '@/api/authApi';
-import type { User, LoginRequest, ApiError } from '@/types/api';
+import type { ApiError, User } from '@/types/api';
+import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
+import { defineStore } from 'pinia';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    isLoggedIn: false,
-    user: null as User | null,
     loading: false,
     error: null as string | null,
+    isLoggedIn: false,
+
+    user: null as User | null,
   }),
 
   getters: {
@@ -18,34 +19,19 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     /**
-     * Login with username and password
+     * Handle Authing login success
      */
-    async loginWithUsernameAndPassword(username: string, password: string): Promise<boolean> {
-      this.loading = true;
+    async setAuthingUser(authingUser: AuthingUser) {
+      // 将 Authing 用户信息转换为应用的用户格式
+      const user: User = {
+        username: authingUser.username || '',
+      };
+
+      this.user = user;
+      this.isLoggedIn = true;
       this.error = null;
 
-      try {
-        const credentials: LoginRequest = { username, password };
-        const response = await authApi.login(credentials);
-
-        // Set user data and login state
-        this.user = response;
-        this.isLoggedIn = true;
-
-        // Fetch current user to ensure we have the latest data
-        // await this.fetchCurrentUser();
-
-        // Navigate to dashboard
-        router.push('/dashboard');
-
-        return true;
-      } catch (error) {
-        console.error('Login failed:', error);
-        this.handleAuthError(error as ApiError);
-        return false;
-      } finally {
-        this.loading = false;
-      }
+      console.log('Authing 用户登录成功:', user);
     },
 
     /**
@@ -55,7 +41,8 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true;
 
       try {
-        await authApi.logout();
+        const guard = useGuard();
+        await guard.logout();
       } catch (error) {
         console.error('Logout failed:', error);
         // Continue with local logout even if server logout fails
