@@ -587,6 +587,6 @@ CREATE TABLE CONSUMPTION_RECORD_202401 PARTITION OF CONSUMPTION_RECORD
 ---
 
 **文档版本**: v1.0  
-**创建日期**: 2024年1月  
+**创建日期**: 2025年9月  
 **数据库类型**: PostgreSQL 17  
 **设计原则**: DDD领域驱动设计
