@@ -360,9 +360,1474 @@ class ResponseUtil {
 }
 ```
 
+### ZeroCut 核心功能模块 API 设计
+
+基于前端菜单结构，ZeroCut 系统包含以下六个核心功能模块：
+
+1. **数据看板 (Dashboard)** - 实时监控、数据统计、趋势分析
+2. **令牌管理 (Token Management)** - API密钥创建、管理、统计
+3. **使用日志 (Usage Logs)** - 消费记录、使用统计、数据分析
+4. **钱包管理 (Wallet Management)** - 充值记录、余额管理、账单详情
+5. **个人设置 (Personal Settings)** - 用户信息、安全设置、偏好配置
+6. **成员管理 (Member Management)** - 成员邀请、权限管理、协作设置
+
+#### 1. 数据看板 API
+
+```typescript
+// dashboard.controller.ts
+@Controller('/api/dashboard')
+@UseGuards(AuthGuard)
+export class DashboardController {
+  constructor(private dashboardService: DashboardService) {}
+
+  @Get('/stats')
+  async getDashboardStats(@User() user: JWTPayload): Promise<ApiResponse<DashboardStats>> {
+    try {
+      const stats = await this.dashboardService.getDashboardStats(user.userId, user.workspaceId);
+      return ResponseUtil.success(stats);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch dashboard stats');
+    }
+  }
+
+  @Get('/trends')
+  async getTrendData(
+    @User() user: JWTPayload,
+    @Query('period') period: string = '7d'
+  ): Promise<ApiResponse<TrendData>> {
+    try {
+      const trends = await this.dashboardService.getTrendData(
+        user.userId,
+        user.workspaceId,
+        period
+      );
+      return ResponseUtil.success(trends);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch trend data');
+    }
+  }
+
+  @Get('/activities')
+  async getRecentActivities(
+    @User() user: JWTPayload,
+    @Query('limit') limit: number = 10
+  ): Promise<ApiResponse<Activity[]>> {
+    try {
+      const activities = await this.dashboardService.getRecentActivities(
+        user.userId,
+        user.workspaceId,
+        limit
+      );
+      return ResponseUtil.success(activities);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch recent activities');
+    }
+  }
+
+  @Get('/workspace-info')
+  async getWorkspaceInfo(@User() user: JWTPayload): Promise<ApiResponse<WorkspaceInfo>> {
+    try {
+      const workspaceInfo = await this.dashboardService.getWorkspaceInfo(user.workspaceId);
+      return ResponseUtil.success(workspaceInfo);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch workspace info');
+    }
+  }
+}
+
+// 数据传输对象
+interface DashboardStats {
+  totalVideos: number;
+  totalImages: number;
+  totalUsage: number;
+  activeProjects: number;
+  monthlyUsage: {
+    current: number;
+    previous: number;
+    growth: number;
+  };
+  costSummary: {
+    thisMonth: number;
+    lastMonth: number;
+    total: number;
+  };
+}
+
+interface TrendData {
+  videoGeneration: number[];
+  imageGeneration: number[];
+  audioGeneration: number[];
+  labels: string[];
+  period: string;
+}
+
+interface Activity {
+  id: number;
+  type: 'video' | 'image' | 'audio' | 'text';
+  title: string;
+  description?: string;
+  timestamp: string;
+  status: 'completed' | 'processing' | 'failed';
+  duration?: string;
+  cost?: number;
+  fileSize?: string;
+}
+```
+
+#### 2. 令牌管理 API
+
+```typescript
+// token.controller.ts
+@Controller('/api/tokens')
+@UseGuards(AuthGuard)
+export class TokenController {
+  constructor(private tokenService: TokenService) {}
+
+  @Get('/')
+  async getTokens(@User() user: JWTPayload): Promise<ApiResponse<ApiToken[]>> {
+    try {
+      const tokens = await this.tokenService.getUserTokens(user.userId, user.workspaceId);
+      return ResponseUtil.success(tokens);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch tokens');
+    }
+  }
+
+  @Post('/')
+  @ValidateBody(CreateTokenSchema)
+  async createToken(
+    @User() user: JWTPayload,
+    @Body() body: CreateTokenDto
+  ): Promise<ApiResponse<{ token: ApiToken; key: string }>> {
+    try {
+      const result = await this.tokenService.createToken(user.userId, user.workspaceId, body);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Put('/:id')
+  @ValidateBody(UpdateTokenSchema)
+  async updateToken(
+    @Param('id') id: string,
+    @User() user: JWTPayload,
+    @Body() body: UpdateTokenDto
+  ): Promise<ApiResponse<ApiToken>> {
+    try {
+      const token = await this.tokenService.updateToken(parseInt(id), user.userId, body);
+      return ResponseUtil.success(token);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/:id')
+  async deleteToken(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.tokenService.deleteToken(parseInt(id), user.userId);
+      return ResponseUtil.success({ message: 'Token deleted successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/stats')
+  async getTokenStats(@User() user: JWTPayload): Promise<ApiResponse<TokenStats>> {
+    try {
+      const stats = await this.tokenService.getTokenStats(user.userId, user.workspaceId);
+      return ResponseUtil.success(stats);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch token stats');
+    }
+  }
+
+  @Post('/:id/regenerate')
+  async regenerateToken(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ token: ApiToken; key: string }>> {
+    try {
+      const result = await this.tokenService.regenerateToken(parseInt(id), user.userId);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+}
+
+// 数据传输对象
+interface CreateTokenDto {
+  name: string;
+  description?: string;
+  permissions: string[];
+  expiresAt?: string;
+}
+
+interface UpdateTokenDto {
+  name?: string;
+  description?: string;
+  permissions?: string[];
+  expiresAt?: string;
+}
+
+interface ApiToken {
+  id: number;
+  name: string;
+  description?: string;
+  keyPreview: string; // 只显示前缀和后缀
+  permissions: string[];
+  createdAt: string;
+  lastUsed?: string;
+  expiresAt?: string;
+  status: 'active' | 'expired' | 'revoked';
+  usageCount: number;
+}
+
+interface TokenStats {
+  total: number;
+  active: number;
+  expired: number;
+  totalUsage: number;
+}
+```
+
+#### 3. 使用日志 API
+
+```typescript
+// usage.controller.ts
+@Controller('/api/usage')
+@UseGuards(AuthGuard)
+export class UsageController {
+  constructor(private usageService: UsageService) {}
+
+  @Get('/logs')
+  async getUsageLogs(
+    @User() user: JWTPayload,
+    @Query() query: UsageLogsQuery
+  ): Promise<ApiResponse<UsageLog[]>> {
+    try {
+      const logs = await this.usageService.getUsageLogs(user.userId, user.workspaceId, query);
+      return ResponseUtil.paginated(logs.data, logs.pagination);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch usage logs');
+    }
+  }
+
+  @Get('/stats')
+  async getUsageStats(
+    @User() user: JWTPayload,
+    @Query('period') period: string = '30d'
+  ): Promise<ApiResponse<UsageStats>> {
+    try {
+      const stats = await this.usageService.getUsageStats(user.userId, user.workspaceId, period);
+      return ResponseUtil.success(stats);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch usage stats');
+    }
+  }
+
+  @Get('/export')
+  async exportUsageLogs(
+    @User() user: JWTPayload,
+    @Query() query: ExportLogsQuery,
+    @Res() res: Response
+  ): Promise<void> {
+    try {
+      const csvData = await this.usageService.exportUsageLogs(user.userId, user.workspaceId, query);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=usage-logs.csv');
+      res.send(csvData);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to export usage logs');
+    }
+  }
+
+  @Get('/analytics')
+  async getUsageAnalytics(
+    @User() user: JWTPayload,
+    @Query('period') period: string = '30d'
+  ): Promise<ApiResponse<UsageAnalytics>> {
+    try {
+      const analytics = await this.usageService.getUsageAnalytics(
+        user.userId,
+        user.workspaceId,
+        period
+      );
+      return ResponseUtil.success(analytics);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch usage analytics');
+    }
+  }
+}
+
+// 数据传输对象
+interface UsageLogsQuery {
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  service?: 'all' | 'video' | 'image' | 'audio' | 'text';
+  status?: 'all' | 'success' | 'failed' | 'processing';
+  apiKey?: string;
+}
+
+interface ExportLogsQuery extends UsageLogsQuery {
+  format?: 'csv' | 'json';
+}
+
+interface UsageLog {
+  id: number;
+  timestamp: string;
+  service: 'video' | 'image' | 'audio' | 'text';
+  operation: string;
+  duration?: string;
+  tokens: number;
+  cost: number;
+  status: 'success' | 'failed' | 'processing';
+  apiKey: string;
+  requestId: string;
+  fileSize?: string;
+  errorMessage?: string;
+  metadata?: Record<string, any>;
+}
+
+interface UsageStats {
+  totalRequests: number;
+  successfulRequests: number;
+  failedRequests: number;
+  totalTokens: number;
+  totalCost: number;
+  averageResponseTime: number;
+  serviceBreakdown: {
+    service: string;
+    requests: number;
+    tokens: number;
+    cost: number;
+  }[];
+}
+
+interface UsageAnalytics {
+  dailyUsage: {
+    date: string;
+    requests: number;
+    tokens: number;
+    cost: number;
+  }[];
+  topServices: {
+    service: string;
+    usage: number;
+    percentage: number;
+  }[];
+  peakHours: {
+    hour: number;
+    requests: number;
+  }[];
+  costTrends: {
+    period: string;
+    cost: number;
+    change: number;
+  }[];
+}
+```
+
+#### 4. 钱包管理 API
+
+```typescript
+// wallet.controller.ts
+@Controller('/api/wallet')
+@UseGuards(AuthGuard)
+export class WalletController {
+  constructor(private walletService: WalletService) {}
+
+  @Get('/info')
+  async getWalletInfo(@User() user: JWTPayload): Promise<ApiResponse<WalletInfo>> {
+    try {
+      const walletInfo = await this.walletService.getWalletInfo(user.userId, user.workspaceId);
+      return ResponseUtil.success(walletInfo);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch wallet info');
+    }
+  }
+
+  @Post('/recharge')
+  @ValidateBody(RechargeSchema)
+  async createRecharge(
+    @User() user: JWTPayload,
+    @Body() body: RechargeDto
+  ): Promise<ApiResponse<RechargeOrder>> {
+    try {
+      const order = await this.walletService.createRecharge(user.userId, user.workspaceId, body);
+      return ResponseUtil.success(order);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/withdraw')
+  @ValidateBody(WithdrawSchema)
+  async createWithdraw(
+    @User() user: JWTPayload,
+    @Body() body: WithdrawDto
+  ): Promise<ApiResponse<WithdrawOrder>> {
+    try {
+      const order = await this.walletService.createWithdraw(user.userId, user.workspaceId, body);
+      return ResponseUtil.success(order);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/transactions')
+  async getTransactions(
+    @User() user: JWTPayload,
+    @Query() query: TransactionQuery
+  ): Promise<ApiResponse<Transaction[]>> {
+    try {
+      const transactions = await this.walletService.getTransactions(
+        user.userId,
+        user.workspaceId,
+        query
+      );
+      return ResponseUtil.paginated(transactions.data, transactions.pagination);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch transactions');
+    }
+  }
+
+  @Get('/payment-methods')
+  async getPaymentMethods(@User() user: JWTPayload): Promise<ApiResponse<PaymentMethod[]>> {
+    try {
+      const methods = await this.walletService.getPaymentMethods(user.userId);
+      return ResponseUtil.success(methods);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch payment methods');
+    }
+  }
+
+  @Post('/payment-methods')
+  @ValidateBody(AddPaymentMethodSchema)
+  async addPaymentMethod(
+    @User() user: JWTPayload,
+    @Body() body: AddPaymentMethodDto
+  ): Promise<ApiResponse<PaymentMethod>> {
+    try {
+      const method = await this.walletService.addPaymentMethod(user.userId, body);
+      return ResponseUtil.success(method);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/payment-methods/:id')
+  async removePaymentMethod(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.walletService.removePaymentMethod(parseInt(id), user.userId);
+      return ResponseUtil.success({ message: 'Payment method removed successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+}
+
+// 数据传输对象
+interface RechargeDto {
+  amount: number;
+  paymentMethod: string;
+  currency?: string;
+}
+
+interface WithdrawDto {
+  amount: number;
+  bankAccount: string;
+  currency?: string;
+}
+
+interface TransactionQuery {
+  page?: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  type?: 'all' | 'recharge' | 'consumption' | 'refund' | 'withdraw';
+  status?: 'all' | 'completed' | 'processing' | 'failed';
+}
+
+interface AddPaymentMethodDto {
+  type: 'alipay' | 'wechat' | 'bank' | 'paypal';
+  details: Record<string, any>;
+}
+
+interface WalletInfo {
+  balance: number;
+  frozenAmount: number;
+  totalRecharge: number;
+  totalConsumption: number;
+  currency: string;
+  creditLimit?: number;
+}
+
+interface Transaction {
+  id: number;
+  type: 'recharge' | 'consumption' | 'refund' | 'withdraw';
+  amount: number;
+  description: string;
+  timestamp: string;
+  status: 'completed' | 'processing' | 'failed';
+  paymentMethod?: string;
+  orderId: string;
+  metadata?: Record<string, any>;
+}
+
+interface RechargeOrder {
+  orderId: string;
+  amount: number;
+  paymentUrl?: string;
+  qrCode?: string;
+  status: string;
+  expiresAt: string;
+}
+
+interface WithdrawOrder {
+  orderId: string;
+  amount: number;
+  status: string;
+  estimatedArrival: string;
+}
+
+interface PaymentMethod {
+  id: number;
+  type: string;
+  name: string;
+  details: Record<string, any>;
+  isDefault: boolean;
+  createdAt: string;
+}
+```
+
 ### 核心API接口实现
 
-#### 1. 认证服务 API
+#### 5. 个人设置 API
+
+```typescript
+// settings.controller.ts
+@Controller('/api/settings')
+@UseGuards(AuthGuard)
+export class SettingsController {
+  constructor(private settingsService: SettingsService) {}
+
+  @Get('/profile')
+  async getProfile(@User() user: JWTPayload): Promise<ApiResponse<UserProfile>> {
+    try {
+      const profile = await this.settingsService.getUserProfile(user.userId);
+      return ResponseUtil.success(profile);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch user profile');
+    }
+  }
+
+  @Put('/profile')
+  @ValidateBody(UpdateProfileSchema)
+  async updateProfile(
+    @User() user: JWTPayload,
+    @Body() body: UpdateProfileDto
+  ): Promise<ApiResponse<UserProfile>> {
+    try {
+      const profile = await this.settingsService.updateUserProfile(user.userId, body);
+      return ResponseUtil.success(profile);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/avatar')
+  @UseInterceptors(FileInterceptor('avatar'))
+  async uploadAvatar(
+    @User() user: JWTPayload,
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<ApiResponse<{ avatarUrl: string }>> {
+    try {
+      const avatarUrl = await this.settingsService.uploadAvatar(user.userId, file);
+      return ResponseUtil.success({ avatarUrl });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/security')
+  async getSecuritySettings(@User() user: JWTPayload): Promise<ApiResponse<SecuritySettings>> {
+    try {
+      const settings = await this.settingsService.getSecuritySettings(user.userId);
+      return ResponseUtil.success(settings);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch security settings');
+    }
+  }
+
+  @Put('/security/password')
+  @ValidateBody(ChangePasswordSchema)
+  async changePassword(
+    @User() user: JWTPayload,
+    @Body() body: ChangePasswordDto
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.settingsService.changePassword(user.userId, body);
+      return ResponseUtil.success({ message: 'Password changed successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/security/2fa/enable')
+  async enableTwoFactor(
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ qrCode: string; secret: string }>> {
+    try {
+      const result = await this.settingsService.enableTwoFactor(user.userId);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/security/2fa/verify')
+  @ValidateBody(VerifyTwoFactorSchema)
+  async verifyTwoFactor(
+    @User() user: JWTPayload,
+    @Body() body: VerifyTwoFactorDto
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.settingsService.verifyTwoFactor(user.userId, body.code);
+      return ResponseUtil.success({ message: 'Two-factor authentication enabled successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/security/2fa')
+  async disableTwoFactor(@User() user: JWTPayload): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.settingsService.disableTwoFactor(user.userId);
+      return ResponseUtil.success({ message: 'Two-factor authentication disabled successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/preferences')
+  async getPreferences(@User() user: JWTPayload): Promise<ApiResponse<UserPreferences>> {
+    try {
+      const preferences = await this.settingsService.getUserPreferences(user.userId);
+      return ResponseUtil.success(preferences);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch user preferences');
+    }
+  }
+
+  @Put('/preferences')
+  @ValidateBody(UpdatePreferencesSchema)
+  async updatePreferences(
+    @User() user: JWTPayload,
+    @Body() body: UpdatePreferencesDto
+  ): Promise<ApiResponse<UserPreferences>> {
+    try {
+      const preferences = await this.settingsService.updateUserPreferences(user.userId, body);
+      return ResponseUtil.success(preferences);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/api-settings')
+  async getApiSettings(@User() user: JWTPayload): Promise<ApiResponse<ApiSettings>> {
+    try {
+      const settings = await this.settingsService.getApiSettings(user.userId, user.workspaceId);
+      return ResponseUtil.success(settings);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch API settings');
+    }
+  }
+
+  @Put('/api-settings')
+  @ValidateBody(UpdateApiSettingsSchema)
+  async updateApiSettings(
+    @User() user: JWTPayload,
+    @Body() body: UpdateApiSettingsDto
+  ): Promise<ApiResponse<ApiSettings>> {
+    try {
+      const settings = await this.settingsService.updateApiSettings(
+        user.userId,
+        user.workspaceId,
+        body
+      );
+      return ResponseUtil.success(settings);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+}
+
+// 数据传输对象
+interface UpdateProfileDto {
+  username?: string;
+  email?: string;
+  fullName?: string;
+  bio?: string;
+  company?: string;
+  location?: string;
+  website?: string;
+}
+
+interface ChangePasswordDto {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+interface VerifyTwoFactorDto {
+  code: string;
+}
+
+interface UpdatePreferencesDto {
+  language?: string;
+  timezone?: string;
+  theme?: 'light' | 'dark' | 'auto';
+  emailNotifications?: boolean;
+  pushNotifications?: boolean;
+  weeklyReports?: boolean;
+  marketingEmails?: boolean;
+}
+
+interface UpdateApiSettingsDto {
+  defaultModel?: string;
+  maxTokens?: number;
+  temperature?: number;
+  topP?: number;
+  frequencyPenalty?: number;
+  presencePenalty?: number;
+  webhookUrl?: string;
+  rateLimits?: {
+    requestsPerMinute: number;
+    requestsPerHour: number;
+    requestsPerDay: number;
+  };
+}
+
+interface UserProfile {
+  id: number;
+  username: string;
+  email: string;
+  fullName?: string;
+  bio?: string;
+  company?: string;
+  location?: string;
+  website?: string;
+  avatarUrl?: string;
+  createdAt: string;
+  lastLoginAt?: string;
+}
+
+interface SecuritySettings {
+  twoFactorEnabled: boolean;
+  lastPasswordChange?: string;
+  activeSessions: {
+    id: string;
+    device: string;
+    location: string;
+    lastActive: string;
+    current: boolean;
+  }[];
+  loginHistory: {
+    timestamp: string;
+    device: string;
+    location: string;
+    success: boolean;
+  }[];
+}
+
+interface UserPreferences {
+  language: string;
+  timezone: string;
+  theme: 'light' | 'dark' | 'auto';
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  weeklyReports: boolean;
+  marketingEmails: boolean;
+}
+
+interface ApiSettings {
+  defaultModel: string;
+  maxTokens: number;
+  temperature: number;
+  topP: number;
+  frequencyPenalty: number;
+  presencePenalty: number;
+  webhookUrl?: string;
+  rateLimits: {
+    requestsPerMinute: number;
+    requestsPerHour: number;
+    requestsPerDay: number;
+  };
+}
+```
+
+#### 6. 成员管理 API
+
+```typescript
+// members.controller.ts
+@Controller('/api/members')
+@UseGuards(AuthGuard)
+export class MembersController {
+  constructor(private membersService: MembersService) {}
+
+  @Get('/')
+  async getMembers(
+    @User() user: JWTPayload,
+    @Query() query: MembersQuery
+  ): Promise<ApiResponse<Member[]>> {
+    try {
+      const members = await this.membersService.getWorkspaceMembers(user.workspaceId, query);
+      return ResponseUtil.paginated(members.data, members.pagination);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch members');
+    }
+  }
+
+  @Post('/invite')
+  @ValidateBody(InviteMemberSchema)
+  async inviteMember(
+    @User() user: JWTPayload,
+    @Body() body: InviteMemberDto
+  ): Promise<ApiResponse<Invitation>> {
+    try {
+      const invitation = await this.membersService.inviteMember(
+        user.userId,
+        user.workspaceId,
+        body
+      );
+      return ResponseUtil.success(invitation);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Put('/:id')
+  @ValidateBody(UpdateMemberSchema)
+  async updateMember(
+    @Param('id') id: string,
+    @User() user: JWTPayload,
+    @Body() body: UpdateMemberDto
+  ): Promise<ApiResponse<Member>> {
+    try {
+      const member = await this.membersService.updateMember(
+        parseInt(id),
+        user.userId,
+        user.workspaceId,
+        body
+      );
+      return ResponseUtil.success(member);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/:id')
+  async removeMember(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.membersService.removeMember(parseInt(id), user.userId, user.workspaceId);
+      return ResponseUtil.success({ message: 'Member removed successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/invitations')
+  async getInvitations(@User() user: JWTPayload): Promise<ApiResponse<Invitation[]>> {
+    try {
+      const invitations = await this.membersService.getWorkspaceInvitations(user.workspaceId);
+      return ResponseUtil.success(invitations);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch invitations');
+    }
+  }
+
+  @Post('/invitations/:id/resend')
+  async resendInvitation(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.membersService.resendInvitation(parseInt(id), user.userId);
+      return ResponseUtil.success({ message: 'Invitation resent successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/invitations/:id')
+  async cancelInvitation(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.membersService.cancelInvitation(parseInt(id), user.userId);
+      return ResponseUtil.success({ message: 'Invitation cancelled successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/roles')
+  async getRoles(@User() user: JWTPayload): Promise<ApiResponse<Role[]>> {
+    try {
+      const roles = await this.membersService.getWorkspaceRoles(user.workspaceId);
+      return ResponseUtil.success(roles);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch roles');
+    }
+  }
+
+  @Post('/roles')
+  @ValidateBody(CreateRoleSchema)
+  async createRole(
+    @User() user: JWTPayload,
+    @Body() body: CreateRoleDto
+  ): Promise<ApiResponse<Role>> {
+    try {
+      const role = await this.membersService.createRole(user.userId, user.workspaceId, body);
+      return ResponseUtil.success(role);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Put('/roles/:id')
+  @ValidateBody(UpdateRoleSchema)
+  async updateRole(
+    @Param('id') id: string,
+    @User() user: JWTPayload,
+    @Body() body: UpdateRoleDto
+  ): Promise<ApiResponse<Role>> {
+    try {
+      const role = await this.membersService.updateRole(
+        parseInt(id),
+        user.userId,
+        user.workspaceId,
+        body
+      );
+      return ResponseUtil.success(role);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Delete('/roles/:id')
+  async deleteRole(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.membersService.deleteRole(parseInt(id), user.userId, user.workspaceId);
+      return ResponseUtil.success({ message: 'Role deleted successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/permissions')
+  async getPermissions(): Promise<ApiResponse<Permission[]>> {
+    try {
+      const permissions = await this.membersService.getAllPermissions();
+      return ResponseUtil.success(permissions);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch permissions');
+    }
+  }
+}
+
+// 数据传输对象
+interface MembersQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  role?: string;
+  status?: 'active' | 'inactive' | 'pending';
+}
+
+interface InviteMemberDto {
+  email: string;
+  role: string;
+  message?: string;
+}
+
+interface UpdateMemberDto {
+  role?: string;
+  status?: 'active' | 'inactive';
+}
+
+interface CreateRoleDto {
+  name: string;
+  description?: string;
+  permissions: string[];
+}
+
+interface UpdateRoleDto {
+  name?: string;
+  description?: string;
+  permissions?: string[];
+}
+
+interface Member {
+  id: number;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+    fullName?: string;
+    avatarUrl?: string;
+  };
+  role: {
+    id: number;
+    name: string;
+    permissions: string[];
+  };
+  status: 'active' | 'inactive' | 'pending';
+  joinedAt: string;
+  lastActiveAt?: string;
+}
+
+interface Invitation {
+  id: number;
+  email: string;
+  role: {
+    id: number;
+    name: string;
+  };
+  invitedBy: {
+    id: number;
+    username: string;
+    fullName?: string;
+  };
+  message?: string;
+  status: 'pending' | 'accepted' | 'declined' | 'expired';
+  createdAt: string;
+  expiresAt: string;
+}
+
+interface Role {
+  id: number;
+  name: string;
+  description?: string;
+  permissions: Permission[];
+  memberCount: number;
+  isDefault: boolean;
+  createdAt: string;
+}
+
+interface Permission {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+}
+```
+
+#### 7. 认证服务 API
+
+```typescript
+// auth.controller.ts
+@Controller('/api/auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
+
+  @Post('/register')
+  @ValidateBody(RegisterSchema)
+  async register(@Body() body: RegisterDto): Promise<ApiResponse<AuthResult>> {
+    try {
+      const result = await this.authService.register(body);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/login')
+  @ValidateBody(LoginSchema)
+  async login(@Body() body: LoginDto): Promise<ApiResponse<AuthResult>> {
+    try {
+      const result = await this.authService.login(body);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
+  }
+
+  @Post('/logout')
+  @UseGuards(AuthGuard)
+  async logout(@User() user: JWTPayload): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.authService.logout(user.sessionId);
+      return ResponseUtil.success({ message: 'Logged out successfully' });
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to logout');
+    }
+  }
+
+  @Post('/refresh')
+  @ValidateBody(RefreshTokenSchema)
+  async refreshToken(@Body() body: RefreshTokenDto): Promise<ApiResponse<AuthResult>> {
+    try {
+      const result = await this.authService.refreshToken(body.refreshToken);
+      return ResponseUtil.success(result);
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
+
+  @Post('/forgot-password')
+  @ValidateBody(ForgotPasswordSchema)
+  async forgotPassword(@Body() body: ForgotPasswordDto): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.authService.forgotPassword(body.email);
+      return ResponseUtil.success({ message: 'Password reset email sent' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Post('/reset-password')
+  @ValidateBody(ResetPasswordSchema)
+  async resetPassword(@Body() body: ResetPasswordDto): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.authService.resetPassword(body.token, body.newPassword);
+      return ResponseUtil.success({ message: 'Password reset successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  @Get('/me')
+  @UseGuards(AuthGuard)
+  async getCurrentUser(@User() user: JWTPayload): Promise<ApiResponse<UserInfo>> {
+    try {
+      const userInfo = await this.authService.getCurrentUser(user.userId);
+      return ResponseUtil.success(userInfo);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch user info');
+    }
+  }
+
+  @Post('/verify-email')
+  @ValidateBody(VerifyEmailSchema)
+  async verifyEmail(@Body() body: VerifyEmailDto): Promise<ApiResponse<{ message: string }>> {
+    try {
+      await this.authService.verifyEmail(body.token);
+      return ResponseUtil.success({ message: 'Email verified successfully' });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+}
+
+// 数据传输对象
+interface RegisterDto {
+  username: string;
+  email: string;
+  password: string;
+  fullName?: string;
+  invitationToken?: string;
+}
+
+interface LoginDto {
+  email: string;
+  password: string;
+  twoFactorCode?: string;
+  rememberMe?: boolean;
+}
+
+interface RefreshTokenDto {
+  refreshToken: string;
+}
+
+interface ForgotPasswordDto {
+  email: string;
+}
+
+interface ResetPasswordDto {
+  token: string;
+  newPassword: string;
+}
+
+interface VerifyEmailDto {
+  token: string;
+}
+
+interface AuthResult {
+  user: UserInfo;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+interface UserInfo {
+  id: number;
+  username: string;
+  email: string;
+  fullName?: string;
+  avatarUrl?: string;
+  emailVerified: boolean;
+  twoFactorEnabled: boolean;
+  workspace: {
+    id: number;
+    name: string;
+    role: string;
+  };
+}
+```
+
+## API 架构总结
+
+### 接口设计原则
+
+1. **RESTful 设计**：遵循 REST 架构风格，使用标准 HTTP 方法
+2. **统一响应格式**：所有接口返回统一的 `ApiResponse<T>` 格式
+3. **错误处理**：统一的错误处理机制和错误码
+4. **身份验证**：基于 JWT 的身份验证和授权
+5. **数据验证**：使用 Schema 验证请求数据
+6. **分页支持**：列表接口支持分页查询
+7. **权限控制**：基于角色和权限的访问控制
+
+### 核心功能模块
+
+| 模块     | 路由前缀         | 主要功能                     |
+| -------- | ---------------- | ---------------------------- |
+| 数据看板 | `/api/dashboard` | 统计数据、趋势分析、活动记录 |
+| 令牌管理 | `/api/tokens`    | API 密钥创建、管理、统计     |
+| 使用日志 | `/api/usage`     | 使用记录、统计分析、数据导出 |
+| 钱包管理 | `/api/wallet`    | 余额管理、充值提现、交易记录 |
+| 个人设置 | `/api/settings`  | 用户资料、安全设置、偏好配置 |
+| 成员管理 | `/api/members`   | 成员邀请、角色权限、协作管理 |
+| 身份认证 | `/api/auth`      | 登录注册、密码重置、邮箱验证 |
+
+### 数据库设计建议
+
+#### 核心表结构
+
+```sql
+-- 用户表
+CREATE TABLE users (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(100),
+  bio TEXT,
+  company VARCHAR(100),
+  location VARCHAR(100),
+  website VARCHAR(255),
+  avatar_url VARCHAR(500),
+  email_verified BOOLEAN DEFAULT FALSE,
+  two_factor_enabled BOOLEAN DEFAULT FALSE,
+  two_factor_secret VARCHAR(32),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_login_at TIMESTAMP
+);
+
+-- 工作空间表
+CREATE TABLE workspaces (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  owner_id BIGINT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (owner_id) REFERENCES users(id)
+);
+
+-- 工作空间成员表
+CREATE TABLE workspace_members (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT NOT NULL,
+  user_id BIGINT NOT NULL,
+  role_id BIGINT NOT NULL,
+  status ENUM('active', 'inactive', 'pending') DEFAULT 'pending',
+  joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  last_active_at TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (role_id) REFERENCES roles(id),
+  UNIQUE KEY unique_workspace_user (workspace_id, user_id)
+);
+
+-- 角色表
+CREATE TABLE roles (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  description TEXT,
+  is_default BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id)
+);
+
+-- 权限表
+CREATE TABLE permissions (
+  id VARCHAR(50) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  category VARCHAR(50) NOT NULL
+);
+
+-- 角色权限关联表
+CREATE TABLE role_permissions (
+  role_id BIGINT NOT NULL,
+  permission_id VARCHAR(50) NOT NULL,
+  PRIMARY KEY (role_id, permission_id),
+  FOREIGN KEY (role_id) REFERENCES roles(id),
+  FOREIGN KEY (permission_id) REFERENCES permissions(id)
+);
+
+-- API 令牌表
+CREATE TABLE api_tokens (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT NOT NULL,
+  user_id BIGINT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  key_hash VARCHAR(255) NOT NULL,
+  key_prefix VARCHAR(10) NOT NULL,
+  key_suffix VARCHAR(10) NOT NULL,
+  permissions JSON,
+  status ENUM('active', 'expired', 'revoked') DEFAULT 'active',
+  usage_count BIGINT DEFAULT 0,
+  last_used_at TIMESTAMP,
+  expires_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- 使用日志表
+CREATE TABLE usage_logs (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT NOT NULL,
+  user_id BIGINT NOT NULL,
+  api_token_id BIGINT,
+  service ENUM('video', 'image', 'audio', 'text') NOT NULL,
+  operation VARCHAR(100) NOT NULL,
+  request_id VARCHAR(100) UNIQUE NOT NULL,
+  duration_ms INT,
+  tokens_used INT DEFAULT 0,
+  cost_amount DECIMAL(10, 4) DEFAULT 0,
+  status ENUM('success', 'failed', 'processing') NOT NULL,
+  file_size_bytes BIGINT,
+  error_message TEXT,
+  metadata JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (api_token_id) REFERENCES api_tokens(id),
+  INDEX idx_workspace_created (workspace_id, created_at),
+  INDEX idx_service_status (service, status),
+  INDEX idx_request_id (request_id)
+);
+
+-- 钱包表
+CREATE TABLE wallets (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT UNIQUE NOT NULL,
+  balance DECIMAL(12, 4) DEFAULT 0,
+  frozen_amount DECIMAL(12, 4) DEFAULT 0,
+  total_recharge DECIMAL(12, 4) DEFAULT 0,
+  total_consumption DECIMAL(12, 4) DEFAULT 0,
+  currency VARCHAR(3) DEFAULT 'USD',
+  credit_limit DECIMAL(12, 4),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id)
+);
+
+-- 交易记录表
+CREATE TABLE transactions (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  workspace_id BIGINT NOT NULL,
+  wallet_id BIGINT NOT NULL,
+  type ENUM('recharge', 'consumption', 'refund', 'withdraw') NOT NULL,
+  amount DECIMAL(12, 4) NOT NULL,
+  description VARCHAR(255) NOT NULL,
+  status ENUM('completed', 'processing', 'failed') NOT NULL,
+  payment_method VARCHAR(50),
+  order_id VARCHAR(100) UNIQUE NOT NULL,
+  metadata JSON,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id),
+  FOREIGN KEY (wallet_id) REFERENCES wallets(id),
+  INDEX idx_workspace_type (workspace_id, type),
+  INDEX idx_order_id (order_id)
+);
+
+-- 用户偏好设置表
+CREATE TABLE user_preferences (
+  user_id BIGINT PRIMARY KEY,
+  language VARCHAR(10) DEFAULT 'en',
+  timezone VARCHAR(50) DEFAULT 'UTC',
+  theme ENUM('light', 'dark', 'auto') DEFAULT 'auto',
+  email_notifications BOOLEAN DEFAULT TRUE,
+  push_notifications BOOLEAN DEFAULT TRUE,
+  weekly_reports BOOLEAN DEFAULT TRUE,
+  marketing_emails BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+-- API 设置表
+CREATE TABLE api_settings (
+  workspace_id BIGINT PRIMARY KEY,
+  default_model VARCHAR(50) DEFAULT 'gpt-3.5-turbo',
+  max_tokens INT DEFAULT 2048,
+  temperature DECIMAL(3, 2) DEFAULT 0.7,
+  top_p DECIMAL(3, 2) DEFAULT 1.0,
+  frequency_penalty DECIMAL(3, 2) DEFAULT 0.0,
+  presence_penalty DECIMAL(3, 2) DEFAULT 0.0,
+  webhook_url VARCHAR(500),
+  rate_limit_rpm INT DEFAULT 60,
+  rate_limit_rph INT DEFAULT 3600,
+  rate_limit_rpd INT DEFAULT 86400,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (workspace_id) REFERENCES workspaces(id)
+);
+```
+
+### 技术栈建议
+
+- **框架**：NestJS (Node.js) 或 Spring Boot (Java)
+- **数据库**：MySQL 8.0+ 或 PostgreSQL 14+
+- **缓存**：Redis 6.0+
+- **消息队列**：RabbitMQ 或 Apache Kafka
+- **文件存储**：AWS S3 或 阿里云 OSS
+- **监控**：Prometheus + Grafana
+- **日志**：ELK Stack (Elasticsearch + Logstash + Kibana)
+- **API 文档**：Swagger/OpenAPI 3.0
+
+### 部署架构建议
+
+- **容器化**：Docker + Kubernetes
+- **负载均衡**：Nginx 或 AWS ALB
+- **CDN**：CloudFlare 或 AWS CloudFront
+- **数据库**：主从复制 + 读写分离
+- **缓存策略**：多级缓存（本地缓存 + Redis）
+- **安全**：HTTPS + WAF + DDoS 防护
 
 ```typescript
 // auth.controller.ts
@@ -583,7 +2048,11 @@ export class WorkspaceController {
     @Body() body: UpdateMemberRoleDto
   ): Promise<ApiResponse<WorkspaceMember>> {
     try {
-      const member = await this.workspaceService.updateMemberRole(parseInt(id), parseInt(userId), body.role);
+      const member = await this.workspaceService.updateMemberRole(
+        parseInt(id),
+        parseInt(userId),
+        body.role
+      );
       return ResponseUtil.success(member);
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -616,7 +2085,9 @@ export class InvitationController {
   constructor(private invitationService: InvitationService) {}
 
   @Get('/token/:token')
-  async getInvitationByToken(@Param('token') token: string): Promise<ApiResponse<InvitationDetail>> {
+  async getInvitationByToken(
+    @Param('token') token: string
+  ): Promise<ApiResponse<InvitationDetail>> {
     try {
       const invitation = await this.invitationService.getInvitationByToken(token);
       return ResponseUtil.success(invitation);
@@ -641,7 +2112,10 @@ export class InvitationController {
 
   @Post('/:id/reject')
   @UseGuards(AuthGuard)
-  async rejectInvitation(@Param('id') id: string, @User() user: JWTPayload): Promise<ApiResponse<{ message: string }>> {
+  async rejectInvitation(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
     try {
       await this.invitationService.rejectInvitation(parseInt(id), user.userId);
       return ResponseUtil.success({ message: 'Invitation rejected' });
@@ -652,7 +2126,10 @@ export class InvitationController {
 
   @Delete('/:id')
   @UseGuards(AuthGuard)
-  async revokeInvitation(@Param('id') id: string, @User() user: JWTPayload): Promise<ApiResponse<{ message: string }>> {
+  async revokeInvitation(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
     try {
       await this.invitationService.revokeInvitation(parseInt(id), user.userId);
       return ResponseUtil.success({ message: 'Invitation revoked' });
@@ -663,7 +2140,10 @@ export class InvitationController {
 
   @Post('/:id/resend')
   @UseGuards(AuthGuard)
-  async resendInvitation(@Param('id') id: string, @User() user: JWTPayload): Promise<ApiResponse<{ message: string }>> {
+  async resendInvitation(
+    @Param('id') id: string,
+    @User() user: JWTPayload
+  ): Promise<ApiResponse<{ message: string }>> {
     try {
       await this.invitationService.resendInvitation(parseInt(id), user.userId);
       return ResponseUtil.success({ message: 'Invitation resent' });
@@ -684,7 +2164,9 @@ export class DashboardController {
   constructor(private dashboardService: DashboardService) {}
 
   @Get('/stats')
-  async getDashboardStats(@Query('workspaceId') workspaceId: string): Promise<ApiResponse<DashboardStats>> {
+  async getDashboardStats(
+    @Query('workspaceId') workspaceId: string
+  ): Promise<ApiResponse<DashboardStats>> {
     try {
       const stats = await this.dashboardService.getDashboardStats(parseInt(workspaceId));
       return ResponseUtil.success(stats);
@@ -707,7 +2189,9 @@ export class DashboardController {
   }
 
   @Get('/real-time-stats')
-  async getRealTimeStats(@Query('workspaceId') workspaceId: string): Promise<ApiResponse<RealTimeStats>> {
+  async getRealTimeStats(
+    @Query('workspaceId') workspaceId: string
+  ): Promise<ApiResponse<RealTimeStats>> {
     try {
       const stats = await this.dashboardService.getRealTimeStats(parseInt(workspaceId));
       return ResponseUtil.success(stats);
@@ -724,7 +2208,9 @@ export class AccountController {
   constructor(private accountService: AccountService) {}
 
   @Get('/balance')
-  async getAccountBalance(@Query('workspaceId') workspaceId: string): Promise<ApiResponse<AccountBalance>> {
+  async getAccountBalance(
+    @Query('workspaceId') workspaceId: string
+  ): Promise<ApiResponse<AccountBalance>> {
     try {
       const balance = await this.accountService.getAccountBalance(parseInt(workspaceId));
       return ResponseUtil.success(balance);
@@ -1193,7 +2679,11 @@ export class AuthService {
     const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1小时后过期
 
     // 存储重置 token
-    await this.redisClient.setex(`reset:${resetToken}`, 3600, JSON.stringify({ userId: user.id, email: user.email }));
+    await this.redisClient.setex(
+      `reset:${resetToken}`,
+      3600,
+      JSON.stringify({ userId: user.id, email: user.email })
+    );
 
     // 发送重置邮件
     await this.emailService.sendPasswordResetEmail(user.email, resetToken);
@@ -1227,7 +2717,11 @@ export class AuthService {
     await this.redisClient.setex(`user_logout:${userId}`, 7 * 24 * 60 * 60, 'true');
   }
 
-  private async generateTokens(userId: number, email: string, workspaceId: number): Promise<TokenResponse> {
+  private async generateTokens(
+    userId: number,
+    email: string,
+    workspaceId: number
+  ): Promise<TokenResponse> {
     const payload = {
       userId,
       email,
@@ -1301,14 +2795,21 @@ export class CacheService {
     await this.redisClient.setex(key, ttl, JSON.stringify(permissions));
   }
 
-  async getCachedUserWorkspacePermissions(userId: number, workspaceId: number): Promise<string[] | null> {
+  async getCachedUserWorkspacePermissions(
+    userId: number,
+    workspaceId: number
+  ): Promise<string[] | null> {
     const key = `permissions:${userId}:${workspaceId}`;
     const cached = await this.redisClient.get(key);
     return cached ? JSON.parse(cached) : null;
   }
 
   // 统计数据缓存
-  async cacheDashboardStats(workspaceId: number, stats: DashboardStats, ttl: number = 300): Promise<void> {
+  async cacheDashboardStats(
+    workspaceId: number,
+    stats: DashboardStats,
+    ttl: number = 300
+  ): Promise<void> {
     const key = `dashboard:${workspaceId}`;
     await this.redisClient.setex(key, ttl, JSON.stringify(stats));
   }
@@ -1329,7 +2830,11 @@ export class CacheService {
   }
 
   async clearWorkspaceCache(workspaceId: number): Promise<void> {
-    const patterns = [`dashboard:${workspaceId}*`, `permissions:*:${workspaceId}*`, `workspace:${workspaceId}*`];
+    const patterns = [
+      `dashboard:${workspaceId}*`,
+      `permissions:*:${workspaceId}*`,
+      `workspace:${workspaceId}*`,
+    ];
 
     for (const pattern of patterns) {
       const keys = await this.redisClient.keys(pattern);
@@ -1460,7 +2965,9 @@ export function validateBody(schema: Joi.ObjectSchema) {
         message: detail.message,
       }));
 
-      return res.status(400).json(ResponseUtil.error('VALIDATION_ERROR', '请求数据验证失败', errors));
+      return res
+        .status(400)
+        .json(ResponseUtil.error('VALIDATION_ERROR', '请求数据验证失败', errors));
     }
 
     req.body = value;
@@ -1481,7 +2988,9 @@ export function validateQuery(schema: Joi.ObjectSchema) {
         message: detail.message,
       }));
 
-      return res.status(400).json(ResponseUtil.error('VALIDATION_ERROR', '查询参数验证失败', errors));
+      return res
+        .status(400)
+        .json(ResponseUtil.error('VALIDATION_ERROR', '查询参数验证失败', errors));
     }
 
     req.query = value;
@@ -1934,7 +3443,8 @@ import { User, Workspace, UserWorkspace, Account } from '../src/entities';
 // 测试数据库配置
 const dataSource = new DataSource({
   type: 'postgres',
-  url: process.env.TEST_DATABASE_URL || 'postgresql://postgres:password@localhost:5433/zerocut_test',
+  url:
+    process.env.TEST_DATABASE_URL || 'postgresql://postgres:password@localhost:5433/zerocut_test',
   entities: [User, Workspace, UserWorkspace, Account],
   synchronize: true,
   dropSchema: true,
