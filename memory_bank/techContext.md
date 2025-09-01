@@ -1,43 +1,72 @@
-# 技术上下文 - AI视频服务平台
+# 技术上下文
 
-## 技术栈概览
+## 项目概览
 
-### 前端框架
+**项目名称**: Zerocut 视频Agent管理台  
+**项目类型**: 全栈AI视频创作平台  
+**架构模式**: 前后端分离 + 微服务化AI集成  
+**开发模式**: 敏捷开发，基于DDD领域驱动设计
 
-- **Vue 3.4+**: 核心前端框架，使用Composition API和`<script setup>`语法
-- **Vuetify 3.6+**: Material Design组件库，提供丰富的UI组件
-- **TypeScript**: 类型安全的JavaScript超集
+## 前端技术栈
 
-### 构建工具
+### 核心框架与构建
 
-- **Vite 5.x**: 现代化构建工具，提供快速的开发体验
-- **PostCSS**: CSS后处理器
-- **Sass**: CSS预处理器
+- **Vue 3.4+**: 组合式API，完整TypeScript支持，响应式系统优化
+- **Vuetify 3.6+**: Material Design 3组件库，主题系统，响应式布局
+- **TypeScript 5.x**: 严格类型检查，增强IDE支持，编译时错误检测
+- **Vite 5.x**: ESM原生支持，HMR热更新，插件生态丰富
+- **Node.js >=20.0.0**: 运行时环境要求
+- **pnpm**: 包管理器，磁盘空间优化，依赖去重
 
-### 状态管理
+### 状态管理与路由
 
-- **Pinia**: Vue 3推荐的状态管理库
-- **pinia-plugin-persistedstate**: Pinia状态持久化插件
+- **Pinia**: 组合式API风格，TypeScript原生支持，DevTools集成
+- **pinia-plugin-persistedstate**: 状态持久化，localStorage/sessionStorage支持
+- **Vue Router 4**: 动态路由，路由守卫，懒加载支持
+- **Vue-i18n 9.x**: 国际化，支持中英日多语言，动态语言切换
 
-### 路由
+### UI组件与交互
 
-- **Vue Router 4**: Vue 3官方路由库
+- **Vuetify Components**: 完整的Material Design组件集
+- **Tiptap**: 现代富文本编辑器，模块化架构，Vue 3集成
+- **VueUse**: 组合式API工具集，响应式工具函数
+- **@vueuse/core**: 核心组合式函数库
 
-### 国际化
+### 网络与工具库
 
-- **Vue-i18n**: Vue国际化解决方案
+- **Axios 1.x**: HTTP客户端，请求/响应拦截器，错误处理
+- **Lodash**: 函数式编程工具，数据处理优化
+- **Day.js**: 轻量级日期库，国际化支持
+- **EventSource**: 服务器发送事件，实时数据流
 
-### UI增强
+## 后端技术栈
 
-- **@iconify/vue**: 图标系统
-- **@mdi/font**: Material Design Icons
+### 核心框架
 
-### 功能库
+- **Node.js 20 LTS**: 长期支持版本，性能优化，ES模块支持
+- **Express.js 4.x**: Web框架，中间件生态，RESTful API
+- **TypeScript 5.x**: 后端类型安全，编译时检查
 
-- **@vueuse/core**: Vue Composition API工具集
-- **@vueuse/integrations**: VueUse集成库
-- **VueDraggable**: 拖拽功能（资产管理）
-- **Vue3-Perfect-Scrollbar**: 滚动条优化
+### 数据库与ORM
+
+- **PostgreSQL 17**: 关系型数据库，ACID事务，JSON支持
+- **TypeORM 0.3.17+**: ORM框架，装饰器语法，迁移管理
+- **Redis 7.x**: 缓存数据库，会话存储，消息队列
+
+### 认证与安全
+
+- **JWT**: 无状态认证，跨域支持
+- **bcrypt**: 密码哈希，安全加密
+- **express-session**: 会话管理
+- **Joi**: 数据验证，请求参数校验
+
+### 开发工具与监控
+
+- **Swagger/OpenAPI**: API文档自动生成
+- **Winston**: 日志管理，多级别日志
+- **Prometheus**: 监控指标收集
+- **Grafana**: 监控数据可视化
+- **Jest**: 单元测试框架
 
 ### ✅ 代码质量和开发工具
 

@@ -1,10 +1,81 @@
-# 系统模式 - AI视频服务平台
+# 系统架构模式
 
-## 架构概览
+## 核心架构理念
 
-### 整体架构
+### 1. 全栈AI视频创作平台架构
 
-项目采用**模块化AI工具聚合架构**，基于Vue 3的组合式API设计模式，专注于AI视频创作工具的整合。
+基于Vue 3 + Node.js的全栈架构，专注于AI驱动的视频创作工具聚合：
+
+- **前端**: Vue 3 + Vuetify + TypeScript + Vite的现代化前端架构
+- **后端**: Node.js + Express + TypeScript + PostgreSQL的企业级后端架构
+- **AI集成**: 多模态AI服务聚合（文本生成、图像生成、视频生成、语音合成）
+- **工作空间隔离**: 基于DDD的多租户工作空间架构
+
+### 2. 领域驱动设计(DDD)模式
+
+采用DDD架构模式，清晰划分业务领域：
+
+**核心领域实体**:
+
+- User（用户）: 系统使用者，具有身份认证和权限管理
+- Workspace（工作空间）: 用户数据隔离的基础单元
+- Account（账户）: 用户的财务和配置信息容器
+- ApiKey（API密钥）: 系统集成的安全凭证
+- ClientConfig（客户端配置）: 系统集成参数的配置实体
+
+**领域服务**:
+
+- AuthenticationService: 处理用户身份验证
+- WorkspaceService: 管理用户工作空间生命周期
+- BillingService: 处理充值和消费逻辑
+- ConfigurationService: 管理系统配置
+
+### 3. 微服务化AI工具聚合
+
+每个AI工具作为独立的服务模块，支持灵活扩展：
+
+- **文本生成**: Deepseek、Doubao、Kimi等大语言模型
+- **图像生成**: Jimeng、Doubao、Tongyi Wanxiang等图像生成模型
+- **视频生成**: Vidu 2.0、Vidu Q1等视频生成模型
+- **语音合成**: 多种音色的TTS服务
+
+## 技术架构层次
+
+### 前端架构层次
+
+```
+┌─────────────────────────────────────────┐
+│              展示层 (Presentation)        │
+│  Vue 3 Components + Vuetify UI          │
+├─────────────────────────────────────────┤
+│              应用层 (Application)        │
+│  Pinia Stores + Vue Router + i18n       │
+├─────────────────────────────────────────┤
+│              服务层 (Service)            │
+│  API Services + Utilities + Hooks       │
+├─────────────────────────────────────────┤
+│              基础设施层 (Infrastructure)   │
+│  Axios + LocalStorage + EventSource     │
+└─────────────────────────────────────────┘
+```
+
+### 后端架构层次
+
+```
+┌─────────────────────────────────────────┐
+│              控制器层 (Controllers)       │
+│  Express Routes + Middleware            │
+├─────────────────────────────────────────┤
+│              应用服务层 (Services)        │
+│  Business Logic + Domain Services       │
+├─────────────────────────────────────────┤
+│              领域层 (Domain)             │
+│  Entities + Value Objects + Events      │
+├─────────────────────────────────────────┤
+│              数据访问层 (Repository)      │
+│  TypeORM + PostgreSQL + Redis          │
+└─────────────────────────────────────────┘
+```
 
 ```
 ┌─────────────────────────────────────────┐
@@ -724,6 +795,71 @@ describe('AI Tool Integration', () => {
     expect(result.content).toMatch(/story/i);
   });
 });
+```
+
+## 数据流模式
+
+### AI服务调用流程
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant C as Vue Component
+    participant S as Pinia Store
+    participant API as API Service
+    participant BE as Backend
+    participant AI as AI Provider
+
+    U->>C: 发起AI请求
+    C->>S: 更新状态
+    S->>API: 调用API服务
+    API->>BE: 发送HTTP请求
+    BE->>AI: 调用AI服务
+    AI-->>BE: 返回结果/流式响应
+    BE-->>API: 转发响应
+    API-->>S: 更新Store状态
+    S-->>C: 响应式更新UI
+    C-->>U: 显示结果
+```
+
+### 工作空间数据隔离
+
+```mermaid
+graph TB
+    A[用户登录] --> B[选择工作空间]
+    B --> C[加载工作空间配置]
+    C --> D[API密钥验证]
+    D --> E[资源配额检查]
+    E --> F[AI服务调用]
+    F --> G[使用统计记录]
+    G --> H[账户余额扣减]
+```
+
+## 安全架构模式
+
+### 1. 多层安全防护
+
+- **前端安全**: CSP策略、XSS防护、敏感信息加密存储
+- **传输安全**: HTTPS强制、API签名验证、请求频率限制
+- **后端安全**: JWT认证、RBAC权限控制、SQL注入防护
+- **数据安全**: 数据库加密、敏感字段脱敏、审计日志
+
+### 2. API密钥管理
+
+```typescript
+interface ApiKeyManagement {
+  // 密钥生成：带前缀的安全密钥
+  generateKey(workspace: string): string;
+
+  // 密钥验证：哈希比对验证
+  validateKey(key: string, hash: string): boolean;
+
+  // 使用统计：记录调用次数和时间
+  recordUsage(keyId: string, endpoint: string): void;
+
+  // 权限控制：基于工作空间的访问控制
+  checkPermission(keyId: string, resource: string): boolean;
+}
 ```
 
 这个系统架构确保了AI视频服务平台的技术先进性、可维护性和可扩展性，同时通过完整的代码质量保障体系确保了代码的高质量和一致性。
