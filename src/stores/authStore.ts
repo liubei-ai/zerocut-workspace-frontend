@@ -3,6 +3,7 @@ import type { ApiError, User } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { syncUserProfile } from '../api/authApi';
 
 export const useAuthStore = defineStore(
   'auth',
@@ -24,10 +25,19 @@ export const useAuthStore = defineStore(
      * Handle Authing login success
      */
     const setAuthingUser = async (authingUser: AuthingUser) => {
+      console.log('debug Authing 用户登录成功:', authingUser);
+
       // 将 Authing 用户信息转换为应用的用户格式
       const userData: User = {
-        username: authingUser.username || '',
+        authingId: authingUser.id,
+        username: authingUser.username as string,
+        email: authingUser.email as string,
+        phone: authingUser.phone as string,
+        token: authingUser.token as string,
       };
+
+      // 调用 API 同步用户信息
+      await syncUserProfile(userData);
 
       user.value = userData;
       isLoggedIn.value = true;

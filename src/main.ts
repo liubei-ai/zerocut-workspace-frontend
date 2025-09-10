@@ -36,7 +36,7 @@ app.use(pinia);
 app.use(i18n);
 app.use(Vue3Lottie, { name: 'LottieAnimation' });
 app.use(autoAnimatePlugin);
-app.use(createGuard({ appId: '68aed701dc9d45f8f1a17ba0' }));
+app.use(createGuard({ appId: '68c17ad8ebc4ccdf6ce71b5f' }));
 
 app.use(vuetify);
 app.mount('#app');

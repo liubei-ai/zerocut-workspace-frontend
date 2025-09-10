@@ -32,7 +32,7 @@ guard.on('login', async (authingUser: User) => {
   try {
     if (authingUser) {
       console.log('登录成功，用户信息:', authingUser);
-      authStore.setAuthingUser(authingUser);
+      await authStore.setAuthingUser(authingUser);
       await router.push('/dashboard');
     }
 

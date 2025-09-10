@@ -1,1 +1,1 @@
-VITE_API_BASE_URL=https://writely.fc.liubeiai.com/api/v1
+VITE_API_BASE_URL=https://api2.zerocut.cn/api

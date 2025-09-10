@@ -13,15 +13,11 @@ export interface LoginRequest {
 }
 
 export interface User {
-  username: string;
-  // id: string;
-  // name: string;
-  // email?: string;
-  // avatar?: string;
-  // role?: string;
-  // permissions?: string[];
-  // createdAt?: string;
-  // updatedAt?: string;
+  authingId: string;
+  username?: string;
+  email?: string;
+  phone?: string;
+  token?: string;
 }
 
 export interface LoginResponse extends User {
