@@ -32,14 +32,14 @@ export default defineConfig({
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
   server: {
-    host: '0.0.0.0',
+    host: 'local-workspace.zerocut.cn',
     port: 8080,
     watch: {
       usePolling: true,
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:9000',
+        target: 'http://localhost:9527',
         changeOrigin: true,
         followRedirects: true,
       },
