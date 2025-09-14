@@ -1,7 +1,6 @@
 import type {
   ApiKey,
   ApiKeyListResponse,
-  ApiResponse,
   ConsumptionRecord,
   CreateApiKeyRequest,
   RechargeRecord,
@@ -15,9 +14,7 @@ import client from './client';
  * @param workspaceId 工作空间ID
  * @returns 工作空间详细信息
  */
-export async function getWorkspaceDetails(
-  workspaceId: string
-): Promise<ApiResponse<WorkspaceDetails>> {
+export async function getWorkspaceDetails(workspaceId: string): Promise<WorkspaceDetails> {
   const response = await client.get(`/workspaces/${workspaceId}/details`);
   return response.data;
 }
@@ -27,9 +24,7 @@ export async function getWorkspaceDetails(
  * @param workspaceId 工作空间ID
  * @returns 成员列表
  */
-export async function getWorkspaceMembers(
-  workspaceId: string
-): Promise<ApiResponse<WorkspaceMember[]>> {
+export async function getWorkspaceMembers(workspaceId: string): Promise<WorkspaceMember[]> {
   const response = await client.get(`/workspaces/${workspaceId}/members`);
   return response.data;
 }
@@ -43,7 +38,7 @@ export async function getWorkspaceMembers(
 export async function addWorkspaceMember(
   workspaceId: string,
   memberData: { email: string; role: string }
-): Promise<ApiResponse<WorkspaceMember>> {
+): Promise<WorkspaceMember> {
   const response = await client.post(`/workspaces/${workspaceId}/members`, memberData);
   return response.data;
 }
@@ -54,10 +49,7 @@ export async function addWorkspaceMember(
  * @param memberId 成员ID
  * @returns 移除结果
  */
-export async function removeWorkspaceMember(
-  workspaceId: string,
-  memberId: number
-): Promise<ApiResponse<void>> {
+export async function removeWorkspaceMember(workspaceId: string, memberId: number): Promise<void> {
   const response = await client.delete(`/workspaces/${workspaceId}/members/${memberId}`);
   return response.data;
 }
@@ -73,7 +65,7 @@ export async function updateMemberRole(
   workspaceId: string,
   memberId: number,
   role: string
-): Promise<ApiResponse<WorkspaceMember>> {
+): Promise<WorkspaceMember> {
   const response = await client.patch(`/workspaces/${workspaceId}/members/${memberId}`, { role });
   return response.data;
 }
@@ -83,7 +75,7 @@ export async function updateMemberRole(
  * @param workspaceId 工作空间ID
  * @returns API密钥列表
  */
-export async function getApiKeys(workspaceId: string): Promise<ApiResponse<ApiKeyListResponse>> {
+export async function getApiKeys(workspaceId: string): Promise<ApiKeyListResponse> {
   const response = await client.get(`/workspaces/${workspaceId}/api-keys`);
   return response.data;
 }
@@ -97,7 +89,7 @@ export async function getApiKeys(workspaceId: string): Promise<ApiResponse<ApiKe
 export async function createApiKey(
   workspaceId: string,
   keyData: CreateApiKeyRequest
-): Promise<ApiResponse<ApiKey>> {
+): Promise<ApiKey> {
   const response = await client.post(`/workspaces/${workspaceId}/api-keys`, keyData);
   return response.data;
 }
@@ -108,7 +100,7 @@ export async function createApiKey(
  * @param keyId 密钥ID
  * @returns 删除结果
  */
-export async function deleteApiKey(workspaceId: string, keyId: number): Promise<ApiResponse<void>> {
+export async function deleteApiKey(workspaceId: string, keyId: number): Promise<void> {
   const response = await client.delete(`/workspaces/${workspaceId}/api-keys/${keyId}`);
   return response.data;
 }
@@ -124,7 +116,7 @@ export async function updateApiKeyStatus(
   workspaceId: string,
   keyId: number,
   status: string
-): Promise<ApiResponse<ApiKey>> {
+): Promise<ApiKey> {
   const response = await client.patch(`/workspaces/${workspaceId}/api-keys/${keyId}`, { status });
   return response.data;
 }
@@ -143,7 +135,7 @@ export async function getConsumptionRecords(
     startDate?: string;
     endDate?: string;
   }
-): Promise<ApiResponse<{ records: ConsumptionRecord[]; total: number }>> {
+): Promise<{ records: ConsumptionRecord[]; total: number }> {
   const response = await client.get(`/workspaces/${workspaceId}/credits/consumption-records`, {
     params,
   });
@@ -164,7 +156,7 @@ export async function getRechargeRecords(
     startDate?: string;
     endDate?: string;
   }
-): Promise<ApiResponse<{ records: RechargeRecord[]; total: number }>> {
+): Promise<{ records: RechargeRecord[]; total: number }> {
   const response = await client.get(`/workspaces/${workspaceId}/credits/recharge-records`, {
     params,
   });
@@ -184,7 +176,7 @@ export async function updateWorkspace(
     description?: string;
     settings?: any;
   }
-): Promise<ApiResponse<WorkspaceDetails>> {
+): Promise<WorkspaceDetails> {
   const response = await client.patch(`/workspaces/${workspaceId}`, updateData);
   return response.data;
 }

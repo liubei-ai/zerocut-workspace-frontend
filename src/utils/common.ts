@@ -1,4 +1,3 @@
-import { useLocale } from 'vuetify';
 // Debounce
 
 export const debounce = (func: Function, wait: number): Function => {
@@ -70,4 +69,8 @@ export const scrollToBottom = (
     ...options,
     top: element.scrollHeight,
   });
+};
+
+export const sleep = (ms: number) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 };

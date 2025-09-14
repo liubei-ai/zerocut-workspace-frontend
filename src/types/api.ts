@@ -17,7 +17,6 @@ export interface User {
   username?: string;
   email?: string;
   phone?: string;
-  token?: string;
 }
 
 export interface LoginResponse extends User {
@@ -174,4 +173,39 @@ export interface RechargeRecord {
   status: string;
   method: string;
   createdAt: string;
+}
+
+// Homepage Types
+export interface UserInfoDto {
+  id: number;
+  authingId: string;
+  username?: string;
+  email: string;
+  phone?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WorkspaceOwnerDto {
+  id: number;
+  username?: string;
+  email: string;
+  role: string;
+}
+
+export interface UserWorkspaceDto {
+  id: number;
+  workspaceId: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  owner: WorkspaceOwnerDto;
+  currentUserRole: string;
+}
+
+export interface HomepageResponseDto {
+  user: UserInfoDto;
+  workspaces: UserWorkspaceDto[];
 }

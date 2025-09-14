@@ -32,7 +32,7 @@ export default defineConfig({
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
   server: {
-    host: 'local-workspace.zerocut.cn',
+    host: '0.0.0.0',
     port: 8080,
     watch: {
       usePolling: true,

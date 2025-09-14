@@ -1,5 +1,6 @@
 import type { ApiError, ApiResponse } from '@/types/api';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { Router } from 'vue-router';
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -12,8 +13,8 @@ const apiClient: AxiosInstance = axios.create({
 });
 
 // 避免循环依赖，延迟导入
-let router: any = null;
-let authStore: any = null;
+let router: Router;
+let authStore;
 
 // 延迟导入函数
 const getRouter = async () => {

@@ -3,7 +3,7 @@ import type { ApiError, User } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { syncUserProfile } from '../api/authApi';
+import { requestLogout, syncUserProfile } from '../api/authApi';
 
 export const useAuthStore = defineStore(
   'auth',
@@ -25,25 +25,22 @@ export const useAuthStore = defineStore(
      * Handle Authing login success
      */
     const setAuthingUser = async (authingUser: AuthingUser) => {
-      console.log('debug Authing 用户登录成功:', authingUser);
-
-      // 将 Authing 用户信息转换为应用的用户格式
-      const userData: User = {
+      // 调用 API 同步用户信息
+      const response = await syncUserProfile({
         authingId: authingUser.id,
         username: authingUser.username as string,
         email: authingUser.email as string,
         phone: authingUser.phone as string,
         token: authingUser.token as string,
-      };
+      });
 
-      // 调用 API 同步用户信息
-      await syncUserProfile(userData);
+      console.log('debug 同步用户信息:', response);
 
-      user.value = userData;
+      user.value = response.data;
       isLoggedIn.value = true;
       error.value = null;
 
-      console.log('Authing 用户登录成功:', userData);
+      console.log('Authing 用户登录成功:', user.value);
     };
 
     /**
@@ -55,6 +52,7 @@ export const useAuthStore = defineStore(
       try {
         // 直接使用已初始化的 guard 实例
         await guard.logout();
+        await requestLogout();
       } catch (err) {
         console.error('Logout failed:', err);
         // Continue with local logout even if server logout fails

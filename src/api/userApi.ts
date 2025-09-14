@@ -1,4 +1,4 @@
-import type { ApiResponse, UserProfile } from '../types/api';
+import type { ApiResponse, HomepageResponseDto, UserProfile } from '../types/api';
 import client from './client';
 
 /**
@@ -51,8 +51,17 @@ export async function updateCurrentUserProfile(
  * @param userId 用户ID
  * @returns 删除结果
  */
-export async function deleteUser(userId: string): Promise<ApiResponse<void>> {
+export async function deleteUser(userId: string) {
   const response = await client.delete(`/api/user-profile/${userId}`);
+  return response.data;
+}
+
+/**
+ * 获取用户主页数据（包含工作空间列表）
+ * @returns 主页数据
+ */
+export async function getHomepageData(): Promise<HomepageResponseDto> {
+  const response = await client.get('/homepage');
   return response.data;
 }
 
@@ -66,7 +75,7 @@ export async function getUserList(params?: {
   limit?: number;
   search?: string;
   role?: string;
-}): Promise<ApiResponse<{ users: UserProfile[]; total: number }>> {
+}): Promise<{ users: UserProfile[]; total: number }> {
   const response = await client.get('/api/users', { params });
   return response.data;
 }
@@ -80,7 +89,7 @@ export async function getUserList(params?: {
 export async function updateUserStatus(
   userId: string,
   status: 'active' | 'inactive' | 'suspended'
-): Promise<ApiResponse<UserProfile>> {
+): Promise<UserProfile> {
   const response = await client.patch(`/api/users/${userId}/status`, { status });
   return response.data;
 }
@@ -90,9 +99,7 @@ export async function updateUserStatus(
  * @param userId 用户ID
  * @returns 重置结果
  */
-export async function resetUserPassword(
-  userId: string
-): Promise<ApiResponse<{ temporaryPassword: string }>> {
+export async function resetUserPassword(userId: string): Promise<{ temporaryPassword: string }> {
   const response = await client.post(`/api/users/${userId}/reset-password`);
   return response.data;
 }
