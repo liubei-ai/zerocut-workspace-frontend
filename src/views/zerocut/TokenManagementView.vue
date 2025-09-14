@@ -2,11 +2,7 @@
 import { createApiKey, deleteApiKey, getApiKeys } from '@/api/workspaceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
-import { ApiWrapper } from '@/utils/apiWrapper';
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 // 加载状态
 const loading = ref(false);
@@ -59,13 +55,9 @@ const loadTokens = async () => {
       showError('请先选择工作空间');
       return;
     }
-    const result = await ApiWrapper.call(() => getApiKeys(workspaceId));
-    if (result.success && result.data) {
-      tokens.value = result.data.data || [];
-      showSuccess('令牌列表加载成功');
-    } else {
-      showError('加载令牌列表失败');
-    }
+    const apikeys = await getApiKeys(workspaceId);
+    tokens.value = apikeys;
+    showSuccess('令牌列表加载成功');
   } catch (error) {
     console.error('加载令牌列表失败:', error);
     showError('加载令牌列表时发生错误');
@@ -102,18 +94,14 @@ const createToken = async () => {
       description: newToken.value.description,
     };
 
-    const result = await ApiWrapper.call(() => createApiKey(workspaceId, request));
-    if (result.success && result.data) {
-      // 保存创建的API密钥用于显示
-      createdTokenKey.value = result.data.data?.apiKey || '';
-      // 重新加载令牌列表
-      await loadTokens();
-      createTokenDialog.value = false;
-      resetForm();
-      showSuccess('令牌创建成功');
-    } else {
-      showError('创建令牌失败');
-    }
+    const apiKeyInfo = await createApiKey(workspaceId, request);
+    createdTokenKey.value = apiKeyInfo.apiKey || '';
+
+    // 重新加载令牌列表
+    await loadTokens();
+    createTokenDialog.value = false;
+    resetForm();
+    showSuccess('令牌创建成功');
   } catch (error) {
     console.error('创建令牌失败:', error);
     showError('创建令牌时发生错误');
@@ -134,14 +122,10 @@ const deleteToken = async () => {
 
   deleting.value = true;
   try {
-    const result = await ApiWrapper.call(() => deleteApiKey(workspaceId, selectedToken.value!.id));
-    if (result.success) {
-      // 重新加载令牌列表
-      await loadTokens();
-      showSuccess('令牌删除成功');
-    } else {
-      showError('删除令牌失败');
-    }
+    await deleteApiKey(workspaceId, selectedToken.value!.id);
+    // 重新加载令牌列表
+    await loadTokens();
+    showSuccess('令牌删除成功');
   } catch (error) {
     console.error('删除令牌失败:', error);
     showError('删除令牌时发生错误');
@@ -205,13 +189,6 @@ const getStatusColor = (status: string) => {
   }
 };
 
-// 获取权限标签
-const getPermissionLabel = (permission: string) => {
-  const option = permissionOptions.find(p => p.value === permission);
-  return option ? option.title : permission;
-};
-
-// 打开删除对话框
 const openDeleteDialog = (token: ApiKey) => {
   selectedToken.value = token;
   deleteTokenDialog.value = true;
@@ -296,18 +273,19 @@ const openDeleteDialog = (token: ApiKey) => {
           { title: '名称', key: 'name', sortable: true },
           { title: '描述', key: 'description', sortable: false },
           { title: '令牌', key: 'key', sortable: false },
-          { title: '权限', key: 'permissions', sortable: false },
+          { title: '创建者', key: 'creator', sortable: true },
           { title: '创建时间', key: 'createdAt', sortable: true },
-          { title: '最后使用', key: 'lastUsed', sortable: true },
+          { title: '最后使用', key: 'lastUsedAt', sortable: true },
           { title: '过期时间', key: 'expiresAt', sortable: true },
           { title: '状态', key: 'status', sortable: true },
-          { title: '使用次数', key: 'usageCount', sortable: true },
-          { title: '操作', key: 'actions', sortable: false },
+          // { title: '操作', key: 'actions', sortable: false },
         ]"
         :items="tokens"
         item-value="id"
         class="elevation-0"
         :loading="loading"
+        :items-per-page="-1"
+        hide-default-footer
       >
         <template #item.key="{ item }">
           <div class="d-flex align-center">
@@ -321,21 +299,18 @@ const openDeleteDialog = (token: ApiKey) => {
           </div>
         </template>
 
-        <template #item.permissions="{ item }">
-          <div class="d-flex flex-wrap ga-1">
-            <v-chip
-              v-for="permission in item.permissions"
-              :key="permission"
-              size="small"
-              variant="tonal"
-              color="primary"
-            >
-              {{ getPermissionLabel(permission) }}
-            </v-chip>
+        <template #item.creator="{ item }">
+          <div class="d-flex align-center">
+            <v-avatar size="24" class="mr-2">
+              <v-icon icon="mdi-account" size="16"></v-icon>
+            </v-avatar>
+            <span class="text-body-2">
+              {{ item.creator?.username || item.creator?.email || '未知用户' }}
+            </span>
           </div>
         </template>
 
-        <template #item.lastUsed="{ item }">
+        <template #item.lastUsedAt="{ item }">
           {{ item.lastUsedAt || '从未使用' }}
         </template>
 
@@ -351,11 +326,7 @@ const openDeleteDialog = (token: ApiKey) => {
           </v-chip>
         </template>
 
-        <template #item.usageCount>
-          {{ '暂无数据' }}
-        </template>
-
-        <template #item.actions="{ item }">
+        <!-- <template #item.actions="{ item }">
           <div class="d-flex ga-1">
             <v-btn icon="mdi-pencil" size="small" variant="text" color="primary"></v-btn>
             <v-btn
@@ -366,7 +337,7 @@ const openDeleteDialog = (token: ApiKey) => {
               @click="openDeleteDialog(item)"
             ></v-btn>
           </div>
-        </template>
+        </template> -->
       </v-data-table>
     </v-card>
 

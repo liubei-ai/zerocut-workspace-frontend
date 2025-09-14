@@ -1,9 +1,7 @@
 import type {
   ApiKey,
-  ApiKeyListResponse,
   ConsumptionRecord,
   CreateApiKeyRequest,
-  CreateApiKeyResponse,
   RechargeRecord,
   WorkspaceDetails,
   WorkspaceMember,
@@ -76,8 +74,8 @@ export async function updateMemberRole(
  * @param workspaceId 工作空间ID
  * @returns API密钥列表
  */
-export async function getApiKeys(workspaceId: string): Promise<ApiKeyListResponse> {
-  const response = await client.get(`/workspaces/${workspaceId}/api-keys`);
+export async function getApiKeys(workspaceId: string) {
+  const response = await client.get<ApiKey[]>(`/workspaces/${workspaceId}/api-keys`);
   return response.data;
 }
 
@@ -87,11 +85,11 @@ export async function getApiKeys(workspaceId: string): Promise<ApiKeyListRespons
  * @param keyData 密钥信息
  * @returns 创建的API密钥响应
  */
-export async function createApiKey(
-  workspaceId: string,
-  keyData: CreateApiKeyRequest
-): Promise<CreateApiKeyResponse> {
-  const response = await client.post(`/workspaces/${workspaceId}/api-keys`, keyData);
+export async function createApiKey(workspaceId: string, keyData: CreateApiKeyRequest) {
+  const response = await client.post<ApiKey & { apiKey: string }>(
+    `/workspaces/${workspaceId}/api-keys`,
+    keyData
+  );
   return response.data;
 }
 
@@ -101,7 +99,7 @@ export async function createApiKey(
  * @param keyId 密钥ID
  * @returns 删除结果
  */
-export async function deleteApiKey(workspaceId: string, keyId: number): Promise<void> {
+export async function deleteApiKey(workspaceId: string, keyId: number) {
   const response = await client.delete(`/workspaces/${workspaceId}/api-keys/${keyId}`);
   return response.data;
 }
@@ -113,12 +111,10 @@ export async function deleteApiKey(workspaceId: string, keyId: number): Promise<
  * @param status 新状态
  * @returns 更新结果
  */
-export async function updateApiKeyStatus(
-  workspaceId: string,
-  keyId: number,
-  status: string
-): Promise<ApiKey> {
-  const response = await client.patch(`/workspaces/${workspaceId}/api-keys/${keyId}`, { status });
+export async function updateApiKeyStatus(workspaceId: string, keyId: number, status: string) {
+  const response = await client.put<ApiKey>(`/workspaces/${workspaceId}/api-keys/${keyId}`, {
+    status,
+  });
   return response.data;
 }
 

@@ -162,14 +162,6 @@ export interface CreateApiKeyRequest {
   description?: string;
 }
 
-export interface CreateApiKeyResponse extends ApiResponse<ApiKey & { apiKey: string }> {
-  // 创建时返回完整的ApiKey信息，包含完整的apiKey字段
-}
-
-export interface ApiKeyListResponse extends ApiResponse<ApiKey[]> {
-  // 继承ApiResponse，data字段为ApiKey数组
-}
-
 // Consumption Record Types
 export interface ConsumptionRecord {
   id: number;
