@@ -167,9 +167,11 @@ export interface CreateApiKeyRequest {
 // Consumption Record Types
 export interface ConsumptionRecord {
   id: number;
-  type: string;
-  amount: string;
-  description: string;
+  transactionId: string;
+  serviceType?: string;
+  serviceDetails?: Record<string, any>;
+  creditsAmount: number;
+  apiKeyId?: string;
   createdAt: string;
 }
 

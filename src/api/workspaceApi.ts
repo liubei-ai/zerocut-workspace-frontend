@@ -2,6 +2,7 @@ import type {
   ApiKey,
   ConsumptionRecord,
   CreateApiKeyRequest,
+  PaginationResponse,
   RechargeRecord,
   WorkspaceDetails,
   WorkspaceMember,
@@ -127,15 +128,21 @@ export async function updateApiKeyStatus(workspaceId: string, keyId: number, sta
 export async function getConsumptionRecords(
   workspaceId: string,
   params?: {
-    page?: number;
-    limit?: number;
+    serviceType?: string;
+    transactionType?: string;
+    apiKeyId?: string;
     startDate?: string;
     endDate?: string;
+    page?: number;
+    limit?: number;
   }
-): Promise<{ records: ConsumptionRecord[]; total: number }> {
-  const response = await client.get(`/workspaces/${workspaceId}/credits/consumption-records`, {
-    params,
-  });
+) {
+  const response = await client.get<PaginationResponse<ConsumptionRecord>>(
+    `/workspaces/${workspaceId}/credits/consumption/records`,
+    {
+      params,
+    }
+  );
   return response.data;
 }
 
