@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { useDisplay } from 'vuetify';
-import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 import LanguageSwitcher from '@/components/toolbar/LanguageSwitcher.vue';
-import ToolbarUser from './ToolbarUser.vue';
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
+import { useDisplay } from 'vuetify';
 import ThemeToggle from './ThemeToggle.vue';
-import WorkspaceSelector from './WorkspaceSelector.vue';
+import ToolbarUser from './ToolbarUser.vue';
 
 // import ToolbarNotifications from './ToolbarNotifications.vue';
 // import { useTodoStore } from '@/views/app/todo/todoStore';
@@ -41,11 +40,6 @@ const showMobileSearch = ref(false);
       <v-app-bar-nav-icon
         @click="customizeTheme.mainSidebar = !customizeTheme.mainSidebar"
       ></v-app-bar-nav-icon>
-
-      <!-- ---------------------------------------------- -->
-      <!-- Workspace Selector -->
-      <!-- ---------------------------------------------- -->
-      <WorkspaceSelector class="ml-2" />
 
       <v-spacer></v-spacer>
 

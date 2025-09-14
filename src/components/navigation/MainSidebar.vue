@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import configs from '@/configs';
 import MainMenu from '@/components/navigation/MainMenu.vue';
+import WorkspaceSelector from '@/components/toolbar/WorkspaceSelector.vue';
+import configs from '@/configs';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-import { Icon } from '@iconify/vue';
 const customizeTheme = useCustomizeThemeStore();
 const navigation = ref(configs.navigation);
 
@@ -28,12 +28,9 @@ const scrollToBottom = () => {
     <!---Top Area -->
     <!-- ---------------------------------------------- -->
     <template v-if="!customizeTheme.miniSidebar" v-slot:prepend>
-      <v-card height="100" class="logo-card">
-        <h1 class="logo-text h-full">
-          <Icon class="mr-2" width="40" icon="solar:plain-bold-duotone" />
-          <span>LiuBei AI</span>
-        </h1>
-      </v-card>
+      <div class="workspace-selector-container">
+        <WorkspaceSelector />
+      </div>
     </template>
 
     <!-- ---------------------------------------------- -->
@@ -51,18 +48,42 @@ const scrollToBottom = () => {
 
 <style scoped lang="scss">
 .gradient-card {
-  background: linear-gradient(270deg, rgba(var(--v-theme-primary), 0.7) 0, rgb(var(--v-theme-primary)) 100%);
+  background: linear-gradient(
+    270deg,
+    rgba(var(--v-theme-primary), 0.7) 0,
+    rgb(var(--v-theme-primary)) 100%
+  );
   box-shadow: 0 2px 6px rgba(var(--v-theme-primary), 0.3);
 }
 
-.logo-card {
-  .logo-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    font-weight: 600;
-    color: rgba(var(--v-theme-primary));
+.workspace-selector-container {
+  padding: 16px;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+
+  :deep(.workspace-selector) {
+    width: 100%;
+
+    .workspace-btn {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 12px 16px;
+      min-height: 48px;
+      border-radius: 8px;
+      background-color: rgba(var(--v-theme-surface-variant), 0.3);
+
+      &:hover {
+        background-color: rgba(var(--v-theme-primary), 0.08);
+      }
+
+      .workspace-name {
+        max-width: 140px;
+        font-weight: 500;
+      }
+    }
   }
 }
 </style>
