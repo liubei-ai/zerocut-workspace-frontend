@@ -6,6 +6,18 @@ export interface ApiResponse<T = any> {
   timestamp: string;
 }
 
+export interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// Pagination Types
+export interface PaginationResponse<T = any> extends Pagination {
+  list: T[];
+}
+
 // Authentication Types
 export interface LoginRequest {
   username: string;
@@ -107,16 +119,6 @@ export interface UserProfile {
   email: string;
   phone?: string;
   role: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Wallet Types
-export interface WalletInfo {
-  id: number;
-  workspaceId: string;
-  balance: string;
-  currency: string;
   createdAt: string;
   updatedAt: string;
 }

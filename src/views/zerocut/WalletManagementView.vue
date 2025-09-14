@@ -1,142 +1,83 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import {
+  getWalletInfo,
+  getWalletTransactions,
+  TransactionItem,
+  WalletInfo,
+} from '~/src/api/walletApi';
+import { Pagination } from '~/src/types/api';
 
-const { t } = useI18n();
+const route = useRoute();
 
-// 对话框状态
-const rechargeDialog = ref(false);
-const withdrawDialog = ref(false);
+// 获取当前工作空间ID
+const workspaceId = computed(() => route.params.workspaceId as string);
 
-// 充值表单
-const rechargeForm = ref({
-  amount: null as number | null,
-  paymentMethod: 'alipay',
-});
+// 加载状态
+const loading = ref(false);
+const transactionsLoading = ref(false);
 
-// 提现表单
-const withdrawForm = ref({
-  amount: null as number | null,
-  bankAccount: '',
-});
-
-// 支付方式选项
-const paymentMethods = [
-  { value: 'alipay', title: '支付宝', icon: 'mdi-wallet' },
-  { value: 'wechat', title: '微信支付', icon: 'mdi-wechat' },
-  { value: 'bank', title: '银行卡', icon: 'mdi-credit-card' },
-  { value: 'paypal', title: 'PayPal', icon: 'mdi-paypal' },
-];
+// 错误状态
+const error = ref<string | null>(null);
 
 // 钱包信息
-const walletInfo = ref({
-  balance: 1250.75,
-  frozenAmount: 50.0,
-  totalRecharge: 2000.0,
-  totalConsumption: 749.25,
-  currency: 'USD',
-});
+const walletInfo = ref<WalletInfo>();
 
 // 交易记录
-const transactions = ref([
-  {
-    id: 1,
-    type: 'recharge',
-    amount: 500.0,
-    description: '账户充值',
-    timestamp: '2024-01-20 15:30:25',
-    status: 'completed',
-    paymentMethod: 'alipay',
-    orderId: 'RC202401200001',
-  },
-  {
-    id: 2,
-    type: 'consumption',
-    amount: -12.5,
-    description: '视频生成服务',
-    timestamp: '2024-01-20 14:30:25',
-    status: 'completed',
-    paymentMethod: null,
-    orderId: 'CS202401200001',
-  },
-  {
-    id: 3,
-    type: 'consumption',
-    amount: -8.0,
-    description: '图片生成服务',
-    timestamp: '2024-01-20 14:25:10',
-    status: 'completed',
-    paymentMethod: null,
-    orderId: 'CS202401200002',
-  },
-  {
-    id: 4,
-    type: 'recharge',
-    amount: 1000.0,
-    description: '账户充值',
-    timestamp: '2024-01-15 10:20:15',
-    status: 'completed',
-    paymentMethod: 'wechat',
-    orderId: 'RC202401150001',
-  },
-  {
-    id: 5,
-    type: 'refund',
-    amount: 25.0,
-    description: '服务退款',
-    timestamp: '2024-01-14 16:45:30',
-    status: 'completed',
-    paymentMethod: null,
-    orderId: 'RF202401140001',
-  },
-  {
-    id: 6,
-    type: 'withdraw',
-    amount: -200.0,
-    description: '提现到银行卡',
-    timestamp: '2024-01-10 09:15:20',
-    status: 'processing',
-    paymentMethod: 'bank',
-    orderId: 'WD202401100001',
-  },
-]);
-
-// 筛选选项
-const filters = ref({
-  type: 'all',
-  status: 'all',
-  dateRange: ['2024-01-01', '2024-01-31'],
+const transactions = ref<TransactionItem[]>([]);
+const pagination = ref<Pagination>({
+  page: 1,
+  limit: 20,
+  total: 0,
+  totalPages: 0,
 });
 
-// 交易类型选项
+// 筛选选项
+const filterOptions = ref({
+  type: 'all',
+  serviceType: 'all',
+  dateRange: [null, null] as [Date | null, Date | null],
+});
+
 const transactionTypes = [
   { value: 'all', title: '全部类型' },
-  { value: 'recharge', title: '充值' },
   { value: 'consumption', title: '消费' },
   { value: 'refund', title: '退款' },
-  { value: 'withdraw', title: '提现' },
 ];
 
-// 状态选项
-const statusOptions = [
-  { value: 'all', title: '全部状态' },
-  { value: 'completed', title: '已完成' },
-  { value: 'processing', title: '处理中' },
-  { value: 'failed', title: '失败' },
-  { value: 'cancelled', title: '已取消' },
+const serviceTypes = [
+  { value: 'all', title: '全部服务' },
+  { value: 'video_generation', title: '视频生成' },
+  { value: 'image_generation', title: '图片生成' },
+  { value: 'audio_generation', title: '音频生成' },
 ];
 
 // 筛选后的交易记录
 const filteredTransactions = computed(() => {
   return transactions.value.filter(transaction => {
     // 类型筛选
-    if (filters.value.type !== 'all' && transaction.type !== filters.value.type) {
+    if (filterOptions.value.type !== 'all' && transaction.type !== filterOptions.value.type) {
       return false;
     }
 
-    // 状态筛选
-    if (filters.value.status !== 'all' && transaction.status !== filters.value.status) {
+    // 服务类型筛选
+    if (
+      filterOptions.value.serviceType !== 'all' &&
+      transaction.serviceType !== filterOptions.value.serviceType
+    ) {
       return false;
+    }
+
+    // 日期筛选
+    if (filterOptions.value.dateRange[0] && filterOptions.value.dateRange[1]) {
+      const transactionDate = new Date(transaction.createdAt);
+      if (
+        transactionDate < filterOptions.value.dateRange[0] ||
+        transactionDate > filterOptions.value.dateRange[1]
+      ) {
+        return false;
+      }
     }
 
     return true;
@@ -144,31 +85,24 @@ const filteredTransactions = computed(() => {
 });
 
 // 统计数据
-const stats = computed(() => {
+const transactionStats = computed(() => {
   const filtered = filteredTransactions.value;
   return {
     totalTransactions: filtered.length,
-    totalRecharge: filtered
-      .filter(t => t.type === 'recharge')
-      .reduce((sum, t) => sum + t.amount, 0),
     totalConsumption: Math.abs(
-      filtered.filter(t => t.type === 'consumption').reduce((sum, t) => sum + t.amount, 0)
+      filtered.filter(t => t.type === 'transaction').reduce((sum, t) => sum + t.amount, 0)
     ),
-    pendingTransactions: filtered.filter(t => t.status === 'processing').length,
+    totalRefund: filtered.filter(t => t.type === 'recharge').reduce((sum, t) => sum + t.amount, 0),
   };
 });
 
 // 获取交易类型图标
 const getTransactionIcon = (type: string) => {
   switch (type) {
-    case 'recharge':
-      return 'mdi-plus-circle';
     case 'consumption':
       return 'mdi-minus-circle';
     case 'refund':
       return 'mdi-undo';
-    case 'withdraw':
-      return 'mdi-bank-transfer-out';
     default:
       return 'mdi-swap-horizontal';
   }
@@ -177,130 +111,83 @@ const getTransactionIcon = (type: string) => {
 // 获取交易类型颜色
 const getTransactionColor = (type: string) => {
   switch (type) {
-    case 'recharge':
     case 'refund':
       return 'success';
     case 'consumption':
-    case 'withdraw':
       return 'error';
     default:
       return 'info';
-  }
-};
-
-// 获取状态颜色
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'success';
-    case 'processing':
-      return 'warning';
-    case 'failed':
-      return 'error';
-    case 'cancelled':
-      return 'grey';
-    default:
-      return 'info';
-  }
-};
-
-// 获取状态文本
-const getStatusText = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return '已完成';
-    case 'processing':
-      return '处理中';
-    case 'failed':
-      return '失败';
-    case 'cancelled':
-      return '已取消';
-    default:
-      return '未知';
   }
 };
 
 // 获取交易类型文本
 const getTransactionTypeText = (type: string) => {
   switch (type) {
-    case 'recharge':
-      return '充值';
     case 'consumption':
       return '消费';
     case 'refund':
       return '退款';
-    case 'withdraw':
-      return '提现';
     default:
       return '其他';
   }
 };
 
-// 充值
-const recharge = () => {
-  if (rechargeForm.value.amount && rechargeForm.value.amount > 0) {
-    // 模拟充值
-    const newTransaction = {
-      id: Date.now(),
-      type: 'recharge',
-      amount: rechargeForm.value.amount,
-      description: '账户充值',
-      timestamp: new Date().toLocaleString('zh-CN'),
-      status: 'processing',
-      paymentMethod: rechargeForm.value.paymentMethod,
-      orderId: `RC${Date.now()}`,
-    };
+// 格式化金额显示（积分转人民币）
+const formatAmount = (amount: number) => {
+  return (Math.abs(amount) / 100).toFixed(2);
+};
 
-    transactions.value.unshift(newTransaction);
-    rechargeDialog.value = false;
-    resetRechargeForm();
+// 格式化日期
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleString('zh-CN');
+};
+
+// 获取钱包信息
+const fetchWalletInfo = async () => {
+  try {
+    loading.value = true;
+    error.value = null;
+    const wallet = await getWalletInfo(workspaceId.value);
+    walletInfo.value = wallet;
+  } catch (err) {
+    error.value = '获取钱包信息失败';
+    console.error('获取钱包信息失败:', err);
+  } finally {
+    loading.value = false;
   }
 };
 
-// 提现
-const withdraw = () => {
-  if (withdrawForm.value.amount && withdrawForm.value.amount > 0) {
-    // 模拟提现
-    const newTransaction = {
-      id: Date.now(),
-      type: 'withdraw',
-      amount: -withdrawForm.value.amount,
-      description: '提现到银行卡',
-      timestamp: new Date().toLocaleString('zh-CN'),
-      status: 'processing',
-      paymentMethod: 'bank',
-      orderId: `WD${Date.now()}`,
+// 获取交易记录
+const fetchTransactions = async () => {
+  try {
+    transactionsLoading.value = true;
+    const params = {
+      page: pagination.value.page,
+      limit: pagination.value.limit,
+      type: filterOptions.value.type === 'all' ? undefined : filterOptions.value.type,
+      serviceType:
+        filterOptions.value.serviceType === 'all' ? undefined : filterOptions.value.serviceType,
     };
-
-    transactions.value.unshift(newTransaction);
-    withdrawDialog.value = false;
-    resetWithdrawForm();
+    const response = await getWalletTransactions(workspaceId.value, params);
+    const { list, ...rest } = response;
+    transactions.value = list;
+    pagination.value = rest;
+  } catch (err) {
+    error.value = '获取交易记录失败';
+    console.error('获取交易记录失败:', err);
+  } finally {
+    transactionsLoading.value = false;
   }
 };
 
-// 重置充值表单
-const resetRechargeForm = () => {
-  rechargeForm.value = {
-    amount: null,
-    paymentMethod: 'alipay',
-  };
+// 刷新数据
+const refreshData = async () => {
+  await Promise.all([fetchWalletInfo(), fetchTransactions()]);
 };
 
-// 重置提现表单
-const resetWithdrawForm = () => {
-  withdrawForm.value = {
-    amount: null,
-    bankAccount: '',
-  };
-};
-
-// 导出账单
-const exportBill = () => {
-  console.log('导出账单');
-};
-
+// 组件挂载时获取数据
 onMounted(() => {
-  console.log('WalletManagement mounted');
+  refreshData();
 });
 </script>
 
@@ -310,12 +197,11 @@ onMounted(() => {
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h4 font-weight-bold mb-2">钱包管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额、充值记录和消费明细</p>
+        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和消费明细</p>
       </div>
       <div class="d-flex ga-2">
-        <v-btn color="success" prepend-icon="mdi-plus" @click="rechargeDialog = true"> 充值 </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-bank-transfer-out" @click="withdrawDialog = true">
-          提现
+        <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
+          刷新
         </v-btn>
       </div>
     </div>
@@ -327,25 +213,9 @@ onMounted(() => {
           <div class="d-flex align-center mb-4">
             <v-icon size="48" color="primary" class="mr-4"> mdi-wallet </v-icon>
             <div>
-              <div class="text-h4 font-weight-bold">${{ walletInfo.balance.toFixed(2) }}</div>
-              <div class="text-subtitle-1 text-medium-emphasis">可用余额</div>
+              <div class="text-h4 font-weight-bold">¥{{ walletInfo?.creditsBalance }}</div>
+              <div class="text-subtitle-1 text-medium-emphasis">可用积分</div>
             </div>
-          </div>
-
-          <v-divider class="mb-4"></v-divider>
-
-          <div class="d-flex justify-space-between mb-2">
-            <span class="text-body-2">冻结金额:</span>
-            <span class="text-body-2 font-weight-medium">
-              ${{ walletInfo.frozenAmount.toFixed(2) }}
-            </span>
-          </div>
-
-          <div class="d-flex justify-space-between">
-            <span class="text-body-2">总余额:</span>
-            <span class="text-body-2 font-weight-medium">
-              ${{ (walletInfo.balance + walletInfo.frozenAmount).toFixed(2) }}
-            </span>
           </div>
         </v-card>
       </v-col>
@@ -355,9 +225,7 @@ onMounted(() => {
           <v-col cols="6">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="success" class="mb-2"> mdi-trending-up </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">
-                ${{ walletInfo.totalRecharge.toFixed(2) }}
-              </div>
+              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalAmountAdded }}</div>
               <div class="text-caption text-medium-emphasis">累计充值</div>
             </v-card>
           </v-col>
@@ -365,9 +233,7 @@ onMounted(() => {
           <v-col cols="6">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">
-                ${{ walletInfo.totalConsumption.toFixed(2) }}
-              </div>
+              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalCreditsAdded }}</div>
               <div class="text-caption text-medium-emphasis">累计消费</div>
             </v-card>
           </v-col>
@@ -377,18 +243,15 @@ onMounted(() => {
 
     <!-- 筛选器 -->
     <v-card class="mb-6" elevation="2">
-      <v-card-title class="d-flex align-center justify-space-between">
-        <div class="d-flex align-center">
-          <v-icon class="mr-2">mdi-filter</v-icon>
-          筛选条件
-        </div>
-        <v-btn variant="text" prepend-icon="mdi-download" @click="exportBill"> 导出账单 </v-btn>
+      <v-card-title class="d-flex align-center">
+        <v-icon class="mr-2">mdi-filter</v-icon>
+        筛选条件
       </v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="4">
             <v-select
-              v-model="filters.type"
+              v-model="filterOptions.type"
               :items="transactionTypes"
               item-title="title"
               item-value="value"
@@ -399,11 +262,11 @@ onMounted(() => {
 
           <v-col cols="12" md="4">
             <v-select
-              v-model="filters.status"
-              :items="statusOptions"
+              v-model="filterOptions.serviceType"
+              :items="serviceTypes"
               item-title="title"
               item-value="value"
-              label="状态"
+              label="服务类型"
               prepend-inner-icon="mdi-check-circle"
             ></v-select>
           </v-col>
@@ -427,7 +290,7 @@ onMounted(() => {
         <v-card class="pa-4 text-center" elevation="2">
           <v-icon size="32" color="primary" class="mb-2"> mdi-format-list-numbered </v-icon>
           <div class="text-h6 font-weight-bold mb-1">
-            {{ stats.totalTransactions }}
+            {{ transactionStats.totalTransactions }}
           </div>
           <div class="text-caption text-medium-emphasis">总交易数</div>
         </v-card>
@@ -435,27 +298,17 @@ onMounted(() => {
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="32" color="success" class="mb-2"> mdi-plus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">${{ stats.totalRecharge.toFixed(2) }}</div>
-          <div class="text-caption text-medium-emphasis">充值金额</div>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 text-center" elevation="2">
           <v-icon size="32" color="error" class="mb-2"> mdi-minus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">${{ stats.totalConsumption.toFixed(2) }}</div>
+          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalConsumption }}</div>
           <div class="text-caption text-medium-emphasis">消费金额</div>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="32" color="warning" class="mb-2"> mdi-clock </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">
-            {{ stats.pendingTransactions }}
-          </div>
-          <div class="text-caption text-medium-emphasis">处理中</div>
+          <v-icon size="32" color="success" class="mb-2"> mdi-plus-circle </v-icon>
+          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalRefund }}</div>
+          <div class="text-caption text-medium-emphasis">退款金额</div>
         </v-card>
       </v-col>
     </v-row>
@@ -469,20 +322,25 @@ onMounted(() => {
 
       <v-data-table
         :headers="[
-          { title: '时间', key: 'timestamp', sortable: true },
-          { title: '类型', key: 'type', sortable: true },
+          { title: '时间', key: 'createdAt', sortable: true },
+          { title: '交易类型', key: 'transactionType', sortable: true },
+          // { title: '服务类型', key: 'serviceType', sortable: true },
           { title: '描述', key: 'description', sortable: false },
           { title: '金额', key: 'amount', sortable: true },
-          { title: '状态', key: 'status', sortable: true },
-          { title: '支付方式', key: 'paymentMethod', sortable: false },
-          { title: '订单号', key: 'orderId', sortable: false },
+          // { title: '状态', key: 'status', sortable: true },
+          { title: '订单号', key: 'id', sortable: false },
         ]"
-        :items="filteredTransactions"
+        :items="transactions"
         item-value="id"
         class="elevation-0"
-        :items-per-page="10"
+        :items-per-page="pagination.limit"
+        :loading="loading"
       >
-        <template #item.type="{ item }">
+        <template #item.createdAt="{ item }">
+          {{ formatDate(item.createdAt) }}
+        </template>
+
+        <template #item.transactionType="{ item }">
           <div class="d-flex align-center">
             <v-icon
               :icon="getTransactionIcon(item.type)"
@@ -494,168 +352,27 @@ onMounted(() => {
           </div>
         </template>
 
+        <!-- <template #item.serviceType="{ item }">
+          {{ getServiceTypeText(item.serviceType) }}
+        </template> -->
+
         <template #item.amount="{ item }">
           <span
             :class="{
-              'text-success': item.amount > 0,
-              'text-error': item.amount < 0,
+              'text-success': item.type === 'recharge',
+              'text-error': item.type === 'transaction',
             }"
             class="font-weight-medium"
           >
-            {{ item.amount > 0 ? '+' : '' }}${{ Math.abs(item.amount).toFixed(2) }}
+            {{ item.type === 'recharge' ? '+' : '-' }}¥{{ formatAmount(Math.abs(item.amount)) }}
           </span>
         </template>
 
-        <template #item.status="{ item }">
-          <v-chip :color="getStatusColor(item.status)" size="small" variant="tonal">
-            {{ getStatusText(item.status) }}
-          </v-chip>
-        </template>
-
-        <template #item.paymentMethod="{ item }">
-          <div v-if="item.paymentMethod" class="d-flex align-center">
-            <v-icon
-              :icon="
-                paymentMethods.find(p => p.value === item.paymentMethod)?.icon || 'mdi-credit-card'
-              "
-              size="16"
-              class="mr-1"
-            ></v-icon>
-            {{
-              paymentMethods.find(p => p.value === item.paymentMethod)?.title || item.paymentMethod
-            }}
-          </div>
-          <span v-else class="text-medium-emphasis">-</span>
-        </template>
-
-        <template #item.orderId="{ item }">
-          <code class="text-caption">{{ item.orderId }}</code>
+        <template #item.id="{ item }">
+          <code class="text-caption">{{ item.id }}</code>
         </template>
       </v-data-table>
     </v-card>
-
-    <!-- 充值对话框 -->
-    <v-dialog v-model="rechargeDialog" max-width="500">
-      <v-card>
-        <v-card-title class="d-flex align-center">
-          <v-icon class="mr-2" color="success">mdi-plus</v-icon>
-          账户充值
-        </v-card-title>
-
-        <v-card-text>
-          <v-form>
-            <v-text-field
-              v-model.number="rechargeForm.amount"
-              label="充值金额"
-              type="number"
-              prefix="$"
-              min="1"
-              step="0.01"
-              required
-              class="mb-4"
-            ></v-text-field>
-
-            <v-select
-              v-model="rechargeForm.paymentMethod"
-              :items="paymentMethods"
-              item-title="title"
-              item-value="value"
-              label="支付方式"
-            >
-              <template #item="{ props, item }">
-                <v-list-item v-bind="props">
-                  <template #prepend>
-                    <v-icon :icon="item.raw.icon"></v-icon>
-                  </template>
-                </v-list-item>
-              </template>
-            </v-select>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            variant="text"
-            @click="
-              rechargeDialog = false;
-              resetRechargeForm();
-            "
-          >
-            取消
-          </v-btn>
-          <v-btn
-            color="success"
-            variant="flat"
-            @click="recharge"
-            :disabled="!rechargeForm.amount || rechargeForm.amount <= 0"
-          >
-            确认充值
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <!-- 提现对话框 -->
-    <v-dialog v-model="withdrawDialog" max-width="500">
-      <v-card>
-        <v-card-title class="d-flex align-center">
-          <v-icon class="mr-2" color="primary">mdi-bank-transfer-out</v-icon>
-          账户提现
-        </v-card-title>
-
-        <v-card-text>
-          <v-form>
-            <v-text-field
-              v-model.number="withdrawForm.amount"
-              label="提现金额"
-              type="number"
-              prefix="$"
-              min="1"
-              :max="walletInfo.balance"
-              step="0.01"
-              required
-              :hint="`可提现余额: $${walletInfo.balance.toFixed(2)}`"
-              persistent-hint
-              class="mb-4"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="withdrawForm.bankAccount"
-              label="银行账户"
-              placeholder="请输入银行账户信息"
-              required
-            ></v-text-field>
-          </v-form>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            variant="text"
-            @click="
-              withdrawDialog = false;
-              resetWithdrawForm();
-            "
-          >
-            取消
-          </v-btn>
-          <v-btn
-            color="primary"
-            variant="flat"
-            @click="withdraw"
-            :disabled="
-              !withdrawForm.amount ||
-              withdrawForm.amount <= 0 ||
-              withdrawForm.amount > walletInfo.balance ||
-              !withdrawForm.bankAccount
-            "
-          >
-            确认提现
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
