@@ -3,6 +3,7 @@ import { createApiKey, deleteApiKey, getApiKeys } from '@/api/workspaceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { computed, onMounted, ref } from 'vue';
+import { formatDate } from '~/src/utils/date';
 
 // 加载状态
 const loading = ref(false);
@@ -15,7 +16,7 @@ const deleteTokenDialog = ref(false);
 const selectedToken = ref<ApiKey | null>(null);
 const createdTokenKey = ref<string>('');
 
-// 新令牌表单
+// 新密钥表单
 const newToken = ref({
   name: '',
   description: '',
@@ -25,9 +26,9 @@ const newToken = ref({
 
 // 表单验证规则
 const nameRules = [
-  (v: string) => !!v || '令牌名称不能为空',
-  (v: string) => v.length >= 3 || '令牌名称至少需要3个字符',
-  (v: string) => v.length <= 50 || '令牌名称不能超过50个字符',
+  (v: string) => !!v || '密钥名称不能为空',
+  (v: string) => v.length >= 3 || '密钥名称至少需要3个字符',
+  (v: string) => v.length <= 50 || '密钥名称不能超过50个字符',
 ];
 
 const descriptionRules = [(v: string) => !v || v.length <= 200 || '描述不能超过200个字符'];
@@ -43,10 +44,10 @@ const descriptionRules = [(v: string) => !v || v.length <= 200 || '描述不能�
 // 使用工作空间store
 const workspaceStore = useWorkspaceStore();
 
-// 令牌列表
+// 密钥列表
 const tokens = ref<ApiKey[]>([]);
 
-// 加载令牌列表
+// 加载密钥列表
 const loadTokens = async () => {
   loading.value = true;
   try {
@@ -57,10 +58,10 @@ const loadTokens = async () => {
     }
     const apikeys = await getApiKeys(workspaceId);
     tokens.value = apikeys;
-    showSuccess('令牌列表加载成功');
+    showSuccess('密钥列表加载成功');
   } catch (error) {
-    console.error('加载令牌列表失败:', error);
-    showError('加载令牌列表时发生错误');
+    console.error('加载密钥列表失败:', error);
+    showError('加载密钥列表时发生错误');
   } finally {
     loading.value = false;
   }
@@ -74,10 +75,10 @@ const stats = computed(() => ({
   totalUsage: tokens.value.length, // API Key类型没有usageCount字段，暂时使用总数
 }));
 
-// 创建令牌
+// 创建密钥
 const createToken = async () => {
   if (!newToken.value.name || newToken.value.name.length < 3) {
-    showError('请输入有效的令牌名称（至少3个字符）');
+    showError('请输入有效的密钥名称（至少3个字符）');
     return;
   }
 
@@ -97,20 +98,20 @@ const createToken = async () => {
     const apiKeyInfo = await createApiKey(workspaceId, request);
     createdTokenKey.value = apiKeyInfo.apiKey || '';
 
-    // 重新加载令牌列表
+    // 重新加载密钥列表
     await loadTokens();
     createTokenDialog.value = false;
     resetForm();
-    showSuccess('令牌创建成功');
+    showSuccess('密钥创建成功');
   } catch (error) {
-    console.error('创建令牌失败:', error);
-    showError('创建令牌时发生错误');
+    console.error('创建密钥失败:', error);
+    showError('创建密钥时发生错误');
   } finally {
     creating.value = false;
   }
 };
 
-// 删除令牌
+// 删除密钥
 const deleteToken = async () => {
   if (!selectedToken.value) return;
 
@@ -123,12 +124,11 @@ const deleteToken = async () => {
   deleting.value = true;
   try {
     await deleteApiKey(workspaceId, selectedToken.value!.id);
-    // 重新加载令牌列表
     await loadTokens();
-    showSuccess('令牌删除成功');
+    showSuccess('密钥删除成功');
   } catch (error) {
-    console.error('删除令牌失败:', error);
-    showError('删除令牌时发生错误');
+    console.error('删除密钥失败:', error);
+    showError('删除密钥时发生错误');
   } finally {
     deleting.value = false;
     deleteTokenDialog.value = false;
@@ -146,15 +146,15 @@ const resetForm = () => {
   };
 };
 
-// 复制令牌
+// 复制密钥
 const copyToken = async (token: ApiKey) => {
   try {
     const keyToCopy = token.apiKey || token.apiKeyPrefix;
     await navigator.clipboard.writeText(keyToCopy);
-    showSuccess('令牌已复制到剪贴板');
+    showSuccess('密钥已复制到剪贴板');
   } catch (error) {
     console.error('复制失败:', error);
-    showError('复制令牌失败');
+    showError('复制密钥失败');
   }
 };
 
@@ -188,11 +188,6 @@ const getStatusColor = (status: string) => {
       return 'grey';
   }
 };
-
-const openDeleteDialog = (token: ApiKey) => {
-  selectedToken.value = token;
-  deleteTokenDialog.value = true;
-};
 </script>
 
 <template>
@@ -200,8 +195,8 @@ const openDeleteDialog = (token: ApiKey) => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">令牌管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的API访问令牌和权限设置</p>
+        <h1 class="text-h4 font-weight-bold mb-2">密钥管理</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">管理您的API访问密钥</p>
       </div>
       <div class="d-flex gap-2">
         <v-btn
@@ -210,7 +205,7 @@ const openDeleteDialog = (token: ApiKey) => {
           @click="createTokenDialog = true"
           :loading="loading"
         >
-          创建令牌
+          创建密钥
         </v-btn>
         <v-btn variant="outlined" prepend-icon="mdi-refresh" @click="loadTokens" :loading="loading">
           刷新
@@ -226,7 +221,7 @@ const openDeleteDialog = (token: ApiKey) => {
           <div class="text-h4 font-weight-bold mb-1">
             {{ stats.total }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">总令牌数</div>
+          <div class="text-subtitle-2 text-medium-emphasis">总密钥数</div>
         </v-card>
       </v-col>
 
@@ -236,7 +231,7 @@ const openDeleteDialog = (token: ApiKey) => {
           <div class="text-h4 font-weight-bold mb-1">
             {{ stats.active }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">活跃令牌</div>
+          <div class="text-subtitle-2 text-medium-emphasis">活跃密钥</div>
         </v-card>
       </v-col>
 
@@ -261,18 +256,18 @@ const openDeleteDialog = (token: ApiKey) => {
       </v-col>
     </v-row>
 
-    <!-- 令牌列表 -->
+    <!-- 密钥列表 -->
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
-        令牌列表
+        密钥列表
       </v-card-title>
 
       <v-data-table
         :headers="[
           { title: '名称', key: 'name', sortable: true },
           { title: '描述', key: 'description', sortable: false },
-          { title: '令牌', key: 'key', sortable: false },
+          { title: '密钥', key: 'key', sortable: false },
           { title: '创建者', key: 'creator', sortable: true },
           { title: '创建时间', key: 'createdAt', sortable: true },
           { title: '最后使用', key: 'lastUsedAt', sortable: true },
@@ -310,6 +305,10 @@ const openDeleteDialog = (token: ApiKey) => {
           </div>
         </template>
 
+        <template #item.createdAt="{ item }">
+          {{ formatDate(item.createdAt) }}
+        </template>
+
         <template #item.lastUsedAt="{ item }">
           {{ item.lastUsedAt || '从未使用' }}
         </template>
@@ -341,20 +340,20 @@ const openDeleteDialog = (token: ApiKey) => {
       </v-data-table>
     </v-card>
 
-    <!-- 创建令牌对话框 -->
+    <!-- 创建密钥对话框 -->
     <v-dialog v-model="createTokenDialog" max-width="600">
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2">mdi-plus</v-icon>
-          创建新令牌
+          创建新密钥
         </v-card-title>
 
         <v-card-text>
           <v-form>
             <v-text-field
               v-model="newToken.name"
-              label="令牌名称"
-              placeholder="输入令牌名称"
+              label="密钥名称"
+              placeholder="输入密钥名称"
               :rules="nameRules"
               required
               class="mb-4"
@@ -363,7 +362,7 @@ const openDeleteDialog = (token: ApiKey) => {
             <v-textarea
               v-model="newToken.description"
               label="描述"
-              placeholder="输入令牌用途描述"
+              placeholder="输入密钥用途描述"
               :rules="descriptionRules"
               rows="3"
               class="mb-4"
@@ -431,7 +430,7 @@ const openDeleteDialog = (token: ApiKey) => {
           确认删除
         </v-card-title>
 
-        <v-card-text> 确定要删除令牌 "{{ selectedToken?.name }}" 吗？此操作不可撤销。 </v-card-text>
+        <v-card-text> 确定要删除密钥 "{{ selectedToken?.name }}" 吗？此操作不可撤销。 </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>

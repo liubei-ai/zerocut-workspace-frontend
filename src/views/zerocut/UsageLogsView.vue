@@ -3,6 +3,7 @@ import { getConsumptionRecords } from '@/api/workspaceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ConsumptionRecord } from '@/types/api';
 import { onMounted, ref } from 'vue';
+import { formatDate } from '~/src/utils/date';
 
 // 使用工作空间store
 const workspaceStore = useWorkspaceStore();
@@ -106,7 +107,7 @@ const exportData = async () => {
       ['时间', '服务类型', '交易ID', '积分数量', '成本'].join(','),
       ...usageLogs.value.map(log =>
         [
-          new Date(log.createdAt).toLocaleString(),
+          formatDate(log.createdAt),
           log.serviceType || '',
           log.transactionId || '',
           formatCredits(log.creditsAmount),
@@ -125,7 +126,7 @@ const exportData = async () => {
     setTimeout(() => {
       URL.revokeObjectURL(link.href);
     }, 100);
-  } catch (err: any) {
+  } catch (err) {
     console.error('导出失败:', err);
     error.value = '导出失败，请稍后重试';
   } finally {
@@ -253,6 +254,10 @@ onMounted(() => {
         @update:items-per-page="handleItemsPerPageChange"
         @update:page="handlePageChange"
       >
+        <template #item.createdAt="{ item }">
+          {{ formatDate(item.createdAt) }}
+        </template>
+
         <template #item.serviceType="{ item }">
           <div class="d-flex align-center">
             <v-icon :icon="getServiceIcon(item.serviceType || '')" size="20" class="mr-2"></v-icon>
@@ -289,16 +294,6 @@ onMounted(() => {
           </div>
         </template>
       </v-data-table>
-
-      <!-- 分页组件 -->
-      <v-card-actions>
-        <v-pagination
-          v-model="pagination.page"
-          :length="pagination.totalPages"
-          :total-visible="7"
-          class="mx-auto"
-        ></v-pagination>
-      </v-card-actions>
     </v-card>
   </div>
 </template>

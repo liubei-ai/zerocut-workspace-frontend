@@ -8,6 +8,7 @@ import {
 } from '~/src/api/walletApi';
 import { useWorkspaceStore } from '~/src/stores/workspaceStore';
 import { Pagination } from '~/src/types/api';
+import { formatDate } from '~/src/utils/date';
 
 // 获取当前工作空间ID
 const workspaceStore = useWorkspaceStore();
@@ -38,11 +39,6 @@ const filterOptions = ref({
   serviceType: 'all',
   dateRange: [null, null] as [Date | null, Date | null],
 });
-
-// 格式化日期
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN');
-};
 
 // 获取支付方式图标
 const getPaymentMethodIcon = (paymentMethod: string) => {
@@ -224,7 +220,7 @@ onMounted(() => {
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
-                ¥{{ walletInfo?.totalCreditsConsumption }}
+                {{ walletInfo?.totalCreditsConsumption }}
               </div>
               <div class="text-caption text-medium-emphasis">累计消耗积分</div>
             </v-card>

@@ -6,9 +6,9 @@ export default [
     icon: 'mdi-view-dashboard-outline',
   },
   {
-    key: 'menu.tokens',
-    text: '令牌管理',
-    link: '/tokens',
+    key: 'menu.apikeys',
+    text: '密钥管理',
+    link: '/apikey',
     icon: 'mdi-key-variant',
   },
   {

@@ -15,16 +15,16 @@ export default [
       import(/* webpackChunkName: "dashboard" */ '@/views/zerocut/DashboardView.vue'),
   },
   {
-    path: '/tokens',
-    name: 'Tokens',
+    path: '/apikey',
+    name: 'APIKeys',
     meta: {
       requiresAuth: true,
       layout: 'landing',
-      title: '令牌管理',
+      title: 'API 密钥管理',
       category: 'ZeroCut',
     },
     component: () =>
-      import(/* webpackChunkName: "token-management" */ '@/views/zerocut/TokenManagementView.vue'),
+      import(/* webpackChunkName: "token-management" */ '@/views/zerocut/APIKeyManagementView.vue'),
   },
   {
     path: '/usage',

@@ -104,8 +104,8 @@ const webhookEvents = [
   { value: 'user.created', title: '用户创建' },
   { value: 'user.updated', title: '用户更新' },
   { value: 'user.deleted', title: '用户删除' },
-  { value: 'token.created', title: '令牌创建' },
-  { value: 'token.revoked', title: '令牌撤销' },
+  { value: 'token.created', title: '密钥创建' },
+  { value: 'token.revoked', title: '密钥撤销' },
   { value: 'billing.updated', title: '账单更新' },
 ];
 
@@ -935,7 +935,7 @@ onMounted(() => {
             <li>个人信息和设置</li>
             <li>所有项目和文件</li>
             <li>使用记录和统计数据</li>
-            <li>API密钥和令牌</li>
+            <li>API密钥和密钥</li>
           </ul>
 
           <p class="text-body-2 text-medium-emphasis">
