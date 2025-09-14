@@ -6,6 +6,7 @@ export interface WalletInfo {
   creditsBalance: number;
   totalAmountAdded: number;
   totalCreditsAdded: number;
+  totalCreditsConsumption: number;
 }
 
 // 后端交易记录项类型

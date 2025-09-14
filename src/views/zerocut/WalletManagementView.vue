@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import {
   getWalletInfo,
   getWalletTransactions,
   TransactionItem,
   WalletInfo,
 } from '~/src/api/walletApi';
+import { useWorkspaceStore } from '~/src/stores/workspaceStore';
 import { Pagination } from '~/src/types/api';
 
-const route = useRoute();
-
 // 获取当前工作空间ID
-const workspaceId = computed(() => route.params.workspaceId as string);
+const workspaceStore = useWorkspaceStore();
+const workspaceId = workspaceStore.currentWorkspaceId!;
 
 // 加载状态
 const loading = ref(false);
@@ -42,8 +41,8 @@ const filterOptions = ref({
 
 const transactionTypes = [
   { value: 'all', title: '全部类型' },
-  { value: 'consumption', title: '消费' },
-  { value: 'refund', title: '退款' },
+  { value: 'transaction', title: '消耗' },
+  { value: 'recharge', title: '充值' },
 ];
 
 const serviceTypes = [
@@ -89,19 +88,21 @@ const transactionStats = computed(() => {
   const filtered = filteredTransactions.value;
   return {
     totalTransactions: filtered.length,
-    totalConsumption: Math.abs(
-      filtered.filter(t => t.type === 'transaction').reduce((sum, t) => sum + t.amount, 0)
+    totaltransaction: Math.abs(
+      filtered.filter(t => t.type === 'transaction').reduce((sum, t) => sum + Number(t.amount), 0)
     ),
-    totalRefund: filtered.filter(t => t.type === 'recharge').reduce((sum, t) => sum + t.amount, 0),
+    totalRecharge: filtered
+      .filter(t => t.type === 'recharge')
+      .reduce((sum, t) => sum + Number(t.amount), 0),
   };
 });
 
 // 获取交易类型图标
 const getTransactionIcon = (type: string) => {
   switch (type) {
-    case 'consumption':
+    case 'transaction':
       return 'mdi-minus-circle';
-    case 'refund':
+    case 'recharge':
       return 'mdi-undo';
     default:
       return 'mdi-swap-horizontal';
@@ -111,9 +112,9 @@ const getTransactionIcon = (type: string) => {
 // 获取交易类型颜色
 const getTransactionColor = (type: string) => {
   switch (type) {
-    case 'refund':
+    case 'recharge':
       return 'success';
-    case 'consumption':
+    case 'transaction':
       return 'error';
     default:
       return 'info';
@@ -123,18 +124,13 @@ const getTransactionColor = (type: string) => {
 // 获取交易类型文本
 const getTransactionTypeText = (type: string) => {
   switch (type) {
-    case 'consumption':
-      return '消费';
-    case 'refund':
-      return '退款';
+    case 'transaction':
+      return '消耗';
+    case 'recharge':
+      return '充值';
     default:
       return '其他';
   }
-};
-
-// 格式化金额显示（积分转人民币）
-const formatAmount = (amount: number) => {
-  return (Math.abs(amount) / 100).toFixed(2);
 };
 
 // 格式化日期
@@ -147,7 +143,7 @@ const fetchWalletInfo = async () => {
   try {
     loading.value = true;
     error.value = null;
-    const wallet = await getWalletInfo(workspaceId.value);
+    const wallet = await getWalletInfo(workspaceId);
     walletInfo.value = wallet;
   } catch (err) {
     error.value = '获取钱包信息失败';
@@ -168,7 +164,7 @@ const fetchTransactions = async () => {
       serviceType:
         filterOptions.value.serviceType === 'all' ? undefined : filterOptions.value.serviceType,
     };
-    const response = await getWalletTransactions(workspaceId.value, params);
+    const response = await getWalletTransactions(workspaceId, params);
     const { list, ...rest } = response;
     transactions.value = list;
     pagination.value = rest;
@@ -197,7 +193,7 @@ onMounted(() => {
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h4 font-weight-bold mb-2">钱包管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和消费明细</p>
+        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和消耗明细</p>
       </div>
       <div class="d-flex ga-2">
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
@@ -225,16 +221,18 @@ onMounted(() => {
           <v-col cols="6">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="success" class="mb-2"> mdi-trending-up </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalAmountAdded }}</div>
-              <div class="text-caption text-medium-emphasis">累计充值</div>
+              <div class="text-h6 font-weight-bold mb-1">{{ walletInfo?.totalCreditsAdded }}</div>
+              <div class="text-caption text-medium-emphasis">累计充值积分</div>
             </v-card>
           </v-col>
 
           <v-col cols="6">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalCreditsAdded }}</div>
-              <div class="text-caption text-medium-emphasis">累计消费</div>
+              <div class="text-h6 font-weight-bold mb-1">
+                ¥{{ walletInfo?.totalCreditsConsumption }}
+              </div>
+              <div class="text-caption text-medium-emphasis">累计消耗</div>
             </v-card>
           </v-col>
         </v-row>
@@ -299,16 +297,16 @@ onMounted(() => {
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 text-center" elevation="2">
           <v-icon size="32" color="error" class="mb-2"> mdi-minus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalConsumption }}</div>
-          <div class="text-caption text-medium-emphasis">消费金额</div>
+          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totaltransaction }}</div>
+          <div class="text-caption text-medium-emphasis">消耗积分</div>
         </v-card>
       </v-col>
 
       <v-col cols="12" sm="6" md="3">
         <v-card class="pa-4 text-center" elevation="2">
           <v-icon size="32" color="success" class="mb-2"> mdi-plus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalRefund }}</div>
-          <div class="text-caption text-medium-emphasis">退款金额</div>
+          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalRecharge }}</div>
+          <div class="text-caption text-medium-emphasis">充值积分</div>
         </v-card>
       </v-col>
     </v-row>
@@ -327,10 +325,9 @@ onMounted(() => {
           // { title: '服务类型', key: 'serviceType', sortable: true },
           { title: '描述', key: 'description', sortable: false },
           { title: '金额', key: 'amount', sortable: true },
-          // { title: '状态', key: 'status', sortable: true },
-          { title: '订单号', key: 'id', sortable: false },
+          { title: '订单号', key: 'orderNo', sortable: false },
         ]"
-        :items="transactions"
+        :items="filteredTransactions"
         item-value="id"
         class="elevation-0"
         :items-per-page="pagination.limit"
@@ -364,7 +361,7 @@ onMounted(() => {
             }"
             class="font-weight-medium"
           >
-            {{ item.type === 'recharge' ? '+' : '-' }}¥{{ formatAmount(Math.abs(item.amount)) }}
+            {{ item.type === 'recharge' ? '+' : '-' }}¥{{ Math.abs(item.amount) }}
           </span>
         </template>
 
