@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import {
   getWalletInfo,
-  getWalletTransactions,
+  getWalletRechargeRecords,
   TransactionItem,
   WalletInfo,
 } from '~/src/api/walletApi';
@@ -23,7 +23,7 @@ const error = ref<string | null>(null);
 // 钱包信息
 const walletInfo = ref<WalletInfo>();
 
-// 交易记录
+// 充值记录
 const transactions = ref<TransactionItem[]>([]);
 const pagination = ref<Pagination>({
   page: 1,
@@ -39,103 +39,69 @@ const filterOptions = ref({
   dateRange: [null, null] as [Date | null, Date | null],
 });
 
-const transactionTypes = [
-  { value: 'all', title: '全部类型' },
-  { value: 'transaction', title: '消耗' },
-  { value: 'recharge', title: '充值' },
-];
+// 格式化日期
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleString('zh-CN');
+};
 
-const serviceTypes = [
-  { value: 'all', title: '全部服务' },
-  { value: 'video_generation', title: '视频生成' },
-  { value: 'image_generation', title: '图片生成' },
-  { value: 'audio_generation', title: '音频生成' },
-];
-
-// 筛选后的交易记录
-const filteredTransactions = computed(() => {
-  return transactions.value.filter(transaction => {
-    // 类型筛选
-    if (filterOptions.value.type !== 'all' && transaction.type !== filterOptions.value.type) {
-      return false;
-    }
-
-    // 服务类型筛选
-    if (
-      filterOptions.value.serviceType !== 'all' &&
-      transaction.serviceType !== filterOptions.value.serviceType
-    ) {
-      return false;
-    }
-
-    // 日期筛选
-    if (filterOptions.value.dateRange[0] && filterOptions.value.dateRange[1]) {
-      const transactionDate = new Date(transaction.createdAt);
-      if (
-        transactionDate < filterOptions.value.dateRange[0] ||
-        transactionDate > filterOptions.value.dateRange[1]
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  });
-});
-
-// 统计数据
-const transactionStats = computed(() => {
-  const filtered = filteredTransactions.value;
-  return {
-    totalTransactions: filtered.length,
-    totaltransaction: Math.abs(
-      filtered.filter(t => t.type === 'transaction').reduce((sum, t) => sum + Number(t.amount), 0)
-    ),
-    totalRecharge: filtered
-      .filter(t => t.type === 'recharge')
-      .reduce((sum, t) => sum + Number(t.amount), 0),
-  };
-});
-
-// 获取交易类型图标
-const getTransactionIcon = (type: string) => {
-  switch (type) {
-    case 'transaction':
-      return 'mdi-minus-circle';
-    case 'recharge':
-      return 'mdi-undo';
+// 获取支付方式图标
+const getPaymentMethodIcon = (paymentMethod: string) => {
+  switch (paymentMethod) {
+    case 'alipay':
+      return 'mdi-alipay';
+    case 'wechat':
+      return 'mdi-wechat';
+    case 'bank_card':
+      return 'mdi-credit-card';
+    case 'credit_card':
+      return 'mdi-credit-card-outline';
+    case 'manual':
+      return 'mdi-account-cash';
+    case 'bot':
+      return 'mdi-robot';
     default:
-      return 'mdi-swap-horizontal';
+      return 'mdi-cash';
   }
 };
 
-// 获取交易类型颜色
-const getTransactionColor = (type: string) => {
-  switch (type) {
-    case 'recharge':
-      return 'success';
-    case 'transaction':
-      return 'error';
-    default:
-      return 'info';
-  }
-};
-
-// 获取交易类型文本
-const getTransactionTypeText = (type: string) => {
-  switch (type) {
-    case 'transaction':
-      return '消耗';
-    case 'recharge':
-      return '充值';
+// 获取支付方式文本
+const getPaymentMethodText = (paymentMethod: string) => {
+  switch (paymentMethod) {
+    case 'alipay':
+      return '支付宝';
+    case 'wechat':
+      return '微信支付';
+    case 'bank_card':
+      return '银行卡';
+    case 'credit_card':
+      return '信用卡';
+    case 'manual':
+      return '手动充值';
+    case 'bot':
+      return '机器人充值';
     default:
       return '其他';
   }
 };
 
-// 格式化日期
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN');
+// 获取支付方式颜色
+const getPaymentMethodColor = (paymentMethod: string) => {
+  switch (paymentMethod) {
+    case 'alipay':
+      return 'blue';
+    case 'wechat':
+      return 'green';
+    case 'bank_card':
+      return 'purple';
+    case 'credit_card':
+      return 'orange';
+    case 'manual':
+      return 'grey';
+    case 'bot':
+      return 'primary';
+    default:
+      return 'grey';
+  }
 };
 
 // 获取钱包信息
@@ -153,33 +119,53 @@ const fetchWalletInfo = async () => {
   }
 };
 
-// 获取交易记录
+// 获取充值记录
 const fetchTransactions = async () => {
   try {
     transactionsLoading.value = true;
     const params = {
       page: pagination.value.page,
       limit: pagination.value.limit,
-      type: filterOptions.value.type === 'all' ? undefined : filterOptions.value.type,
-      serviceType:
-        filterOptions.value.serviceType === 'all' ? undefined : filterOptions.value.serviceType,
     };
-    const response = await getWalletTransactions(workspaceId, params);
+    const response = await getWalletRechargeRecords(workspaceId, params);
     const { list, ...rest } = response;
     transactions.value = list;
     pagination.value = rest;
   } catch (err) {
-    error.value = '获取交易记录失败';
-    console.error('获取交易记录失败:', err);
+    error.value = '获取充值记录失败';
+    console.error('获取充值记录失败:', err);
   } finally {
     transactionsLoading.value = false;
   }
+};
+
+// 处理页码变化
+const handlePageChange = (page: number) => {
+  pagination.value.page = page;
+  fetchTransactions();
+};
+
+// 处理每页条数变化
+const handleItemsPerPageChange = (itemsPerPage: number) => {
+  pagination.value.limit = itemsPerPage;
+  pagination.value.page = 1; // 重置到第一页
+  fetchTransactions();
 };
 
 // 刷新数据
 const refreshData = async () => {
   await Promise.all([fetchWalletInfo(), fetchTransactions()]);
 };
+
+// 监听筛选条件变化
+watch(
+  () => [filterOptions.value.type],
+  () => {
+    pagination.value.page = 1; // 重置到第一页
+    fetchTransactions();
+  },
+  { deep: true }
+);
 
 // 组件挂载时获取数据
 onMounted(() => {
@@ -209,7 +195,7 @@ onMounted(() => {
           <div class="d-flex align-center mb-4">
             <v-icon size="48" color="primary" class="mr-4"> mdi-wallet </v-icon>
             <div>
-              <div class="text-h4 font-weight-bold">¥{{ walletInfo?.creditsBalance }}</div>
+              <div class="text-h4 font-weight-bold">{{ walletInfo?.creditsBalance }}</div>
               <div class="text-subtitle-1 text-medium-emphasis">可用积分</div>
             </div>
           </div>
@@ -218,151 +204,79 @@ onMounted(() => {
 
       <v-col cols="12" md="6">
         <v-row>
-          <v-col cols="6">
+          <v-col cols="4">
             <v-card class="pa-4 text-center" elevation="2">
-              <v-icon size="32" color="success" class="mb-2"> mdi-trending-up </v-icon>
+              <v-icon size="32" color="success" class="mb-2"> mdi-cash-plus </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalAmountAdded }}</div>
+              <div class="text-caption text-medium-emphasis">累计充值金额</div>
+            </v-card>
+          </v-col>
+
+          <v-col cols="4">
+            <v-card class="pa-4 text-center" elevation="2">
+              <v-icon size="32" color="info" class="mb-2"> mdi-trending-up </v-icon>
               <div class="text-h6 font-weight-bold mb-1">{{ walletInfo?.totalCreditsAdded }}</div>
               <div class="text-caption text-medium-emphasis">累计充值积分</div>
             </v-card>
           </v-col>
 
-          <v-col cols="6">
+          <v-col cols="4">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
                 ¥{{ walletInfo?.totalCreditsConsumption }}
               </div>
-              <div class="text-caption text-medium-emphasis">累计消耗</div>
+              <div class="text-caption text-medium-emphasis">累计消耗积分</div>
             </v-card>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
 
-    <!-- 筛选器 -->
-    <v-card class="mb-6" elevation="2">
-      <v-card-title class="d-flex align-center">
-        <v-icon class="mr-2">mdi-filter</v-icon>
-        筛选条件
-      </v-card-title>
-      <v-card-text>
-        <v-row>
-          <v-col cols="12" md="4">
-            <v-select
-              v-model="filterOptions.type"
-              :items="transactionTypes"
-              item-title="title"
-              item-value="value"
-              label="交易类型"
-              prepend-inner-icon="mdi-swap-horizontal"
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-select
-              v-model="filterOptions.serviceType"
-              :items="serviceTypes"
-              item-title="title"
-              item-value="value"
-              label="服务类型"
-              prepend-inner-icon="mdi-check-circle"
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" md="4">
-            <v-text-field
-              label="日期范围"
-              prepend-inner-icon="mdi-calendar"
-              readonly
-              value="2024-01-01 至 2024-01-31"
-              hint="点击选择日期范围"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- 统计卡片 -->
-    <v-row class="mb-6">
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="32" color="primary" class="mb-2"> mdi-format-list-numbered </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">
-            {{ transactionStats.totalTransactions }}
-          </div>
-          <div class="text-caption text-medium-emphasis">总交易数</div>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="32" color="error" class="mb-2"> mdi-minus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totaltransaction }}</div>
-          <div class="text-caption text-medium-emphasis">消耗积分</div>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="32" color="success" class="mb-2"> mdi-plus-circle </v-icon>
-          <div class="text-h6 font-weight-bold mb-1">¥{{ transactionStats.totalRecharge }}</div>
-          <div class="text-caption text-medium-emphasis">充值积分</div>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- 交易记录表格 -->
+    <!-- 充值记录表格 -->
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
-        交易记录
+        充值记录
       </v-card-title>
 
       <v-data-table
         :headers="[
           { title: '时间', key: 'createdAt', sortable: true },
-          { title: '交易类型', key: 'transactionType', sortable: true },
-          // { title: '服务类型', key: 'serviceType', sortable: true },
-          { title: '描述', key: 'description', sortable: false },
           { title: '金额', key: 'amount', sortable: true },
+          { title: '积分', key: 'creditsAmount', sortable: true },
+          { title: '描述', key: 'description', sortable: false },
+          { title: '支付方式', key: 'paymentMethod', sortable: false },
           { title: '订单号', key: 'orderNo', sortable: false },
+          { title: '第三方订单号', key: 'thirdPartyOrderNo', sortable: false },
         ]"
-        :items="filteredTransactions"
+        :items="transactions"
         item-value="id"
         class="elevation-0"
         :items-per-page="pagination.limit"
-        :loading="loading"
+        :loading="transactionsLoading"
+        :server-items-length="pagination.total"
+        @update:items-per-page="handleItemsPerPageChange"
+        @update:page="handlePageChange"
       >
         <template #item.createdAt="{ item }">
           {{ formatDate(item.createdAt) }}
         </template>
 
-        <template #item.transactionType="{ item }">
+        <template #item.amount="{ item }">
+          <span class="text-success font-weight-medium"> ¥{{ Math.abs(item.amount) }} </span>
+        </template>
+
+        <template #item.paymentMethod="{ item }">
           <div class="d-flex align-center">
             <v-icon
-              :icon="getTransactionIcon(item.type)"
-              :color="getTransactionColor(item.type)"
+              :icon="getPaymentMethodIcon(item.paymentMethod)"
+              :color="getPaymentMethodColor(item.paymentMethod)"
               size="20"
               class="mr-2"
             ></v-icon>
-            {{ getTransactionTypeText(item.type) }}
+            {{ getPaymentMethodText(item.paymentMethod) }}
           </div>
-        </template>
-
-        <!-- <template #item.serviceType="{ item }">
-          {{ getServiceTypeText(item.serviceType) }}
-        </template> -->
-
-        <template #item.amount="{ item }">
-          <span
-            :class="{
-              'text-success': item.type === 'recharge',
-              'text-error': item.type === 'transaction',
-            }"
-            class="font-weight-medium"
-          >
-            {{ item.type === 'recharge' ? '+' : '-' }}¥{{ Math.abs(item.amount) }}
-          </span>
         </template>
 
         <template #item.id="{ item }">

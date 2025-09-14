@@ -12,14 +12,13 @@ export interface WalletInfo {
 // 后端交易记录项类型
 export interface TransactionItem {
   id: string;
-  type: 'transaction' | 'recharge';
   amount: number;
+  creditsAmount: number;
   description: string;
   createdAt: string;
-  transactionType?: string;
-  serviceType?: string;
-  orderNo?: string;
-  paymentMethod?: string;
+  orderNo: string;
+  paymentMethod: string;
+  thirdPartyOrderNo?: string;
 }
 /**
  * 获取钱包信息
@@ -37,7 +36,7 @@ export async function getWalletInfo(workspaceId: string) {
  * @param params 查询参数
  * @returns 交易记录列表
  */
-export async function getWalletTransactions(
+export async function getWalletRechargeRecords(
   workspaceId: string,
   params?: {
     page?: number;
@@ -47,7 +46,7 @@ export async function getWalletTransactions(
   }
 ) {
   const response = await client.get<PaginationResponse<TransactionItem>>(
-    `/wallet/${workspaceId}/transactions`,
+    `/wallet/${workspaceId}/recharge/records`,
     {
       params,
     }
