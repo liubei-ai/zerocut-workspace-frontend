@@ -3,6 +3,7 @@ import type {
   ApiKeyListResponse,
   ConsumptionRecord,
   CreateApiKeyRequest,
+  CreateApiKeyResponse,
   RechargeRecord,
   WorkspaceDetails,
   WorkspaceMember,
@@ -84,12 +85,12 @@ export async function getApiKeys(workspaceId: string): Promise<ApiKeyListRespons
  * 创建API密钥
  * @param workspaceId 工作空间ID
  * @param keyData 密钥信息
- * @returns 创建的API密钥
+ * @returns 创建的API密钥响应
  */
 export async function createApiKey(
   workspaceId: string,
   keyData: CreateApiKeyRequest
-): Promise<ApiKey> {
+): Promise<CreateApiKeyResponse> {
   const response = await client.post(`/workspaces/${workspaceId}/api-keys`, keyData);
   return response.data;
 }

@@ -59,10 +59,20 @@ export interface WorkspaceAccount {
 export interface ApiKey {
   id: number;
   name: string;
-  apiKey: string;
+  apiKey?: string; // 只在创建时返回完整密钥
+  apiKeyPrefix: string; // 列表中显示的密钥前缀
   status: string;
   description: string;
+  permissions: any; // 权限信息，当前为null
+  lastUsedAt: string | null; // 最后使用时间
+  expiresAt: string | null; // 过期时间
   createdAt: string;
+  updatedAt: string;
+  creator: {
+    id: number;
+    username: string | null;
+    email: string;
+  };
 }
 
 export interface WorkspaceStats {
@@ -152,9 +162,12 @@ export interface CreateApiKeyRequest {
   description?: string;
 }
 
-export interface ApiKeyListResponse {
-  apiKeys: ApiKey[];
-  total: number;
+export interface CreateApiKeyResponse extends ApiResponse<ApiKey & { apiKey: string }> {
+  // 创建时返回完整的ApiKey信息，包含完整的apiKey字段
+}
+
+export interface ApiKeyListResponse extends ApiResponse<ApiKey[]> {
+  // 继承ApiResponse，data字段为ApiKey数组
 }
 
 // Consumption Record Types
