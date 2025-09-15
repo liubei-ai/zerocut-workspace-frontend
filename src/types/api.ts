@@ -162,6 +162,7 @@ export interface VideoProject {
 export interface CreateApiKeyRequest {
   name: string;
   description?: string;
+  expiresAt?: string;
 }
 
 // Consumption Record Types

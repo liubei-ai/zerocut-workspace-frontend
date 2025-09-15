@@ -21,7 +21,7 @@ const newToken = ref({
   name: '',
   description: '',
   permissions: [] as string[],
-  expiresAt: null as string | null,
+  expiresAt: '',
 });
 
 // 表单验证规则
@@ -93,6 +93,9 @@ const createToken = async () => {
     const request: CreateApiKeyRequest = {
       name: newToken.value.name,
       description: newToken.value.description,
+      expiresAt: newToken.value.expiresAt
+        ? new Date(newToken.value.expiresAt).toISOString()
+        : undefined,
     };
 
     const apiKeyInfo = await createApiKey(workspaceId, request);
@@ -142,7 +145,7 @@ const resetForm = () => {
     name: '',
     description: '',
     permissions: ['read'],
-    expiresAt: null,
+    expiresAt: '',
   };
 };
 
@@ -270,9 +273,9 @@ const getStatusColor = (status: string) => {
           { title: '密钥', key: 'key', sortable: false },
           { title: '创建者', key: 'creator', sortable: true },
           { title: '创建时间', key: 'createdAt', sortable: true },
-          { title: '最后使用', key: 'lastUsedAt', sortable: true },
           { title: '过期时间', key: 'expiresAt', sortable: true },
           { title: '状态', key: 'status', sortable: true },
+          // { title: '最后使用', key: 'lastUsedAt', sortable: true },
           // { title: '操作', key: 'actions', sortable: false },
         ]"
         :items="tokens"
@@ -314,7 +317,7 @@ const getStatusColor = (status: string) => {
         </template>
 
         <template #item.expiresAt="{ item }">
-          {{ item.expiresAt || '永不过期' }}
+          {{ item.expiresAt ? formatDate(item.expiresAt) : '永不过期' }}
         </template>
 
         <template #item.status="{ item }">
