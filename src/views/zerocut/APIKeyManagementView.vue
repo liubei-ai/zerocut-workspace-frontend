@@ -4,6 +4,7 @@ import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { computed, onMounted, ref } from 'vue';
 import { formatDate } from '~/src/utils/date';
+import { maskApiKey } from '~/src/utils/stringUtils';
 
 // 加载状态
 const loading = ref(false);
@@ -287,7 +288,7 @@ const getStatusColor = (status: string) => {
       >
         <template #item.key="{ item }">
           <div class="d-flex align-center">
-            <code class="text-caption mr-2">{{ item.apiKeyPrefix }}</code>
+            <code class="text-caption mr-2">{{ maskApiKey(item.apiKeyPrefix) }}</code>
             <v-btn
               icon="mdi-content-copy"
               size="x-small"
