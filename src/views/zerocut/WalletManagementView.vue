@@ -175,7 +175,7 @@ onMounted(() => {
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h4 font-weight-bold mb-2">钱包管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和消耗明细</p>
+        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和充值明细</p>
       </div>
       <div class="d-flex ga-2">
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
