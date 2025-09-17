@@ -33,7 +33,7 @@ guard.on('login', async (authingUser: User) => {
     if (authingUser) {
       console.log('登录成功，用户信息:', authingUser);
       await authStore.setAuthingUser(authingUser);
-      await router.push('/dashboard');
+      await router.push('/apikey');
     }
 
     // 刷新页面以解决样式冲突问题

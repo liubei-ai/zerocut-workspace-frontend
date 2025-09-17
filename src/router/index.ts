@@ -16,9 +16,9 @@ import ZerocutRoutes from './zerocut.routes';
 export const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/apikey', // dashboard 页面没做完，重定向到 apikey 页面
     meta: {},
-  } as any,
+  },
   {
     path: '/dashboard',
     meta: {
