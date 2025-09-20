@@ -240,7 +240,7 @@ onMounted(() => {
         使用记录
       </v-card-title>
 
-      <v-data-table
+      <v-data-table-server
         :headers="[
           { title: '时间', key: 'createdAt', sortable: true },
           { title: '服务类型', key: 'serviceType', sortable: true },
@@ -255,7 +255,8 @@ onMounted(() => {
         class="elevation-0"
         :loading="loading"
         :items-per-page="pagination.limit"
-        :server-items-length="pagination.total"
+        :items-length="pagination.total"
+        :page="pagination.page"
         @update:items-per-page="handleItemsPerPageChange"
         @update:page="handlePageChange"
       >
@@ -298,7 +299,7 @@ onMounted(() => {
             </div>
           </div>
         </template>
-      </v-data-table>
+      </v-data-table-server>
     </v-card>
   </div>
 </template>

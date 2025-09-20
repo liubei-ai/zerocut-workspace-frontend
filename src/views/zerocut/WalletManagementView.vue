@@ -236,7 +236,7 @@ onMounted(() => {
         充值记录
       </v-card-title>
 
-      <v-data-table
+      <v-data-table-server
         :headers="[
           { title: '时间', key: 'createdAt', sortable: true },
           { title: '金额', key: 'amount', sortable: true },
@@ -251,7 +251,8 @@ onMounted(() => {
         class="elevation-0"
         :loading="transactionsLoading"
         :items-per-page="pagination.limit"
-        :server-items-length="pagination.total"
+        :items-length="pagination.total"
+        :page="pagination.page"
         @update:items-per-page="handleItemsPerPageChange"
         @update:page="handlePageChange"
       >
@@ -278,7 +279,7 @@ onMounted(() => {
         <template #item.id="{ item }">
           <code class="text-caption">{{ item.id }}</code>
         </template>
-      </v-data-table>
+      </v-data-table-server>
     </v-card>
   </div>
 </template>
