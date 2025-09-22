@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 // Plugins
 import vue from '@vitejs/plugin-vue';
+import { viteMockServe } from 'vite-plugin-mock';
 import vuetify from 'vite-plugin-vuetify';
 
 import AutoImport from 'unplugin-auto-import/vite';
@@ -20,6 +21,10 @@ export default defineConfig({
     }),
     AutoImport({
       imports: ['vue', 'vue-router', 'pinia'],
+    }),
+    viteMockServe({
+      mockPath: 'src/mocks',
+      enable: true,
     }),
   ],
   define: { 'process.env': {} },

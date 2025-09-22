@@ -149,7 +149,6 @@ export interface DashboardState {
   error: string | null;
   selectedDateRange: DateRange;
   selectedMetric: MetricType;
-  selectedUsername: string;
   lastUpdated: string | null;
 }
 
@@ -164,12 +163,10 @@ export interface ComputedStatsData {
 
 // API请求参数
 export interface HourlyStatsParams {
-  username: string;
   date: string; // yyyy-mm-dd
 }
 
 export interface DailyStatsParams {
-  username: string;
   start: string; // yyyy-mm-dd
   end: string; // yyyy-mm-dd
 }

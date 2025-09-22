@@ -3,7 +3,7 @@
 
 export default [
   {
-    path: '/zerocut/dashboard',
+    path: '/dashboard',
     name: 'Dashboard',
     meta: {
       requiresAuth: true,

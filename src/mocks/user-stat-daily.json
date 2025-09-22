@@ -1,0 +1,638 @@
+{
+  "code": 200,
+  "message": "用户日统计数据查询成功",
+  "data": {
+    "username": "lidongjies",
+    "workspaceId": "QKStYnrnbmnqtX07",
+    "start_date": "2025-09-01",
+    "end_date": "2025-09-21",
+    "daily_data": [
+      {
+        "date": "2025-09-01",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-02",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-03",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-04",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-05",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-06",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-07",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-08",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-09",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-10",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-11",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-12",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-13",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-14",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-15",
+        "image_count": 7,
+        "video_count": 7,
+        "video_duration": 71,
+        "tts_count": 11,
+        "bgm_count": 1,
+        "points_consumed": 778
+      },
+      {
+        "date": "2025-09-16",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-17",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-18",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-19",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-20",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      },
+      {
+        "date": "2025-09-21",
+        "image_count": 0,
+        "video_count": 0,
+        "video_duration": 0,
+        "tts_count": 0,
+        "bgm_count": 0,
+        "points_consumed": 0
+      }
+    ],
+    "summary": {
+      "total_image_count": 7,
+      "total_video_count": 7,
+      "total_video_duration": 71,
+      "total_tts_count": 11,
+      "total_bgm_count": 1,
+      "total_points_consumed": 778
+    },
+    "statistics": {
+      "image_count": {
+        "total": 7,
+        "average": 7,
+        "max": 7,
+        "min": 7,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      },
+      "video_count": {
+        "total": 7,
+        "average": 7,
+        "max": 7,
+        "min": 7,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      },
+      "video_duration": {
+        "total": 71,
+        "average": 71,
+        "max": 71,
+        "min": 71,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      },
+      "tts_count": {
+        "total": 11,
+        "average": 11,
+        "max": 11,
+        "min": 11,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      },
+      "bgm_count": {
+        "total": 1,
+        "average": 1,
+        "max": 1,
+        "min": 1,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      },
+      "points_consumed": {
+        "total": 778,
+        "average": 778,
+        "max": 778,
+        "min": 778,
+        "hourly_percentages": [
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 100
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          },
+          {
+            "percentage": 0
+          }
+        ]
+      }
+    }
+  },
+  "timestamp": "2025-09-21T13:52:13.752Z"
+}

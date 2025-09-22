@@ -2,7 +2,7 @@ export default [
   {
     key: 'menu.dashboard',
     text: '数据看板',
-    link: '/zerocut/dashboard',
+    link: '/dashboard',
     icon: 'mdi-view-dashboard-outline',
   },
   {

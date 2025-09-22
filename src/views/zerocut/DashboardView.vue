@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import DistributionChart from '@/components/dashboard/DistributionChart.vue';
-import MetricCard from '@/components/dashboard/MetricCard.vue';
-import TrendChart from '@/components/dashboard/TrendChart.vue';
 import { useStatsStore } from '@/stores/statsStore';
 import type { HeatmapChartData, MetricCardData, TrendChartData } from '@/types/stats';
+import MetricCard from '~/src/components/dashboard/MetricCard.vue';
+
 import { computed, onMounted, ref } from 'vue';
 
 const statsStore = useStatsStore();
@@ -13,71 +12,16 @@ const loading = ref(true);
 
 // 计算属性：指标卡片数据 - 使用statsStore的summaryCards
 const metricCards = computed(() => {
-  // 如果有真实数据，使用summaryCards，否则使用默认数据
-  if (statsStore.summaryCards.length > 0) {
-    return statsStore.summaryCards.map(card => ({
-      ...card,
-      subtitle: '',
-      previousValue: 0,
-      changeLabel: '',
-      variant: 'default',
-      actionIcon: 'mdi-chevron-right',
-      format: 'number' as const,
-      description: '',
-    }));
-  }
-
-  // 默认数据
-  return [
-    {
-      title: '图片生成',
-      subtitle: '累计生成',
-      value: 1247,
-      previousValue: 1091,
-      changeLabel: '较上月',
-      icon: 'mdi-image-outline',
-      variant: 'primary',
-      actionIcon: 'mdi-arrow-top-right',
-      format: 'number' as const,
-      description: '平台累计生成的图片总数',
-    },
-    {
-      title: '视频生成',
-      subtitle: '累计生成',
-      value: 856,
-      previousValue: 733,
-      changeLabel: '较上月',
-      icon: 'mdi-video-outline',
-      variant: 'secondary',
-      actionIcon: 'mdi-arrow-top-right',
-      format: 'number' as const,
-      description: '平台累计生成的视频总数',
-    },
-    {
-      title: '视频时长',
-      subtitle: '累计时长',
-      value: 89,
-      previousValue: 84,
-      changeLabel: '较上月',
-      icon: 'mdi-clock-outline',
-      variant: 'success',
-      actionIcon: 'mdi-arrow-top-right',
-      format: 'number' as const,
-      description: '累计视频时长（分钟）',
-    },
-    {
-      title: '消耗积分',
-      subtitle: '本月消耗',
-      value: 2340,
-      previousValue: 2117,
-      changeLabel: '较上月',
-      icon: 'mdi-coin',
-      variant: 'warning',
-      actionIcon: 'mdi-arrow-top-right',
-      format: 'number' as const,
-      description: '本月消耗的积分总数',
-    },
-  ];
+  return statsStore.summaryCards.map(card => ({
+    ...card,
+    subtitle: '',
+    previousValue: 0,
+    changeLabel: '',
+    variant: 'default',
+    actionIcon: 'mdi-chevron-right',
+    format: 'number' as const,
+    description: '',
+  }));
 });
 
 // 计算属性：趋势图表数据
@@ -188,9 +132,6 @@ onMounted(async () => {
   try {
     loading.value = true;
 
-    // 设置默认用户名（可以从用户状态获取）
-    statsStore.setUsername('lidongjies');
-
     // 设置日期范围为最近7天
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -278,7 +219,7 @@ const exportHeatmapChart = () => {
 
 <template>
   <div class="pa-6">
-    <!-- 页面标题 -->
+    页面标题
     <div class="mb-6">
       <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
       <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>

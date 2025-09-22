@@ -1,5 +1,5 @@
 // API Response Types
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T> {
   code: number;
   message: string;
   data: T;
@@ -14,7 +14,7 @@ export interface Pagination {
 }
 
 // Pagination Types
-export interface PaginationResponse<T = any> extends Pagination {
+export interface PaginationResponse<T> extends Pagination {
   list: T[];
 }
 
@@ -39,7 +39,7 @@ export interface LoginResponse extends User {
 export interface ApiError {
   code: number;
   message: string;
-  details?: any;
+  details?: string[] | string;
 }
 
 // Workspace Types

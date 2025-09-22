@@ -20,7 +20,7 @@ export const routes = [
     meta: {},
   },
   {
-    path: '/dashboard',
+    path: '/demo/dashboard',
     meta: {
       requiresAuth: true,
       layout: 'landing',

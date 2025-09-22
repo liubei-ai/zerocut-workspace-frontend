@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import PercentTrend from '@/components/common/PercentTrend.vue';
+import type { MetricCardData } from '@/types/stats';
 import { computed } from 'vue';
 import { useTheme } from 'vuetify';
-import type { MetricCardData } from '@/types/stats';
-import PercentTrend from '@/components/common/PercentTrend.vue';
 
 interface Props {
   data: MetricCardData;

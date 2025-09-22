@@ -18,19 +18,17 @@ export const useStatsStore = defineStore('stats', () => {
   // 状态
   const hourlyData = ref<HourlyStatsData | null>(null);
   const dailyData = ref<DailyStatsData | null>(null);
+
   const loading = ref(false);
   const error = ref<string | null>(null);
+
   const selectedDateRange = ref<DateRange>({
     start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7天前
     end: new Date().toISOString().split('T')[0], // 今天
   });
-  const selectedMetric = ref<MetricType>('image_count');
-  const selectedUsername = ref('');
-  const lastUpdated = ref<string | null>(null);
 
-  // 数据缓存
-  const cache = ref<Map<string, { data: any; timestamp: number }>>(new Map());
-  const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+  const selectedMetric = ref<MetricType>('image_count');
+  const lastUpdated = ref<string | null>(null);
 
   // 计算属性 - 概览卡片数据
   const summaryCards = computed((): MetricCardData[] => {
@@ -149,7 +147,6 @@ export const useStatsStore = defineStore('stats', () => {
       error: error.value,
       selectedDateRange: selectedDateRange.value,
       selectedMetric: selectedMetric.value,
-      selectedUsername: selectedUsername.value,
       lastUpdated: lastUpdated.value,
     })
   );
@@ -189,40 +186,14 @@ export const useStatsStore = defineStore('stats', () => {
     return num.toString();
   };
 
-  const generateCacheKey = (type: 'hourly' | 'daily', params): string => {
-    return `${type}_${JSON.stringify(params)}`;
-  };
-
-  const isValidCache = (timestamp: number): boolean => {
-    return Date.now() - timestamp < CACHE_DURATION;
-  };
-
   // Actions
-  const fetchHourlyStats = async (username: string, date: string) => {
-    const cacheKey = generateCacheKey('hourly', { username, date });
-    const cached = cache.value.get(cacheKey);
-
-    if (cached && isValidCache(cached.timestamp)) {
-      hourlyData.value = cached.data;
-      return;
-    }
-
+  const fetchHourlyStats = async (date: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await getUserHourlyStats({ username, date });
-
-      if (response.code === 200) {
-        hourlyData.value = response.data;
-        cache.value.set(cacheKey, {
-          data: response.data,
-          timestamp: Date.now(),
-        });
-        lastUpdated.value = new Date().toISOString();
-      } else {
-        throw new Error(response.message || '获取小时统计数据失败');
-      }
+      const response = await getUserHourlyStats({ date });
+      hourlyData.value = response;
     } catch (err) {
       error.value = err.message || '网络错误';
       console.error('获取小时统计数据失败:', err);
@@ -231,31 +202,13 @@ export const useStatsStore = defineStore('stats', () => {
     }
   };
 
-  const fetchDailyStats = async (username: string, start: string, end: string) => {
-    const cacheKey = generateCacheKey('daily', { username, start, end });
-    const cached = cache.value.get(cacheKey);
-
-    if (cached && isValidCache(cached.timestamp)) {
-      dailyData.value = cached.data;
-      return;
-    }
-
+  const fetchDailyStats = async (start: string, end: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await getUserDailyStats({ username, start, end });
-
-      if (response.code === 200) {
-        dailyData.value = response.data;
-        cache.value.set(cacheKey, {
-          data: response.data,
-          timestamp: Date.now(),
-        });
-        lastUpdated.value = new Date().toISOString();
-      } else {
-        throw new Error(response.message || '获取日统计数据失败');
-      }
+      const response = await getUserDailyStats({ start, end });
+      dailyData.value = response;
     } catch (err) {
       error.value = err.message || '网络错误';
       console.error('获取日统计数据失败:', err);
@@ -265,22 +218,14 @@ export const useStatsStore = defineStore('stats', () => {
   };
 
   const refreshData = async () => {
-    if (!selectedUsername.value) return;
-
     const promises: Promise<void>[] = [];
 
     // 获取日统计数据
-    promises.push(
-      fetchDailyStats(
-        selectedUsername.value,
-        selectedDateRange.value.start,
-        selectedDateRange.value.end
-      )
-    );
+    promises.push(fetchDailyStats(selectedDateRange.value.start, selectedDateRange.value.end));
 
     // 获取今天的小时统计数据
     const today = new Date().toISOString().split('T')[0];
-    promises.push(fetchHourlyStats(selectedUsername.value, today));
+    promises.push(fetchHourlyStats(today));
 
     await Promise.all(promises);
   };
@@ -293,16 +238,8 @@ export const useStatsStore = defineStore('stats', () => {
     selectedMetric.value = metric;
   };
 
-  const setUsername = (username: string) => {
-    selectedUsername.value = username;
-  };
-
   const clearError = () => {
     error.value = null;
-  };
-
-  const clearCache = () => {
-    cache.value.clear();
   };
 
   const reset = () => {
@@ -311,7 +248,6 @@ export const useStatsStore = defineStore('stats', () => {
     loading.value = false;
     error.value = null;
     lastUpdated.value = null;
-    clearCache();
   };
 
   return {
@@ -322,7 +258,6 @@ export const useStatsStore = defineStore('stats', () => {
     error,
     selectedDateRange,
     selectedMetric,
-    selectedUsername,
     lastUpdated,
 
     // 计算属性
@@ -343,9 +278,7 @@ export const useStatsStore = defineStore('stats', () => {
     refreshData,
     setDateRange,
     setMetric,
-    setUsername,
     clearError,
-    clearCache,
     reset,
   };
 });
