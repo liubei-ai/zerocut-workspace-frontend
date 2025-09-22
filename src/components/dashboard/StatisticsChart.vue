@@ -1,18 +1,7 @@
-<!--
-* @Component: StatisticsChart
-* @Maintainer: Trae AI
-* @Description: 可复用的统计图表组件，基于ECharts实现
--->
-
 <script setup lang="ts">
-import { Ref } from 'vue';
+import echarts, { RenderType, ThemeType, useChart } from '@/plugins/echarts';
 import type { EChartsOption } from 'echarts';
-import echarts, { useChart, RenderType, ThemeType } from '@/plugins/echarts';
-
-interface ChartDataItem {
-  date: string;
-  value: number;
-}
+import { Ref } from 'vue';
 
 interface ChartSeries {
   name: string;

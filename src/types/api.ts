@@ -1,5 +1,5 @@
 // API Response Types
-export interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   code: number;
   message: string;
   data: T;
@@ -18,12 +18,6 @@ export interface PaginationResponse<T> extends Pagination {
   list: T[];
 }
 
-// Authentication Types
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
-
 export interface User {
   authingId: string;
   username?: string;
@@ -31,15 +25,11 @@ export interface User {
   phone?: string;
 }
 
-export interface LoginResponse extends User {
-  expiresIn: string;
-}
-
 // Error Types
 export interface ApiError {
   code: number;
   message: string;
-  details?: string[] | string;
+  details?: unknown;
 }
 
 // Workspace Types
@@ -75,7 +65,7 @@ export interface ApiKey {
   apiKeyPrefix: string; // 列表中显示的密钥前缀
   status: string;
   description: string;
-  permissions: any; // 权限信息，当前为null
+  permissions: string[]; // 权限信息，当前为null
   lastUsedAt: string | null; // 最后使用时间
   expiresAt: string | null; // 过期时间
   createdAt: string;
@@ -99,7 +89,7 @@ export interface WorkspaceDetails {
   workspaceId: string;
   name: string;
   description: string;
-  settings?: any;
+  settings?: Record<string, string>;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -170,7 +160,7 @@ export interface ConsumptionRecord {
   id: number;
   transactionId: string;
   serviceType?: string;
-  serviceDetails?: Record<string, any>;
+  serviceDetails?: Record<string, string>;
   creditsAmount: number;
   apiKeyId?: string;
   createdAt: string;

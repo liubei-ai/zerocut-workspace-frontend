@@ -66,41 +66,6 @@ const statisticsChartData = computed(() => {
   };
 });
 
-// 最近活动 - 使用模拟数据
-const recentActivities = ref([
-  {
-    id: 1,
-    type: 'video',
-    title: '生成营销视频',
-    time: '2分钟前',
-    status: 'completed',
-  },
-  {
-    id: 2,
-    type: 'image',
-    title: '创建产品图片',
-    time: '5分钟前',
-    status: 'processing',
-  },
-  {
-    id: 3,
-    type: 'video',
-    title: '制作宣传片',
-    time: '10分钟前',
-    status: 'completed',
-  },
-]);
-
-// 工作空间信息 - 使用模拟数据
-const workspaceInfo = ref({
-  name: '默认工作空间',
-  members: 5,
-  storage: {
-    used: 2.4,
-    total: 10,
-  },
-});
-
 // 生命周期
 onMounted(async () => {
   try {
@@ -124,30 +89,6 @@ onMounted(async () => {
 const handleMetricAction = (metric: MetricCardData) => {
   console.log('Metric action clicked:', metric.title);
   // 可以导航到详细页面或显示更多信息
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'completed':
-      return 'success';
-    case 'processing':
-      return 'warning';
-    case 'failed':
-      return 'error';
-    default:
-      return 'info';
-  }
-};
-
-const getTypeIcon = (type: string) => {
-  switch (type) {
-    case 'video':
-      return 'mdi-video';
-    case 'image':
-      return 'mdi-image';
-    default:
-      return 'mdi-file';
-  }
 };
 </script>
 
