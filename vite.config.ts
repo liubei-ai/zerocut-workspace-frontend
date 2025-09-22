@@ -38,10 +38,16 @@ export default defineConfig({
       usePolling: true,
     },
     proxy: {
-      '/api': {
+      '/api/': {
+        target: 'https://api.zerocut.cn',
+        changeOrigin: true,
+        followRedirects: true,
+      },
+      '/api2/': {
         target: 'http://localhost:9527',
         changeOrigin: true,
         followRedirects: true,
+        rewrite: path => path.replace(/^\/api2/, '/api'),
       },
     },
   },

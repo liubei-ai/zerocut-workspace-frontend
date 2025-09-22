@@ -1,8 +1,45 @@
 import type { ApiResponse, UserStatDaily, UserStatHourly } from '../types/api';
-import client from './client';
+import type {
+  DailyStatsParams,
+  DailyStatsResponse,
+  HourlyStatsParams,
+  HourlyStatsResponse,
+} from '../types/stats';
+import client from './apiClient';
 
 /**
- * 获取用户小时统计数据
+ * 获取用户小时统计数据 (新版API)
+ * @param params 查询参数
+ * @returns 小时统计数据
+ */
+export async function getUserHourlyStats(params: HourlyStatsParams): Promise<HourlyStatsResponse> {
+  const response = await client.get('/user-stat/hourly', {
+    params: {
+      username: params.username,
+      date: params.date,
+    },
+  });
+  return response.data;
+}
+
+/**
+ * 获取用户日统计数据 (新版API)
+ * @param params 查询参数
+ * @returns 日统计数据
+ */
+export async function getUserDailyStats(params: DailyStatsParams): Promise<DailyStatsResponse> {
+  const response = await client.get('/user-stat/daily', {
+    params: {
+      username: params.username,
+      start: params.start,
+      end: params.end,
+    },
+  });
+  return response.data;
+}
+
+/**
+ * 获取用户小时统计数据 (旧版API - 保持兼容性)
  * @param params 查询参数
  * @returns 小时统计数据
  */
@@ -16,7 +53,7 @@ export async function getUserStatHourly(params: {
 }
 
 /**
- * 获取用户日统计数据
+ * 获取用户日统计数据 (旧版API - 保持兼容性)
  * @param params 查询参数
  * @returns 日统计数据
  */

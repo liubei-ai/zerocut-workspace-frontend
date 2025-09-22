@@ -1,4 +1,4 @@
-import apiClient from './client';
+import apiClient from './api2Client';
 
 // 接口类型定义
 export interface Message {
@@ -33,12 +33,20 @@ export const getAvailableModels = () => {
 };
 
 // 非流式聊天接口
-export const sendChatRequest = (data: { messages: Message[]; model: string; max_tokens?: number }) => {
+export const sendChatRequest = (data: {
+  messages: Message[];
+  model: string;
+  max_tokens?: number;
+}) => {
   return apiClient.post('/chat', data);
 };
 
 // Redis聊天接口（阻塞）
-export const streamChatRequest = (data: { messages: Message[]; model: string; transportType: 'redis' }) => {
+export const streamChatRequest = (data: {
+  messages: Message[];
+  model: string;
+  transportType: 'redis';
+}) => {
   return apiClient.post('/chat/stream', data, {
     responseType: 'stream',
   });

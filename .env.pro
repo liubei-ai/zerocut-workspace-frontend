@@ -1,1 +1,2 @@
-VITE_API_BASE_URL=https://api2.zerocut.cn/api
+VITE_API_ENDPOINT=https://api.zerocut.cn/api
+VITE_API2_ENDPOINT=https://api2.zerocut.cn/api

@@ -1,5 +1,5 @@
 import { type User } from '../types/api';
-import apiClient from './client';
+import apiClient from './api2Client';
 
 export async function syncUserProfile(user) {
   return apiClient.post<User>('/auth/sync', user);

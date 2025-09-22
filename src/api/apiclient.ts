@@ -4,7 +4,7 @@ import { Router } from 'vue-router';
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: import.meta.env.VITE_API_ENDPOINT,
   timeout: 10000,
   withCredentials: true, // Enable httpOnly cookies
   headers: {

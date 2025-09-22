@@ -1,0 +1,351 @@
+import { getUserDailyStats, getUserHourlyStats } from '@/api/statsApi';
+import type {
+  ComputedStatsData,
+  DailyStatsData,
+  DashboardState,
+  DateRange,
+  HeatmapChartData,
+  HourlyStatsData,
+  MetricCardData,
+  MetricType,
+  PieChartData,
+  TrendChartData,
+} from '@/types/stats';
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+
+export const useStatsStore = defineStore('stats', () => {
+  // 状态
+  const hourlyData = ref<HourlyStatsData | null>(null);
+  const dailyData = ref<DailyStatsData | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const selectedDateRange = ref<DateRange>({
+    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7天前
+    end: new Date().toISOString().split('T')[0], // 今天
+  });
+  const selectedMetric = ref<MetricType>('image_count');
+  const selectedUsername = ref('');
+  const lastUpdated = ref<string | null>(null);
+
+  // 数据缓存
+  const cache = ref<Map<string, { data: any; timestamp: number }>>(new Map());
+  const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+
+  // 计算属性 - 概览卡片数据
+  const summaryCards = computed((): MetricCardData[] => {
+    if (!dailyData.value) return [];
+
+    const { summary } = dailyData.value;
+    const cards: MetricCardData[] = [
+      {
+        title: '图片生成',
+        value: summary.total_image_count,
+        unit: '张',
+        icon: 'mdi-image',
+        color: 'primary',
+      },
+      {
+        title: '视频生成',
+        value: summary.total_video_count,
+        unit: '个',
+        icon: 'mdi-video',
+        color: 'secondary',
+      },
+      {
+        title: '视频时长',
+        value: Math.round(summary.total_video_duration / 60), // 转换为分钟
+        unit: '分钟',
+        icon: 'mdi-clock',
+        color: 'success',
+      },
+      {
+        title: '消耗积分',
+        value: summary.total_points_consumed,
+        unit: '积分',
+        icon: 'mdi-coin',
+        color: 'warning',
+      },
+    ];
+
+    return cards;
+  });
+
+  // 计算属性 - 趋势图表数据
+  const trendData = computed((): TrendChartData => {
+    if (!dailyData.value) {
+      return { categories: [], series: [] };
+    }
+
+    const { daily_data } = dailyData.value;
+    const categories = daily_data.map(item => item.date);
+
+    const series = [
+      {
+        name: '图片生成',
+        data: daily_data.map(item => item.image_count),
+        type: 'line' as const,
+      },
+      {
+        name: '视频生成',
+        data: daily_data.map(item => item.video_count),
+        type: 'line' as const,
+      },
+      {
+        name: '视频时长(分钟)',
+        data: daily_data.map(item => Math.round(item.video_duration / 60)),
+        type: 'line' as const,
+      },
+      {
+        name: '消耗积分',
+        data: daily_data.map(item => item.points_consumed),
+        type: 'line' as const,
+      },
+    ];
+
+    return { categories, series };
+  });
+
+  // 计算属性 - 分布饼图数据
+  const distributionData = computed((): PieChartData[] => {
+    if (!dailyData.value) return [];
+
+    const { summary } = dailyData.value;
+    const total = summary.total_image_count + summary.total_video_count;
+
+    if (total === 0) return [];
+
+    return [
+      {
+        name: '图片生成',
+        value: summary.total_image_count,
+        percentage: Math.round((summary.total_image_count / total) * 100),
+      },
+      {
+        name: '视频生成',
+        value: summary.total_video_count,
+        percentage: Math.round((summary.total_video_count / total) * 100),
+      },
+    ];
+  });
+
+  // 计算属性 - 热力图数据
+  const heatmapData = computed((): HeatmapChartData[] => {
+    if (!hourlyData.value) return [];
+
+    const { hourly_data, date } = hourlyData.value;
+
+    return hourly_data.map(item => ({
+      hour: item.hour,
+      day: date,
+      value: item[selectedMetric.value],
+    }));
+  });
+
+  // 计算属性 - 仪表板状态
+  const dashboardState = computed(
+    (): DashboardState => ({
+      loading: loading.value,
+      error: error.value,
+      selectedDateRange: selectedDateRange.value,
+      selectedMetric: selectedMetric.value,
+      selectedUsername: selectedUsername.value,
+      lastUpdated: lastUpdated.value,
+    })
+  );
+
+  // 计算属性 - 所有计算数据
+  const computedData = computed(
+    (): ComputedStatsData => ({
+      summaryCards: summaryCards.value,
+      trendData: trendData.value,
+      distributionData: distributionData.value,
+      heatmapData: heatmapData.value,
+      comparisonData: [], // 暂时为空，后续可扩展
+    })
+  );
+
+  // 工具函数
+  const formatDuration = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+
+    if (hours > 0) {
+      return `${hours}小时${minutes}分钟`;
+    } else if (minutes > 0) {
+      return `${minutes}分钟${secs}秒`;
+    } else {
+      return `${secs}秒`;
+    }
+  };
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return `${(num / 1000000).toFixed(1)}M`;
+    } else if (num >= 1000) {
+      return `${(num / 1000).toFixed(1)}K`;
+    }
+    return num.toString();
+  };
+
+  const generateCacheKey = (type: 'hourly' | 'daily', params): string => {
+    return `${type}_${JSON.stringify(params)}`;
+  };
+
+  const isValidCache = (timestamp: number): boolean => {
+    return Date.now() - timestamp < CACHE_DURATION;
+  };
+
+  // Actions
+  const fetchHourlyStats = async (username: string, date: string) => {
+    const cacheKey = generateCacheKey('hourly', { username, date });
+    const cached = cache.value.get(cacheKey);
+
+    if (cached && isValidCache(cached.timestamp)) {
+      hourlyData.value = cached.data;
+      return;
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const response = await getUserHourlyStats({ username, date });
+
+      if (response.code === 200) {
+        hourlyData.value = response.data;
+        cache.value.set(cacheKey, {
+          data: response.data,
+          timestamp: Date.now(),
+        });
+        lastUpdated.value = new Date().toISOString();
+      } else {
+        throw new Error(response.message || '获取小时统计数据失败');
+      }
+    } catch (err) {
+      error.value = err.message || '网络错误';
+      console.error('获取小时统计数据失败:', err);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const fetchDailyStats = async (username: string, start: string, end: string) => {
+    const cacheKey = generateCacheKey('daily', { username, start, end });
+    const cached = cache.value.get(cacheKey);
+
+    if (cached && isValidCache(cached.timestamp)) {
+      dailyData.value = cached.data;
+      return;
+    }
+
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const response = await getUserDailyStats({ username, start, end });
+
+      if (response.code === 200) {
+        dailyData.value = response.data;
+        cache.value.set(cacheKey, {
+          data: response.data,
+          timestamp: Date.now(),
+        });
+        lastUpdated.value = new Date().toISOString();
+      } else {
+        throw new Error(response.message || '获取日统计数据失败');
+      }
+    } catch (err) {
+      error.value = err.message || '网络错误';
+      console.error('获取日统计数据失败:', err);
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const refreshData = async () => {
+    if (!selectedUsername.value) return;
+
+    const promises: Promise<void>[] = [];
+
+    // 获取日统计数据
+    promises.push(
+      fetchDailyStats(
+        selectedUsername.value,
+        selectedDateRange.value.start,
+        selectedDateRange.value.end
+      )
+    );
+
+    // 获取今天的小时统计数据
+    const today = new Date().toISOString().split('T')[0];
+    promises.push(fetchHourlyStats(selectedUsername.value, today));
+
+    await Promise.all(promises);
+  };
+
+  const setDateRange = (range: DateRange) => {
+    selectedDateRange.value = range;
+  };
+
+  const setMetric = (metric: MetricType) => {
+    selectedMetric.value = metric;
+  };
+
+  const setUsername = (username: string) => {
+    selectedUsername.value = username;
+  };
+
+  const clearError = () => {
+    error.value = null;
+  };
+
+  const clearCache = () => {
+    cache.value.clear();
+  };
+
+  const reset = () => {
+    hourlyData.value = null;
+    dailyData.value = null;
+    loading.value = false;
+    error.value = null;
+    lastUpdated.value = null;
+    clearCache();
+  };
+
+  return {
+    // 状态
+    hourlyData,
+    dailyData,
+    loading,
+    error,
+    selectedDateRange,
+    selectedMetric,
+    selectedUsername,
+    lastUpdated,
+
+    // 计算属性
+    summaryCards,
+    trendData,
+    distributionData,
+    heatmapData,
+    dashboardState,
+    computedData,
+
+    // 工具函数
+    formatDuration,
+    formatNumber,
+
+    // Actions
+    fetchHourlyStats,
+    fetchDailyStats,
+    refreshData,
+    setDateRange,
+    setMetric,
+    setUsername,
+    clearError,
+    clearCache,
+    reset,
+  };
+});

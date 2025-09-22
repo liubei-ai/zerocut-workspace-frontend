@@ -1,5 +1,5 @@
 import type { ApiResponse, VideoProject } from '../types/api';
-import client from './client';
+import client from './api2Client';
 
 /**
  * 获取视频项目列表

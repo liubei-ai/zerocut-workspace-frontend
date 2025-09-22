@@ -7,7 +7,7 @@ import type {
   WorkspaceDetails,
   WorkspaceMember,
 } from '../types/api';
-import client from './client';
+import client from './api2Client';
 
 /**
  * 获取工作空间详情

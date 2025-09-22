@@ -1,5 +1,5 @@
 import type { ApiResponse, HomepageResponseDto, UserProfile } from '../types/api';
-import client from './client';
+import client from './api2Client';
 
 /**
  * 获取用户档案信息

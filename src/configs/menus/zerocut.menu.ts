@@ -1,10 +1,10 @@
 export default [
-  // {
-  //   key: 'menu.dashboard',
-  //   text: '数据看板',
-  //   link: '/dashboard',
-  //   icon: 'mdi-view-dashboard-outline',
-  // },
+  {
+    key: 'menu.dashboard',
+    text: '数据看板',
+    link: '/zerocut/dashboard',
+    icon: 'mdi-view-dashboard-outline',
+  },
   {
     key: 'menu.apikeys',
     text: '密钥管理',
