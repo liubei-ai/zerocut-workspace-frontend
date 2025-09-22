@@ -58,6 +58,20 @@ export const useStatsStore = defineStore('stats', () => {
         color: 'success',
       },
       {
+        title: 'TTS语音',
+        value: summary.total_tts_count,
+        unit: '个',
+        icon: 'mdi-microphone',
+        color: 'info',
+      },
+      {
+        title: '背景音乐',
+        value: summary.total_bgm_count,
+        unit: '个',
+        icon: 'mdi-music',
+        color: 'error',
+      },
+      {
         title: '消耗积分',
         value: summary.total_points_consumed,
         unit: '积分',
@@ -224,8 +238,8 @@ export const useStatsStore = defineStore('stats', () => {
     promises.push(fetchDailyStats(selectedDateRange.value.start, selectedDateRange.value.end));
 
     // 获取今天的小时统计数据
-    const today = new Date().toISOString().split('T')[0];
-    promises.push(fetchHourlyStats(today));
+    // const today = new Date().toISOString().split('T')[0];
+    // promises.push(fetchHourlyStats(today));
 
     await Promise.all(promises);
   };

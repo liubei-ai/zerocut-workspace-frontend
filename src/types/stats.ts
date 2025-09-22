@@ -25,6 +25,8 @@ export interface StatsSummary {
   total_image_count: number;
   total_video_count: number;
   total_video_duration: number;
+  total_tts_count: number;
+  total_bgm_count: number;
   total_points_consumed: number;
 }
 
