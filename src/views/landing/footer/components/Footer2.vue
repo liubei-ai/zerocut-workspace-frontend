@@ -59,14 +59,20 @@ const navs = [
           </v-col>
           <v-col cols="12" md="6">
             <div class="d-flex flex-wrap justify-center justify-md-end pb-5">
-              <v-btn class="mx-3" color="blue-grey-darken-2" icon> <v-icon>mdi-facebook</v-icon></v-btn>
+              <v-btn class="mx-3" color="blue-grey-darken-2" icon>
+                <v-icon>mdi-facebook</v-icon></v-btn
+              >
               <v-btn color="blue-grey-darken-2" icon>
                 <v-icon>mdi-twitter</v-icon>
               </v-btn>
             </div>
 
             <div class="d-flex flex-wrap justify-center justify-md-end">
-              <RouterLink class="text-primary mx-3 mb-3 font-weight-bold" v-for="nav in navs" to="nav.to">
+              <RouterLink
+                class="text-primary mx-3 mb-3 font-weight-bold"
+                v-for="nav in navs"
+                to="nav.to"
+              >
                 {{ nav.title }}</RouterLink
               >
             </div>

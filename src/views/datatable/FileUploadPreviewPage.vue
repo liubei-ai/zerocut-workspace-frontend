@@ -126,7 +126,14 @@ const filterdFileInfos = computed(() => {
             <!-- ---------------------------------------------- -->
             <!-- View Mode Switch -->
             <!-- ---------------------------------------------- -->
-            <v-btn class="mx-2" icon rounded="sm" variant="flat" color="primary" @click="toggleViewMode">
+            <v-btn
+              class="mx-2"
+              icon
+              rounded="sm"
+              variant="flat"
+              color="primary"
+              @click="toggleViewMode"
+            >
               <v-tooltip
                 activator="parent"
                 location="left"
@@ -185,7 +192,13 @@ const filterdFileInfos = computed(() => {
                   <h6 class="text-grey">{{ fileInfo.suffix }} {{ fileInfo.imageSize }}</h6>
                 </div>
                 <div>
-                  <v-chip color="primary" class="font-weight-bold" label rounded="sm" variant="elevated">
+                  <v-chip
+                    color="primary"
+                    class="font-weight-bold"
+                    label
+                    rounded="sm"
+                    variant="elevated"
+                  >
                     {{ fileInfo.type }}
                   </v-chip>
                 </div>
@@ -217,7 +230,13 @@ const filterdFileInfos = computed(() => {
             <v-chip class="font-weight-bold" color="primary">{{ item.raw.type }}</v-chip>
           </template>
           <template v-slot:item.previewEnabled="{ item }">
-            <v-btn v-if="item.raw.previewEnabled" class="font-weight-bold" variant="flat" color="blue">Yes</v-btn>
+            <v-btn
+              v-if="item.raw.previewEnabled"
+              class="font-weight-bold"
+              variant="flat"
+              color="blue"
+              >Yes</v-btn
+            >
             <v-btn v-else class="font-weight-bold" variant="flat" color="error">No</v-btn>
           </template>
         </v-data-table>

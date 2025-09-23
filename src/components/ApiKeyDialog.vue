@@ -58,7 +58,9 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Proxy Url -->
         <!-- ---------------------------------------------- -->
-        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{ $t('chatgpt.config.proxyUrl') }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
+          $t('chatgpt.config.proxyUrl')
+        }}</v-label>
         <v-text-field
           color="primary"
           variant="outlined"
@@ -75,7 +77,9 @@ const promptList = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Model -->
         <!-- ---------------------------------------------- -->
-        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{ $t('chatgpt.config.model') }}</v-label>
+        <v-label class="font-weight-medium mb-2 ml-2 mt-5">{{
+          $t('chatgpt.config.model')
+        }}</v-label>
         <v-card variant="outlined" style="width: 430px" class="flex ml-2 pa-2">
           <v-btn
             :variant="chatGPTStore.model === 'gpt-3.5-turbo' ? 'flat' : 'text'"

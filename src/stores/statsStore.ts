@@ -9,6 +9,7 @@ import type {
   MetricCardData,
   MetricType,
   PieChartData,
+  StatisticsChartData,
   TrendChartData,
 } from '@/types/stats';
 import { defineStore } from 'pinia';
@@ -154,6 +155,52 @@ export const useStatsStore = defineStore('stats', () => {
     }));
   });
 
+  // 计算属性 - 统计图表数据
+  const statisticsChartData = computed((): StatisticsChartData => {
+    if (!dailyData.value?.daily_data) {
+      return { categories: [], series: [] };
+    }
+
+    const { daily_data } = dailyData.value;
+
+    const categories = daily_data.map(item => {
+      const date = new Date(item.date);
+      return `${date.getMonth() + 1}/${date.getDate()}`;
+    });
+
+    const series = [
+      {
+        name: '图片生成',
+        data: daily_data.map(item => item.image_count),
+        type: 'bar' as const,
+        color: '#1976d2',
+      },
+      {
+        name: '视频生成',
+        data: daily_data.map(item => item.video_count),
+        type: 'bar' as const,
+        color: '#388e3c',
+      },
+      {
+        name: '视频时长(秒)',
+        data: daily_data.map(item => item.video_duration),
+        type: 'line' as const,
+        color: '#ff9800',
+      },
+      {
+        name: '积分消耗',
+        data: daily_data.map(item => item.points_consumed),
+        type: 'line' as const,
+        color: '#e91e63',
+      },
+    ];
+
+    return {
+      categories,
+      series,
+    };
+  });
+
   // 计算属性 - 仪表板状态
   const dashboardState = computed(
     (): DashboardState => ({
@@ -172,6 +219,7 @@ export const useStatsStore = defineStore('stats', () => {
       trendData: trendData.value,
       distributionData: distributionData.value,
       heatmapData: heatmapData.value,
+      statisticsChartData: statisticsChartData.value,
       comparisonData: [], // 暂时为空，后续可扩展
     })
   );
@@ -279,6 +327,7 @@ export const useStatsStore = defineStore('stats', () => {
     trendData,
     distributionData,
     heatmapData,
+    statisticsChartData,
     dashboardState,
     computedData,
 

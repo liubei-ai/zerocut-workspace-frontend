@@ -103,7 +103,11 @@ const navs = [
                 <p class="text-h6 mb-4">
                   <b>{{ nav.title }}</b>
                 </p>
-                <p class="text-body-2 text-primary mb-2" v-for="subNav in nav.subNavs" :key="subNav.title">
+                <p
+                  class="text-body-2 text-primary mb-2"
+                  v-for="subNav in nav.subNavs"
+                  :key="subNav.title"
+                >
                   <RouterLink :to="nav.to">
                     {{ subNav.title }}
                   </RouterLink>

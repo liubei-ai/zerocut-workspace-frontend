@@ -23,13 +23,17 @@
                 We organize chaotic
                 <span class="text-primary">internet</span>
               </h1>
-              <h2 class="text-h6 text-secondary mt-4 mx-auto">Stack is a Spatial Browser for Mindful Online Living</h2>
+              <h2 class="text-h6 text-secondary mt-4 mx-auto">
+                Stack is a Spatial Browser for Mindful Online Living
+              </h2>
               <v-row class="mt-5">
                 <v-col cols="12" sm="6">
                   <v-btn block height="60" class="text-white mr-5" color="primary">Get Stack</v-btn>
                 </v-col>
                 <v-col cols="12" sm="6">
-                  <v-btn variant="outlined" block height="60" class="text-primary">Watch Demo</v-btn>
+                  <v-btn variant="outlined" block height="60" class="text-primary"
+                    >Watch Demo</v-btn
+                  >
                 </v-col>
               </v-row>
             </v-card>

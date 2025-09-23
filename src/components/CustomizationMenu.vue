@@ -68,7 +68,13 @@ const updatePrimaryColor = (newColor: Color) => {
       <v-icon class="text-white">mdi-cog-outline</v-icon>
     </div>
 
-    <v-navigation-drawer v-model="themeDrawer" location="right" temporary width="300" class="theme-drawer">
+    <v-navigation-drawer
+      v-model="themeDrawer"
+      location="right"
+      temporary
+      width="300"
+      class="theme-drawer"
+    >
       <div class="pa-5">
         <div class="top-area">
           <div class="d-flex align-center">
@@ -99,8 +105,19 @@ const updatePrimaryColor = (newColor: Color) => {
         <div class="primary-color-area">
           <b>Primary Colors</b>
           <v-item-group class="mt-3" v-model="currentColor" selected-class="elevation-12" mandatory>
-            <v-item v-for="color in primaryColors" :key="color.colorId" :value="color" v-slot="{ isSelected, toggle }">
-              <v-btn @click="toggle" class="text-white mr-1" icon size="30" :color="color.colorValue">
+            <v-item
+              v-for="color in primaryColors"
+              :key="color.colorId"
+              :value="color"
+              v-slot="{ isSelected, toggle }"
+            >
+              <v-btn
+                @click="toggle"
+                class="text-white mr-1"
+                icon
+                size="30"
+                :color="color.colorValue"
+              >
                 <Icon width="22" v-if="isSelected" icon="line-md:confirm" />
               </v-btn>
             </v-item>

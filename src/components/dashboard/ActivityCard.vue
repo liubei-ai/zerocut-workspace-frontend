@@ -11,7 +11,8 @@ const activityList = ref([
     user: 'yangjiakai',
     avatar: 'https://avatars.githubusercontent.com/u/35951244?',
     repo: 'yangjiakai/lux-admin-vuetify3',
-    content: "<p>Update Dashboard View</p><br/><div><span class='mr-1'>✅</span> Add PieChart1</div>",
+    content:
+      "<p>Update Dashboard View</p><br/><div><span class='mr-1'>✅</span> Add PieChart1</div>",
     action: 'Commit',
     created_at: '2023-05-12T14:06:59Z',
   },
@@ -174,12 +175,19 @@ onMounted(() => {
             <span class="text-h6 font-weight-bold">
               {{ activity.user }}
             </span>
-            <span class="ml-2 text-grey">{{ moment(activity.created_at).format('MM,DD hh:mm') }}</span>
+            <span class="ml-2 text-grey">{{
+              moment(activity.created_at).format('MM,DD hh:mm')
+            }}</span>
           </div>
 
           <v-card max-width="500">
             <v-card-subtitle class="pt-4">
-              <v-chip :color="getTagColor(activity)" size="small" label class="mr-2 font-weight-bold">
+              <v-chip
+                :color="getTagColor(activity)"
+                size="small"
+                label
+                class="mr-2 font-weight-bold"
+              >
                 <span>{{ activity.type }}</span>
               </v-chip>
               <span class="text-body-2">{{ activity.repo }}</span>

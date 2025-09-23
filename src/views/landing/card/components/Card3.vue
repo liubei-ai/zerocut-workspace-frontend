@@ -18,10 +18,19 @@
           <v-col cols="12" md="4">
             <div class="card">
               <div class="wrapper">
-                <img src="https://ggayane.github.io/css-experiments/cards/dark_rider-cover.jpg" class="cover-image" />
+                <img
+                  src="https://ggayane.github.io/css-experiments/cards/dark_rider-cover.jpg"
+                  class="cover-image"
+                />
               </div>
-              <img src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png" class="title" />
-              <img src="https://ggayane.github.io/css-experiments/cards/dark_rider-character.webp" class="character" />
+              <img
+                src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png"
+                class="title"
+              />
+              <img
+                src="https://ggayane.github.io/css-experiments/cards/dark_rider-character.webp"
+                class="character"
+              />
             </div>
           </v-col>
           <v-col cols="12" md="4">
@@ -29,17 +38,29 @@
               <div class="wrapper">
                 <img src="@/assets/images/card2/yoimiya_bg.jpg" class="cover-image" />
               </div>
-              <img src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png" class="title" />
+              <img
+                src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png"
+                class="title"
+              />
               <img src="@/assets/images/card2/yoimiya.png" class="character" />
             </div>
           </v-col>
           <v-col cols="12" md="4">
             <div class="card">
               <div class="wrapper">
-                <img src="https://ggayane.github.io/css-experiments/cards/force_mage-cover.jpg" class="cover-image" />
+                <img
+                  src="https://ggayane.github.io/css-experiments/cards/force_mage-cover.jpg"
+                  class="cover-image"
+                />
               </div>
-              <img src="https://ggayane.github.io/css-experiments/cards/force_mage-title.png" class="title" />
-              <img src="https://ggayane.github.io/css-experiments/cards/force_mage-character.webp" class="character" />
+              <img
+                src="https://ggayane.github.io/css-experiments/cards/force_mage-title.png"
+                class="title"
+              />
+              <img
+                src="https://ggayane.github.io/css-experiments/cards/force_mage-character.webp"
+                class="character"
+              />
             </div>
           </v-col>
         </v-row>
@@ -94,12 +115,22 @@
 .wrapper::before {
   top: 0;
   height: 100%;
-  background-image: linear-gradient(to top, transparent 46%, rgba(12, 13, 19, 0.5) 68%, rgba(12, 13, 19) 97%);
+  background-image: linear-gradient(
+    to top,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
 }
 .wrapper::after {
   bottom: 0;
   opacity: 1;
-  background-image: linear-gradient(to bottom, transparent 46%, rgba(12, 13, 19, 0.5) 68%, rgba(12, 13, 19) 97%);
+  background-image: linear-gradient(
+    to bottom,
+    transparent 46%,
+    rgba(12, 13, 19, 0.5) 68%,
+    rgba(12, 13, 19) 97%
+  );
 }
 
 .card:hover .wrapper::before,

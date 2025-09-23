@@ -20,7 +20,8 @@ const region = ref('eastus');
 const speechConfig = sdk.SpeechConfig.fromSubscription(subscriptionKey.value, region.value);
 
 // 设置输出音频格式
-speechConfig.speechSynthesisOutputFormat = sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
+speechConfig.speechSynthesisOutputFormat =
+  sdk.SpeechSynthesisOutputFormat.Audio16Khz32KBitRateMonoMp3;
 
 // 创建一个语音合成器
 const synthesizer = new sdk.SpeechSynthesizer(speechConfig);
@@ -124,7 +125,13 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
           <v-card>
             <v-list elevation="1" density="compact">
               <v-list-subheader>Total {{ allVoices.length }} Voices</v-list-subheader>
-              <RecycleScroller class="scroller" :items="allVoices" :item-size="50" key-field="name" v-slot="{ item }">
+              <RecycleScroller
+                class="scroller"
+                :items="allVoices"
+                :item-size="50"
+                key-field="name"
+                v-slot="{ item }"
+              >
                 <v-list-item
                   active-color="primary"
                   @click="selectVoice(item)"
@@ -149,7 +156,9 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
                   <template v-slot:append>
                     <div class="full-h d-flex align-center">
                       <span class="text-body-2 text-grey">
-                        <v-chip size="small" class="font-weight-bold" color="blue">{{ item.locale }}</v-chip>
+                        <v-chip size="small" class="font-weight-bold" color="blue">{{
+                          item.locale
+                        }}</v-chip>
                       </span>
                     </div>
                   </template>
@@ -159,7 +168,9 @@ const selectVoice = (voiceInfo: VoiceInfo) => {
                   <div>
                     <v-list-item-title class="font-weight-bold text-primary"
                       >{{ item.localName }}
-                      <span class="text-body-2 ml-2">({{ item.shortName }})</span></v-list-item-title
+                      <span class="text-body-2 ml-2"
+                        >({{ item.shortName }})</span
+                      ></v-list-item-title
                     >
                     <v-list-item-subtitle>{{ item.name }}</v-list-item-subtitle>
                   </div>

@@ -52,7 +52,11 @@ const comments = [
                     {{ comment.content }}
                   </v-card>
 
-                  <v-card elevation="0" color="transparent" class="user-card d-flex align-center my-5">
+                  <v-card
+                    elevation="0"
+                    color="transparent"
+                    class="user-card d-flex align-center my-5"
+                  >
                     <div>
                       <v-avatar size="50" class="mr-4">
                         <img :src="comment.avatar" />

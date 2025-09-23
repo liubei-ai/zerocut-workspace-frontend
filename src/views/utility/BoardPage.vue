@@ -33,10 +33,15 @@
             @keyup.esc="column.isAddVisible = false"
           ></v-text-field>
           <div class="mt-3 d-flex flex-md-row flex-column">
-            <v-btn class="flex-fill ma-1" size="small" @click="column.isAddVisible = !column.isAddVisible"
+            <v-btn
+              class="flex-fill ma-1"
+              size="small"
+              @click="column.isAddVisible = !column.isAddVisible"
               >Cancel</v-btn
             >
-            <v-btn class="flex-fill ma-1" size="small" color="primary" @click="addCard(column)">Add</v-btn>
+            <v-btn class="flex-fill ma-1" size="small" color="primary" @click="addCard(column)"
+              >Add</v-btn
+            >
           </div>
         </v-card>
 
@@ -225,7 +230,9 @@ const parseCards = cards => {
   if (!cards) return columns.value.map(column => (column.cards = []));
 
   columns.value.forEach(column => {
-    column.cards = cards.filter(card => card.state === column.key).sort((a, b) => (a.order < b.order ? -1 : 0));
+    column.cards = cards
+      .filter(card => card.state === column.key)
+      .sort((a, b) => (a.order < b.order ? -1 : 0));
   });
 };
 

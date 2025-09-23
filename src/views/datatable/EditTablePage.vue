@@ -257,7 +257,9 @@ const formTitle = computed(() => {
             <td>{{ item.phone }}</td>
             <td>{{ item.jdate }}</td>
             <td>
-              <v-chip class="font-weight-bold" :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip>
+              <v-chip class="font-weight-bold" :color="item.rolestatus" size="small" label>{{
+                item.role
+              }}</v-chip>
             </td>
             <td>
               <div class="d-flex align-center">
@@ -274,7 +276,13 @@ const formTitle = computed(() => {
                 </v-tooltip>
                 <v-tooltip text="Delete">
                   <template v-slot:activator="{ props }">
-                    <v-btn icon variant="text" @click="deleteItem(item)" v-bind="props" color="error">
+                    <v-btn
+                      icon
+                      variant="text"
+                      @click="deleteItem(item)"
+                      v-bind="props"
+                      color="error"
+                    >
                       <v-icon>mdi-delete-outline</v-icon>
                       <!-- <img
                         width="26"

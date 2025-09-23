@@ -29,7 +29,12 @@ import members from '@/data/members';
                 <p class="text-body-1 text-blue-grey">{{ member.position }}</p>
                 <p class="text-body-2 text-grey">{{ member.description }}</p>
                 <div>
-                  <v-btn density="compact" icon class="mr-2 mt-3" v-for="item in member.social" :to="item.link"
+                  <v-btn
+                    density="compact"
+                    icon
+                    class="mr-2 mt-3"
+                    v-for="item in member.social"
+                    :to="item.link"
                     ><v-icon class="text-blue-grey">{{ item.icon }}</v-icon></v-btn
                   >
                 </div>

@@ -126,7 +126,14 @@ const navs = [
       <!-- ---------------------------------------------- -->
 
       <v-list variant="flat" elevation="0" :lines="false" density="compact">
-        <v-list-item color="primary" v-for="(nav, i) in navs" :key="i" :to="nav.link" link density="compact">
+        <v-list-item
+          color="primary"
+          v-for="(nav, i) in navs"
+          :key="i"
+          :to="nav.link"
+          link
+          density="compact"
+        >
           <template v-slot:prepend>
             <v-avatar size="30">
               <v-icon>{{ nav.icon }}</v-icon>

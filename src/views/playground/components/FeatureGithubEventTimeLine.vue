@@ -154,12 +154,19 @@ onMounted(() => {
             <span class="text-h6 font-weight-bold">
               {{ activity.user }}
             </span>
-            <span class="ml-2 text-grey">{{ moment(activity.created_at).format('MM,DD hh:mm') }}</span>
+            <span class="ml-2 text-grey">{{
+              moment(activity.created_at).format('MM,DD hh:mm')
+            }}</span>
           </div>
 
           <v-card max-width="300">
             <v-card-subtitle class="pt-4">
-              <v-chip :color="getTagColor(activity)" size="small" label class="mr-2 font-weight-bold">
+              <v-chip
+                :color="getTagColor(activity)"
+                size="small"
+                label
+                class="mr-2 font-weight-bold"
+              >
                 <span>{{ activity.type }}</span>
               </v-chip>
               <span class="text-body-2">{{ activity.repo }}</span>

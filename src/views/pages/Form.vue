@@ -4,7 +4,13 @@
       <v-col>
         <v-card width="600" height="800" class="pa-5" elevation="12">
           <v-form ref="form" v-model="valid" lazy-validation class="formStyle">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" class="mx-auto mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40"
+              viewBox="0 0 40 40"
+              class="mx-auto mb-6"
+            >
               <defs>
                 <linearGradient id="clearbit-a" x1="50%" x2="100%" y1="0%" y2="100%">
                   <stop offset="0%" stop-color="#DEF2FE" />

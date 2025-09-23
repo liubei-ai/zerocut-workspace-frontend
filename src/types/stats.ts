@@ -119,6 +119,16 @@ export interface HeatmapChartData {
   value: number;
 }
 
+export interface StatisticsChartData {
+  categories: string[];
+  series: {
+    name: string;
+    data: number[];
+    type: 'bar' | 'line';
+    color: string;
+  }[];
+}
+
 // 指标类型枚举
 export type MetricType = 'image_count' | 'video_count' | 'video_duration' | 'points_consumed';
 
@@ -160,6 +170,7 @@ export interface ComputedStatsData {
   trendData: TrendChartData;
   distributionData: PieChartData[];
   heatmapData: HeatmapChartData[];
+  statisticsChartData: StatisticsChartData;
   comparisonData: ChartDataPoint[];
 }
 

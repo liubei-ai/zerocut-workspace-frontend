@@ -245,7 +245,11 @@ const formTitle = computed(() => {
         <td>
           <v-chip
             class="font-weight-bold"
-            :color="item.rolestatus === 'black' || item.rolestatus === 'white' ? 'primary' : item.rolestatus"
+            :color="
+              item.rolestatus === 'black' || item.rolestatus === 'white'
+                ? 'primary'
+                : item.rolestatus
+            "
             size="small"
             label
             >{{ item.role }}</v-chip

@@ -28,7 +28,14 @@ const submit = () => {
                 <div v-show="expanded">
                   <v-menu>
                     <template v-slot:activator="{ props }">
-                      <v-btn class="px-1" appendIcon="mdi-chevron-down" v-bind="props" variant="text"> to Me </v-btn>
+                      <v-btn
+                        class="px-1"
+                        appendIcon="mdi-chevron-down"
+                        v-bind="props"
+                        variant="text"
+                      >
+                        to Me
+                      </v-btn>
                     </template>
 
                     <v-card class="pa-4">
@@ -44,9 +51,10 @@ const submit = () => {
                   </v-menu>
                 </div>
                 <div v-show="!expanded" class="ml-1 text-truncate">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non ut, soluta temporibus, culpa magnam
-                  harum quod asperiores excepturi iste veniam possimus dignissimos laboriosam ipsum voluptas repellat
-                  consequuntur vitae debitis consequatur.
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non ut, soluta
+                  temporibus, culpa magnam harum quod asperiores excepturi iste veniam possimus
+                  dignissimos laboriosam ipsum voluptas repellat consequuntur vitae debitis
+                  consequatur.
                 </div>
               </div>
 
@@ -72,9 +80,9 @@ const submit = () => {
         <v-expansion-panel-text>
           <p>Hello,</p>
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-            ea commodo consequat.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </p>
           <p>Best regards</p>
         </v-expansion-panel-text>

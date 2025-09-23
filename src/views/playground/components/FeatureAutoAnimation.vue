@@ -47,19 +47,28 @@ const dialog = ref(false);
             <v-text-field label="item1"></v-text-field>
           </perfect-scrollbar>
           <v-card-text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+            incididunt ut labore et dolore magna aliqua.
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn variant="elevated" color="primary" block @click="dialog = false">Close Dialog</v-btn>
+            <v-btn variant="elevated" color="primary" block @click="dialog = false"
+              >Close Dialog</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
     </div>
 
     <div ref="parent" class="d-flex">
-      <v-card class="ma-2" width="200" height="200" v-for="item in items" :key="item" @click="remove(item)">
+      <v-card
+        class="ma-2"
+        width="200"
+        height="200"
+        v-for="item in items"
+        :key="item"
+        @click="remove(item)"
+      >
         <v-btn color="error" @click="remove(item)">Remove</v-btn>
         <v-card-title>
           {{ item }}

@@ -195,7 +195,11 @@ const readText = () => {
 <template>
   <v-btn size="50" @click="dialog = !dialog">
     <v-icon size="30">mdi-google-translate</v-icon>
-    <v-tooltip activator="parent" location="left" :text="$t('toolbox.translationAssistant.title')"></v-tooltip>
+    <v-tooltip
+      activator="parent"
+      location="left"
+      :text="$t('toolbox.translationAssistant.title')"
+    ></v-tooltip>
   </v-btn>
 
   <teleport to="body">
@@ -277,14 +281,22 @@ const readText = () => {
                   ></v-textarea>
                 </div>
                 <v-card-actions class="bg-grey-lighten-4 text-primary">
-                  <v-tooltip v-if="!isRecording" location="bottom" :text="$t('toolbox.translationAssistant.speech')">
+                  <v-tooltip
+                    v-if="!isRecording"
+                    location="bottom"
+                    :text="$t('toolbox.translationAssistant.speech')"
+                  >
                     <template #activator="{ props }">
                       <v-btn @click="record" v-bind="props" icon>
                         <v-icon v-if="isRecording">mdi-microphone</v-icon>
                       </v-btn>
                     </template>
                   </v-tooltip>
-                  <v-tooltip location="bottom" :text="$t('toolbox.translationAssistant.stopSpeech')" v-else>
+                  <v-tooltip
+                    location="bottom"
+                    :text="$t('toolbox.translationAssistant.stopSpeech')"
+                    v-else
+                  >
                     <template #activator="{ props }">
                       <v-btn @click="record" v-bind="props" icon>
                         <Icon icon="svg-spinners:bars-scale-fade" />
@@ -323,7 +335,9 @@ const readText = () => {
                 <v-card-actions class="bg-grey-lighten-4 bg-grey-lighten-4 text-primary">
                   <v-tooltip location="bottom" :text="$t('toolbox.translationAssistant.read')">
                     <template #activator="{ props }">
-                      <v-btn @click="readText" v-bind="props" icon><v-icon>mdi-volume-high</v-icon> </v-btn>
+                      <v-btn @click="readText" v-bind="props" icon
+                        ><v-icon>mdi-volume-high</v-icon>
+                      </v-btn>
                     </template>
                   </v-tooltip>
                   <v-spacer></v-spacer>

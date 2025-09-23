@@ -27,7 +27,13 @@ const selectedItem = ref<any>();
     <v-card>
       <v-list elevation="1" density="compact">
         <v-list-subheader>Total {{ length }} users</v-list-subheader>
-        <RecycleScroller class="scroller" :items="list" :item-size="50" key-field="id" v-slot="{ item }">
+        <RecycleScroller
+          class="scroller"
+          :items="list"
+          :item-size="50"
+          key-field="id"
+          v-slot="{ item }"
+        >
           <v-list-item
             :active="item.id === selectedItem?.id"
             active-color="primary"
@@ -55,7 +61,9 @@ const selectedItem = ref<any>();
             <!-- Main Content-->
             <!-- ---------------------------------------------- -->
             <div>
-              <v-list-item-title class="font-weight-bold text-primary">{{ item.username }}</v-list-item-title>
+              <v-list-item-title class="font-weight-bold text-primary">{{
+                item.username
+              }}</v-list-item-title>
               <v-list-item-subtitle>{{ item.title }}</v-list-item-subtitle>
             </div>
           </v-list-item>

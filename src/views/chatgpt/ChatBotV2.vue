@@ -185,7 +185,12 @@ const inputRow = ref(1);
       </div>
     </div>
     <div class="input-area">
-      <v-sheet elevation="0" class="input-panel d-flex align-end pa-1" max-width="1200" color="transparent">
+      <v-sheet
+        elevation="0"
+        class="input-panel d-flex align-end pa-1"
+        max-width="1200"
+        color="transparent"
+      >
         <v-btn class="mb-1" variant="elevated" icon @click="chatGPTStore.configDialog = true">
           <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
           <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>

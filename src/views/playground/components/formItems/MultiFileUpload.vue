@@ -80,7 +80,9 @@ const addFiles = newFiles => {
     <button @click="triggerFileInput">点击或拖拽上传文件</button>
   </div>
   <ul>
-    <li v-for="(file, index) in fileInfoList" :key="index">{{ file.name }} ({{ file.size }} bytes)</li>
+    <li v-for="(file, index) in fileInfoList" :key="index">
+      {{ file.name }} ({{ file.size }} bytes)
+    </li>
   </ul>
 </template>
 

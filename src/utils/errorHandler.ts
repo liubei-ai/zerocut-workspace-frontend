@@ -191,8 +191,8 @@ export class ErrorHandler {
  */
 export function createRetryFunction<T>(
   fn: () => Promise<T>,
-  maxRetries: number = 3,
-  baseDelay: number = 1000
+  maxRetries = 3,
+  baseDelay = 1000
 ): () => Promise<T> {
   return async (): Promise<T> => {
     let lastError: any;

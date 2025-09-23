@@ -268,7 +268,14 @@ const refreshModels = async () => {
           </v-textarea>
         </transition>
 
-        <v-btn class="mb-1" color="primary" variant="elevated" icon :loading="isLoading" :disabled="isLoading">
+        <v-btn
+          class="mb-1"
+          color="primary"
+          variant="elevated"
+          icon
+          :loading="isLoading"
+          :disabled="isLoading"
+        >
           <v-icon @click="sendMessage">mdi-send</v-icon>
         </v-btn>
       </v-sheet>

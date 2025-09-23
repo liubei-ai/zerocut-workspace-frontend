@@ -72,7 +72,13 @@ const snackbar = reactive({
 
       <v-card-text>
         <div class="two-line" style="height: 100px">
-          <v-chip class="interest-chip ma-2" color="primary" label v-for="item in collection.tags" :key="item.title">
+          <v-chip
+            class="interest-chip ma-2"
+            color="primary"
+            label
+            v-for="item in collection.tags"
+            :key="item.title"
+          >
             <v-icon start icon="mdi-label-outline"></v-icon>
             {{ item.title }}
           </v-chip>

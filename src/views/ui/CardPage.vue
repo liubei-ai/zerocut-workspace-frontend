@@ -67,7 +67,7 @@ $black: #000000;
 }
 .card-1 {
   background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid transparentize($white, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
   box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
 }

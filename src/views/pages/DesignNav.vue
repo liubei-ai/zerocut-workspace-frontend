@@ -2,7 +2,13 @@
   <v-container>
     <v-row>
       <v-col class="d-none d-sm-block" sm="2">
-        <v-sheet :width="width" color="rgba(0,0,0,.1)" rounded="lg" class="fixed pa-2" elevation="2">
+        <v-sheet
+          :width="width"
+          color="rgba(0,0,0,.1)"
+          rounded="lg"
+          class="fixed pa-2"
+          elevation="2"
+        >
           <!--  -->
           <v-list height="1000">
             <v-list-subheader>锚点菜单</v-list-subheader>
@@ -27,19 +33,36 @@
       <v-col cols="12" sm="10">
         <v-sheet class="pa-5" min-height="70vh" rounded="lg" elevation="4">
           <template v-for="sitesSection in siteList" :key="sitesSection.category_id">
-            <v-sheet style="border: 1px solid #ccc; border-radius: 1rem" class="pa-5 mb-5" height="" color="">
+            <v-sheet
+              style="border: 1px solid #ccc; border-radius: 1rem"
+              class="pa-5 mb-5"
+              height=""
+              color=""
+            >
               <h1 :id="`category_${sitesSection.category_id}`" class="text-h6">
                 {{ sitesSection.category_name_cn }}
               </h1>
               <v-divider class="my-5"></v-divider>
               <v-row>
-                <v-col xs="12" sm="6" lg="3" xl="2" v-for="site in sitesSection.sites" :key="site.site_id">
+                <v-col
+                  xs="12"
+                  sm="6"
+                  lg="3"
+                  xl="2"
+                  v-for="site in sitesSection.sites"
+                  :key="site.site_id"
+                >
                   <v-hover v-slot="{ isHovering, props }">
                     <a :href="site.href" target="_blank">
                       <v-card height="120" v-bind="props" :elevation="isHovering ? 6 : 2">
                         <v-card-title class="text-subtitle-1 d-flex align-center">
                           <span class="mr-2">
-                            <v-img :src="site.icon" :lazy-src="site.icon" width="20" aspect-ratio="1"></v-img
+                            <v-img
+                              :src="site.icon"
+                              :lazy-src="site.icon"
+                              width="20"
+                              aspect-ratio="1"
+                            ></v-img
                           ></span>
                           <span class="text-truncate">{{ site.site_name }}</span>
                         </v-card-title>

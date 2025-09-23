@@ -17,7 +17,9 @@
             We organize chaotic
             <span class="text-primary">internet</span>
           </h1>
-          <h2 class="text-h6 text-secondary mt-4 mx-auto">Stack is a Spatial Browser for Mindful Online Living</h2>
+          <h2 class="text-h6 text-secondary mt-4 mx-auto">
+            Stack is a Spatial Browser for Mindful Online Living
+          </h2>
         </v-card>
         <div class="text-center">
           <v-btn size="x-large" class="text-white" color="primary">Get Stack</v-btn>

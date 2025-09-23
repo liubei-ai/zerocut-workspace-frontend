@@ -242,7 +242,13 @@ const clearMessages = () => {
           <!-- Playing Animation -->
           <AnimaitonCss01 v-else-if="speechStore.isPlaying" />
           <!-- Recording Btn -->
-          <v-btn v-else size="x-large" icon variant="elevated" color="primary" @click="startRecording"
+          <v-btn
+            v-else
+            size="x-large"
+            icon
+            variant="elevated"
+            color="primary"
+            @click="startRecording"
             ><v-icon size="30">mdi-microphone</v-icon></v-btn
           >
         </div>

@@ -2,7 +2,13 @@
   <v-container>
     <v-row>
       <v-col class="d-none d-sm-block left-menu" sm="2">
-        <v-sheet :width="width" color="rgba(0,0,0,.1)" rounded="lg" class="fixed pa-2" elevation="2">
+        <v-sheet
+          :width="width"
+          color="rgba(0,0,0,.1)"
+          rounded="lg"
+          class="fixed pa-2"
+          elevation="2"
+        >
           <!--  -->
           <v-list height="1000">
             <v-list-subheader>锚点菜单</v-list-subheader>

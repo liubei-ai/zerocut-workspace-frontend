@@ -102,7 +102,11 @@ const navs = [
                 <p class="text-h6 mb-4">
                   <b>{{ nav.title }}</b>
                 </p>
-                <p class="text-body-2 text-primary mb-2" v-for="subNav in nav.subNavs" :key="subNav.title">
+                <p
+                  class="text-body-2 text-primary mb-2"
+                  v-for="subNav in nav.subNavs"
+                  :key="subNav.title"
+                >
                   <RouterLink :to="nav.to">
                     {{ subNav.title }}
                   </RouterLink>
@@ -116,10 +120,12 @@ const navs = [
             </p>
             <div>
               <v-btn class="mb-3" color="blue-grey" variant="outlined" size="x-large" block>
-                <template v-slot:prepend><Icon width="30" icon="logos:google-play-icon" /></template>Google Play
+                <template v-slot:prepend><Icon width="30" icon="logos:google-play-icon" /></template
+                >Google Play
               </v-btn>
               <v-btn color="blue-grey" variant="outlined" size="x-large" block>
-                <template v-slot:prepend><Icon width="30" icon="logos:apple-app-store" /></template>Apple Store
+                <template v-slot:prepend><Icon width="30" icon="logos:apple-app-store" /></template
+                >Apple Store
               </v-btn>
             </div>
           </v-col>

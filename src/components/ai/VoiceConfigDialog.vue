@@ -51,7 +51,9 @@ onMounted(() => {
     <v-card>
       <v-card-title>
         <v-spacer></v-spacer>
-        <v-btn variant="flat" icon @click="speechStore.voiceConfigDialog = false"><v-icon>mdi-close</v-icon></v-btn>
+        <v-btn variant="flat" icon @click="speechStore.voiceConfigDialog = false"
+          ><v-icon>mdi-close</v-icon></v-btn
+        >
       </v-card-title>
       <v-container>
         <v-row>
@@ -76,7 +78,13 @@ onMounted(() => {
                     )</span
                   >
                 </v-list-subheader>
-                <RecycleScroller class="scroller" :items="allVoices" :item-size="50" key-field="name" v-slot="{ item }">
+                <RecycleScroller
+                  class="scroller"
+                  :items="allVoices"
+                  :item-size="50"
+                  key-field="name"
+                  v-slot="{ item }"
+                >
                   <v-list-item
                     active-color="primary"
                     @click="selectVoice(item)"
@@ -101,7 +109,9 @@ onMounted(() => {
                     <template v-slot:append>
                       <div class="full-h d-flex align-center">
                         <span class="text-body-2 text-grey">
-                          <v-chip size="small" class="font-weight-bold" color="blue">{{ item.locale }}</v-chip>
+                          <v-chip size="small" class="font-weight-bold" color="blue">{{
+                            item.locale
+                          }}</v-chip>
                         </span>
                       </div>
                     </template>
@@ -111,7 +121,9 @@ onMounted(() => {
                     <div>
                       <v-list-item-title class="font-weight-bold text-primary"
                         >{{ item.localName }}
-                        <span class="text-body-2 ml-2">({{ item.shortName }})</span></v-list-item-title
+                        <span class="text-body-2 ml-2"
+                          >({{ item.shortName }})</span
+                        ></v-list-item-title
                       >
                     </div>
                   </v-list-item>

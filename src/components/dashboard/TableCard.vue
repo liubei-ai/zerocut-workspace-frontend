@@ -137,7 +137,8 @@ onMounted(() => {
               </div>
             </td>
             <td>
-              <v-btn size="small" variant="text" icon="mdi-open-in-new" @click="open(item)"> </v-btn>
+              <v-btn size="small" variant="text" icon="mdi-open-in-new" @click="open(item)">
+              </v-btn>
             </td>
           </tr>
         </tbody>

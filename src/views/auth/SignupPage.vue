@@ -144,7 +144,13 @@ const resetErrors = () => {
           <Icon icon="logos:google-icon" class="mr-3 my-2" />
           Google
         </v-btn>
-        <v-btn class="mb-2 lighten-2 text-capitalize" block color="white" size="x-large" :disabled="isSignInDisabled">
+        <v-btn
+          class="mb-2 lighten-2 text-capitalize"
+          block
+          color="white"
+          size="x-large"
+          :disabled="isSignInDisabled"
+        >
           <Icon icon="logos:facebook" class="mr-3" />
           Facebook
         </v-btn>

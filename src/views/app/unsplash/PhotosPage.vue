@@ -220,13 +220,24 @@ const openPhotoDialog = (id: string) => {
             <v-window v-model="tab">
               <!-- Photos -->
               <v-window-item value="photos">
-                <v-card min-height="80vh" class="pa-5 d-flex align-center justify-center" v-if="photoData.total === 0">
-                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
+                <v-card
+                  min-height="80vh"
+                  class="pa-5 d-flex align-center justify-center"
+                  v-if="photoData.total === 0"
+                >
+                  <v-img
+                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
+                    height="400"
+                  ></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
+                      <v-slide-group-item
+                        v-for="item in relatedSearches"
+                        :key="item.title"
+                        v-slot="{ isSelected }"
+                      >
                         <v-btn
                           class="ma-2"
                           rounded
@@ -239,8 +250,20 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" xl="2" lg="3" md="4" sm="6" v-for="item in photoData.photos" :key="item.id">
-                      <v-card width="100%" class="info-card photo-card d-flex flex-column" height="480">
+                    <v-col
+                      cols="12"
+                      xl="2"
+                      lg="3"
+                      md="4"
+                      sm="6"
+                      v-for="item in photoData.photos"
+                      :key="item.id"
+                    >
+                      <v-card
+                        width="100%"
+                        class="info-card photo-card d-flex flex-column"
+                        height="480"
+                      >
                         <div>
                           <v-img
                             class="align-end text-white"
@@ -252,7 +275,10 @@ const openPhotoDialog = (id: string) => {
                           >
                             <template v-slot:placeholder>
                               <v-row class="fill-height ma-0" align="center" justify="center">
-                                <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
+                                <v-progress-circular
+                                  indeterminate
+                                  color="grey-lighten-5"
+                                ></v-progress-circular>
                               </v-row>
                             </template>
                             <v-card-title class="card-title">
@@ -294,7 +320,12 @@ const openPhotoDialog = (id: string) => {
                           <v-spacer></v-spacer>
                           <v-tooltip location="bottom" text="Download">
                             <template v-slot:activator="{ props }">
-                              <v-btn v-bind="props" icon="mdi-download" @click="downloadPhoto(item)"> </v-btn>
+                              <v-btn
+                                v-bind="props"
+                                icon="mdi-download"
+                                @click="downloadPhoto(item)"
+                              >
+                              </v-btn>
                             </template>
                           </v-tooltip>
                           <v-tooltip location="bottom" text="Add To Collection">
@@ -325,12 +356,19 @@ const openPhotoDialog = (id: string) => {
                   class="pa-5 d-flex align-center justify-center"
                   v-if="collectionData.total === 0"
                 >
-                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
+                  <v-img
+                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
+                    height="400"
+                  ></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
+                      <v-slide-group-item
+                        v-for="item in relatedSearches"
+                        :key="item.title"
+                        v-slot="{ isSelected }"
+                      >
                         <v-btn
                           class="ma-2"
                           rounded
@@ -343,8 +381,17 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" lg="6" xl="4" v-for="item in collectionData.collections" :key="item.id">
-                      <v-card class="info-card collection-card d-flex mt-5" color="secondary-lighten-1">
+                    <v-col
+                      cols="12"
+                      lg="6"
+                      xl="4"
+                      v-for="item in collectionData.collections"
+                      :key="item.id"
+                    >
+                      <v-card
+                        class="info-card collection-card d-flex mt-5"
+                        color="secondary-lighten-1"
+                      >
                         <v-img
                           max-width="200"
                           aspect-ratio="1"
@@ -398,13 +445,24 @@ const openPhotoDialog = (id: string) => {
 
               <!-- Users -->
               <v-window-item value="users">
-                <v-card min-height="80vh" class="pa-5 d-flex align-center justify-center" v-if="userData.total === 0">
-                  <v-img src="https://unsplash-assets.imgix.net/empty-states/photos.png" height="400"></v-img>
+                <v-card
+                  min-height="80vh"
+                  class="pa-5 d-flex align-center justify-center"
+                  v-if="userData.total === 0"
+                >
+                  <v-img
+                    src="https://unsplash-assets.imgix.net/empty-states/photos.png"
+                    height="400"
+                  ></v-img>
                 </v-card>
                 <v-card min-height="80vh" class="pa-5" v-else>
                   <v-row>
                     <v-slide-group show-arrows>
-                      <v-slide-group-item v-for="item in relatedSearches" :key="item.title" v-slot="{ isSelected }">
+                      <v-slide-group-item
+                        v-for="item in relatedSearches"
+                        :key="item.title"
+                        v-slot="{ isSelected }"
+                      >
                         <v-btn
                           class="ma-2"
                           rounded
@@ -417,8 +475,18 @@ const openPhotoDialog = (id: string) => {
                     </v-slide-group>
                   </v-row>
                   <v-row>
-                    <v-col cols="12" lg="3" md="4" sm="6" v-for="item in userData.users" :key="item.id">
-                      <v-card width="100%" class="info-card user-card d-flex flex-column justify-space-between">
+                    <v-col
+                      cols="12"
+                      lg="3"
+                      md="4"
+                      sm="6"
+                      v-for="item in userData.users"
+                      :key="item.id"
+                    >
+                      <v-card
+                        width="100%"
+                        class="info-card user-card d-flex flex-column justify-space-between"
+                      >
                         <div class="card-top bg-secondary-lighten-1 text-content">
                           <v-avatar class="mr-5" size="avatarSize">
                             <img :src="item.profile_image.small" alt="alt" />

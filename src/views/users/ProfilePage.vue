@@ -151,7 +151,9 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Basic Info</v-btn>
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated">
+              Unpdate Basic Info</v-btn
+            >
           </v-card-actions>
         </v-card>
 
@@ -250,7 +252,9 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Password</v-btn>
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated">
+              Unpdate Password</v-btn
+            >
           </v-card-actions>
         </v-card>
 
@@ -283,7 +287,9 @@ Basic with Icons
           <v-divider></v-divider>
           <v-card-actions class="pa-5">
             <v-spacer></v-spacer>
-            <v-btn class="px-5" color="primary" elevation="1" variant="elevated"> Unpdate Notifications</v-btn>
+            <v-btn class="px-5" color="primary" elevation="1" variant="elevated">
+              Unpdate Notifications</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-col>

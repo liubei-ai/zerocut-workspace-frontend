@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
-import userStatData from '@/mocks/user-stat-daily.json';
 import { useStatsStore } from '@/stores/statsStore';
 import type { MetricCardData } from '@/types/stats';
 
@@ -25,46 +24,8 @@ const metricCards = computed(() => {
   }));
 });
 
-// 从JSON数据中提取统计图表数据
-const statisticsChartData = computed(() => {
-  const dailyData = userStatData.data.daily_data;
-  const categories = dailyData.map(item => {
-    const date = new Date(item.date);
-    return `${date.getMonth() + 1}/${date.getDate()}`;
-  });
-
-  const series = [
-    {
-      name: '图片生成',
-      data: dailyData.map(item => item.image_count),
-      type: 'bar' as const,
-      color: '#1976d2',
-    },
-    {
-      name: '视频生成',
-      data: dailyData.map(item => item.video_count),
-      type: 'bar' as const,
-      color: '#388e3c',
-    },
-    {
-      name: '视频时长(秒)',
-      data: dailyData.map(item => item.video_duration),
-      type: 'line' as const,
-      color: '#ff9800',
-    },
-    {
-      name: '积分消耗',
-      data: dailyData.map(item => item.points_consumed),
-      type: 'line' as const,
-      color: '#e91e63',
-    },
-  ];
-
-  return {
-    categories,
-    series,
-  };
-});
+// 使用 statsStore 中的统计图表数据
+const statisticsChartData = computed(() => statsStore.statisticsChartData);
 
 // 生命周期
 onMounted(async () => {
@@ -131,7 +92,7 @@ const handleMetricAction = (metric: MetricCardData) => {
               <span>使用统计趋势</span>
               <v-spacer></v-spacer>
               <v-chip size="small" color="success" variant="outlined">
-                {{ userStatData.data.start_date }} 至 {{ userStatData.data.end_date }}
+                {{ statsStore.selectedDateRange.start }} 至 {{ statsStore.selectedDateRange.end }}
               </v-chip>
             </v-card-title>
             <v-card-text>

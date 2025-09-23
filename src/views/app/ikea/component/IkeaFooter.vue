@@ -180,9 +180,13 @@ const footerNavs = [
             </p>
 
             <p>
-              <RouterLink to="/ " class="text-decoration-underline text-body-2">詳しく見る</RouterLink>
+              <RouterLink to="/ " class="text-decoration-underline text-body-2"
+                >詳しく見る</RouterLink
+              >
             </p>
-            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill">入会する</v-btn>
+            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill"
+              >入会する</v-btn
+            >
           </div>
           <div>
             <h6 class="font-weight-bold">IKEA Business Networkに入会する</h6>
@@ -192,9 +196,13 @@ const footerNavs = [
             </p>
 
             <p>
-              <RouterLink to="/ " class="text-decoration-underline text-body-2">詳しく見る</RouterLink>
+              <RouterLink to="/ " class="text-decoration-underline text-body-2"
+                >詳しく見る</RouterLink
+              >
             </p>
-            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill">入会する</v-btn>
+            <v-btn class="text-body-2 font-weight-bold my-5" color="black" rounded="pill"
+              >入会する</v-btn
+            >
           </div>
         </v-col>
         <v-col cols="12" md="8">

@@ -161,12 +161,21 @@ const { xs } = useDisplay();
 <template>
   <v-btn size="50" @click="dialog = !dialog">
     <v-icon size="30">mdi-chat-outline </v-icon>
-    <v-tooltip activator="parent" location="left" :text="$t('toolbox.chatAssistant.title')"></v-tooltip>
+    <v-tooltip
+      activator="parent"
+      location="left"
+      :text="$t('toolbox.chatAssistant.title')"
+    ></v-tooltip>
   </v-btn>
 
   <teleport to="body">
     <transition name="slide-y">
-      <v-card v-if="dialog" class="dialog-bottom d-flex flex-column" :width="xs ? '100%' : '600px'" height="500px">
+      <v-card
+        v-if="dialog"
+        class="dialog-bottom d-flex flex-column"
+        :width="xs ? '100%' : '600px'"
+        height="500px"
+      >
         <v-card-title>
           <span class="flex-fill">
             <v-avatar size="40">
@@ -222,7 +231,13 @@ const { xs } = useDisplay();
         <v-divider />
 
         <v-sheet color="transparent" elevation="0" class="d-flex align-end justify-center pa-2">
-          <v-btn class="mb-1" variant="elevated" size="42" icon @click="chatGPTStore.configDialog = true">
+          <v-btn
+            class="mb-1"
+            variant="elevated"
+            size="42"
+            icon
+            @click="chatGPTStore.configDialog = true"
+          >
             <v-icon size="30" class="text-primary">mdi-cog-outline</v-icon>
             <v-tooltip activator="parent" location="top" text="ChatGPT Config"></v-tooltip>
           </v-btn>

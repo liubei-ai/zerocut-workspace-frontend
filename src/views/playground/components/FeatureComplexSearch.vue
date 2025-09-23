@@ -7,12 +7,28 @@
 import { eagleResourseData } from '@/data/eagle';
 // 领域
 // UI 设计 平面设计 插画设计 游戏设计 室内设计 工业设计
-const fieldLabelList = ref<string[]>(['全部', 'UI 设计', '平面设计', '插画设计', '游戏设计', '室内设计', '工业设计']);
+const fieldLabelList = ref<string[]>([
+  '全部',
+  'UI 设计',
+  '平面设计',
+  '插画设计',
+  '游戏设计',
+  '室内设计',
+  '工业设计',
+]);
 const currentFieldLabel = ref<string>('全部');
 
 // 分类
 // 全部 图标 插画 游戏原画 字体 界面 样机
-const categoryLabelList = ref<string[]>(['全部', '图标', '插画', '游戏原画', '字体', '界面', '样机']);
+const categoryLabelList = ref<string[]>([
+  '全部',
+  '图标',
+  '插画',
+  '游戏原画',
+  '字体',
+  '界面',
+  '样机',
+]);
 
 const currentCategoryLabel = ref<string>('全部');
 
@@ -49,7 +65,9 @@ const myFavorateKey = ref<boolean>(false);
 const eagleList = ref(eagleResourseData);
 const filteredList = computed(() => {
   return eagleList.value.filter(item => {
-    return (item.thumbnail && item.title.includes(search.value)) || item.author.includes(search.value);
+    return (
+      (item.thumbnail && item.title.includes(search.value)) || item.author.includes(search.value)
+    );
   });
 });
 
@@ -61,7 +79,15 @@ const search = ref<string>('');
   <v-card rounded variant="flat" class="text-blue-grey-darken-3">
     <!-- 领域 -->
     <v-chip-group v-model="currentFieldLabel" mandatory>
-      <v-chip filter label variant="text" color="primary" v-for="label in fieldLabelList" :key="label" :value="label">
+      <v-chip
+        filter
+        label
+        variant="text"
+        color="primary"
+        v-for="label in fieldLabelList"
+        :key="label"
+        :value="label"
+      >
         {{ label }}
       </v-chip>
     </v-chip-group>
@@ -88,7 +114,12 @@ const search = ref<string>('');
         {{ currentSort }}
         <v-menu activator="parent">
           <v-list>
-            <v-list-item v-for="(item, index) in sortList" :key="index" :value="item" @click="currentSort = item">
+            <v-list-item
+              v-for="(item, index) in sortList"
+              :key="index"
+              :value="item"
+              @click="currentSort = item"
+            >
               <v-list-item-title>{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -107,7 +138,12 @@ const search = ref<string>('');
         {{ currentType }}
         <v-menu activator="parent">
           <v-list>
-            <v-list-item v-for="(item, index) in typeList" :key="index" :value="item" @click="currentType = item">
+            <v-list-item
+              v-for="(item, index) in typeList"
+              :key="index"
+              :value="item"
+              @click="currentType = item"
+            >
               <v-list-item-title>{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -126,7 +162,12 @@ const search = ref<string>('');
         {{ currentLicense }}
         <v-menu activator="parent">
           <v-list>
-            <v-list-item v-for="(item, index) in licenseList" :key="index" :value="item" @click="currentLicense = item">
+            <v-list-item
+              v-for="(item, index) in licenseList"
+              :key="index"
+              :value="item"
+              @click="currentLicense = item"
+            >
               <v-list-item-title>{{ item }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -201,8 +242,13 @@ const search = ref<string>('');
                 <div class="d-flex align-center justify-space-between">
                   <span class="text-blue-grey"> {{ item.author }}</span>
                   <span>
-                    <span class="mr-2"><v-icon>mdi-download</v-icon> {{ item.downloadsAndViews?.split('\n')[0] }}</span>
-                    <span><v-icon>mdi-eye</v-icon> {{ item.downloadsAndViews?.split('\n')[1] }}</span>
+                    <span class="mr-2"
+                      ><v-icon>mdi-download</v-icon>
+                      {{ item.downloadsAndViews?.split('\n')[0] }}</span
+                    >
+                    <span
+                      ><v-icon>mdi-eye</v-icon> {{ item.downloadsAndViews?.split('\n')[1] }}</span
+                    >
                   </span>
                 </div>
               </v-card-text>

@@ -55,7 +55,12 @@ initData();
 <template>
   <v-card height="90vh" :width="mdAndUp ? '1200' : '100%'" class="mx-auto">
     <div v-if="isLoading" class="h-full d-flex align-center justify-center">
-      <v-progress-circular :size="50" :width="5" color="primary" indeterminate></v-progress-circular>
+      <v-progress-circular
+        :size="50"
+        :width="5"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
     </div>
     <div v-else>
       <v-card-title>
@@ -93,7 +98,9 @@ initData();
                   <v-list-item value="medium"> Medium </v-list-item>
                   <v-list-item value="large"> Large </v-list-item>
                   <v-divider></v-divider>
-                  <v-list-item value="row"> Row ({{ photo.width }} x {{ photo.height }}) </v-list-item>
+                  <v-list-item value="row">
+                    Row ({{ photo.width }} x {{ photo.height }})
+                  </v-list-item>
                 </v-list>
                 <!-- <v-list>
         <v-list-item
@@ -113,7 +120,13 @@ initData();
 
       <v-card-text class="scrollbar-beautify">
         <div>
-          <v-img class="mx-auto" width="1080" contain :src="photo.urls.regular" :lazy-src="photo.urls.regular"></v-img>
+          <v-img
+            class="mx-auto"
+            width="1080"
+            contain
+            :src="photo.urls.regular"
+            :lazy-src="photo.urls.regular"
+          ></v-img>
         </div>
 
         <div class="related-photos pa-3">
@@ -150,20 +163,37 @@ initData();
             </div>
             <h4 class="text-h6 font-weight-bold py-3">Related Photos</h4>
             <v-row>
-              <v-col col="12" md="4" lg="3" v-for="relatedPhoto in relatedPhotos" :key="relatedPhoto.id">
+              <v-col
+                col="12"
+                md="4"
+                lg="3"
+                v-for="relatedPhoto in relatedPhotos"
+                :key="relatedPhoto.id"
+              >
                 <PhotoCard :photo="relatedPhoto"></PhotoCard>
               </v-col>
             </v-row>
 
             <h4 class="text-h6 font-weight-bold py-3">Related Collections</h4>
             <v-row>
-              <v-col cols="12" md="4" v-for="collection in photo.related_collections.results" :key="collection.id">
+              <v-col
+                cols="12"
+                md="4"
+                v-for="collection in photo.related_collections.results"
+                :key="collection.id"
+              >
                 <CollectionCard :collection="collection"></CollectionCard>
               </v-col>
             </v-row>
             <h4 class="text-h6 font-weight-bold py-3">Related tags</h4>
             <v-card class="shadow-1 mb-3">
-              <v-chip class="interest-chip ma-2" color="primary" label v-for="tag in photo.tags" :key="tag.title">
+              <v-chip
+                class="interest-chip ma-2"
+                color="primary"
+                label
+                v-for="tag in photo.tags"
+                :key="tag.title"
+              >
                 <v-icon start icon="mdi-bookmark-outline"></v-icon>
                 {{ tag.title }}
               </v-chip>
@@ -182,8 +212,8 @@ initData();
   width: 215px;
   height: 220px;
   background:
-    linear-gradient(0.25turn, transparent, #fff, transparent), linear-gradient(#ddd, #ddd), linear-gradient(#ddd, #ddd),
-    linear-gradient(#ddd, #ddd);
+    linear-gradient(0.25turn, transparent, #fff, transparent), linear-gradient(#ddd, #ddd),
+    linear-gradient(#ddd, #ddd), linear-gradient(#ddd, #ddd);
   background-color: #fff;
   background-repeat: no-repeat;
   background-size:

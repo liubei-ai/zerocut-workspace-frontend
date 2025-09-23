@@ -177,7 +177,12 @@ const cards = [
         color="accent"
         ><Icon width="24" :icon="item.icon" />
         <!-- tooltip -->
-        <v-tooltip activator="parent" location="left" :text="item.title" class="font-weight-bold"></v-tooltip>
+        <v-tooltip
+          activator="parent"
+          location="left"
+          :text="item.title"
+          class="font-weight-bold"
+        ></v-tooltip>
         <!-- Menu -->
         <v-menu location="left center" activator="parent">
           <v-card class="mr-2" height="600" width="300">

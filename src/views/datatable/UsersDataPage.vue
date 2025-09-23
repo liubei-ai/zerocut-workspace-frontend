@@ -127,7 +127,11 @@ const getLikesColor = likes => {
               <td>{{ item.location }}</td>
 
               <td class="text-center">
-                <v-chip size="small" :color="item.for_hire ? 'blue' : 'grey'" class="font-weight-bold">
+                <v-chip
+                  size="small"
+                  :color="item.for_hire ? 'blue' : 'grey'"
+                  class="font-weight-bold"
+                >
                   {{ item.for_hire ? 'Hire' : 'No Hire' }}</v-chip
                 >
               </td>
@@ -135,7 +139,11 @@ const getLikesColor = likes => {
                 {{ item.total_collections }}
               </td>
               <td>
-                <v-chip size="small" :color="getLikesColor(item.total_likes)" class="font-weight-bold">
+                <v-chip
+                  size="small"
+                  :color="getLikesColor(item.total_likes)"
+                  class="font-weight-bold"
+                >
                   {{ item.total_likes }}</v-chip
                 >
               </td>
@@ -143,8 +151,15 @@ const getLikesColor = likes => {
                 {{ item.total_photos }}
               </td>
               <td class="text-center">
-                <v-chip size="small" :color="item.accepted_tos ? 'green' : 'pink'" class="font-weight-bold">
-                  <v-icon start :icon="item.accepted_tos ? 'mdi-security ' : 'mdi-close-octagon'"></v-icon>
+                <v-chip
+                  size="small"
+                  :color="item.accepted_tos ? 'green' : 'pink'"
+                  class="font-weight-bold"
+                >
+                  <v-icon
+                    start
+                    :icon="item.accepted_tos ? 'mdi-security ' : 'mdi-close-octagon'"
+                  ></v-icon>
                   {{ item.accepted_tos ? 'Accepted' : 'Not Accepted' }}</v-chip
                 >
               </td>
