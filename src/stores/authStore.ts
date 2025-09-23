@@ -1,4 +1,3 @@
-import router from '@/router';
 import type { ApiError, User } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
@@ -48,22 +47,14 @@ export const useAuthStore = defineStore(
      */
     const logout = async (): Promise<void> => {
       loading.value = true;
-
       try {
-        // 直接使用已初始化的 guard 实例
         await guard.logout();
         await requestLogout();
       } catch (err) {
         console.error('Logout failed:', err);
-        // Continue with local logout even if server logout fails
       } finally {
         clearAuthState();
         loading.value = false;
-
-        // 只有在不是由 API 层调用时才跳转（避免重复跳转）
-        if (router.currentRoute.value.name !== 'auth-authing') {
-          router.push({ name: 'auth-authing' });
-        }
       }
     };
 

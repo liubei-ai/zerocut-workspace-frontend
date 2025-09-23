@@ -16,16 +16,9 @@ import ZerocutRoutes from './zerocut.routes';
 export const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    // redirect: '/dashboard',
+    redirect: '/apikey',
     meta: {},
-  },
-  {
-    path: '/demo/dashboard',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-    },
-    component: () => import('@/views/pages/DashBoard.vue'),
   },
   {
     path: '/:pathMatch(.*)*',
