@@ -61,6 +61,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
+  debugger;
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
@@ -74,12 +75,11 @@ router.beforeEach(async (to, from, next) => {
       });
       return;
     }
-    // 如果本地有认证状态，继续访问，如果服务端验证失败会在API层处理
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
   if (authStore.isAuthenticated && to.path.startsWith('/auth/')) {
-    next('/dashboard');
+    next('/');
     return;
   }
 

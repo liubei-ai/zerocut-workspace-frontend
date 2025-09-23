@@ -34,23 +34,12 @@ const getAuthStore = async () => {
 };
 
 // 处理认证失败的函数
-const handleAuthFailure = async (currentPath?: string) => {
+const handleAuthFailure = async () => {
   try {
-    // 清空认证状态
     const store = await getAuthStore();
     await store.logout();
-
-    // 跳转到登录页面，保存当前路径用于登录后重定向
-    const routerInstance = await getRouter();
-    const redirectPath = currentPath || routerInstance.currentRoute.value.fullPath;
-
-    await routerInstance.push({
-      name: 'auth-authing',
-      query: { redirect: redirectPath },
-    });
   } catch (error) {
     console.error('Handle auth failure error:', error);
-    // 如果出错，直接跳转到登录页面
     window.location.href = '/auth/authing';
   }
 };

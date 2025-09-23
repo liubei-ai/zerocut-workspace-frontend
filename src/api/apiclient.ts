@@ -38,7 +38,7 @@ const handleAuthFailure = async (currentPath?: string) => {
   try {
     // 清空认证状态
     const store = await getAuthStore();
-    store.logout();
+    await store.logout();
 
     // 跳转到登录页面，保存当前路径用于登录后重定向
     const routerInstance = await getRouter();

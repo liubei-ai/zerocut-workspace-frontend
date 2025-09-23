@@ -1,3 +1,4 @@
+import router from '@/router';
 import type { ApiError, User } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
@@ -55,6 +56,12 @@ export const useAuthStore = defineStore(
       } finally {
         clearAuthState();
         loading.value = false;
+        if (router.currentRoute.value.name !== 'auth-authing') {
+          router.push({
+            name: 'auth-authing',
+            query: { redirect: router.currentRoute.value.fullPath },
+          });
+        }
       }
     };
 
