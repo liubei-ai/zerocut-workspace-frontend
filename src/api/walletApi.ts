@@ -1,5 +1,5 @@
 import { PaginationResponse } from '../types/api';
-import client from './api2Client';
+import client from './api2client';
 
 // 后端钱包信息响应类型
 export interface WalletInfo {

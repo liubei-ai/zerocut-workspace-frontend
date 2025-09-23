@@ -1,4 +1,4 @@
-import apiClient from './api2Client';
+import apiClient from './api2client';
 
 // 接口类型定义
 export interface Message {
