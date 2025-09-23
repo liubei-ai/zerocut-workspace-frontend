@@ -24,7 +24,7 @@ export default defineConfig({
     }),
     viteMockServe({
       mockPath: 'src/mocks',
-      enable: true,
+      enable: false,
     }),
   ],
   define: { 'process.env': {} },

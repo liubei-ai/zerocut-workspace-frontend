@@ -2,18 +2,18 @@
 // 对应新的扁平化菜单结构
 
 export default [
-  // {
-  //   path: '/dashboard',
-  //   name: 'Dashboard',
-  //   meta: {
-  //     requiresAuth: true,
-  //     layout: 'landing',
-  //     title: '数据看板',
-  //     category: 'ZeroCut',
-  //   },
-  //   component: () =>
-  //     import(/* webpackChunkName: "dashboard" */ '@/views/zerocut/DashboardView.vue'),
-  // },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '数据看板',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "dashboard" */ '@/views/zerocut/DashboardView.vue'),
+  },
   {
     path: '/apikey',
     name: 'APIKeys',

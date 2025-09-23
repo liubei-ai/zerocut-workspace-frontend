@@ -10,18 +10,18 @@ import menuZeroCut from './menus/zerocut.menu';
 
 // 开发环境模版菜单
 const developmentMenus = [
-  {
-    text: 'dashboard',
-    key: 'menu.dashboard',
-    items: [
-      {
-        key: 'menu.dashboard',
-        text: 'Dashboard',
-        link: '/dashboard',
-        icon: 'mdi-view-dashboard-outline',
-      },
-    ],
-  },
+  // {
+  //   text: 'dashboard',
+  //   key: 'menu.dashboard',
+  //   items: [
+  //     {
+  //       key: 'menu.dashboard',
+  //       text: 'Dashboard',
+  //       link: '/demo/dashboard',
+  //       icon: 'mdi-view-dashboard-outline',
+  //     },
+  //   ],
+  // },
   {
     text: 'chatgpt',
     items: menuAi,

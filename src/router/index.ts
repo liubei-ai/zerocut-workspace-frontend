@@ -16,8 +16,7 @@ import ZerocutRoutes from './zerocut.routes';
 export const routes = [
   {
     path: '/',
-    // redirect: '/dashboard',
-    redirect: '/apikey',
+    redirect: '/dashboard',
     meta: {},
   },
   {
@@ -61,7 +60,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
 
-  debugger;
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
