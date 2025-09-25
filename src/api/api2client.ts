@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
     const { code, message, data } = response.data;
 
     // Check if the response indicates success
-    if (code === 200 || code === 0) {
+    if (code === 200 || code === 201 || code === 0) {
       // Return the data directly for successful responses
       return { ...response, data: data };
     } else if (code === 401) {

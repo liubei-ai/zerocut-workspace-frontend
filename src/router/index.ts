@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/stores/authStore';
 import { createRouter, createWebHistory } from 'vue-router';
+import AdminRoutes from './admin.routes';
 import AiRoutes from './ai.routes';
 import AppsRoutes from './apps.routes';
 import AuthRoutes from './auth.routes';
@@ -36,6 +37,7 @@ export const routes = [
   ...DataRoutes,
   ...ChartsRoutes,
   ...UmlRoutes,
+  ...AdminRoutes,
 ];
 
 // 动态路由，基于用户权限动态去加载
