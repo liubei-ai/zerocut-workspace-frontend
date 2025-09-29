@@ -10,6 +10,7 @@ export interface WorkspaceListItem {
   isActive: boolean;
   ownerId: number;
   ownerEmail: string;
+  ownerPhone?: string;
   ownerUsername: string;
   memberCount: number;
   creditsBalance: number;

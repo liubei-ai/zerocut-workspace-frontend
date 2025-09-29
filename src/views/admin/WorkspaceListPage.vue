@@ -314,7 +314,7 @@ onMounted(() => {
             <div>
               <div class="font-weight-medium text-body-2">{{ item.ownerUsername }}</div>
               <div class="text-caption text-medium-emphasis">
-                {{ item.ownerEmail }}
+                {{ item.ownerPhone || item.ownerEmail }}
               </div>
             </div>
           </div>
