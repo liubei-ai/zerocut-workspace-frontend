@@ -55,6 +55,8 @@ const getPaymentMethodIcon = (paymentMethod: string) => {
       return 'mdi-account-cash';
     case 'bot':
       return 'mdi-robot';
+    case 'give':
+      return 'mdi-gift';
     default:
       return 'mdi-cash';
   }
@@ -75,6 +77,8 @@ const getPaymentMethodText = (paymentMethod: string) => {
       return '手动充值';
     case 'bot':
       return '机器人充值';
+    case 'give':
+      return '积分赠送';
     default:
       return '其他';
   }

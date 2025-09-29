@@ -30,6 +30,7 @@ export interface CreateRechargeParams {
   workspaceId?: string;
   amount: number;
   thirdPartyOrderNo?: string;
+  paymentMethod?: 'manual' | 'give';
   paymentDetails?: Record<string, any>;
 }
 

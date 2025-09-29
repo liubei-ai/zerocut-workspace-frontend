@@ -136,7 +136,11 @@ const openRechargeDialog = (workspace: WorkspaceListItem) => {
 };
 
 // 处理充值
-const handleRecharge = async (data: { amount: number; thirdPartyOrderNo?: string }) => {
+const handleRecharge = async (data: {
+  amount: number;
+  paymentMethod: 'manual' | 'give';
+  thirdPartyOrderNo?: string;
+}) => {
   if (!selectedWorkspace.value) return;
 
   try {
@@ -145,6 +149,7 @@ const handleRecharge = async (data: { amount: number; thirdPartyOrderNo?: string
     const rechargeData = {
       workspaceId: selectedWorkspace.value.workspaceId,
       amount: data.amount,
+      paymentMethod: data.paymentMethod,
       thirdPartyOrderNo: data.thirdPartyOrderNo,
     };
 

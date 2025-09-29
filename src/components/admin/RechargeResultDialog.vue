@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="800px" persistent>
+  <v-dialog v-model="isOpen" max-width="800px">
     <v-card>
       <!-- 成功状态头部 -->
       <v-card-title class="d-flex align-center pa-6">
@@ -205,6 +205,7 @@ const getPaymentMethodText = (method?: string) => {
     wechat: '微信支付',
     bank: '银行转账',
     manual: '手动充值',
+    give: '积分赠送',
     admin: '管理员充值',
   };
   return methodMap[method || ''] || method || '未知';
