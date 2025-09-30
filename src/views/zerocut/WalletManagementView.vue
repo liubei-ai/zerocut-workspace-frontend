@@ -124,10 +124,11 @@ const fetchTransactions = async () => {
   try {
     transactionsLoading.value = true;
     const params = {
+      workspaceId,
       page: pagination.value.page,
       limit: pagination.value.limit,
     };
-    const response = await getWalletRechargeRecords(workspaceId, params);
+    const response = await getWalletRechargeRecords(params);
     const { list, ...rest } = response;
     transactions.value = list;
     pagination.value = rest;

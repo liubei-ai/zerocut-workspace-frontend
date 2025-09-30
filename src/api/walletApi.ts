@@ -26,30 +26,25 @@ export interface TransactionItem {
  * @returns 钱包信息
  */
 export async function getWalletInfo(workspaceId: string) {
-  const response = await client.get<WalletInfo>(`/wallet/${workspaceId}/info`);
+  const response = await client.get<WalletInfo>(`/wallet/info`, { params: { workspaceId } });
   return response.data;
 }
 
 /**
  * 获取钱包交易记录
- * @param workspaceId 工作空间ID
  * @param params 查询参数
  * @returns 交易记录列表
  */
-export async function getWalletRechargeRecords(
-  workspaceId: string,
-  params?: {
-    page?: number;
-    limit?: number;
-    transactionType?: string;
-    serviceType?: string;
-  }
-) {
+export async function getWalletRechargeRecords(params?: {
+  workspaceId: string;
+  page?: number;
+  limit?: number;
+  transactionType?: string;
+  serviceType?: string;
+}) {
   const response = await client.get<PaginationResponse<TransactionItem>>(
-    `/wallet/${workspaceId}/recharge/records`,
-    {
-      params,
-    }
+    `/wallet/recharge/records`,
+    { params }
   );
   return response.data;
 }
