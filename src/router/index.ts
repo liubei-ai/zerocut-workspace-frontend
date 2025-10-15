@@ -17,7 +17,7 @@ import ZerocutRoutes from './zerocut.routes';
 export const routes = [
   {
     path: '/',
-    redirect: '/dashboard',
+    redirect: '/apikey',
     meta: {},
   },
   {

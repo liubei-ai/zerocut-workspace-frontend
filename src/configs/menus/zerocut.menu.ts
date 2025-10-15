@@ -23,6 +23,13 @@ export default [
     link: '/wallet',
     icon: 'mdi-wallet-outline',
   },
+  {
+    key: 'menu.guide',
+    text: '使用指南',
+    link: 'https://liubeiai.feishu.cn/wiki/SYg0wtBOzif6uNkZwOicA3TcnVf?from=workspace',
+    icon: 'mdi-open-in-new',
+    external: true,
+  },
   // {
   //   key: 'menu.settings',
   //   text: '个人设置',
