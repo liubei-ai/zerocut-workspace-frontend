@@ -60,7 +60,6 @@ const loadTokens = async () => {
     }
     const apikeys = await getApiKeys(workspaceId);
     tokens.value = apikeys;
-    showSuccess('密钥列表加载成功');
   } catch (error) {
     console.error('加载密钥列表失败:', error);
     showError('加载密钥列表时发生错误');
