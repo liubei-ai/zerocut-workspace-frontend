@@ -18,8 +18,8 @@ export const useAuthStore = defineStore(
     const guard = useGuard();
 
     // 计算属性
-    const isAuthenticated = computed(() => isLoggedIn.value && !!user.value);
     const userName = computed(() => user.value?.username || '');
+    const isAuthenticated = computed(() => isLoggedIn.value && !!user.value);
 
     /**
      * Handle Authing login success

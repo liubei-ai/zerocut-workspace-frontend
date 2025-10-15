@@ -4,24 +4,22 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { computed } from 'vue';
 import StatusMenu from './StatusMenu.vue';
 
 const authStore = useAuthStore();
 
-// 计算属性：获取用户信息
-const currentUser = computed(() => authStore.user);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
+
 const userName = computed(() => {
   if (!isAuthenticated.value) return 'Guest';
-  return authStore.userName || 'Unknown User';
+  return authStore.user?.username || 'Unknown User';
 });
 
 const userEmail = computed(() => {
   if (!isAuthenticated.value) return 'Please login';
-  // 由于当前 User 类型只有 username，暂时显示用户名作为邮箱
-  return currentUser.value?.username ? `${currentUser.value.username}@example.com` : 'No email';
+  return authStore.user?.email || 'No email';
 });
 
 // 生成用户头像（当前 User 类型没有 avatar 字段，使用默认逻辑）
@@ -43,43 +41,48 @@ const handleLogout = () => {
   authStore.logout();
 };
 
-const navs = [
-  {
-    title: 'Profile Details',
-    key: 'menu.profileDetails',
-    link: '/profile',
-    icon: 'mdi-account-box-outline',
-  },
-  {
-    title: 'Plans and Billing',
-    key: 'menu.plansAndBilling',
-    link: '/plans-and-billing',
-    icon: 'mdi-credit-card-outline',
-  },
-  {
-    title: 'Team',
-    key: 'menu.team',
-    link: '/team',
-    icon: 'mdi-account-group-outline',
-  },
-  {
-    title: 'API Dashboard',
-    key: 'menu.apiDashboard',
-    link: '/api-dashboard',
-    icon: 'mdi-monitor-dashboard',
-  },
-  {
-    title: 'Integrations',
-    key: 'menu.integrations',
-    link: '/integrations',
-    icon: 'mdi-puzzle-outline',
-  },
-  {
-    title: 'Ask the Community',
-    key: 'menu.askCommunity',
-    link: '/ask-the-community',
-    icon: 'mdi-help-circle-outline',
-  },
+const navs: Array<{
+  title: string;
+  key: string;
+  link: string;
+  icon: string;
+}> = [
+  // {
+  //   title: 'Profile Details',
+  //   key: 'menu.profileDetails',
+  //   link: '/profile',
+  //   icon: 'mdi-account-box-outline',
+  // },
+  // {
+  //   title: 'Plans and Billing',
+  //   key: 'menu.plansAndBilling',
+  //   link: '/plans-and-billing',
+  //   icon: 'mdi-credit-card-outline',
+  // },
+  // {
+  //   title: 'Team',
+  //   key: 'menu.team',
+  //   link: '/team',
+  //   icon: 'mdi-account-group-outline',
+  // },
+  // {
+  //   title: 'API Dashboard',
+  //   key: 'menu.apiDashboard',
+  //   link: '/api-dashboard',
+  //   icon: 'mdi-monitor-dashboard',
+  // },
+  // {
+  //   title: 'Integrations',
+  //   key: 'menu.integrations',
+  //   link: '/integrations',
+  //   icon: 'mdi-puzzle-outline',
+  // },
+  // {
+  //   title: 'Ask the Community',
+  //   key: 'menu.askCommunity',
+  //   link: '/ask-the-community',
+  //   icon: 'mdi-help-circle-outline',
+  // },
 ];
 </script>
 
@@ -145,12 +148,13 @@ const navs = [
           </div>
         </v-list-item>
       </v-list>
-      <v-divider />
+
+      <!-- <v-divider /> -->
       <!-- ---------------------------------------------- -->
       <!-- Logout Area -->
       <!-- ---------------------------------------------- -->
       <v-list variant="flat" elevation="0" :lines="false" density="compact">
-        <v-list-item color="primary" to="nav.link" link density="compact">
+        <!-- <v-list-item color="primary" to="nav.link" link density="compact">
           <template v-slot:prepend>
             <v-avatar size="30">
               <v-icon>mdi-lifebuoy</v-icon>
@@ -160,7 +164,7 @@ const navs = [
           <div>
             <v-list-item-subtitle class="text-body-2"> Help Center </v-list-item-subtitle>
           </div>
-        </v-list-item>
+        </v-list-item> -->
         <v-list-item color="primary" link @click="handleLogout" density="compact">
           <template v-slot:prepend>
             <v-avatar size="30">
