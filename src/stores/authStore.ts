@@ -47,10 +47,12 @@ export const useAuthStore = defineStore(
      * Logout user
      */
     const logout = async (): Promise<void> => {
+      if (loading.value) return;
       loading.value = true;
+
       try {
-        await guard.logout();
         await requestLogout();
+        await guard.logout();
       } catch (err) {
         console.error('Logout failed:', err);
       } finally {

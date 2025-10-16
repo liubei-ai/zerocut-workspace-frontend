@@ -40,7 +40,6 @@ const handleAuthFailure = async () => {
     await store.logout();
   } catch (error) {
     console.error('Handle auth failure error:', error);
-    window.location.href = '/auth/authing';
   }
 };
 
