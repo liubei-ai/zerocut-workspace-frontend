@@ -33,6 +33,7 @@ export const useAuthStore = defineStore(
         avatar: authingUser.photo as string,
         email: authingUser.email as string,
         phone: authingUser.phone as string,
+        token: authingUser.token as string,
       });
 
       console.log('debug 同步用户信息:', response);
