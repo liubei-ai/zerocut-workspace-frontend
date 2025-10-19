@@ -23,6 +23,8 @@ export interface User {
   username?: string;
   email?: string;
   phone?: string;
+  name?: string;
+  avatar?: string;
 }
 
 // Error Types
@@ -108,6 +110,8 @@ export interface UserProfile {
   username?: string;
   email: string;
   phone?: string;
+  name?: string; // 用户真实姓名
+  avatar?: string; // 用户头像URL
   role: string;
   createdAt: string;
   updatedAt: string;
@@ -182,6 +186,8 @@ export interface UserInfoDto {
   username?: string;
   email: string;
   phone?: string;
+  name?: string; // 用户真实姓名
+  avatar?: string; // 用户头像URL
   createdAt: string;
   updatedAt: string;
 }
