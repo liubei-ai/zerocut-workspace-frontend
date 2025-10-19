@@ -12,6 +12,7 @@ export interface WorkspaceListItem {
   ownerEmail: string;
   ownerPhone?: string;
   ownerUsername: string;
+  ownerName?: string; // 工作空间所有者真实姓名
   memberCount: number;
   creditsBalance: number;
   createdAt: string;

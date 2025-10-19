@@ -38,24 +38,27 @@ const snackbar = ref({
 
 // 表格头部配置
 const headers = [
-  { title: '工作空间', key: 'name', sortable: false, width: '200px' },
-  { title: '所有者', key: 'owner', sortable: false, width: '200px' },
+  { title: '工作空间', key: 'name', sortable: false, width: '160px' },
+  { title: '姓名', key: 'ownerName', sortable: false, width: '100px' },
+  { title: '用户名', key: 'owner', sortable: false, width: '120px' },
+  { title: '手机号', key: 'ownerPhone', sortable: false, width: '140px' },
+  { title: '邮箱', key: 'ownerEmail', sortable: false, width: '180px' },
   {
     title: '积分余额',
     key: 'creditsBalance',
     sortable: false,
-    width: '120px',
+    width: '100px',
     align: 'end' as const,
   },
   {
     title: '成员数量',
     key: 'memberCount',
     sortable: false,
-    width: '100px',
+    width: '80px',
     align: 'center' as const,
   },
-  { title: '创建时间', key: 'createdAt', sortable: false, width: '120px' },
-  { title: '操作', key: 'actions', sortable: false, width: '100px', align: 'center' as const },
+  { title: '创建时间', key: 'createdAt', sortable: false, width: '100px' },
+  { title: '操作', key: 'actions', sortable: false, width: '80px', align: 'center' as const },
 ];
 
 // 格式化日期
@@ -191,6 +194,17 @@ const handleRechargeResultClose = () => {
   selectedWorkspace.value = null;
 };
 
+// 复制到剪贴板
+const copyToClipboard = async (text: string, type: string) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    showSnackbar(`${type}已复制到剪贴板`, 'success');
+  } catch (error) {
+    console.error('复制失败:', error);
+    showSnackbar(`复制${type}失败`, 'error');
+  }
+};
+
 // 显示提示信息
 const showSnackbar = (
   message: string,
@@ -305,18 +319,41 @@ onMounted(() => {
           </div>
         </template>
 
-        <!-- 所有者信息 -->
-        <template #item.owner="{ item }">
+        <!-- 所有者姓名 -->
+        <template #item.ownerName="{ item }">
+          <div class="text-body-2">
+            <span v-if="item.ownerName" class="font-weight-medium">{{ item.ownerName }}</span>
+            <span v-else class="text-medium-emphasis">未设置</span>
+          </div>
+        </template>
+
+        <!-- 手机号 -->
+        <template #item.ownerPhone="{ item }">
           <div class="d-flex align-center">
-            <v-avatar size="24" class="mr-2">
-              <v-icon icon="mdi-account" size="16"></v-icon>
-            </v-avatar>
-            <div>
-              <div class="font-weight-medium text-body-2">{{ item.ownerUsername }}</div>
-              <div class="text-caption text-medium-emphasis">
-                {{ item.ownerPhone || item.ownerEmail }}
-              </div>
-            </div>
+            <span v-if="item.ownerPhone" class="text-body-2 mr-2">{{ item.ownerPhone }}</span>
+            <span v-else class="text-medium-emphasis text-body-2 mr-2">未设置</span>
+            <v-btn
+              v-if="item.ownerPhone"
+              icon="mdi-content-copy"
+              size="x-small"
+              variant="text"
+              @click="copyToClipboard(item.ownerPhone, '手机号')"
+            ></v-btn>
+          </div>
+        </template>
+
+        <!-- 邮箱 -->
+        <template #item.ownerEmail="{ item }">
+          <div class="d-flex align-center">
+            <span v-if="item.ownerEmail" class="text-body-2 mr-2">{{ item.ownerEmail }}</span>
+            <span v-else class="text-medium-emphasis text-body-2 mr-2">未设置</span>
+            <v-btn
+              v-if="item.ownerEmail"
+              icon="mdi-content-copy"
+              size="x-small"
+              variant="text"
+              @click="copyToClipboard(item.ownerEmail, '邮箱')"
+            ></v-btn>
           </div>
         </template>
 

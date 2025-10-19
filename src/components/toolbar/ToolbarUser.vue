@@ -22,10 +22,10 @@ const userEmail = computed(() => {
   return authStore.user?.email || 'No email';
 });
 
-// 生成用户头像（当前 User 类型没有 avatar 字段，使用默认逻辑）
+// 生成用户头像
 const userAvatar = computed(() => {
-  // 当前 User 类型没有 avatar 字段，返回 null 使用首字母头像
-  return null;
+  if (!isAuthenticated.value) return null;
+  return authStore.user?.avatar || null; // 返回用户头像URL，如果没有则返回null使用首字母头像
 });
 
 // 获取用户名首字母用于头像显示
