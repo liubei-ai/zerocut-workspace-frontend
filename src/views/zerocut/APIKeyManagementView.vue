@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createApiKey, deleteApiKey, getApiKeys } from '@/api/workspaceApi';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { computed, onMounted, ref } from 'vue';
@@ -42,7 +43,7 @@ const descriptionRules = [(v: string) => !v || v.length <= 200 || '描述不能�
 //   { value: 'admin', title: '管理员权限', description: '完全访问权限' },
 // ];
 
-// 使用工作空间store
+const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
 
 // 密钥列表
@@ -59,7 +60,6 @@ const loadTokens = async () => {
     }
     const apikeys = await getApiKeys(workspaceId);
     tokens.value = apikeys;
-    showSuccess('密钥列表加载成功');
   } catch (error) {
     console.error('加载密钥列表失败:', error);
     showError('加载密钥列表时发生错误');
@@ -162,16 +162,40 @@ const copyToken = async (token: ApiKey) => {
   }
 };
 
+const copyMCPConfig = async (token: ApiKey) => {
+  const mcpConfigTemplate = `
+{
+  "mcpServers": {
+    "cerevox-zerocut": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "zerocut"
+      ],
+      "env": {
+        "CEREVOX_API_KEY": "${token.apiKey || token.apiKeyPrefix}",
+        "ZEROCUT_PROJECT_CWD": "\${workspaceFolder}"
+      }
+    }
+  }
+}`;
+  try {
+    await navigator.clipboard.writeText(mcpConfigTemplate);
+    showSuccess('MCP 配置已复制到剪贴板');
+  } catch (error) {
+    console.error('复制失败:', error);
+    showError('复制 MCP 配置失败');
+  }
+};
+
 // 显示错误提示
 const showError = (message: string) => {
-  // 这里可以集成 Vuetify 的 snackbar 或其他提示组件
-  console.error(message);
+  snackbarStore.showErrorMessage(message);
 };
 
 // 显示成功提示
 const showSuccess = (message: string) => {
-  // 这里可以集成 Vuetify 的 snackbar 或其他提示组件
-  console.log(message);
+  snackbarStore.showSuccessMessage(message);
 };
 
 // 组件挂载时加载数据
@@ -271,13 +295,13 @@ const getStatusColor = (status: string) => {
         :headers="[
           { title: '名称', key: 'name', sortable: true },
           { title: '描述', key: 'description', sortable: false },
-          { title: '密钥', key: 'key', sortable: false },
+          { title: '密钥', key: 'key', sortable: false, width: '240px' },
           { title: '创建者', key: 'creator', sortable: true },
           { title: '创建时间', key: 'createdAt', sortable: true },
           { title: '过期时间', key: 'expiresAt', sortable: true },
           { title: '状态', key: 'status', sortable: true },
-          // { title: '最后使用', key: 'lastUsedAt', sortable: true },
           // { title: '操作', key: 'actions', sortable: false },
+          // { title: '最后使用', key: 'lastUsedAt', sortable: true },
         ]"
         :items="tokens"
         item-value="id"
@@ -289,12 +313,15 @@ const getStatusColor = (status: string) => {
         <template #item.key="{ item }">
           <div class="d-flex align-center">
             <code class="text-caption mr-2">{{ maskApiKey(item.apiKeyPrefix) }}</code>
+            <v-btn icon="mdi-key" size="x-small" variant="text" @click="copyToken(item)"></v-btn>
             <v-btn
-              icon="mdi-content-copy"
+              icon="mdi-robot"
               size="x-small"
               variant="text"
-              @click="copyToken(item)"
-            ></v-btn>
+              tooltip="复制MCP配置"
+              @click="copyMCPConfig(item)"
+              >MCP</v-btn
+            >
           </div>
         </template>
 
@@ -328,19 +355,6 @@ const getStatusColor = (status: string) => {
             }}
           </v-chip>
         </template>
-
-        <!-- <template #item.actions="{ item }">
-          <div class="d-flex ga-1">
-            <v-btn icon="mdi-pencil" size="small" variant="text" color="primary"></v-btn>
-            <v-btn
-              icon="mdi-delete"
-              size="small"
-              variant="text"
-              color="error"
-              @click="openDeleteDialog(item)"
-            ></v-btn>
-          </div>
-        </template> -->
       </v-data-table>
     </v-card>
 

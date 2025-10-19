@@ -19,7 +19,10 @@ const props = defineProps({
           <!-- menu level 1 -->
           <v-list-item
             v-if="!menuItem.items"
-            :to="menuItem.link"
+            :to="menuItem.external ? undefined : menuItem.link"
+            :href="menuItem.external ? menuItem.link : undefined"
+            :target="menuItem.external ? '_blank' : undefined"
+            :rel="menuItem.external ? 'noopener noreferrer' : undefined"
             density="compact"
             color="primary"
             active-class="active-nav"
@@ -32,6 +35,7 @@ const props = defineProps({
               class="font-weight-bold"
             ></v-list-item-title>
           </v-list-item>
+
           <v-list-group v-else :value="menuItem.items">
             <!-- subMenu activator -->
             <template v-slot:activator="{ props }">
@@ -45,11 +49,14 @@ const props = defineProps({
                 ></v-list-item-title>
               </v-list-item>
             </template>
+
             <!-- menu level 2 -->
             <v-list-item
               v-for="subMenuItem in menuItem.items"
               :key="subMenuItem.key"
-              :to="subMenuItem.link"
+              :to="subMenuItem.external ? undefined : subMenuItem.link"
+              :href="subMenuItem.external ? subMenuItem.link : undefined"
+              :target="subMenuItem.external ? '_blank' : undefined"
               density="compact"
               color="primary"
             >
