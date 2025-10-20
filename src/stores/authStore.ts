@@ -28,12 +28,12 @@ export const useAuthStore = defineStore(
       // 调用 API 同步用户信息
       const response = await syncUserProfile({
         authingId: authingUser.id,
+        name: authingUser.name as string,
         username: authingUser.username as string,
+        avatar: authingUser.photo as string,
         email: authingUser.email as string,
         phone: authingUser.phone as string,
         token: authingUser.token as string,
-        name: authingUser.name as string,
-        avatar: authingUser.photo as string, // 使用Authing的photo字段作为avatar
       });
 
       console.log('debug 同步用户信息:', response);

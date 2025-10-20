@@ -40,7 +40,6 @@ const snackbar = ref({
 const headers = [
   { title: '工作空间', key: 'name', sortable: false, width: '160px' },
   { title: '姓名', key: 'ownerName', sortable: false, width: '100px' },
-  { title: '用户名', key: 'owner', sortable: false, width: '120px' },
   { title: '手机号', key: 'ownerPhone', sortable: false, width: '140px' },
   { title: '邮箱', key: 'ownerEmail', sortable: false, width: '180px' },
   {
@@ -315,7 +314,15 @@ onMounted(() => {
         <template #item.name="{ item }">
           <div>
             <div class="font-weight-medium">{{ item.name }}</div>
-            <div class="text-caption text-medium-emphasis">ID: {{ item.workspaceId }}</div>
+            <div class="d-flex align-center">
+              <span class="text-caption text-medium-emphasis mr-2">ID: {{ item.workspaceId }}</span>
+              <v-btn
+                icon="mdi-content-copy"
+                size="x-small"
+                variant="text"
+                @click="copyToClipboard(item.workspaceId, '工作空间ID')"
+              ></v-btn>
+            </div>
           </div>
         </template>
 
