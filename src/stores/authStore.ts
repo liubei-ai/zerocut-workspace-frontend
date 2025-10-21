@@ -13,6 +13,7 @@ export const useAuthStore = defineStore(
     const error = ref<string | null>(null);
     const isLoggedIn = ref(false);
     const user = ref<User | null>(null);
+    const newbieCreditsRecord = ref<any | null>(null);
 
     // 在 store 顶层初始化 composable
     const guard = useGuard();
@@ -37,10 +38,17 @@ export const useAuthStore = defineStore(
       });
 
       console.log('debug 同步用户信息:', response);
+      const { newbieCreditsRecord: record, ...rest } = response.data;
 
-      user.value = response.data;
+      user.value = rest;
       isLoggedIn.value = true;
       error.value = null;
+
+      // 处理新用户积分奖励记录
+      if (record) {
+        newbieCreditsRecord.value = record;
+        console.log('新用户获得积分奖励:', record);
+      }
 
       console.log('Authing 用户登录成功:', user.value);
     };
@@ -101,6 +109,13 @@ export const useAuthStore = defineStore(
       error.value = null;
     };
 
+    /**
+     * 清除新用户积分奖励记录
+     */
+    const clearNewbieCreditsRecord = () => {
+      newbieCreditsRecord.value = null;
+    };
+
     // 返回所有状态、计算属性和方法
     return {
       // 状态
@@ -108,6 +123,7 @@ export const useAuthStore = defineStore(
       error,
       isLoggedIn,
       user,
+      newbieCreditsRecord,
 
       // 计算属性
       isAuthenticated,
@@ -119,6 +135,7 @@ export const useAuthStore = defineStore(
       clearAuthState,
       handleAuthError,
       clearError,
+      clearNewbieCreditsRecord,
     };
   },
   {

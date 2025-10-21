@@ -25,6 +25,7 @@ export interface User {
   phone?: string;
   name?: string;
   avatar?: string;
+  newbieCreditsRecord?: RechargeRecord;
 }
 
 // Error Types
@@ -173,10 +174,18 @@ export interface ConsumptionRecord {
 // Recharge Record Types
 export interface RechargeRecord {
   id: number;
+  orderNo: string;
+  thirdPartyOrderNo?: string;
   amount: string;
+  creditsAmount: number;
+  conversionRate: number;
+  paymentMethod: string;
   status: string;
-  method: string;
+  paymentUrl?: string;
+  paymentDetails?: Record<string, any>;
+  paidAt?: string;
   createdAt: string;
+  updatedAt: string;
 }
 
 // Homepage Types

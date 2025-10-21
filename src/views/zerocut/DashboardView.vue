@@ -1,14 +1,30 @@
 <script setup lang="ts">
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
+import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
+import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
 import type { MetricCardData } from '@/types/stats';
 
 import { computed, onMounted, ref } from 'vue';
 
+const authStore = useAuthStore();
 const statsStore = useStatsStore();
 
 // 加载状态
 const loading = ref(true);
+
+// 用户信息
+const user = computed(() => authStore.user);
+
+// 当前日期
+const currentDate = computed(() => {
+  return new Date().toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+  });
+});
 
 // 计算属性：指标卡片数据 - 使用statsStore的summaryCards
 const metricCards = computed(() => {
@@ -54,61 +70,100 @@ const handleMetricAction = (metric: MetricCardData) => {
 </script>
 
 <template>
-  <div class="pa-6">
-    <div class="mb-6">
-      <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
-      <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
-    </div>
-
-    <!-- 加载状态 -->
-    <div v-if="loading" class="text-center py-8">
-      <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-      <div class="mt-4 text-h6">加载数据中...</div>
-    </div>
-
-    <div v-else>
-      <!-- 统计卡片 -->
+  <div class="dashboard-container">
+    <div class="dashboard-content">
+      <!-- 欢迎区域 -->
       <v-row class="mb-6">
-        <v-col v-for="metric in metricCards" :key="metric.title" cols="12" sm="6" md="3">
-          <v-card class="pa-4 text-center" elevation="2" hover @click="handleMetricAction(metric)">
-            <v-icon size="48" :color="metric.color" class="mb-2">
-              {{ metric.icon }}
-            </v-icon>
-            <div class="text-h4 font-weight-bold mb-1">
-              {{ metric.value.toLocaleString() }}
-              <span class="text-h6 text-medium-emphasis ml-1">{{ metric.unit }}</span>
+        <v-col cols="12">
+          <v-card class="pa-6" elevation="2">
+            <div class="d-flex align-center">
+              <v-avatar size="64" class="mr-4">
+                <v-img
+                  :src="user?.avatar || '/default-avatar.png'"
+                  :alt="user?.name || '用户头像'"
+                />
+              </v-avatar>
+              <div>
+                <h2 class="text-h4 mb-2">
+                  欢迎回来，{{ user?.name || user?.username || '用户' }}！
+                </h2>
+                <p class="text-body-1 text-medium-emphasis">
+                  今天是 {{ currentDate }}，开始您的创作之旅吧
+                </p>
+              </div>
             </div>
-            <div class="text-subtitle-2 text-medium-emphasis">{{ metric.title }}</div>
           </v-card>
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col cols="12" md="12">
-          <!-- 统计图表 -->
-          <v-card class="mb-6" elevation="2">
-            <v-card-title class="d-flex align-center">
-              <v-icon class="mr-2" color="primary">mdi-chart-line</v-icon>
-              <span>使用统计趋势</span>
-              <v-spacer></v-spacer>
-              <v-chip size="small" color="success" variant="outlined">
-                {{ statsStore.selectedDateRange.start }} 至 {{ statsStore.selectedDateRange.end }}
-              </v-chip>
-            </v-card-title>
-            <v-card-text>
-              <StatisticsChart
-                title="日常使用统计"
-                :categories="statisticsChartData.categories"
-                :series="statisticsChartData.series"
-                height="400px"
-                :show-legend="true"
-                :smooth="true"
-              />
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
+      <div class="mb-6">
+        <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
+      </div>
+
+      <!-- 加载状态 -->
+      <div v-if="loading" class="text-center py-8">
+        <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
+        <div class="mt-4 text-h6">加载数据中...</div>
+      </div>
+
+      <div v-else>
+        <!-- 统计卡片 -->
+        <v-row class="mb-6">
+          <v-col v-for="metric in metricCards" :key="metric.title" cols="12" sm="6" md="3">
+            <v-card
+              class="pa-4 text-center"
+              elevation="2"
+              hover
+              @click="handleMetricAction(metric)"
+            >
+              <v-icon size="48" :color="metric.color" class="mb-2">
+                {{ metric.icon }}
+              </v-icon>
+              <div class="text-h4 font-weight-bold mb-1">
+                {{ metric.value.toLocaleString() }}
+                <span class="text-h6 text-medium-emphasis ml-1">{{ metric.unit }}</span>
+              </div>
+              <div class="text-subtitle-2 text-medium-emphasis">{{ metric.title }}</div>
+            </v-card>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col cols="12" md="12">
+            <!-- 统计图表 -->
+            <v-card class="mb-6" elevation="2">
+              <v-card-title class="d-flex align-center">
+                <v-icon class="mr-2" color="primary">mdi-chart-line</v-icon>
+                <span>使用统计趋势</span>
+                <v-spacer></v-spacer>
+                <v-chip size="small" color="success" variant="outlined">
+                  {{ statsStore.selectedDateRange.start }} 至 {{ statsStore.selectedDateRange.end }}
+                </v-chip>
+              </v-card-title>
+              <v-card-text>
+                <StatisticsChart
+                  title="日常使用统计"
+                  :categories="statisticsChartData.categories"
+                  :series="statisticsChartData.series"
+                  height="400px"
+                  :show-legend="true"
+                  :smooth="true"
+                />
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </div>
     </div>
+
+    <!-- 新用户积分奖励弹窗 -->
+    <NewbieCreditsDialog
+      :model-value="!!authStore.newbieCreditsRecord"
+      :recharge-record="authStore.newbieCreditsRecord"
+      @close="authStore.clearNewbieCreditsRecord"
+      @update:model-value="value => !value && authStore.clearNewbieCreditsRecord()"
+    />
   </div>
 </template>
 
