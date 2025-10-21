@@ -1,16 +1,12 @@
 <template>
-  <v-dialog v-model="isOpen" max-width="500px" persistent>
+  <v-dialog v-model="isOpen" max-width="800px" persistent>
     <v-card>
       <v-card-title class="text-h5 px-6 pt-6 d-flex align-center">
         <v-icon class="mr-3" color="primary">mdi-credit-card</v-icon>
         支付订单
       </v-card-title>
 
-      <v-card-subtitle class="px-6 pb-4">
-        {{ packageInfo?.packageName }} - ¥{{ packageInfo?.originalPrice }}
-      </v-card-subtitle>
-
-      <v-card-text class="px-6">
+      <v-card-text class="px-6 pb-6">
         <!-- 支付状态显示 -->
         <div v-if="paymentStatus === 'creating'" class="text-center py-8">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
@@ -18,52 +14,76 @@
           <div class="text-body-2 text-medium-emphasis">请稍候</div>
         </div>
 
-        <!-- 二维码显示 -->
-        <div v-else-if="paymentStatus === 'pending'" class="text-center">
-          <div class="mb-4">
-            <div class="text-h6 mb-2">请使用微信扫码支付</div>
-            <div class="text-body-2 text-medium-emphasis mb-4">
-              订单号：{{ orderInfo?.outTradeNo }}
+        <!-- 两列布局 - 等待支付状态 -->
+        <div v-else-if="paymentStatus === 'pending'" class="payment-layout">
+          <!-- 左侧：商品信息、订单号、提醒 -->
+          <div class="payment-left">
+            <!-- 商品信息 -->
+            <v-card variant="outlined" class="mb-4">
+              <v-card-title class="text-h6 pb-2">
+                <v-icon class="mr-2" color="primary">mdi-package-variant</v-icon>
+                商品信息
+              </v-card-title>
+              <v-card-text class="pt-0">
+                <div class="d-flex justify-space-between align-center mb-2">
+                  <span class="text-body-1 font-weight-medium">{{ packageInfo?.packageName }}</span>
+                  <v-chip color="primary" variant="tonal" size="small">
+                    {{ packageInfo?.creditsAmount }} 积分
+                  </v-chip>
+                </div>
+                <div class="d-flex justify-space-between align-center">
+                  <span class="text-body-2 text-medium-emphasis">支付金额</span>
+                  <span class="text-h6 font-weight-bold text-primary"
+                    >¥{{ packageInfo?.originalPrice }}</span
+                  >
+                </div>
+              </v-card-text>
+            </v-card>
+
+            <!-- 订单信息 -->
+            <v-card variant="outlined" class="mb-4">
+              <v-card-title class="text-h6 pb-2">
+                <v-icon class="mr-2" color="info">mdi-receipt</v-icon>
+                订单信息
+              </v-card-title>
+              <v-card-text class="pt-0">
+                <div class="d-flex align-center mb-2">
+                  <span class="text-body-2 text-medium-emphasis mr-2">订单号：</span>
+                  <span class="text-body-2 font-family-monospace">{{ orderInfo?.outTradeNo }}</span>
+                  <v-btn
+                    icon="mdi-content-copy"
+                    size="x-small"
+                    variant="text"
+                    class="ml-2"
+                    @click="copyOrderNumber"
+                  />
+                </div>
+                <div class="d-flex align-center">
+                  <span class="text-body-2 text-medium-emphasis mr-2">创建时间：</span>
+                  <span class="text-body-2">{{ formatTime(new Date()) }}</span>
+                </div>
+              </v-card-text>
+            </v-card>
+          </div>
+
+          <!-- 右侧：二维码、倒计时、支付状态 -->
+          <div class="payment-right">
+            <!-- 二维码容器 -->
+            <div class="qr-code-container">
+              <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
+              <div class="qr-code-overlay">
+                <div class="text-body-2 text-center mt-2 text-medium-emphasis">
+                  请使用微信扫码支付
+                </div>
+                <!-- 倒计时显示 -->
+                <div class="text-center mt-2">
+                  <div class="text-body-2 text-medium-emphasis">
+                    剩余时间：{{ formatCountdown(countdown) }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <!-- 二维码容器 -->
-          <div class="qr-code-container mb-4">
-            <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
-          </div>
-
-          <!-- 支付状态检查 -->
-          <div class="mb-4">
-            <v-chip
-              :color="paymentCheckStatus === 'checking' ? 'orange' : 'blue'"
-              variant="tonal"
-              size="small"
-              class="mb-2"
-            >
-              <v-icon start size="small">
-                {{ paymentCheckStatus === 'checking' ? 'mdi-loading' : 'mdi-information' }}
-              </v-icon>
-              {{ paymentCheckStatus === 'checking' ? '正在检查支付状态...' : '等待支付完成' }}
-            </v-chip>
-          </div>
-
-          <!-- 支付说明 -->
-          <v-alert type="info" variant="tonal" class="mb-4">
-            <div class="text-body-2">
-              <div class="mb-2">
-                <v-icon size="small" class="mr-1">mdi-numeric-1-circle</v-icon>
-                打开微信，扫描上方二维码
-              </div>
-              <div class="mb-2">
-                <v-icon size="small" class="mr-1">mdi-numeric-2-circle</v-icon>
-                确认支付金额并完成支付
-              </div>
-              <div>
-                <v-icon size="small" class="mr-1">mdi-numeric-3-circle</v-icon>
-                支付成功后将自动跳转
-              </div>
-            </div>
-          </v-alert>
         </div>
 
         <!-- 支付成功 -->
@@ -89,7 +109,6 @@
         <!-- 支付超时 -->
         <div v-else-if="paymentStatus === 'timeout'" class="text-center py-8">
           <v-icon size="80" color="warning" class="mb-4">mdi-clock-alert</v-icon>
-          <div class="text-h5 mb-2 text-warning">支付超时</div>
           <div class="text-body-1 text-medium-emphasis mb-4">订单已超时，请重新创建订单</div>
           <div v-if="orderInfo?.outTradeNo" class="text-body-2">
             订单号：{{ orderInfo?.outTradeNo }}
@@ -108,14 +127,6 @@
         <!-- 等待支付状态的按钮 -->
         <template v-else-if="paymentStatus === 'pending'">
           <v-btn variant="text" @click="handleCancel" class="mr-2"> 取消支付 </v-btn>
-          <v-btn
-            color="primary"
-            variant="outlined"
-            @click="checkPaymentStatus"
-            :loading="paymentCheckStatus === 'checking'"
-          >
-            检查支付状态
-          </v-btn>
         </template>
 
         <!-- 支付完成状态的按钮 -->
@@ -138,11 +149,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick, onUnmounted } from 'vue';
-import QRCode from 'qrcode';
+import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
 import { createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
-import type { PackageInfo, CreatePaymentOrderResponse } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import QRCode from 'qrcode';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   open: boolean;
@@ -173,12 +184,67 @@ const paymentStatus = ref<'creating' | 'pending' | 'success' | 'failed' | 'timeo
 const paymentCheckStatus = ref<'waiting' | 'checking'>('waiting');
 const errorMessage = ref<string>('');
 const paymentCheckInterval = ref<number | null>(null);
+const countdownInterval = ref<number | null>(null);
+const countdown = ref<number>(300); // 5分钟倒计时
 
 // Computed
 const isOpen = computed({
   get: () => props.open,
   set: value => emit('update:open', value),
 });
+
+// 格式化倒计时显示
+const formatCountdown = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
+
+// 格式化时间显示
+const formatTime = (date: Date): string => {
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
+};
+
+// 复制订单号
+const copyOrderNumber = async () => {
+  if (!orderInfo.value?.outTradeNo) return;
+
+  try {
+    await navigator.clipboard.writeText(orderInfo.value.outTradeNo);
+    snackbarStore.showSuccessMessage('订单号已复制到剪贴板');
+  } catch (error) {
+    console.error('复制失败:', error);
+    snackbarStore.showErrorMessage('复制失败');
+  }
+};
+
+// 开始倒计时
+const startCountdown = () => {
+  countdown.value = 300; // 重置为5分钟
+  countdownInterval.value = window.setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      paymentStatus.value = 'timeout';
+      stopCountdown();
+      stopPaymentStatusCheck();
+    }
+  }, 1000);
+};
+
+// 停止倒计时
+const stopCountdown = () => {
+  if (countdownInterval.value) {
+    clearInterval(countdownInterval.value);
+    countdownInterval.value = null;
+  }
+};
 
 // 生成二维码
 const generateQRCode = async (codeUrl: string) => {
@@ -219,7 +285,8 @@ const createPaymentOrder = async () => {
     await nextTick();
     await generateQRCode(response.codeUrl);
 
-    // 开始定期检查支付状态
+    // 开始倒计时和定期检查支付状态
+    startCountdown();
     startPaymentStatusCheck();
   } catch (error: any) {
     console.error('创建支付订单失败:', error);
@@ -244,15 +311,18 @@ const checkPaymentStatus = async () => {
     if (response.trade_state === 'SUCCESS') {
       paymentStatus.value = 'success';
       stopPaymentStatusCheck();
+      stopCountdown();
       emit('success', orderInfo.value);
     } else if (response.trade_state === 'CLOSED' || response.trade_state === 'REVOKED') {
       paymentStatus.value = 'failed';
       errorMessage.value = '订单已关闭或被撤销';
       stopPaymentStatusCheck();
+      stopCountdown();
     } else if (response.trade_state === 'PAYERROR') {
       paymentStatus.value = 'failed';
       errorMessage.value = '支付失败';
       stopPaymentStatusCheck();
+      stopCountdown();
     }
     // 其他状态继续等待
   } catch (error: any) {
@@ -265,21 +335,10 @@ const checkPaymentStatus = async () => {
 
 // 开始定期检查支付状态
 const startPaymentStatusCheck = () => {
-  // 每3秒检查一次支付状态
+  // 每2秒检查一次支付状态，更频繁的检查
   paymentCheckInterval.value = window.setInterval(() => {
     checkPaymentStatus();
-  }, 3000);
-
-  // 5分钟后超时
-  setTimeout(
-    () => {
-      if (paymentStatus.value === 'pending') {
-        paymentStatus.value = 'timeout';
-        stopPaymentStatusCheck();
-      }
-    },
-    5 * 60 * 1000
-  );
+  }, 2000);
 };
 
 // 停止检查支付状态
@@ -293,6 +352,7 @@ const stopPaymentStatusCheck = () => {
 // 处理取消
 const handleCancel = () => {
   stopPaymentStatusCheck();
+  stopCountdown();
   emit('cancel');
   emit('update:open', false);
 };
@@ -300,6 +360,7 @@ const handleCancel = () => {
 // 处理关闭
 const handleClose = () => {
   stopPaymentStatusCheck();
+  stopCountdown();
   emit('update:open', false);
 };
 
@@ -315,7 +376,9 @@ const resetState = () => {
   paymentStatus.value = 'creating';
   paymentCheckStatus.value = 'waiting';
   errorMessage.value = '';
+  countdown.value = 300;
   stopPaymentStatusCheck();
+  stopCountdown();
 };
 
 // 监听对话框打开
@@ -327,6 +390,7 @@ watch(
       createPaymentOrder();
     } else if (!newOpen) {
       stopPaymentStatusCheck();
+      stopCountdown();
     }
   }
 );
@@ -334,18 +398,39 @@ watch(
 // 组件卸载时清理
 onUnmounted(() => {
   stopPaymentStatusCheck();
+  stopCountdown();
 });
 </script>
 
 <style scoped>
+/* 两列布局 */
+.payment-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+}
+
+.payment-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-right {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 二维码容器 */
 .qr-code-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 16px;
+  padding: 9px;
   background-color: rgba(var(--v-theme-surface-variant), 0.1);
   border-radius: 12px;
   border: 2px dashed rgba(var(--v-border-color), 0.2);
+  position: relative;
 }
 
 .qr-code-canvas {
@@ -353,11 +438,97 @@ onUnmounted(() => {
   background-color: white;
 }
 
+.qr-code-overlay {
+  width: 100%;
+}
+
+/* 卡片样式 */
 .v-card {
   border-radius: 16px;
 }
 
 .v-alert {
   border-radius: 12px;
+}
+
+/* 支付步骤样式 */
+.payment-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 紧凑样式 */
+.compact-alert {
+  padding: 12px 16px !important;
+}
+
+.compact-steps {
+  gap: 8px !important;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.step-title {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.step-desc {
+  font-size: 12px;
+  opacity: 0.8;
+  line-height: 1.2;
+}
+
+/* 旋转动画 */
+.rotating {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .payment-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .payment-right {
+    order: -1;
+  }
+}
+
+/* 等宽字体 */
+.font-family-monospace {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 </style>
