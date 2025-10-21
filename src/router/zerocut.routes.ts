@@ -80,4 +80,16 @@ export default [
         /* webpackChunkName: "member-management" */ '@/views/zerocut/MemberManagementView.vue'
       ),
   },
+  {
+    path: '/packages',
+    name: 'Packages',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '套餐管理',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "package-list" */ '@/views/zerocut/PackageListView.vue'),
+  },
 ];
