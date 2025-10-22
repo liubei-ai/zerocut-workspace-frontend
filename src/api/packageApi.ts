@@ -15,10 +15,12 @@ export interface PackageInfo {
   createdAt: string;
   updatedAt: string;
 }
+
 // 创建支付订单请求参数
 export interface CreatePaymentOrderParams {
   packageCode: string;
   totalAmount: number;
+  workspaceId: string;
 }
 
 // 创建支付订单响应

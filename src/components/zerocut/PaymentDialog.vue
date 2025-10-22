@@ -34,7 +34,7 @@
                 <div class="d-flex justify-space-between align-center">
                   <span class="text-body-2 text-medium-emphasis">支付金额</span>
                   <span class="text-h6 font-weight-bold text-primary"
-                    >¥{{ packageInfo?.originalPrice }}</span
+                    >¥{{ packageInfo?.currentPrice }}</span
                   >
                 </div>
               </v-card-text>
@@ -152,6 +152,7 @@
 import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
 import { createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
@@ -176,6 +177,7 @@ const emit = defineEmits<Emits>();
 
 // Stores
 const snackbarStore = useSnackbarStore();
+const workspaceStore = useWorkspaceStore();
 
 // Refs
 const qrCodeCanvas = ref<HTMLCanvasElement>();
@@ -269,6 +271,12 @@ const generateQRCode = async (codeUrl: string) => {
 const createPaymentOrder = async () => {
   if (!props.packageInfo) return;
 
+  // 检查是否有当前工作空间
+  if (!workspaceStore.currentWorkspaceId) {
+    snackbarStore.showErrorMessage('请先选择工作空间');
+    return;
+  }
+
   try {
     paymentStatus.value = 'creating';
     errorMessage.value = '';
@@ -276,6 +284,7 @@ const createPaymentOrder = async () => {
     const response = await createWechatPayOrder({
       packageCode: props.packageInfo.packageCode,
       totalAmount: parseFloat(props.packageInfo.currentPrice),
+      workspaceId: workspaceStore.currentWorkspaceId,
     });
 
     orderInfo.value = response;
