@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useTheme } from 'vuetify';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-import { Icon } from '@iconify/vue';
+import { useTheme } from 'vuetify';
 interface Color {
   colorId: number;
   colorName: string;
@@ -78,63 +77,12 @@ const updatePrimaryColor = (newColor: Color) => {
       <div class="pa-5">
         <div class="top-area">
           <div class="d-flex align-center">
-            <b>UI Configurator</b>
+            <b>ZeroCut</b>
             <v-spacer></v-spacer>
           </div>
-          <div>See our dashboard options.</div>
-        </div>
-
-        <hr class="my-6" />
-
-        <div class="theme-area">
-          <b>Global Theme Mode</b>
-          <div class="px-3 pt-3" v-if="customizeTheme.darkTheme">
-            <v-btn
-              @click="customizeTheme.darkTheme = !customizeTheme.darkTheme"
-              icon
-              color="grey-darken-4"
-              class="text-white"
-            >
-              <Icon width="30" icon="line-md:moon-filled-loop" />
-            </v-btn>
-            <span class="ml-5">Dark Mode</span>
-          </div>
-        </div>
-        <hr class="my-6" />
-
-        <div class="primary-color-area">
-          <b>Primary Colors</b>
-          <v-item-group class="mt-3" v-model="currentColor" selected-class="elevation-12" mandatory>
-            <v-item
-              v-for="color in primaryColors"
-              :key="color.colorId"
-              :value="color"
-              v-slot="{ isSelected, toggle }"
-            >
-              <v-btn
-                @click="toggle"
-                class="text-white mr-1"
-                icon
-                size="30"
-                :color="color.colorValue"
-              >
-                <Icon width="22" v-if="isSelected" icon="line-md:confirm" />
-              </v-btn>
-            </v-item>
-          </v-item-group>
-        </div>
-        <hr class="my-6" />
-        <div class="">
-          <b>MiniSideBar</b>
+          <div>新一代AI视频创作平台</div>
         </div>
         <hr class="mb-6" />
-        <div>
-          <v-btn color="" class="gradient info" block size="large">Contact Me</v-btn>
-        </div>
-        <div class="ml-5 mt-5 d-flex align-center">
-          <v-icon color="primary" class="mr-6">mdi-email-outline</v-icon>
-          <a href="mailto:yjkbako@gmail.com">yjkbako@gmail.com</a>
-        </div>
         <div>
           <img src="@/assets/wechat.jpg" alt="" />
         </div>

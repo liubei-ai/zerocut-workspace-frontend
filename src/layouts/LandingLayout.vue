@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import MainSidebar from '@/components/navigation/MainSidebar.vue';
 import MainAppbar from '@/components/toolbar/MainAppbar.vue';
-// import GlobalLoading from "@/components/GlobalLoading.vue";
-import ToolBox from '@/components/Toolbox.vue';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 const customizeTheme = useCustomizeThemeStore();
 </script>
@@ -27,8 +25,6 @@ const customizeTheme = useCustomizeThemeStore();
       right: () => (customizeTheme.mainSidebar = true),
     }"
   >
-    <!-- <GlobalLoading /> -->
-    <ToolBox />
     <div class="flex-fill pa-5">
       <slot></slot>
     </div>
