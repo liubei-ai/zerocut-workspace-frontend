@@ -80,7 +80,7 @@ const updatePrimaryColor = (newColor: Color) => {
             <b>ZeroCut</b>
             <v-spacer></v-spacer>
           </div>
-          <div>新一代AI创作平台</div>
+          <div>新一代AI视频创作平台</div>
         </div>
         <hr class="mb-6" />
         <div>
