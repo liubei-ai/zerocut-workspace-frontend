@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   getWalletInfo,
   getWalletRechargeRecords,
@@ -13,6 +14,9 @@ import { formatDate } from '~/src/utils/date';
 // 获取当前工作空间ID
 const workspaceStore = useWorkspaceStore();
 const workspaceId = workspaceStore.currentWorkspaceId!;
+
+// 路由实例
+const router = useRouter();
 
 // 加载状态
 const loading = ref(false);
@@ -172,6 +176,11 @@ watch(
 onMounted(() => {
   refreshData();
 });
+
+// 处理充值按钮点击
+const handleRecharge = () => {
+  router.push('/packages');
+};
 </script>
 
 <template>
@@ -183,6 +192,14 @@ onMounted(() => {
         <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和充值明细</p>
       </div>
       <div class="d-flex ga-2">
+        <v-btn
+          color="success"
+          prepend-icon="mdi-cash-plus"
+          @click="handleRecharge"
+          variant="elevated"
+        >
+          充值
+        </v-btn>
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
           刷新
         </v-btn>
@@ -191,41 +208,48 @@ onMounted(() => {
 
     <!-- 钱包概览 -->
     <v-row class="mb-6">
-      <v-col cols="12" md="6">
-        <v-card class="pa-6" elevation="2">
-          <div class="d-flex align-center mb-4">
-            <v-icon size="48" color="primary" class="mr-4"> mdi-wallet </v-icon>
-            <div>
-              <div class="text-h4 font-weight-bold">{{ walletInfo?.creditsBalance }}</div>
-              <div class="text-subtitle-1 text-medium-emphasis">可用积分</div>
-            </div>
-          </div>
-        </v-card>
-      </v-col>
-
-      <v-col cols="12" md="6">
+      <!-- 统计项 - 4个统计卡片 -->
+      <v-col cols="12">
         <v-row>
-          <v-col cols="4">
+          <!-- 用户充值金额 -->
+          <v-col cols="12" sm="6" md="3">
             <v-card class="pa-4 text-center" elevation="2">
-              <v-icon size="32" color="success" class="mb-2"> mdi-cash-plus </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">¥{{ walletInfo?.totalAmountAdded }}</div>
-              <div class="text-caption text-medium-emphasis">累计充值金额</div>
+              <v-icon size="32" color="success" class="mb-2"> mdi-account-cash </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">
+                ¥{{ walletInfo?.userRechargeAmount || 0 }}
+              </div>
+              <div class="text-caption text-medium-emphasis">用户充值金额</div>
             </v-card>
           </v-col>
 
-          <v-col cols="4">
+          <!-- 用户充值积分 -->
+          <v-col cols="12" sm="6" md="3">
             <v-card class="pa-4 text-center" elevation="2">
-              <v-icon size="32" color="info" class="mb-2"> mdi-trending-up </v-icon>
-              <div class="text-h6 font-weight-bold mb-1">{{ walletInfo?.totalCreditsAdded }}</div>
-              <div class="text-caption text-medium-emphasis">累计充值积分</div>
+              <v-icon size="32" color="info" class="mb-2"> mdi-cash-plus </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">
+                {{ walletInfo?.userRechargeCredits || 0 }}
+              </div>
+              <div class="text-caption text-medium-emphasis">用户充值积分</div>
             </v-card>
           </v-col>
 
-          <v-col cols="4">
+          <!-- 平台赠送积分 -->
+          <v-col cols="12" sm="6" md="3">
+            <v-card class="pa-4 text-center" elevation="2">
+              <v-icon size="32" color="orange" class="mb-2"> mdi-gift </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">
+                {{ walletInfo?.platformGiftCredits || 0 }}
+              </div>
+              <div class="text-caption text-medium-emphasis">平台赠送积分</div>
+            </v-card>
+          </v-col>
+
+          <!-- 累计消耗积分 -->
+          <v-col cols="12" sm="6" md="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
-                {{ walletInfo?.totalCreditsConsumption }}
+                {{ walletInfo?.totalCreditsConsumption || 0 }}
               </div>
               <div class="text-caption text-medium-emphasis">累计消耗积分</div>
             </v-card>

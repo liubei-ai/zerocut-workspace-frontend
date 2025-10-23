@@ -3,10 +3,11 @@ import client from './api2client';
 
 // 后端钱包信息响应类型
 export interface WalletInfo {
-  creditsBalance: number;
-  totalAmountAdded: number;
-  totalCreditsAdded: number;
-  totalCreditsConsumption: number;
+  // 按充值类型分类统计
+  userRechargeAmount: number; // 用户充值金额（wechat/alipay）
+  userRechargeCredits: number; // 用户充值积分（wechat/alipay）
+  platformGiftCredits: number; // 平台赠送积分（bot/manual/give）
+  totalCreditsConsumption: number; // 保留：总消耗积分
 }
 
 // 后端交易记录项类型
