@@ -1,12 +1,19 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { getPackageList, type PackageInfo } from '~/src/api/packageApi';
+import { useRouter } from 'vue-router';
+import {
+  getPackageList,
+  type PackageInfo,
+  type CreatePaymentOrderResponse,
+} from '~/src/api/packageApi';
 import PackageCard from '~/src/components/zerocut/PackageCard.vue';
 import PaymentDialog from '~/src/components/zerocut/PaymentDialog.vue';
+import RechargeSuccessOverlay from '~/src/components/zerocut/RechargeSuccessOverlay.vue';
 import { useSnackbarStore } from '~/src/stores/snackbarStore';
 
 // 状态管理
 const snackbarStore = useSnackbarStore();
+const router = useRouter();
 
 // 加载状态
 const loading = ref(false);
@@ -17,6 +24,10 @@ const packages = ref<PackageInfo[]>([]);
 // 支付对话框状态
 const paymentDialog = ref(false);
 const selectedPackage = ref<PackageInfo | null>(null);
+
+// 充值成功浮层状态
+const successOverlay = ref(false);
+const successOrderInfo = ref<CreatePaymentOrderResponse | null>(null);
 
 // 错误处理
 const showError = (message: string) => {
@@ -48,10 +59,10 @@ const handlePurchase = (pkg: PackageInfo) => {
 };
 
 // 处理支付成功
-const handlePaymentSuccess = () => {
-  showSuccess('支付成功！积分已到账');
+const handlePaymentSuccess = (orderInfo: CreatePaymentOrderResponse) => {
+  successOrderInfo.value = orderInfo;
   paymentDialog.value = false;
-  selectedPackage.value = null;
+  successOverlay.value = true;
 };
 
 // 处理支付取消
@@ -64,6 +75,24 @@ const handlePaymentCancel = () => {
 const handlePaymentRetry = () => {
   // 重试逻辑可以在这里实现，比如重新生成订单
   console.log('支付重试');
+};
+
+// 处理充值成功浮层关闭
+const handleSuccessOverlayClose = () => {
+  successOverlay.value = false;
+  selectedPackage.value = null;
+  successOrderInfo.value = null;
+  // 刷新套餐列表以更新用户积分显示
+  fetchPackages();
+};
+
+// 处理查看钱包
+const handleViewWallet = () => {
+  successOverlay.value = false;
+  selectedPackage.value = null;
+  successOrderInfo.value = null;
+  // 跳转到钱包页面
+  router.push('/wallet');
 };
 
 // 组件挂载时获取数据
@@ -113,6 +142,15 @@ onMounted(() => {
       @success="handlePaymentSuccess"
       @cancel="handlePaymentCancel"
       @retry="handlePaymentRetry"
+    />
+
+    <!-- 充值成功浮层 -->
+    <RechargeSuccessOverlay
+      v-model:open="successOverlay"
+      :credits-amount="selectedPackage?.creditsAmount || 0"
+      :order-number="successOrderInfo?.outTradeNo || ''"
+      @close="handleSuccessOverlayClose"
+      @view-wallet="handleViewWallet"
     />
   </div>
 </template>

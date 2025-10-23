@@ -321,6 +321,8 @@ const checkPaymentStatus = async () => {
       paymentStatus.value = 'success';
       stopPaymentStatusCheck();
       stopCountdown();
+
+      // 发出success事件
       emit('success', orderInfo.value);
     } else if (response.trade_state === 'CLOSED' || response.trade_state === 'REVOKED') {
       paymentStatus.value = 'failed';
