@@ -108,6 +108,49 @@ const getPaymentMethodColor = (paymentMethod: string) => {
   }
 };
 
+// 计算剩余有效期
+const calculateRemainingValidity = (item: TransactionItem) => {
+  // 手动充值、机器人充值、积分赠送等永久有效，不显示有效期
+  const permanentPaymentMethods = ['manual', 'bot', 'give'];
+  if (permanentPaymentMethods.includes(item.paymentMethod)) {
+    return null;
+  }
+
+  // 如果没有有效期信息，返回空
+  if (!item.creditsValidityDays || !item.paidAt) {
+    return null;
+  }
+
+  const paidDate = new Date(item.paidAt);
+  const expiryDate = new Date(paidDate.getTime() + item.creditsValidityDays * 24 * 60 * 60 * 1000);
+  const now = new Date();
+  const remainingMs = expiryDate.getTime() - now.getTime();
+  const remainingDays = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+
+  if (remainingDays <= 0) {
+    return {
+      expired: true,
+      remainingDays: 0,
+      text: '已过期',
+      color: 'error',
+    };
+  }
+
+  let color = 'success';
+  if (remainingDays < 7) {
+    color = 'error';
+  } else if (remainingDays <= 30) {
+    color = 'warning';
+  }
+
+  return {
+    expired: false,
+    remainingDays,
+    text: `${remainingDays}天`,
+    color,
+  };
+};
+
 // 获取钱包信息
 const fetchWalletInfo = async () => {
   try {
@@ -272,6 +315,7 @@ const handleRecharge = () => {
           { title: '积分', key: 'creditsAmount', sortable: true },
           { title: '描述', key: 'description', sortable: false },
           { title: '支付方式', key: 'paymentMethod', sortable: false },
+          { title: '剩余有效期', key: 'validity', sortable: false },
           { title: '订单号', key: 'orderNo', sortable: false },
           { title: '第三方订单号', key: 'thirdPartyOrderNo', sortable: false },
         ]"
@@ -303,6 +347,15 @@ const handleRecharge = () => {
             ></v-icon>
             {{ getPaymentMethodText(item.paymentMethod) }}
           </div>
+        </template>
+
+        <template #item.validity="{ item }">
+          <div v-if="calculateRemainingValidity(item)">
+            <v-chip :color="calculateRemainingValidity(item)!.color" size="small" variant="flat">
+              {{ calculateRemainingValidity(item)!.text }}
+            </v-chip>
+          </div>
+          <span v-else class="text-medium-emphasis">-</span>
         </template>
 
         <template #item.id="{ item }">

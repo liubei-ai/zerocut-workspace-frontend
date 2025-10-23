@@ -20,6 +20,8 @@ export interface TransactionItem {
   orderNo: string;
   paymentMethod: string;
   thirdPartyOrderNo?: string;
+  paidAt?: string;
+  creditsValidityDays?: number;
 }
 /**
  * 获取钱包信息
