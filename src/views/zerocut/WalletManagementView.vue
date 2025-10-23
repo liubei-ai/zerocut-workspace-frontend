@@ -271,7 +271,7 @@ const handleRecharge = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 ¥{{ walletInfo?.userRechargeAmount || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">用户充值金额</div>
+              <div class="text-caption text-medium-emphasis">用户累计充值金额</div>
             </v-card>
           </v-col>
 
@@ -282,7 +282,7 @@ const handleRecharge = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.userRechargeCredits || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">用户充值积分</div>
+              <div class="text-caption text-medium-emphasis">用户累计充值积分</div>
             </v-card>
           </v-col>
 
