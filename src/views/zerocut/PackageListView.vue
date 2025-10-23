@@ -3,8 +3,8 @@ import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   getPackageList,
-  type PackageInfo,
   type CreatePaymentOrderResponse,
+  type PackageInfo,
 } from '~/src/api/packageApi';
 import PackageCard from '~/src/components/zerocut/PackageCard.vue';
 import PaymentDialog from '~/src/components/zerocut/PaymentDialog.vue';
@@ -107,7 +107,6 @@ onMounted(() => {
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h4 font-weight-bold mb-2">套餐中心</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">选择适合您的积分套餐，享受更多服务</p>
       </div>
       <div class="d-flex ga-2">
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="fetchPackages" :loading="loading">
@@ -115,6 +114,37 @@ onMounted(() => {
         </v-btn>
       </div>
     </div>
+
+    <!-- 积分购买说明 -->
+    <v-card class="mb-6" variant="outlined">
+      <v-card-title class="d-flex align-center">
+        <v-icon class="mr-2" color="info">mdi-information-outline</v-icon>
+        积分购买说明
+      </v-card-title>
+      <v-card-text>
+        <v-list density="compact" class="pa-0">
+          <v-list-item class="px-0">
+            <v-list-item-title class="text-body-2">
+              <span class="font-weight-medium">1.</span> 购买后的积分，以订单计，有效期为
+              <span class="font-weight-bold text-primary">365 天</span
+              >，到期该笔订单的余量自动清零。
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item class="px-0">
+            <v-list-item-title class="text-body-2">
+              <span class="font-weight-medium">2.</span> 积分消耗时优先消耗接近有效期的积分。
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item class="px-0">
+            <v-list-item-title class="text-body-2">
+              <span class="font-weight-medium">3.</span> 可用并发数为
+              <span class="font-weight-bold text-primary">5</span
+              >，可用并发数是指可以同时运行的最大任务数量，超出的任务将处于排队状态。
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
 
     <!-- 套餐列表 -->
     <div v-if="loading" class="text-center py-8">
