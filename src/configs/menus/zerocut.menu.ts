@@ -32,7 +32,7 @@ export default [
   {
     key: 'menu.guide',
     text: '使用指南',
-    link: 'https://liubeiai.feishu.cn/wiki/SYg0wtBOzif6uNkZwOicA3TcnVf?from=workspace',
+    link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
     icon: 'mdi-open-in-new',
     external: true,
   },
