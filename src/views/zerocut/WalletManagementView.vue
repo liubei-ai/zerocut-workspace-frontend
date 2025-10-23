@@ -235,14 +235,14 @@ const handleRecharge = () => {
         <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和充值明细</p>
       </div>
       <div class="d-flex ga-2">
-        <v-btn
+        <!-- <v-btn
           color="success"
           prepend-icon="mdi-cash-plus"
           @click="handleRecharge"
           variant="elevated"
         >
           充值
-        </v-btn>
+        </v-btn> -->
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
           刷新
         </v-btn>
