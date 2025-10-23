@@ -150,7 +150,7 @@
 
 <script setup lang="ts">
 import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
-import { createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
+import { createWechatPayOrder, queryOrderStatus, closeOrder } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import QRCode from 'qrcode';
@@ -359,9 +359,21 @@ const stopPaymentStatusCheck = () => {
 };
 
 // 处理取消
-const handleCancel = () => {
+const handleCancel = async () => {
   stopPaymentStatusCheck();
   stopCountdown();
+
+  // 如果有订单信息，调用关闭订单API
+  if (orderInfo.value?.outTradeNo) {
+    try {
+      await closeOrder(orderInfo.value.outTradeNo);
+      console.log('订单已关闭:', orderInfo.value.outTradeNo);
+    } catch (error) {
+      console.error('关闭订单失败:', error);
+      // 即使关闭订单失败，也继续执行取消操作
+    }
+  }
+
   emit('cancel');
   emit('update:open', false);
 };
