@@ -18,7 +18,9 @@
             {{ creditsAmount }} 积分
           </v-chip>
         </div>
-        <div class="mt-3 text-body-1 text-medium-emphasis">您可以使用这些积分体验 ZeroCut</div>
+        <div class="mt-3 text-body-1 text-medium-emphasis">
+          积分有效期为7天，请尽快体验ZeroCut。
+        </div>
       </v-card-text>
 
       <!-- 操作按钮 -->
