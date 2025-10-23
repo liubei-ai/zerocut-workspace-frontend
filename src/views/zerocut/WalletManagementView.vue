@@ -251,11 +251,21 @@ const handleRecharge = () => {
 
     <!-- 钱包概览 -->
     <v-row class="mb-6">
-      <!-- 统计项 - 4个统计卡片 -->
       <v-col cols="12">
         <v-row>
+          <!-- 剩余可用积分 -->
+          <v-col cols="12" sm="6" md="2.4">
+            <v-card class="pa-4 text-center" elevation="2">
+              <v-icon size="32" color="primary" class="mb-2"> mdi-wallet </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">
+                {{ walletInfo?.availableCredits || 0 }}
+              </div>
+              <div class="text-caption text-medium-emphasis">剩余可用积分</div>
+            </v-card>
+          </v-col>
+
           <!-- 用户充值金额 -->
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="2.4">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="success" class="mb-2"> mdi-account-cash </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -266,7 +276,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 用户充值积分 -->
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="2.4">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="info" class="mb-2"> mdi-cash-plus </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -277,7 +287,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 平台赠送积分 -->
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="2.4">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="orange" class="mb-2"> mdi-gift </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -288,7 +298,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 累计消耗积分 -->
-          <v-col cols="12" sm="6" md="3">
+          <v-col cols="12" sm="6" md="2.4">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
               <div class="text-h6 font-weight-bold mb-1">

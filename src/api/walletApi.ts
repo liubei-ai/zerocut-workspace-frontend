@@ -8,6 +8,7 @@ export interface WalletInfo {
   userRechargeCredits: number; // 用户充值积分（wechat/alipay）
   platformGiftCredits: number; // 平台赠送积分（bot/manual/give）
   totalCreditsConsumption: number; // 保留：总消耗积分
+  availableCredits: number; // 剩余可用积分
 }
 
 // 后端交易记录项类型
