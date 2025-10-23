@@ -293,7 +293,7 @@ const handleRecharge = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.platformGiftCredits || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">平台赠送积分</div>
+              <div class="text-caption text-medium-emphasis">平台累计赠送积分</div>
             </v-card>
           </v-col>
 
