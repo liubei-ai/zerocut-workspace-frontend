@@ -100,22 +100,6 @@
           </v-card-text>
         </v-card>
 
-        <!-- 第三方订单信息（如果有） -->
-        <v-card v-if="result?.thirdPartyOrderNo" variant="outlined" class="mb-4">
-          <v-card-title class="d-flex align-center pa-4">
-            <v-icon class="mr-2" color="primary">mdi-link</v-icon>
-            订单信息
-          </v-card-title>
-          <v-divider />
-          <v-card-text class="pa-4">
-            <div class="d-flex align-center mb-3">
-              <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-receipt-text</v-icon>
-              <span class="text-body-2 text-medium-emphasis">第三方订单号</span>
-            </div>
-            <div class="text-body-1 font-weight-medium">{{ result?.thirdPartyOrderNo }}</div>
-          </v-card-text>
-        </v-card>
-
         <!-- 支付详情（如果有） -->
         <v-card
           v-if="result?.paymentDetails && Object.keys(result.paymentDetails).length > 0"
