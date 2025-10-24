@@ -106,7 +106,7 @@ const navs: Array<{
         <!-- ---------------------------------------------- -->
         <!-- Profile Area -->
         <!-- ---------------------------------------------- -->
-        <v-list-item to="/profile">
+        <v-list-item>
           <template v-slot:prepend>
             <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
               <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
