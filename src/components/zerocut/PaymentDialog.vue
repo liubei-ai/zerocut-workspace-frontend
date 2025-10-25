@@ -64,6 +64,30 @@
                 </div>
               </v-card-text>
             </v-card>
+
+            <!-- 支付协议复选框 -->
+            <div v-if="paymentStatus === 'pending'">
+              <v-checkbox
+                v-model="agreementAccepted"
+                color="primary"
+                hide-details
+                class="agreement-checkbox"
+              >
+                <template #label>
+                  <span class="text-body-2">
+                    我已阅读并同意
+                    <a
+                      href="https://workspace.zerocut.cn/paid_service_agreement.html"
+                      target="_blank"
+                      class="text-primary text-decoration-none"
+                      @click.stop
+                    >
+                      《ZeroCut付费服务协议》
+                    </a>
+                  </span>
+                </template>
+              </v-checkbox>
+            </div>
           </div>
 
           <!-- 右侧：二维码、倒计时、支付状态 -->
@@ -150,7 +174,7 @@
 
 <script setup lang="ts">
 import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
-import { createWechatPayOrder, queryOrderStatus, closeOrder } from '@/api/packageApi';
+import { closeOrder, createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import QRCode from 'qrcode';
@@ -188,6 +212,7 @@ const errorMessage = ref<string>('');
 const paymentCheckInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(300); // 5分钟倒计时
+const agreementAccepted = ref<boolean>(true); // 支付协议同意状态，默认选中
 
 // Computed
 const isOpen = computed({
@@ -400,6 +425,7 @@ const resetState = () => {
   paymentCheckStatus.value = 'waiting';
   errorMessage.value = '';
   countdown.value = 300;
+  agreementAccepted.value = true; // 重置协议同意状态为默认选中
   stopPaymentStatusCheck();
   stopCountdown();
 };
@@ -553,5 +579,18 @@ onUnmounted(() => {
 /* 等宽字体 */
 .font-family-monospace {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.agreement-checkbox :deep(.v-label) {
+  opacity: 1;
+  line-height: 1.4;
+}
+
+.agreement-checkbox a {
+  font-weight: 500;
+}
+
+.agreement-checkbox a:hover {
+  text-decoration: underline !important;
 }
 </style>
