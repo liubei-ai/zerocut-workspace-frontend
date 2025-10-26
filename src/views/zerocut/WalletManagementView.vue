@@ -110,12 +110,6 @@ const getPaymentMethodColor = (paymentMethod: string) => {
 
 // 计算剩余有效期
 const calculateRemainingValidity = (item: TransactionItem) => {
-  // 手动充值、机器人充值、积分赠送等永久有效，不显示有效期
-  const permanentPaymentMethods = ['manual', 'bot', 'give'];
-  if (permanentPaymentMethods.includes(item.paymentMethod)) {
-    return null;
-  }
-
   // 如果没有有效期信息，返回空
   if (!item.creditsValidityDays || !item.paidAt) {
     return null;
@@ -323,9 +317,9 @@ const handleRecharge = () => {
           { title: '时间', key: 'createdAt', sortable: true },
           { title: '金额', key: 'amount', sortable: true },
           { title: '积分', key: 'creditsAmount', sortable: true },
-          { title: '描述', key: 'description', sortable: false },
-          { title: '支付方式', key: 'paymentMethod', sortable: false },
+          { title: '剩余积分', key: 'remainingCredits', sortable: true },
           { title: '剩余有效期', key: 'validity', sortable: false },
+          { title: '支付方式', key: 'paymentMethod', sortable: false },
           { title: '订单号', key: 'orderNo', sortable: false },
           { title: '第三方订单号', key: 'thirdPartyOrderNo', sortable: false },
         ]"
@@ -347,6 +341,17 @@ const handleRecharge = () => {
           <span class="text-success font-weight-medium"> ¥{{ Math.abs(item.amount) }} </span>
         </template>
 
+        <template #item.remainingCredits="{ item }">
+          <span
+            :class="[
+              'font-weight-medium',
+              (item.remainingCredits || 0) > 0 ? 'text-primary' : 'text-medium-emphasis',
+            ]"
+          >
+            {{ (item.remainingCredits || 0).toLocaleString() }}
+          </span>
+        </template>
+
         <template #item.paymentMethod="{ item }">
           <div class="d-flex align-center">
             <v-icon
@@ -360,7 +365,7 @@ const handleRecharge = () => {
         </template>
 
         <template #item.validity="{ item }">
-          <div v-if="calculateRemainingValidity(item)">
+          <div v-if="(item.remainingCredits || 0) > 0 && calculateRemainingValidity(item)">
             <v-chip :color="calculateRemainingValidity(item)!.color" size="small" variant="flat">
               {{ calculateRemainingValidity(item)!.text }}
             </v-chip>

@@ -23,6 +23,7 @@ export interface TransactionItem {
   thirdPartyOrderNo?: string;
   paidAt?: string;
   creditsValidityDays?: number;
+  remainingCredits?: number; // 剩余积分数量
 }
 /**
  * 获取钱包信息
