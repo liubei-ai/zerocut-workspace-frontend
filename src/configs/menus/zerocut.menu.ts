@@ -25,7 +25,7 @@ export default [
   },
   {
     key: 'menu.packages',
-    text: '套餐管理',
+    text: '积分套餐',
     link: '/packages',
     icon: 'mdi-gift',
   },

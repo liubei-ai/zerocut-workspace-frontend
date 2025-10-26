@@ -86,7 +86,7 @@ export default [
     meta: {
       requiresAuth: true,
       layout: 'landing',
-      title: '套餐管理',
+      title: '积分套餐',
       category: 'ZeroCut',
     },
     component: () =>
