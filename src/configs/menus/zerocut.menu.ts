@@ -23,12 +23,12 @@ export default [
     link: '/wallet',
     icon: 'mdi-wallet-outline',
   },
-  // {
-  //   key: 'menu.packages',
-  //   text: '套餐管理',
-  //   link: '/packages',
-  //   icon: 'mdi-gift',
-  // },
+  {
+    key: 'menu.packages',
+    text: '套餐管理',
+    link: '/packages',
+    icon: 'mdi-gift',
+  },
   {
     key: 'menu.guide',
     text: '使用指南',
@@ -38,7 +38,7 @@ export default [
   },
   // {
   //   key: 'menu.settings',
-  //   text: '个人设置',
+  //   text: '工作区设置',
   //   link: '/settings',
   //   icon: 'mdi-account-cog-outline',
   // },

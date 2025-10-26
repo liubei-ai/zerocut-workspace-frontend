@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import CreditsSection from '@/components/dashboard/CreditsSection.vue';
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
 import type { MetricCardData } from '@/types/stats';
-
 import { computed, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();
@@ -12,19 +12,6 @@ const statsStore = useStatsStore();
 
 // 加载状态
 const loading = ref(true);
-
-// 用户信息
-const user = computed(() => authStore.user);
-
-// 当前日期
-const currentDate = computed(() => {
-  return new Date().toLocaleDateString('zh-CN', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'long',
-  });
-});
 
 // 计算属性：指标卡片数据 - 使用statsStore的summaryCards
 const metricCards = computed(() => {
@@ -72,30 +59,6 @@ const handleMetricAction = (metric: MetricCardData) => {
 <template>
   <div class="dashboard-container">
     <div class="dashboard-content">
-      <!-- 欢迎区域 -->
-      <v-row class="mb-6">
-        <v-col cols="12">
-          <v-card class="pa-6" elevation="2">
-            <div class="d-flex align-center">
-              <v-avatar size="64" class="mr-4">
-                <v-img
-                  :src="user?.avatar || '/default-avatar.png'"
-                  :alt="user?.name || '用户头像'"
-                />
-              </v-avatar>
-              <div>
-                <h2 class="text-h4 mb-2">
-                  欢迎回来，{{ user?.name || user?.username || '用户' }}！
-                </h2>
-                <p class="text-body-1 text-medium-emphasis">
-                  今天是 {{ currentDate }}，开始您的创作之旅吧
-                </p>
-              </div>
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
-
       <div class="mb-6">
         <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
         <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
@@ -108,6 +71,12 @@ const handleMetricAction = (metric: MetricCardData) => {
       </div>
 
       <div v-else>
+        <v-row class="mb-6">
+          <v-col cols="12" md="4">
+            <CreditsSection />
+          </v-col>
+        </v-row>
+
         <!-- 统计卡片 -->
         <v-row class="mb-6">
           <v-col v-for="metric in metricCards" :key="metric.title" cols="12" sm="6" md="3">

@@ -272,16 +272,6 @@ const getStatusColor = (status: string) => {
           <div class="text-subtitle-2 text-medium-emphasis">已过期</div>
         </v-card>
       </v-col>
-
-      <v-col cols="12" sm="6" md="3">
-        <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="48" color="info" class="mb-2"> mdi-chart-bar </v-icon>
-          <div class="text-h4 font-weight-bold mb-1">
-            {{ stats.totalUsage.toLocaleString() }}
-          </div>
-          <div class="text-subtitle-2 text-medium-emphasis">总调用次数</div>
-        </v-card>
-      </v-col>
     </v-row>
 
     <!-- 密钥列表 -->
