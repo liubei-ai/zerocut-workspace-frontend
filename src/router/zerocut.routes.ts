@@ -92,4 +92,16 @@ export default [
     component: () =>
       import(/* webpackChunkName: "package-list" */ '@/views/zerocut/PackageListView.vue'),
   },
+  // {
+  //   path: '/profile',
+  //   name: 'profile',
+  //   component: () =>
+  //     import(/* webpackChunkName: "profile" */ '@/views/users/ProfilePage.vue'),
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: 'ui',
+  //     title: 'Profile',
+  //     category: 'Config',
+  //   },
+  // }
 ];

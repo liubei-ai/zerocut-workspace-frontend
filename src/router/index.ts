@@ -1,17 +1,6 @@
 import { useAuthStore } from '@/stores/authStore';
 import { createRouter, createWebHistory } from 'vue-router';
 import AdminRoutes from './admin.routes';
-import AiRoutes from './ai.routes';
-import AppsRoutes from './apps.routes';
-import AuthRoutes from './auth.routes';
-import ChartsRoutes from './charts.routes';
-import DataRoutes from './data.routes';
-import LandingRoutes from './landing.routes';
-import PagesRoutes from './pages.routes';
-import UIRoutes from './ui.routes';
-import UmlRoutes from './uml.routes';
-import UserRoutes from './user.routes';
-import UtilityRoutes from './utility.routes';
 import ZerocutRoutes from './zerocut.routes';
 
 export const routes = [
@@ -21,22 +10,22 @@ export const routes = [
     meta: {},
   },
   {
+    path: '/auth/authing',
+    name: 'auth-authing',
+    component: () => import(/* webpackChunkName: "auth-authing" */ '@/views/auth/AuthingPage.vue'),
+    meta: {
+      layout: 'auth',
+      title: 'Authing认证',
+    },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
   },
-  ...UserRoutes,
-  ...LandingRoutes,
-  ...AuthRoutes,
-  ...PagesRoutes,
-  ...UtilityRoutes,
-  ...UIRoutes,
-  ...AiRoutes,
+  // ...LandingRoutes,
+  // ...ChartsRoutes,
   ...ZerocutRoutes,
-  ...AppsRoutes,
-  ...DataRoutes,
-  ...ChartsRoutes,
-  ...UmlRoutes,
   ...AdminRoutes,
 ];
 
@@ -45,9 +34,6 @@ export const dynamicRoutes = [];
 
 const router = createRouter({
   history: createWebHistory(),
-  // hash模式：createWebHashHistory，history模式：createWebHistory
-  // process.env.NODE_ENV === "production"
-
   routes: routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
