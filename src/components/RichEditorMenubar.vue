@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 // import EditorMenu from "./EditorMenu.vue";
-import { Icon } from '@iconify/vue';
 const props = defineProps({ editor: Object });
 const items = ref([
   {
@@ -43,16 +42,14 @@ const items = ref([
   {
     icon: 'mdi-format-header-1',
     title: 'Heading 1',
-    action: () =>
-      props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
+    action: () => props.editor.chain().focus().toggleHeading({ level: 1 }).run(),
 
     isActive: () => props.editor.isActive('heading', { level: 1 }),
   },
   {
     icon: 'mdi-format-header-2',
     title: 'Heading 2',
-    action: () =>
-      props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
+    action: () => props.editor.chain().focus().toggleHeading({ level: 2 }).run(),
 
     isActive: () => props.editor.isActive('heading', { level: 2 }),
   },
@@ -117,8 +114,7 @@ const items = ref([
   {
     title: 'Clear Format',
     icon: 'mdi-format-clear',
-    action: () =>
-      props.editor.chain().focus().clearNodes().unsetAllMarks().run(),
+    action: () => props.editor.chain().focus().clearNodes().unsetAllMarks().run(),
   },
   {
     type: 'divider',
@@ -137,7 +133,7 @@ const items = ref([
 </script>
 <template>
   <perfect-scrollbar class="d-flex align-center menuBar">
-    <template v-for="(item, index) in items">
+    <template v-for="item in items">
       <v-divider
         thickness="3"
         class="mx-1"
@@ -154,11 +150,7 @@ const items = ref([
         v-else
       >
         <v-icon>{{ item.icon }}</v-icon>
-        <v-tooltip
-          activator="parent"
-          location="top"
-          :text="item.title"
-        ></v-tooltip>
+        <v-tooltip activator="parent" location="top" :text="item.title"></v-tooltip>
       </v-btn>
     </template>
   </perfect-scrollbar>

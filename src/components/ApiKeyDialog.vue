@@ -4,11 +4,11 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useChatGPTStore } from '@/stores/chatGPTStore';
-import { useLocale } from 'vuetify';
-import promptsZh from '@/data/ai/prompts-zh.json';
 import promptsEn from '@/data/ai/prompts-en.json';
 import promptsJa from '@/data/ai/prompts-ja.json';
+import promptsZh from '@/data/ai/prompts-zh.json';
+import { useChatGPTStore } from '@/stores/chatGPTStore';
+import { useLocale } from 'vuetify';
 const { current } = useLocale();
 const chatGPTStore = useChatGPTStore();
 
