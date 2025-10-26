@@ -82,7 +82,7 @@
                       class="text-primary text-decoration-none"
                       @click.stop
                     >
-                      《ZeroCut付费服务协议》
+                      ZeroCut充值协议
                     </a>
                   </span>
                 </template>
