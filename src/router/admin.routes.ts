@@ -24,6 +24,30 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
+      {
+        path: 'system-config',
+        name: 'admin-system-config',
+        component: () => import('@/views/admin/SystemConfigPage.vue'),
+        meta: {
+          title: '系统配置管理',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
+        path: 'system-config-audit',
+        name: 'admin-system-config-audit',
+        component: () => import('@/views/admin/SystemConfigAuditPage.vue'),
+        meta: {
+          title: '配置审计日志',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
     ],
   },
 ];

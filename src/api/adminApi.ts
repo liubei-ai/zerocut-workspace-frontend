@@ -69,3 +69,149 @@ export const createRecharge = async (params: CreateRechargeParams): Promise<Rech
   const response = await apiClient.post<RechargeResponse>('/admin/recharge/create', params);
   return response.data;
 };
+
+// 系统配置相关接口
+
+// 系统配置项接口
+export interface SystemConfigItem {
+  id: number;
+  configKey: string;
+  name: string;
+  configValue: string;
+  valueType: 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
+  category: string;
+  description?: string;
+  isEditable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// 查询系统配置参数接口
+export interface QuerySystemConfigParams {
+  configKey?: string;
+  name?: string;
+  category?: string;
+  isEditable?: boolean;
+}
+
+// 创建系统配置参数接口
+export interface CreateSystemConfigParams {
+  configKey: string;
+  name: string;
+  configValue: string;
+  valueType: 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
+  category: string;
+  description?: string;
+  isEditable?: boolean;
+  defaultValue?: string;
+  validationRule?: string;
+  sortOrder?: number;
+}
+
+// 更新系统配置参数接口
+export interface UpdateSystemConfigParams {
+  name?: string;
+  configValue?: string;
+  description?: string;
+}
+
+// 批量系统配置参数接口
+export interface BatchSystemConfigParams {
+  updates?: Array<{
+    configKey: string;
+    name?: string;
+    configValue?: string;
+    description?: string;
+  }>;
+  deletes?: string[];
+}
+
+// 系统配置审计日志接口
+export interface SystemConfigAuditItem {
+  id: number;
+  configKey: string;
+  action: 'create' | 'update' | 'delete' | 'view';
+  operatorId?: number;
+  operatorType: 'admin' | 'bot';
+  oldValue?: string;
+  newValue?: string;
+  changedFields?: string[];
+  ipAddress?: string;
+  userAgent?: string;
+  remark?: string;
+  createdAt: string;
+}
+
+// 查询审计日志参数接口
+export interface QueryAuditLogParams {
+  page?: number;
+  limit?: number;
+  configKey?: string;
+  action?: string;
+  operatorType?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+// 系统配置列表响应接口
+export interface SystemConfigListResponse {
+  configs: SystemConfigItem[];
+  total: number;
+  categoryStats?: Record<string, number>;
+}
+
+/**
+ * 获取系统配置列表
+ */
+export async function getSystemConfigList(params: QuerySystemConfigParams = {}) {
+  const response = await apiClient.get<SystemConfigListResponse>('/admin/system-config', {
+    params,
+  });
+  return response.data;
+}
+
+/**
+ * 创建系统配置
+ */
+export async function createSystemConfig(params: CreateSystemConfigParams) {
+  const response = await apiClient.post<SystemConfigItem>('/admin/system-config', params);
+  return response.data;
+}
+
+/**
+ * 更新系统配置
+ */
+export async function updateSystemConfig(configKey: string, params: UpdateSystemConfigParams) {
+  const response = await apiClient.put<SystemConfigItem>(
+    `/admin/system-config/${configKey}`,
+    params
+  );
+  return response.data;
+}
+
+/**
+ * 删除系统配置
+ */
+export async function deleteSystemConfig(configKey: string) {
+  const response = await apiClient.delete(`/admin/system-config/${configKey}`);
+  return response.data;
+}
+
+/**
+ * 批量操作系统配置
+ */
+export async function batchSystemConfig(params: BatchSystemConfigParams) {
+  const response = await apiClient.post('/admin/system-config/batch', params);
+  return response.data;
+}
+
+/**
+ * 获取系统配置审计日志
+ */
+export async function getSystemConfigAuditLogs(params: QueryAuditLogParams = {}) {
+  const response = await apiClient.get<PaginationResponse<SystemConfigAuditItem>>(
+    '/admin/system-config/audit-logs',
+    { params }
+  );
+  return response.data;
+}
