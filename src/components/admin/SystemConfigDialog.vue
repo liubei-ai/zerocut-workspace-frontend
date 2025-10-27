@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type {
   CreateSystemConfigParams,
+  SystemConfigEnumOption,
   SystemConfigItem,
   UpdateSystemConfigParams,
 } from '@/api/adminApi';
-import { computed, ref, watch } from 'vue';
+import { getSystemConfigEnums } from '@/api/adminApi';
+import { computed, onMounted, ref, watch } from 'vue';
 
 // 值类型枚举
 type ValueType = 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
@@ -30,13 +32,16 @@ const emit = defineEmits<Emits>();
 // 响应式数据
 const loading = ref(false);
 const form = ref<any>(null);
+const enumsLoading = ref(false);
+const valueTypeOptions = ref<SystemConfigEnumOption[]>([]);
+const categoryOptions = ref<SystemConfigEnumOption[]>([]);
 
 // 表单数据
 const formData = ref({
   configKey: '',
   name: '',
   configValue: '',
-  valueType: 'STRING' as ValueType,
+  valueType: 'string' as ValueType,
   category: '',
   description: '',
   isEditable: true,
@@ -46,15 +51,19 @@ const formData = ref({
 const isEdit = computed(() => !!props.config);
 const dialogTitle = computed(() => (isEdit.value ? '编辑配置' : '新建配置'));
 
-// 值类型选项
-const valueTypeOptions = [
-  { title: '字符串', value: 'STRING' },
-  { title: '数字', value: 'NUMBER' },
-  { title: '小数', value: 'DECIMAL' },
-  { title: '布尔值', value: 'BOOLEAN' },
-  { title: 'JSON', value: 'JSON' },
-  { title: '数组', value: 'ARRAY' },
-];
+// 获取系统配置枚举
+const fetchEnums = async () => {
+  try {
+    enumsLoading.value = true;
+    const enums = await getSystemConfigEnums();
+    valueTypeOptions.value = enums.valueTypes;
+    categoryOptions.value = enums.categories;
+  } catch (error) {
+    console.error('获取枚举失败:', error);
+  } finally {
+    enumsLoading.value = false;
+  }
+};
 
 // 表单验证规则
 const rules = {
@@ -77,6 +86,11 @@ const rules = {
   ],
   description: [(v: string) => !v || v.length <= 500 || '描述长度不能超过500个字符'],
 };
+
+// 组件挂载时获取枚举数据
+onMounted(() => {
+  fetchEnums();
+});
 
 // 监听弹窗状态
 watch(
@@ -292,17 +306,24 @@ const getValueInputType = (type: ValueType) => {
 
             <!-- 配置分类 -->
             <v-col cols="12" md="6">
-              <v-text-field
+              <v-select
                 v-model="formData.category"
                 label="配置分类"
-                placeholder="请输入配置分类"
+                :items="categoryOptions"
+                item-title="label"
+                item-value="value"
                 variant="outlined"
                 density="comfortable"
                 :rules="rules.category"
                 :disabled="isEdit"
-                :hint="isEdit ? '编辑模式下配置分类不可修改' : '配置分类用于组织配置项'"
+                :loading="enumsLoading"
+                :hint="isEdit ? '编辑模式下配置分类不可修改' : '选择配置分类用于组织配置项'"
                 persistent-hint
-              />
+              >
+                <template #item="{ props, item }">
+                  <v-list-item v-bind="props" :subtitle="item.raw.description" />
+                </template>
+              </v-select>
             </v-col>
 
             <!-- 值类型 -->
@@ -311,14 +332,21 @@ const getValueInputType = (type: ValueType) => {
                 v-model="formData.valueType"
                 label="值类型"
                 :items="valueTypeOptions"
+                item-title="label"
+                item-value="value"
                 variant="outlined"
                 density="comfortable"
                 :rules="rules.valueType"
                 :disabled="isEdit"
+                :loading="enumsLoading"
                 :hint="isEdit ? '编辑模式下值类型不可修改' : '选择配置值的数据类型'"
                 persistent-hint
                 @update:model-value="formatConfigValue"
-              />
+              >
+                <template #item="{ props, item }">
+                  <v-list-item v-bind="props" :subtitle="item.raw.description" />
+                </template>
+              </v-select>
             </v-col>
 
             <!-- 可编辑状态 -->

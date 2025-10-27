@@ -86,6 +86,19 @@ export interface SystemConfigItem {
   updatedAt: string;
 }
 
+// 系统配置枚举选项接口
+export interface SystemConfigEnumOption {
+  label: string;
+  value: string;
+  description: string;
+}
+
+// 系统配置枚举响应接口
+export interface SystemConfigEnumsResponse {
+  valueTypes: SystemConfigEnumOption[];
+  categories: SystemConfigEnumOption[];
+}
+
 // 查询系统配置参数接口
 export interface QuerySystemConfigParams {
   configKey?: string;
@@ -213,5 +226,13 @@ export async function getSystemConfigAuditLogs(params: QueryAuditLogParams = {})
     '/admin/system-config/audit-logs',
     { params }
   );
+  return response.data;
+}
+
+/**
+ * 获取系统配置枚举
+ */
+export async function getSystemConfigEnums() {
+  const response = await apiClient.get<SystemConfigEnumsResponse>('/admin/system-config/enums');
   return response.data;
 }

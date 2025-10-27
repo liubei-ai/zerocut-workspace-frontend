@@ -36,10 +36,9 @@ const dataStats = ref({
 // 搜索过滤器
 const searchFilters = ref<QuerySystemConfigParams>({
   configKey: '',
-  configName: '',
-  valueType: '',
-  isProtected: undefined,
-  permissionLevel: '',
+  name: '',
+  category: '',
+  isEditable: undefined,
 });
 
 // 提示信息
@@ -54,19 +53,19 @@ const stats = computed(() => {
   const configList = configs.value || [];
   return {
     total: dataStats.value.total,
-    protected: configList.filter(c => c.isProtected).length,
-    system: configList.filter(c => c.permissionLevel === 'SYSTEM').length,
+    editable: configList.filter(c => c.isEditable).length,
+    readonly: configList.filter(c => !c.isEditable).length,
   };
 });
 
 // 表格头部配置
 const headers = [
   { title: '配置键', key: 'configKey', sortable: false, width: '200px' },
-  { title: '配置名称', key: 'configName', sortable: false, width: '180px' },
+  { title: '配置名称', key: 'name', sortable: false, width: '180px' },
   { title: '配置值', key: 'configValue', sortable: false, width: '200px' },
   { title: '值类型', key: 'valueType', sortable: false, width: '100px' },
-  { title: '权限级别', key: 'permissionLevel', sortable: false, width: '100px' },
-  { title: '保护状态', key: 'isProtected', sortable: false, width: '100px' },
+  { title: '配置分类', key: 'category', sortable: false, width: '120px' },
+  { title: '可编辑', key: 'isEditable', sortable: false, width: '100px' },
   { title: '更新时间', key: 'updatedAt', sortable: false, width: '160px' },
   { title: '操作', key: 'actions', sortable: false, width: '120px', align: 'center' as const },
 ];
@@ -81,18 +80,11 @@ const valueTypeOptions = [
   { title: '数组', value: 'ARRAY' },
 ];
 
-// 权限级别选项
-const permissionLevelOptions = [
-  { title: '系统级', value: 'SYSTEM' },
-  { title: '管理员', value: 'ADMIN' },
-  { title: '用户', value: 'USER' },
-];
-
-// 保护状态选项
-const protectedOptions = [
+// 可编辑状态选项
+const editableOptions = [
   { title: '全部', value: undefined },
-  { title: '受保护', value: true },
-  { title: '非保护', value: false },
+  { title: '可编辑', value: true },
+  { title: '只读', value: false },
 ];
 
 // 获取配置列表
@@ -213,17 +205,19 @@ const formatConfigValue = (value: string, type: string) => {
   return value;
 };
 
-// 获取权限级别颜色
-const getPermissionLevelColor = (level: string) => {
-  switch (level) {
+// 获取分类颜色
+const getCategoryColor = (category: string) => {
+  switch (category) {
     case 'SYSTEM':
       return 'error';
-    case 'ADMIN':
+    case 'SECURITY':
       return 'warning';
-    case 'USER':
+    case 'FEATURE':
+      return 'info';
+    case 'UI':
       return 'success';
     default:
-      return 'default';
+      return 'primary';
   }
 };
 
@@ -299,6 +293,13 @@ onMounted(() => {
         >
           刷新
         </v-btn>
+        <v-btn
+          variant="outlined"
+          prepend-icon="mdi-history"
+          @click="$router.push({ name: 'admin-system-config-audit' })"
+        >
+          审计日志
+        </v-btn>
         <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog"> 新建配置 </v-btn>
       </div>
     </div>
@@ -316,20 +317,20 @@ onMounted(() => {
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="48" color="warning" class="mb-2">mdi-shield</v-icon>
+          <v-icon size="48" color="success" class="mb-2">mdi-pencil</v-icon>
           <div class="text-h4 font-weight-bold mb-1">
-            {{ stats.protected }}
+            {{ stats.editable }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">受保护配置</div>
+          <div class="text-subtitle-2 text-medium-emphasis">可编辑配置</div>
         </v-card>
       </v-col>
       <v-col cols="12" sm="6" md="4">
         <v-card class="pa-4 text-center" elevation="2">
-          <v-icon size="48" color="error" class="mb-2">mdi-security</v-icon>
+          <v-icon size="48" color="warning" class="mb-2">mdi-lock</v-icon>
           <div class="text-h4 font-weight-bold mb-1">
-            {{ stats.system }}
+            {{ stats.readonly }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">系统级配置</div>
+          <div class="text-subtitle-2 text-medium-emphasis">只读配置</div>
         </v-card>
       </v-col>
     </v-row>
@@ -356,7 +357,7 @@ onMounted(() => {
           </v-col>
           <v-col cols="12" md="3">
             <v-text-field
-              v-model="searchFilters.configName"
+              v-model="searchFilters.name"
               label="配置名称"
               placeholder="搜索配置名称"
               variant="outlined"
@@ -366,33 +367,23 @@ onMounted(() => {
               @input="debouncedSearch"
             />
           </v-col>
-          <v-col cols="12" md="2">
-            <v-select
-              v-model="searchFilters.valueType"
-              label="值类型"
-              :items="valueTypeOptions"
+          <v-col cols="12" md="3">
+            <v-text-field
+              v-model="searchFilters.category"
+              label="配置分类"
+              placeholder="搜索配置分类"
               variant="outlined"
               density="comfortable"
               clearable
-              @update:model-value="handleSearch"
+              prepend-inner-icon="mdi-folder"
+              @input="debouncedSearch"
             />
           </v-col>
           <v-col cols="12" md="2">
             <v-select
-              v-model="searchFilters.permissionLevel"
-              label="权限级别"
-              :items="permissionLevelOptions"
-              variant="outlined"
-              density="comfortable"
-              clearable
-              @update:model-value="handleSearch"
-            />
-          </v-col>
-          <v-col cols="12" md="2">
-            <v-select
-              v-model="searchFilters.isProtected"
-              label="保护状态"
-              :items="protectedOptions"
+              v-model="searchFilters.isEditable"
+              label="可编辑状态"
+              :items="editableOptions"
               variant="outlined"
               density="comfortable"
               clearable
@@ -417,9 +408,9 @@ onMounted(() => {
         </template>
 
         <!-- 配置名称 -->
-        <template #item.configName="{ item }">
+        <template #item.name="{ item }">
           <div>
-            <div class="font-weight-medium">{{ item.configName }}</div>
+            <div class="font-weight-medium">{{ item.name }}</div>
             <div v-if="item.description" class="text-caption text-medium-emphasis">
               {{ item.description }}
             </div>
@@ -446,21 +437,17 @@ onMounted(() => {
           </v-chip>
         </template>
 
-        <!-- 权限级别 -->
-        <template #item.permissionLevel="{ item }">
-          <v-chip
-            :color="getPermissionLevelColor(item.permissionLevel)"
-            variant="tonal"
-            size="small"
-          >
-            {{ item.permissionLevel }}
+        <!-- 分类 -->
+        <template #item.category="{ item }">
+          <v-chip :color="getCategoryColor(item.category)" variant="tonal" size="small">
+            {{ item.category }}
           </v-chip>
         </template>
 
-        <!-- 保护状态 -->
-        <template #item.isProtected="{ item }">
-          <v-chip :color="item.isProtected ? 'warning' : 'success'" variant="tonal" size="small">
-            {{ item.isProtected ? '受保护' : '普通' }}
+        <!-- 编辑状态 -->
+        <template #item.isEditable="{ item }">
+          <v-chip :color="item.isEditable ? 'success' : 'warning'" variant="tonal" size="small">
+            {{ item.isEditable ? '可编辑' : '只读' }}
           </v-chip>
         </template>
 
@@ -485,7 +472,7 @@ onMounted(() => {
               variant="text"
               color="error"
               @click="openDeleteDialog(item)"
-              :disabled="item.permissionLevel === 'SYSTEM'"
+              :disabled="!item.isEditable"
             />
           </div>
         </template>
@@ -504,7 +491,7 @@ onMounted(() => {
       <v-card>
         <v-card-title class="text-h6">确认删除</v-card-title>
         <v-card-text>
-          确定要删除配置 "{{ configToDelete?.configName }}" 吗？此操作不可撤销。
+          确定要删除配置 "{{ configToDelete?.name }}" 吗？此操作不可撤销。
         </v-card-text>
         <v-card-actions>
           <v-spacer />
