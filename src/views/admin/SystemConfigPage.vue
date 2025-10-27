@@ -183,9 +183,9 @@ const handleConfigSave = async (data: CreateSystemConfigParams | UpdateSystemCon
 
     configDialogOpen.value = false;
     refreshList();
-  } catch (error: any) {
+  } catch (error) {
     console.error('保存配置失败:', error);
-    const message = error.response?.data?.message || '保存配置失败';
+    const message = error.details?.message || '保存配置失败';
     showSnackbar(message, 'error');
   }
 };

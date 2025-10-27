@@ -7,7 +7,7 @@ import { computed, onMounted, ref } from 'vue';
 // 响应式数据
 const loading = ref(false);
 const auditLogs = ref<SystemConfigAuditItem[]>([]);
-const searchKeyword = ref('');
+const searchConfigKey = ref('');
 const selectedAction = ref('');
 const selectedOperatorType = ref('');
 const dateRange = ref<[string, string] | null>(null);
@@ -29,7 +29,7 @@ const snackbar = ref({
 
 // 搜索过滤条件
 const searchFilters = computed(() => ({
-  keyword: searchKeyword.value || undefined,
+  configKey: searchConfigKey.value || undefined,
   action: selectedAction.value || undefined,
   operatorType: selectedOperatorType.value || undefined,
   startDate: dateRange.value?.[0] || undefined,
@@ -39,10 +39,10 @@ const searchFilters = computed(() => ({
 // 操作类型选项
 const actionOptions = [
   { title: '全部', value: '' },
-  { title: '查看', value: 'VIEW' },
-  { title: '创建', value: 'CREATE' },
-  { title: '更新', value: 'UPDATE' },
-  { title: '删除', value: 'DELETE' },
+  { title: '查看', value: 'view' },
+  { title: '创建', value: 'create' },
+  { title: '更新', value: 'update' },
+  { title: '删除', value: 'delete' },
 ];
 
 // 操作者类型选项
@@ -110,7 +110,7 @@ const handleItemsPerPageChange = (itemsPerPage: number) => {
 
 // 重置搜索条件
 const resetSearch = () => {
-  searchKeyword.value = '';
+  searchConfigKey.value = '';
   selectedAction.value = '';
   selectedOperatorType.value = '';
   dateRange.value = null;
@@ -217,9 +217,9 @@ onMounted(() => {
           <!-- 关键词搜索 -->
           <v-col cols="12" md="3">
             <v-text-field
-              v-model="searchKeyword"
-              label="搜索配置键或操作者"
-              placeholder="输入配置键或操作者ID"
+              v-model="searchConfigKey"
+              label="搜索配置键"
+              placeholder="输入配置键"
               variant="outlined"
               density="comfortable"
               prepend-inner-icon="mdi-magnify"
