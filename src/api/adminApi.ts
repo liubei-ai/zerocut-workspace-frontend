@@ -145,6 +145,7 @@ export interface SystemConfigAuditItem {
   configKey: string;
   action: 'create' | 'update' | 'delete' | 'view';
   operatorId?: number;
+  operatorName?: string;
   operatorType: 'admin' | 'bot';
   oldValue?: string;
   newValue?: string;

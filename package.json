@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.{js,ts,vue,scss,css}\"",
     "format:check": "prettier --check \"src/**/*.{js,ts,vue,scss,css}\"",
     "prepare": "husky",
-    "commit": "claude -p 'make a commit' --model 'claude-haiku-4-5-20251001'"
+    "commit": "claude -p 'make a commit' --model 'claude-haiku-4-5-20251001' --dangerously-skip-permissions"
   },
   "dependencies": {
     "@authing/guard-vue3": "^5.3.9",

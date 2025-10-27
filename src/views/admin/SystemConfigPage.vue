@@ -2,12 +2,14 @@
 import type {
   CreateSystemConfigParams,
   QuerySystemConfigParams,
+  SystemConfigEnumsResponse,
   SystemConfigItem,
   UpdateSystemConfigParams,
 } from '@/api/adminApi';
 import {
   createSystemConfig,
   deleteSystemConfig,
+  getSystemConfigEnums,
   getSystemConfigList,
   updateSystemConfig,
 } from '@/api/adminApi';
@@ -22,6 +24,13 @@ const configDialogOpen = ref(false);
 const selectedConfig = ref<SystemConfigItem | null>(null);
 const deleteDialogOpen = ref(false);
 const configToDelete = ref<SystemConfigItem | null>(null);
+
+// 枚举数据
+const enums = ref<SystemConfigEnumsResponse>({
+  valueTypes: [],
+  categories: [],
+});
+const enumsLoading = ref(false);
 
 // 弹窗状态
 const dialogVisible = ref(false);
@@ -70,22 +79,36 @@ const headers = [
   { title: '操作', key: 'actions', sortable: false, width: '120px', align: 'center' as const },
 ];
 
-// 值类型选项
-const valueTypeOptions = [
-  { title: '字符串', value: 'STRING' },
-  { title: '数字', value: 'NUMBER' },
-  { title: '小数', value: 'DECIMAL' },
-  { title: '布尔值', value: 'BOOLEAN' },
-  { title: 'JSON', value: 'JSON' },
-  { title: '数组', value: 'ARRAY' },
-];
-
 // 可编辑状态选项
 const editableOptions = [
   { title: '全部', value: undefined },
   { title: '可编辑', value: true },
   { title: '只读', value: false },
 ];
+
+// 配置分类选项（包含"全部"选项）
+const categoryOptions = computed(() => [
+  { title: '全部', value: undefined, subtitle: '显示所有分类的配置' },
+  ...enums.value.categories.map(item => ({
+    title: item.label,
+    value: item.value,
+    subtitle: item.description,
+  })),
+]);
+
+// 获取枚举数据
+const fetchEnums = async () => {
+  try {
+    enumsLoading.value = true;
+    const response = await getSystemConfigEnums();
+    enums.value = response;
+  } catch (error) {
+    console.error('获取枚举数据失败:', error);
+    showSnackbar('获取枚举数据失败', 'error');
+  } finally {
+    enumsLoading.value = false;
+  }
+};
 
 // 获取配置列表
 const fetchConfigs = async () => {
@@ -272,6 +295,7 @@ const handleSaveConfig = async (data: CreateSystemConfigParams | UpdateSystemCon
 
 // 组件挂载时获取数据
 onMounted(() => {
+  fetchEnums();
   fetchConfigs();
 });
 </script>
@@ -368,16 +392,28 @@ onMounted(() => {
             />
           </v-col>
           <v-col cols="12" md="3">
-            <v-text-field
+            <v-select
               v-model="searchFilters.category"
               label="配置分类"
-              placeholder="搜索配置分类"
+              :items="categoryOptions"
+              item-title="title"
+              item-value="value"
               variant="outlined"
               density="comfortable"
               clearable
+              :loading="enumsLoading"
               prepend-inner-icon="mdi-folder"
-              @input="debouncedSearch"
-            />
+              @update:model-value="handleSearch"
+            >
+              <template #item="{ props, item }">
+                <v-list-item v-bind="props">
+                  <v-list-item-title>{{ item.raw.title }}</v-list-item-title>
+                  <v-list-item-subtitle v-if="item.raw.subtitle">
+                    {{ item.raw.subtitle }}
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </template>
+            </v-select>
           </v-col>
           <v-col cols="12" md="2">
             <v-select

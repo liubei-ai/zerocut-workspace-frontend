@@ -340,7 +340,7 @@ onMounted(() => {
             <v-icon class="mr-2" size="small">
               {{ item.operatorType === 'bot' ? 'mdi-robot' : 'mdi-account' }}
             </v-icon>
-            <span class="text-body-2">{{ item.operatorId || '-' }}</span>
+            <span class="text-body-2">{{ item.operatorName || '-' }}</span>
           </div>
         </template>
 
