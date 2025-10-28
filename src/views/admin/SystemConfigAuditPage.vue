@@ -130,12 +130,23 @@ const showSnackbar = (message: string, color = 'success') => {
 // 格式化操作类型
 const formatAction = (action: string) => {
   const actionMap: Record<string, string> = {
-    VIEW: '查看',
-    CREATE: '创建',
-    UPDATE: '更新',
-    DELETE: '删除',
+    view: '查看',
+    create: '创建',
+    update: '更新',
+    delete: '删除',
   };
   return actionMap[action] || action;
+};
+
+// 获取操作类型颜色
+const getActionColor = (action: string) => {
+  const colorMap: Record<string, string> = {
+    view: 'blue',
+    create: 'green',
+    update: 'orange',
+    delete: 'red',
+  };
+  return colorMap[action] || 'grey';
 };
 
 // 格式化操作者类型
@@ -146,17 +157,6 @@ const formatOperatorType = (type: string) => {
     system: '系统',
   };
   return typeMap[type] || type;
-};
-
-// 获取操作类型颜色
-const getActionColor = (action: string) => {
-  const colorMap: Record<string, string> = {
-    VIEW: 'blue',
-    CREATE: 'green',
-    UPDATE: 'orange',
-    DELETE: 'red',
-  };
-  return colorMap[action] || 'grey';
 };
 
 // 获取操作者类型颜色

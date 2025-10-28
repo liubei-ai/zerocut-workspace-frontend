@@ -188,6 +188,8 @@ export interface RechargeRecord {
   updatedAt: string;
 }
 
+export type UserRole = 'user' | 'super_admin';
+
 // Homepage Types
 export interface UserInfoDto {
   id: number;
@@ -199,6 +201,7 @@ export interface UserInfoDto {
   avatar?: string; // 用户头像URL
   createdAt: string;
   updatedAt: string;
+  role: UserRole;
 }
 
 export interface WorkspaceOwnerDto {

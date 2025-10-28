@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import MainMenu from '@/components/navigation/MainMenu.vue';
 import WorkspaceSelector from '@/components/toolbar/WorkspaceSelector.vue';
-import configs from '@/configs';
+import { generateNavigation } from '@/configs/navigation';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-const customizeTheme = useCustomizeThemeStore();
-const navigation = ref(configs.navigation);
+import { useUserStore } from '@/stores/userStore';
 
-onMounted(() => {
+const customizeTheme = useCustomizeThemeStore();
+const userStore = useUserStore();
+
+// 动态菜单配置
+const navigation = computed(() => {
+  return generateNavigation(userStore.isSuperAdmin);
+});
+
+onMounted(async () => {
   scrollToBottom();
+
+  // 加载用户信息以确保角色信息可用
+  if (!userStore.userInfo) {
+    await userStore.loadUserInfo();
+  }
 });
 
 const scrollToBottom = () => {
