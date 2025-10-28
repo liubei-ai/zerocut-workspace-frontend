@@ -9,7 +9,7 @@ import { getSystemConfigEnums } from '@/api/adminApi';
 import { computed, onMounted, ref, watch } from 'vue';
 
 // 值类型枚举
-type ValueType = 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
+type ValueType = 'string' | 'number' | 'decimal' | 'boolean' | 'json' | 'array';
 
 // Props
 interface Props {
@@ -120,7 +120,7 @@ const resetForm = () => {
     configKey: '',
     name: '',
     configValue: '',
-    valueType: 'STRING',
+    valueType: 'string',
     category: '',
     description: '',
     isEditable: true,
@@ -172,29 +172,29 @@ const validateConfigValue = (value: string, type: ValueType) => {
   if (!value) return '配置值不能为空';
 
   switch (type) {
-    case 'NUMBER':
+    case 'number':
       if (!/^-?\d+$/.test(value)) {
         return '请输入有效的整数';
       }
       break;
-    case 'DECIMAL':
+    case 'decimal':
       if (!/^-?\d+(\.\d+)?$/.test(value)) {
         return '请输入有效的小数';
       }
       break;
-    case 'BOOLEAN':
+    case 'boolean':
       if (!['true', 'false'].includes(value.toLowerCase())) {
         return '布尔值只能是 true 或 false';
       }
       break;
-    case 'JSON':
+    case 'json':
       try {
         JSON.parse(value);
       } catch {
         return '请输入有效的JSON格式';
       }
       break;
-    case 'ARRAY':
+    case 'array':
       try {
         const parsed = JSON.parse(value);
         if (!Array.isArray(parsed)) {
@@ -214,11 +214,11 @@ const formatConfigValue = () => {
   const { valueType, configValue } = formData.value;
 
   switch (valueType) {
-    case 'BOOLEAN':
+    case 'boolean':
       formData.value.configValue = configValue.toLowerCase();
       break;
-    case 'JSON':
-    case 'ARRAY':
+    case 'json':
+    case 'array':
       try {
         const parsed = JSON.parse(configValue);
         formData.value.configValue = JSON.stringify(parsed, null, 2);
@@ -232,17 +232,17 @@ const formatConfigValue = () => {
 // 获取配置值输入提示
 const getValuePlaceholder = (type: ValueType) => {
   switch (type) {
-    case 'STRING':
+    case 'string':
       return '请输入字符串值';
-    case 'NUMBER':
+    case 'number':
       return '请输入整数，如：123';
-    case 'DECIMAL':
+    case 'decimal':
       return '请输入小数，如：123.45';
-    case 'BOOLEAN':
+    case 'boolean':
       return '请输入 true 或 false';
-    case 'JSON':
+    case 'json':
       return '请输入JSON格式，如：{"key": "value"}';
-    case 'ARRAY':
+    case 'array':
       return '请输入数组格式，如：["item1", "item2"]';
     default:
       return '请输入配置值';
@@ -252,8 +252,8 @@ const getValuePlaceholder = (type: ValueType) => {
 // 获取配置值输入类型
 const getValueInputType = (type: ValueType) => {
   switch (type) {
-    case 'JSON':
-    case 'ARRAY':
+    case 'json':
+    case 'array':
       return 'textarea';
     default:
       return 'text';

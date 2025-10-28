@@ -78,7 +78,7 @@ export interface SystemConfigItem {
   configKey: string;
   name: string;
   configValue: string;
-  valueType: 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
+  valueType: 'string' | 'number' | 'decimal' | 'boolean' | 'json' | 'array';
   category: string;
   description?: string;
   isEditable: boolean;
@@ -112,7 +112,7 @@ export interface CreateSystemConfigParams {
   configKey: string;
   name: string;
   configValue: string;
-  valueType: 'STRING' | 'NUMBER' | 'DECIMAL' | 'BOOLEAN' | 'JSON' | 'ARRAY';
+  valueType: 'string' | 'number' | 'decimal' | 'boolean' | 'json' | 'array';
   category: string;
   description?: string;
   isEditable?: boolean;
