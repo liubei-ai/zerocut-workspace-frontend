@@ -14,11 +14,6 @@ export const useWorkspaceStore = defineStore('workspace', {
     error: null as string | null,
   }),
 
-  persist: {
-    storage: localStorage,
-    pick: ['currentWorkspace', 'workspaces'],
-  },
-
   getters: {
     currentWorkspaceId: state => state.currentWorkspace?.workspaceId || null,
     currentWorkspaceName: state => state.currentWorkspace?.name || '',
