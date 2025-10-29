@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/stores/authStore';
-import { useUserStore } from '@/stores/userStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { createRouter, createWebHistory } from 'vue-router';
 import AdminRoutes from './admin.routes';
 import ZerocutRoutes from './zerocut.routes';
@@ -48,7 +48,7 @@ const router = createRouter({
 // Global navigation guard for authentication
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  const userStore = useUserStore();
+  const workspaceStore = useWorkspaceStore();
 
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
@@ -69,12 +69,12 @@ router.beforeEach(async (to, from, next) => {
   // Check super admin permission
   if (requiresSuperAdmin) {
     // 确保用户信息已加载
-    if (!userStore.userInfo) {
-      await userStore.loadUserInfo();
+    if (!workspaceStore.userInfo) {
+      await workspaceStore.loadHomepageData();
     }
 
     // 检查是否为超级管理员
-    if (!userStore.isSuperAdmin) {
+    if (!workspaceStore.isSuperAdmin) {
       // 非超级管理员访问管理员页面，重定向到首页
       next('/dashboard');
       return;

@@ -1,9 +1,11 @@
 import { getHomepageData } from '@/api/userApi';
-import type { UserWorkspaceDto } from '@/types/api';
+import type { UserWorkspaceDto, UserInfoDto } from '@/types/api';
 import { defineStore } from 'pinia';
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => ({
+    // 用户信息
+    userInfo: null as UserInfoDto | null,
     // 当前选中的工作空间
     currentWorkspace: null as UserWorkspaceDto | null,
     // 用户的工作空间列表
@@ -16,10 +18,18 @@ export const useWorkspaceStore = defineStore('workspace', {
 
   persist: {
     storage: localStorage,
-    pick: ['currentWorkspace'],
+    pick: ['userInfo', 'currentWorkspace'],
   },
 
   getters: {
+    // 用户信息相关 getters
+    userRole: state => state.userInfo?.role || null,
+    isSuperAdmin: state => state.userInfo?.role === 'super_admin',
+    isUser: state => state.userInfo?.role === 'user',
+    username: state => state.userInfo?.username || '',
+    email: state => state.userInfo?.email || '',
+    isLoggedIn: state => !!state.userInfo,
+
     // 获取当前工作空间ID
     currentWorkspaceId: state => state.currentWorkspace?.workspaceId || null,
 
@@ -34,14 +44,20 @@ export const useWorkspaceStore = defineStore('workspace', {
   },
 
   actions: {
-    // 加载工作空间数据
-    async loadWorkspaces() {
+    // 加载主页数据（包含用户信息和工作空间数据）
+    async loadHomepageData() {
       this.loading = true;
       this.error = null;
 
       try {
-        const homagePageData = await getHomepageData();
-        this.workspaces = homagePageData.workspaces;
+        const homepageData = await getHomepageData();
+
+        // 设置用户信息
+        this.userInfo = homepageData.user;
+        console.log('debug 用户信息加载成功:', this.userInfo);
+
+        // 设置工作空间数据
+        this.workspaces = homepageData.workspaces;
 
         // 如果没有当前选中的工作空间，选择第一个活跃的工作空间
         if (!this.currentWorkspace && this.activeWorkspaces.length > 0) {
@@ -57,11 +73,22 @@ export const useWorkspaceStore = defineStore('workspace', {
             this.activeWorkspaces.length > 0 ? this.activeWorkspaces[0] : null;
         }
       } catch (error) {
-        console.error('加载工作空间失败:', error);
+        console.error('加载主页数据失败:', error);
         this.error = '网络错误，请稍后重试';
+        this.userInfo = null;
       } finally {
         this.loading = false;
       }
+    },
+
+    // 兼容性方法：加载工作空间数据
+    async loadWorkspaces() {
+      return this.loadHomepageData();
+    },
+
+    // 加载用户信息（兼容性方法）
+    async loadUserInfo() {
+      return this.loadHomepageData();
     },
 
     // 切换工作空间
@@ -89,8 +116,14 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.error = null;
     },
 
+    // 更新用户信息
+    updateUserInfo(userInfo: UserInfoDto) {
+      this.userInfo = userInfo;
+    },
+
     // 重置状态
     reset() {
+      this.userInfo = null;
       this.currentWorkspace = null;
       this.workspaces = [];
       this.loading = false;

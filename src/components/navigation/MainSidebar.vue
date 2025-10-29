@@ -3,22 +3,27 @@ import MainMenu from '@/components/navigation/MainMenu.vue';
 import WorkspaceSelector from '@/components/toolbar/WorkspaceSelector.vue';
 import { generateNavigation } from '@/configs/navigation';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-import { useUserStore } from '@/stores/userStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { computed, onMounted } from 'vue';
 
 const customizeTheme = useCustomizeThemeStore();
-const userStore = useUserStore();
+const workspaceStore = useWorkspaceStore();
 
-// 动态菜单配置
 const navigation = computed(() => {
-  return generateNavigation(userStore.isSuperAdmin);
+  console.log(
+    'debug navigation',
+    workspaceStore.isSuperAdmin,
+    generateNavigation(workspaceStore.isSuperAdmin)
+  );
+  return generateNavigation(workspaceStore.isSuperAdmin);
 });
 
 onMounted(async () => {
   scrollToBottom();
 
   // 加载用户信息以确保角色信息可用
-  if (!userStore.userInfo) {
-    await userStore.loadUserInfo();
+  if (!workspaceStore.userInfo) {
+    await workspaceStore.loadHomepageData();
   }
 });
 
