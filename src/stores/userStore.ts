@@ -4,29 +4,10 @@ import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    // 用户基本信息
-    userInfo: null as UserInfoDto | null,
-    // 加载状态
     loading: false,
-    // 错误信息
     error: null as string | null,
-    // 用户偏好设置
-    preferences: {
-      notifications: {
-        officialEmails: true,
-        followerUpdates: true,
-      },
-      authorized: {
-        google: false,
-        facebook: false,
-      },
-    },
+    userInfo: null as UserInfoDto | null,
   }),
-
-  persist: {
-    storage: localStorage,
-    pick: ['userInfo', 'preferences'],
-  },
 
   getters: {
     // 基本信息
@@ -53,8 +34,6 @@ export const useUserStore = defineStore('user', {
         avatar: state.userInfo?.avatar || '',
         role: state.userInfo?.role || '',
       },
-      authorized: state.preferences.authorized,
-      notifications: state.preferences.notifications,
     }),
   },
 
@@ -109,5 +88,10 @@ export const useUserStore = defineStore('user', {
       this.error = null;
       // 保留偏好设置，因为这些是用户的个人配置
     },
+  },
+
+  persist: {
+    storage: localStorage,
+    pick: ['userInfo', 'isLoggedIn'],
   },
 });

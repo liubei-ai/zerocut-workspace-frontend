@@ -20,11 +20,6 @@ const basic = reactive({
   lastSignIn: '2019-09-20T01:11:13Z',
 });
 
-const authorized = reactive({
-  google: false,
-  facebook: false,
-});
-
 const notifications = reactive({
   officialEmails: false,
   followerUpdates: false,
@@ -52,18 +47,11 @@ onMounted(async () => {
     basic.realname = userStore.name || '';
     basic.email = userStore.email || '';
     basic.avatar = userStore.avatar || '';
-    basic.location = ''; // userStore 中没有 location 字段
+    basic.location = '';
     basic.role = userStore.userInfo.role || '';
     basic.disabled = false;
     basic.about = '';
-    basic.lastSignIn = userStore.userInfo.updatedAt || '';
   }
-
-  // 使用 userStore 的偏好设置
-  authorized.google = userStore.preferences.authorized.google;
-  authorized.facebook = userStore.preferences.authorized.facebook;
-  notifications.officialEmails = userStore.preferences.notifications.officialEmails;
-  notifications.followerUpdates = userStore.preferences.notifications.followerUpdates;
 });
 </script>
 

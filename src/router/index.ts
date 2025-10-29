@@ -1,4 +1,3 @@
-import { useAuthStore } from '@/stores/authStore';
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
@@ -47,7 +46,6 @@ const router = createRouter({
 
 // Global navigation guard for authentication
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
   const userStore = useUserStore();
 
   // Check if route requires authentication
@@ -56,7 +54,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresAuth) {
     // 简化逻辑：只检查本地状态，401错误由API层统一处理
-    if (!authStore.isLoggedIn) {
+    if (!userStore.isLoggedIn) {
       // 如果本地没有认证状态，直接跳转到登录页
       next({
         name: 'auth-authing',
@@ -82,7 +80,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (authStore.isLoggedIn && to.path.startsWith('/auth/')) {
+  if (userStore.isLoggedIn && to.path.startsWith('/auth/')) {
     next('/');
     return;
   }

@@ -4,29 +4,27 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useUserStore } from '@/stores/userStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
 import { computed } from 'vue';
 import StatusMenu from './StatusMenu.vue';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
 
-const isAuthenticated = computed(() => userStore.isLoggedIn);
-
 const userName = computed(() => {
-  if (!isAuthenticated.value) return 'Guest';
+  if (!userStore.isLoggedIn) return 'Guest';
   return userStore.username || 'Unknown User';
 });
 
 const userEmail = computed(() => {
-  if (!isAuthenticated.value) return 'Please login';
+  if (!userStore.isLoggedIn) return 'Please login';
   return userStore.email || 'No email';
 });
 
 // 计算用户头像
 const userAvatar = computed(() => {
-  if (!isAuthenticated.value) return null;
+  if (!userStore.isLoggedIn) return null;
   return userStore.avatar || null; // 返回用户头像URL，如果没有则返回null使用首字母头像
 });
 
@@ -36,7 +34,7 @@ const userInitials = computed(() => {
   if (name && name !== 'Guest' && name !== 'Unknown User') {
     return name.charAt(0).toUpperCase();
   }
-  return isAuthenticated.value ? 'U' : 'G'; // 已登录显示 U (User)，未登录显示 G (Guest)
+  return userStore.isLoggedIn ? 'U' : 'G'; // 已登录显示 U (User)，未登录显示 G (Guest)
 });
 
 const handleLogout = () => {
