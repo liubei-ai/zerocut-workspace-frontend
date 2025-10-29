@@ -1,4 +1,4 @@
-import type { UserInfoDto } from '../types/api';
+import type { UserInfoDto, UserWorkspaceDto } from '../types/api';
 import client from './api2client';
 
 /**
@@ -6,6 +6,15 @@ import client from './api2client';
  * @returns 用户信息
  */
 export async function getCurrentUserInfo(): Promise<UserInfoDto> {
-  const response = await client.get('/user/profile');
+  const response = await client.get('/self/profile');
+  return response.data;
+}
+
+/**
+ * 获取用户的工作空间列表
+ * @returns 工作空间列表
+ */
+export async function getWorkspaces(): Promise<UserWorkspaceDto[]> {
+  const response = await client.get('/self/workspaces');
   return response.data;
 }

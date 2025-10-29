@@ -1,4 +1,4 @@
-import { getWorkspaces } from '@/api/workspaceApi';
+import { getWorkspaces } from '@/api/userApi';
 import type { UserWorkspaceDto } from '@/types/api';
 import { defineStore } from 'pinia';
 
