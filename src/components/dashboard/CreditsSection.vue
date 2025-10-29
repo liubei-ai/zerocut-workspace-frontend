@@ -118,20 +118,20 @@ onMounted(() => {
         <v-card
           v-if="isNewUser"
           class="new-user-promotion"
-          color="orange-lighten-5"
+          color="orange-lighten-3"
           variant="outlined"
           @click="handleNewUserPromotion"
           style="cursor: pointer"
         >
           <v-card-text class="pa-3">
             <div class="d-flex align-center mb-2">
-              <v-icon color="orange" size="20" class="mr-1">mdi-fire</v-icon>
+              <v-icon color="orange-darken-2" size="20" class="mr-1">mdi-fire</v-icon>
               <span class="promotion-title">新人专享</span>
             </div>
             <div class="promotion-price mb-2">
               <span class="original-price"> {{ newUserPromotion.originalPrice }} RMB </span>
               <span class="current-price"> {{ newUserPromotion.price }} RMB </span>
-              <v-chip size="x-small" color="orange" variant="flat" class="ml-2">
+              <v-chip size="x-small" color="orange-darken-1" variant="flat" class="ml-2">
                 {{ newUserPromotion.discount }} OFF
               </v-chip>
             </div>
@@ -191,7 +191,7 @@ onMounted(() => {
 .promotion-title {
   font-size: 0.875rem;
   font-weight: bold;
-  color: rgb(var(--v-theme-orange));
+  color: rgb(var(--v-theme-orange-darken-3));
 }
 
 .promotion-price {
@@ -200,19 +200,21 @@ onMounted(() => {
 
 .original-price {
   text-decoration: line-through;
-  color: rgb(var(--v-theme-on-surface-variant));
+  color: #424242;
+  opacity: 0.8;
 }
 
 .current-price {
   font-size: 1.25rem;
   font-weight: bold;
-  color: rgb(var(--v-theme-orange));
+  color: rgb(var(--v-theme-orange-darken-3));
   margin-left: 0.5rem;
 }
 
 .promotion-credits {
   font-size: 0.875rem;
-  color: rgb(var(--v-theme-on-surface-variant));
+  color: #424242;
+  opacity: 0.9;
 }
 
 /* 小屏幕优化 */
