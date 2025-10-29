@@ -21,7 +21,7 @@ const displayName = computed(() => {
 
 // 处理工作空间切换
 const handleWorkspaceSelect = (workspace: UserWorkspaceDto) => {
-  workspaceStore.switchWorkspace(workspace);
+  workspaceStore.setCurrentWorkspace(workspace);
   menuOpen.value = false;
 };
 

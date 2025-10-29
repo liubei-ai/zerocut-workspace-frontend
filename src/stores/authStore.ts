@@ -5,6 +5,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { requestLogout, syncUserProfile } from '../api/authApi';
 import { useUserStore } from './userStore';
+import { useWorkspaceStore } from './workspaceStore';
 
 export const useAuthStore = defineStore('auth', () => {
   // 状态
@@ -71,8 +72,13 @@ export const useAuthStore = defineStore('auth', () => {
    * Clear authentication state
    */
   const clearAuthState = () => {
+    // 要清理掉数据，不然 localstorage 会保存上一次的数据
     const userStore = useUserStore();
     userStore.reset();
+
+    const workspaceStore = useWorkspaceStore();
+    workspaceStore.reset();
+
     error.value = null;
   };
 
