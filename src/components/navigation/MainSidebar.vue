@@ -3,27 +3,19 @@ import MainMenu from '@/components/navigation/MainMenu.vue';
 import WorkspaceSelector from '@/components/toolbar/WorkspaceSelector.vue';
 import { generateNavigation } from '@/configs/navigation';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { useUserStore } from '@/stores/userStore';
 import { computed, onMounted } from 'vue';
 
+const userStore = useUserStore();
 const customizeTheme = useCustomizeThemeStore();
-const workspaceStore = useWorkspaceStore();
 
-const navigation = computed(() => {
-  console.log(
-    'debug navigation',
-    workspaceStore.isSuperAdmin,
-    generateNavigation(workspaceStore.isSuperAdmin)
-  );
-  return generateNavigation(workspaceStore.isSuperAdmin);
-});
+const navigation = computed(() => generateNavigation(userStore.isSuperAdmin));
 
 onMounted(async () => {
   scrollToBottom();
 
-  // 加载用户信息以确保角色信息可用
-  if (!workspaceStore.userInfo) {
-    await workspaceStore.loadHomepageData();
+  if (!userStore.isLoggedIn) {
+    await userStore.loadUserInfo();
   }
 });
 

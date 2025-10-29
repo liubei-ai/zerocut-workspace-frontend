@@ -18,8 +18,9 @@ export interface PaginationResponse<T> extends Pagination {
   list: T[];
 }
 
-export interface User {
-  authingId: string;
+export interface SyncedUser {
+  id: number;
+  role: UserRole;
   username?: string;
   email?: string;
   phone?: string;
@@ -193,22 +194,19 @@ export type UserRole = 'user' | 'super_admin';
 // Homepage Types
 export interface UserInfoDto {
   id: number;
-  authingId: string;
+  role: UserRole;
   username?: string;
-  email: string;
+  email?: string;
   phone?: string;
   name?: string; // 用户真实姓名
   avatar?: string; // 用户头像URL
-  createdAt: string;
-  updatedAt: string;
-  role: UserRole;
 }
 
 export interface WorkspaceOwnerDto {
   id: number;
-  username?: string;
-  email: string;
   role: string;
+  username?: string;
+  email?: string;
 }
 
 export interface UserWorkspaceDto {

@@ -5,9 +5,9 @@
 -->
 
 <script setup lang="ts">
-import { useProfileStore } from '@/stores/profileStore';
+import { useUserStore } from '@/stores/userStore';
 import { Icon } from '@iconify/vue';
-const profileStore = useProfileStore();
+const userStore = useUserStore();
 const basic = reactive({
   username: '',
   realname: '',
@@ -40,23 +40,30 @@ const currentPasswordShow = ref(false);
 const newPasswordShow = ref(false);
 const confirmPasswordShow = ref(false);
 
-onMounted(() => {
-  const profile = profileStore.getProfile();
-  console.log(profile);
+onMounted(async () => {
+  // 确保用户信息已加载
+  if (!userStore.userInfo) {
+    await userStore.loadUserInfo();
+  }
 
-  basic.username = profile.basic.username;
-  basic.realname = profile.basic.realname;
-  basic.email = profile.basic.email;
-  basic.avatar = profile.basic.avatar;
-  basic.location = profile.basic.location;
-  basic.role = profile.basic.role;
-  basic.disabled = profile.basic.disabled;
-  basic.about = profile.basic.about;
-  basic.lastSignIn = profile.basic.lastSignIn;
-  authorized.google = profile.authorized.google;
-  authorized.facebook = profile.authorized.facebook;
-  notifications.officialEmails = profile.notifications.officialEmails;
-  notifications.followerUpdates = profile.notifications.followerUpdates;
+  // 使用 userStore 的数据填充表单
+  if (userStore.userInfo) {
+    basic.username = userStore.username || '';
+    basic.realname = userStore.name || '';
+    basic.email = userStore.email || '';
+    basic.avatar = userStore.avatar || '';
+    basic.location = ''; // userStore 中没有 location 字段
+    basic.role = userStore.userInfo.role || '';
+    basic.disabled = false;
+    basic.about = '';
+    basic.lastSignIn = userStore.userInfo.updatedAt || '';
+  }
+
+  // 使用 userStore 的偏好设置
+  authorized.google = userStore.preferences.authorized.google;
+  authorized.facebook = userStore.preferences.authorized.facebook;
+  notifications.officialEmails = userStore.preferences.notifications.officialEmails;
+  notifications.followerUpdates = userStore.preferences.notifications.followerUpdates;
 });
 </script>
 

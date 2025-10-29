@@ -4,10 +4,20 @@ import type {
   CreateApiKeyRequest,
   PaginationResponse,
   RechargeRecord,
+  UserWorkspaceDto,
   WorkspaceDetails,
   WorkspaceMember,
 } from '../types/api';
 import client from './api2client';
+
+/**
+ * 获取用户的工作空间列表
+ * @returns 工作空间列表
+ */
+export async function getWorkspaces(): Promise<UserWorkspaceDto[]> {
+  const response = await client.get('/workspaces');
+  return response.data;
+}
 
 /**
  * 获取工作空间详情

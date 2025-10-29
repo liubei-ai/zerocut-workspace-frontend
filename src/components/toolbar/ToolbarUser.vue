@@ -4,28 +4,30 @@
 * @Description:
 -->
 <script setup lang="ts">
+import { useUserStore } from '@/stores/userStore';
 import { useAuthStore } from '@/stores/authStore';
 import { computed } from 'vue';
 import StatusMenu from './StatusMenu.vue';
 
+const userStore = useUserStore();
 const authStore = useAuthStore();
 
-const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isAuthenticated = computed(() => userStore.isLoggedIn);
 
 const userName = computed(() => {
   if (!isAuthenticated.value) return 'Guest';
-  return authStore.user?.username || 'Unknown User';
+  return userStore.username || 'Unknown User';
 });
 
 const userEmail = computed(() => {
   if (!isAuthenticated.value) return 'Please login';
-  return authStore.user?.email || 'No email';
+  return userStore.email || 'No email';
 });
 
-// 生成用户头像
+// 计算用户头像
 const userAvatar = computed(() => {
   if (!isAuthenticated.value) return null;
-  return authStore.user?.avatar || null; // 返回用户头像URL，如果没有则返回null使用首字母头像
+  return userStore.avatar || null; // 返回用户头像URL，如果没有则返回null使用首字母头像
 });
 
 // 获取用户名首字母用于头像显示

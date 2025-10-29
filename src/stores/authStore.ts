@@ -1,9 +1,10 @@
 import router from '@/router';
-import type { ApiError, User } from '@/types/api';
+import type { ApiError, RechargeRecord } from '@/types/api';
 import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { requestLogout, syncUserProfile } from '../api/authApi';
+import { useUserStore } from './userStore';
 
 export const useAuthStore = defineStore(
   'auth',
@@ -12,20 +13,17 @@ export const useAuthStore = defineStore(
     const loading = ref(false);
     const error = ref<string | null>(null);
     const isLoggedIn = ref(false);
-    const user = ref<User | null>(null);
-    const newbieCreditsRecord = ref<any | null>(null);
+    const newbieCreditsRecord = ref<RechargeRecord | null>(null);
 
     // 在 store 顶层初始化 composable
     const guard = useGuard();
-
-    // 计算属性
-    const userName = computed(() => user.value?.username || '');
-    const isAuthenticated = computed(() => isLoggedIn.value && !!user.value);
 
     /**
      * Handle Authing login success
      */
     const setAuthingUser = async (authingUser: AuthingUser) => {
+      const userStore = useUserStore();
+
       // 调用 API 同步用户信息
       const response = await syncUserProfile({
         authingId: authingUser.id,
@@ -37,20 +35,20 @@ export const useAuthStore = defineStore(
         token: authingUser.token as string,
       });
 
-      console.log('debug 同步用户信息:', response);
       const { newbieCreditsRecord: record, ...rest } = response.data;
 
-      user.value = rest;
+      // 更新认证状态
       isLoggedIn.value = true;
       error.value = null;
+
+      // 同步用户信息后，重新加载完整的用户数据
+      userStore.updateUserInfo(rest);
 
       // 处理新用户积分奖励记录
       if (record) {
         newbieCreditsRecord.value = record;
         console.log('新用户获得积分奖励:', record);
       }
-
-      console.log('Authing 用户登录成功:', user.value);
     };
 
     /**
@@ -81,9 +79,10 @@ export const useAuthStore = defineStore(
      * Clear authentication state
      */
     const clearAuthState = () => {
+      const userStore = useUserStore();
       isLoggedIn.value = false;
-      user.value = null;
       error.value = null;
+      userStore.reset();
     };
 
     /**
@@ -122,12 +121,7 @@ export const useAuthStore = defineStore(
       loading,
       error,
       isLoggedIn,
-      user,
       newbieCreditsRecord,
-
-      // 计算属性
-      isAuthenticated,
-      userName,
 
       // 方法
       setAuthingUser,
@@ -141,7 +135,7 @@ export const useAuthStore = defineStore(
   {
     persist: {
       storage: localStorage,
-      pick: ['isLoggedIn', 'user'],
+      pick: ['isLoggedIn', 'authToken'],
     },
   }
 );

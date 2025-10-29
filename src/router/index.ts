@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/authStore';
-import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
 import ZerocutRoutes from './zerocut.routes';
 
@@ -48,7 +48,7 @@ const router = createRouter({
 // Global navigation guard for authentication
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
-  const workspaceStore = useWorkspaceStore();
+  const userStore = useUserStore();
 
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
@@ -56,7 +56,7 @@ router.beforeEach(async (to, from, next) => {
 
   if (requiresAuth) {
     // 简化逻辑：只检查本地状态，401错误由API层统一处理
-    if (!authStore.isAuthenticated) {
+    if (!authStore.isLoggedIn) {
       // 如果本地没有认证状态，直接跳转到登录页
       next({
         name: 'auth-authing',
@@ -69,12 +69,12 @@ router.beforeEach(async (to, from, next) => {
   // Check super admin permission
   if (requiresSuperAdmin) {
     // 确保用户信息已加载
-    if (!workspaceStore.userInfo) {
-      await workspaceStore.loadHomepageData();
+    if (!userStore.userInfo) {
+      await userStore.loadUserInfo();
     }
 
     // 检查是否为超级管理员
-    if (!workspaceStore.isSuperAdmin) {
+    if (!userStore.isSuperAdmin) {
       // 非超级管理员访问管理员页面，重定向到首页
       next('/dashboard');
       return;
@@ -82,7 +82,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (authStore.isAuthenticated && to.path.startsWith('/auth/')) {
+  if (authStore.isLoggedIn && to.path.startsWith('/auth/')) {
     next('/');
     return;
   }
