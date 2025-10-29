@@ -4,14 +4,10 @@ import { defineStore } from 'pinia';
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => ({
-    // 当前工作空间
-    currentWorkspace: null as UserWorkspaceDto | null,
-    // 工作空间列表
-    workspaces: [] as UserWorkspaceDto[],
-    // 加载状态
     loading: false,
-    // 错误信息
     error: null as string | null,
+    workspaces: [] as UserWorkspaceDto[],
+    currentWorkspace: null as UserWorkspaceDto | null,
   }),
 
   getters: {
@@ -45,11 +41,6 @@ export const useWorkspaceStore = defineStore('workspace', {
       }
     },
 
-    // 兼容性方法：加载主页数据
-    async loadHomepageData() {
-      return this.loadWorkspaces();
-    },
-
     // 设置当前工作空间
     setCurrentWorkspace(workspace: UserWorkspaceDto) {
       this.currentWorkspace = workspace;
@@ -67,5 +58,10 @@ export const useWorkspaceStore = defineStore('workspace', {
       this.loading = false;
       this.error = null;
     },
+  },
+
+  persist: {
+    storage: localStorage,
+    pick: ['currentWorkspace', 'workspaces'],
   },
 });

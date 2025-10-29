@@ -33,9 +33,12 @@ export const useAuthStore = defineStore('auth', () => {
       token: authingUser.token as string,
     });
 
+    error.value = null;
     const { newbieCreditsRecord: record, ...rest } = response.data;
     userStore.updateUserInfo(rest);
-    error.value = null;
+
+    const workspaceStore = useWorkspaceStore();
+    workspaceStore.loadWorkspaces();
 
     // 处理新用户积分奖励记录
     if (record) {
@@ -72,13 +75,9 @@ export const useAuthStore = defineStore('auth', () => {
    * Clear authentication state
    */
   const clearAuthState = () => {
-    // 要清理掉数据，不然 localstorage 会保存上一次的数据
-    const userStore = useUserStore();
-    userStore.reset();
-
-    const workspaceStore = useWorkspaceStore();
-    workspaceStore.reset();
-
+    localStorage.removeItem('auth');
+    localStorage.removeItem('user');
+    localStorage.removeItem('workspace');
     error.value = null;
   };
 
