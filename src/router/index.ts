@@ -65,13 +65,12 @@ router.beforeEach(async to => {
   const requiresSuperAdmin = to.matched.some(record => record.meta.requiresSuperAdmin);
 
   if (requiresAuth && !userStore.isLoggedIn) {
-    return { name: 'auth-authing', query: { redirect: to.fullPath } };
-    // const userInfo = await checkAuthorization();
-    // if (!userInfo) {
-    //   return { name: 'auth-authing', query: { redirect: to.fullPath } };
-    // } else {
-    //   userStore.updateUserInfo(userInfo);
-    // }
+    const userInfo = await checkAuthorization();
+    if (!userInfo) {
+      return { name: 'auth-authing', query: { redirect: to.fullPath } };
+    } else {
+      userStore.updateUserInfo(userInfo);
+    }
   }
 
   // Check super admin permission

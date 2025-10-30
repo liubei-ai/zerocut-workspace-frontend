@@ -44,6 +44,13 @@ apiClient.interceptors.response.use(
         details: data,
       };
       return Promise.reject(apiError);
+    } else if (code === 403 && response.config.url?.startsWith('/admin/')) {
+      // Handle super admin permission failure
+      console.warn('Super admin permission required, redirecting to dashboard');
+      handleAuthFailure();
+
+      const apiError: ApiError = { code, message: 'Forbidden' };
+      return Promise.reject(apiError);
     } else {
       // Handle other API-level errors
       const apiError: ApiError = {
