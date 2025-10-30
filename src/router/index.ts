@@ -44,48 +44,46 @@ const router = createRouter({
   },
 });
 
+async function checkAuthorization() {
+  try {
+    const url = `${import.meta.env.VITE_API2_BASE_URL}/self/profile`;
+    const response = await fetch(url, { credentials: 'include' });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return data.code === 401 ? null : data;
+  } catch {
+    return null;
+  }
+}
+
 // Global navigation guard for authentication
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async to => {
   const userStore = useUserStore();
 
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
   const requiresSuperAdmin = to.matched.some(record => record.meta.requiresSuperAdmin);
 
-  if (requiresAuth) {
-    // 简化逻辑：只检查本地状态，401错误由API层统一处理
-    if (!userStore.isLoggedIn) {
-      // 如果本地没有认证状态，直接跳转到登录页
-      next({
-        name: 'auth-authing',
-        query: { redirect: to.fullPath },
-      });
-      return;
+  if (requiresAuth && !userStore.isLoggedIn) {
+    const userInfo = await checkAuthorization();
+    if (!userInfo) {
+      return { name: 'auth-authing', query: { redirect: to.fullPath } };
+    } else {
+      userStore.updateUserInfo(userInfo);
     }
   }
 
   // Check super admin permission
-  if (requiresSuperAdmin) {
-    // 确保用户信息已加载
-    if (!userStore.userInfo) {
-      await userStore.loadUserInfo();
-    }
-
-    // 检查是否为超级管理员
-    if (!userStore.isSuperAdmin) {
-      // 非超级管理员访问管理员页面，重定向到首页
-      next('/dashboard');
-      return;
-    }
+  if (requiresSuperAdmin && !userStore.isSuperAdmin) {
+    return '/';
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
   if (userStore.isLoggedIn && to.path.startsWith('/auth/')) {
-    next('/');
-    return;
+    return '/';
   }
 
-  next();
+  return true;
 });
 
 export default router;

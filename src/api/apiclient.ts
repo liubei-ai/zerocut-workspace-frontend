@@ -1,6 +1,6 @@
 import type { ApiError, ApiResponse } from '@/types/api';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { Router } from 'vue-router';
+import { handleAuthFailure } from './helper';
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -11,37 +11,6 @@ const apiClient: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-// 避免循环依赖，延迟导入
-let router: Router;
-let authStore;
-
-// 延迟导入函数
-const getRouter = async () => {
-  if (!router) {
-    const { default: routerInstance } = await import('@/router');
-    router = routerInstance;
-  }
-  return router;
-};
-
-const getAuthStore = async () => {
-  if (!authStore) {
-    const { useAuthStore } = await import('@/stores/authStore');
-    authStore = useAuthStore();
-  }
-  return authStore;
-};
-
-// 处理认证失败的函数
-const handleAuthFailure = async () => {
-  try {
-    const store = await getAuthStore();
-    await store.logout();
-  } catch (error) {
-    console.error('Handle auth failure error:', error);
-  }
-};
 
 // Request interceptor
 apiClient.interceptors.request.use(
