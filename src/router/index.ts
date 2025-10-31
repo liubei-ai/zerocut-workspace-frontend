@@ -50,8 +50,10 @@ async function checkAuthorization() {
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) return null;
     const data = await response.json();
+    console.log('checkAuthorization', data);
     return data.code === 401 ? null : data;
-  } catch {
+  } catch (error) {
+    console.log('checkAuthorization error:', error);
     return null;
   }
 }
@@ -67,8 +69,10 @@ router.beforeEach(async to => {
   if (requiresAuth && !userStore.isLoggedIn) {
     const userInfo = await checkAuthorization();
     if (!userInfo) {
+      console.log('checkAuthorization failed, redirecting to auth-authing');
       return { name: 'auth-authing', query: { redirect: to.fullPath } };
     } else {
+      console.log('checkAuthorization success, userInfo:', userInfo);
       userStore.updateUserInfo(userInfo);
     }
   }
