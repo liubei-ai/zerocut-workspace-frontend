@@ -15,13 +15,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 在 store 顶层初始化 composable
   const guard = useGuard();
+  const userStore = useUserStore();
 
   /**
    * Handle Authing login success
    */
   const setAuthingUser = async (authingUser: AuthingUser) => {
-    const userStore = useUserStore();
-
     // 调用 API 同步用户信息
     const response = await syncUserProfile({
       authingId: authingUser.id,
