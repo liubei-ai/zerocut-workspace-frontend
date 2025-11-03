@@ -1,5 +1,12 @@
 export default [
   {
+    key: 'menu.studio',
+    text: '视频创作',
+    link: 'https://studio.zerocut.cn/auth/authing?redirect=/projects',
+    icon: 'mdi-video-plus',
+    external: true,
+  },
+  {
     key: 'menu.dashboard',
     text: '数据看板',
     link: '/dashboard',

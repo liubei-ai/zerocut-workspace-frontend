@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import StudioLaunchButton from '@/components/common/StudioLaunchButton.vue';
 import CreditsSection from '@/components/dashboard/CreditsSection.vue';
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
@@ -60,8 +61,22 @@ const handleMetricAction = (metric: MetricCardData) => {
   <div class="dashboard-container">
     <div class="dashboard-content">
       <div class="mb-6">
-        <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
+        <div class="d-flex align-center justify-space-between mb-4">
+          <div>
+            <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
+            <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
+          </div>
+          <div class="d-flex flex-column align-end">
+            <StudioLaunchButton
+              variant="elevated"
+              size="default"
+              color="primary"
+              text="开始创作"
+              icon="mdi-video-plus"
+              class="mb-1 studio-cta-btn"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- 加载状态 -->
@@ -143,5 +158,16 @@ const handleMetricAction = (metric: MetricCardData) => {
 
 .v-card:hover {
   transform: translateY(-2px);
+}
+
+.studio-cta-btn {
+  min-width: 140px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(var(--v-theme-primary), 0.2);
+}
+
+.studio-cta-btn:hover {
+  box-shadow: 0 4px 16px rgba(var(--v-theme-primary), 0.3);
+  transform: translateY(-1px);
 }
 </style>

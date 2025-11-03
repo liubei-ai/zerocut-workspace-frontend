@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
+// import LandingRoutes from './landing.routes';
 import ZerocutRoutes from './zerocut.routes';
 
 export const routes = [
