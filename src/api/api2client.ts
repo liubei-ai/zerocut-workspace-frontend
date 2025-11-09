@@ -26,49 +26,34 @@ apiClient.interceptors.request.use(
 // Response interceptor - Handle unified ApiResponse structure
 apiClient.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
-    const { code, message, data } = response.data;
+    const { code, message, data, details } = response.data;
+    const url = response.config.url || '';
 
     // Check if the response indicates success
     if (code === 200 || code === 201 || code === 0) {
       // Return the data directly for successful responses
       return { ...response, data: data };
-    } else if (code === 401) {
+    } else if (code === 401 || (code === 403 && url.startsWith('/admin/'))) {
       // Handle authentication failure
       console.warn('Authentication failed, redirecting to login page');
       handleAuthFailure();
 
       // Still reject the promise so the calling code can handle it
-      const apiError: ApiError = {
-        code,
-        message: message || 'Authentication failed',
-        details: data,
-      };
-      return Promise.reject(apiError);
-    } else if (code === 403 && response.config.url?.startsWith('/admin/')) {
-      // Handle super admin permission failure
-      console.warn('Super admin permission required, redirecting to dashboard');
-      handleAuthFailure();
-
-      const apiError: ApiError = { code, message: 'Forbidden' };
-      return Promise.reject(apiError);
+      return Promise.reject({ code, message, details });
     } else {
       // Handle other API-level errors
-      const apiError: ApiError = {
-        code,
-        message,
-        details: data,
-      };
-      return Promise.reject(apiError);
+      return Promise.reject({ code, message, details });
     }
   },
   (error: AxiosError) => {
     // Handle HTTP-level errors
     if (error.response) {
       const status = error.response.status;
+      const url = error.config?.url || '';
 
       // Handle HTTP 401 Unauthorized
-      if (status === 401) {
-        console.warn('HTTP 401 Unauthorized, redirecting to login page');
+      if (status === 401 || (status === 403 && url.startsWith('/admin/'))) {
+        console.warn(`HTTP ${status}, redirecting to login page`);
         handleAuthFailure();
       }
 
