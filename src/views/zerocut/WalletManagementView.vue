@@ -2,6 +2,9 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import {
+  ExpiredCreditItem,
+  ExpiredCreditsResponse,
+  getExpiredCredits,
   getWalletInfo,
   getWalletRechargeRecords,
   TransactionItem,
@@ -218,6 +221,67 @@ onMounted(() => {
 const handleRecharge = () => {
   router.push('/packages');
 };
+
+// 过期积分对话框相关状态
+const expiredDialog = ref(false);
+const expiredLoading = ref(false);
+const expiredData = ref<ExpiredCreditItem[]>([]);
+const expiredSummary = ref<{
+  totalExpiredCredits: number;
+  byPaymentMethod: Record<string, number>;
+}>({
+  totalExpiredCredits: 0,
+  byPaymentMethod: { wechat: 0, alipay: 0, manual: 0, give: 0, bot: 0 },
+});
+const expiredPagination = ref<Pagination>({ page: 1, limit: 20, total: 0, totalPages: 0 });
+const expiredFilter = ref<{ paymentMethod: string | null }>({ paymentMethod: null });
+
+// 概览卡片的“总过期积分”由 wallet/info 返回的字段提供
+
+const openExpiredDialog = async () => {
+  expiredDialog.value = true;
+  await fetchExpiredCredits();
+};
+
+const fetchExpiredCredits = async () => {
+  try {
+    expiredLoading.value = true;
+    const res: ExpiredCreditsResponse = await getExpiredCredits({
+      workspaceId,
+      page: expiredPagination.value.page,
+      limit: expiredPagination.value.limit,
+      paymentMethod: expiredFilter.value.paymentMethod || undefined,
+    });
+    expiredData.value = res.list;
+    expiredSummary.value = res.summary;
+    expiredPagination.value = res.pagination;
+  } catch (err) {
+    console.error('获取过期积分失败:', err);
+  } finally {
+    expiredLoading.value = false;
+  }
+};
+
+// 不再单独请求过期积分汇总；改为从 wallet/info 接口读取 totalExpiredCredits
+
+const handleExpiredPageChange = (page: number) => {
+  expiredPagination.value.page = page;
+  fetchExpiredCredits();
+};
+
+const handleExpiredItemsPerPageChange = (itemsPerPage: number) => {
+  expiredPagination.value.limit = itemsPerPage;
+  expiredPagination.value.page = 1;
+  fetchExpiredCredits();
+};
+
+watch(
+  () => expiredFilter.value.paymentMethod,
+  () => {
+    expiredPagination.value.page = 1;
+    fetchExpiredCredits();
+  }
+);
 </script>
 
 <template>
@@ -240,6 +304,9 @@ const handleRecharge = () => {
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
           刷新
         </v-btn>
+        <v-btn color="info" prepend-icon="mdi-alert" @click="openExpiredDialog">
+          查看过期积分
+        </v-btn>
       </div>
     </div>
 
@@ -248,7 +315,7 @@ const handleRecharge = () => {
       <v-col cols="12">
         <v-row>
           <!-- 剩余可用积分 -->
-          <v-col cols="12" sm="6" md="2.4">
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="primary" class="mb-2"> mdi-wallet </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -259,7 +326,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 用户充值金额 -->
-          <v-col cols="12" sm="6" md="2.4">
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="success" class="mb-2"> mdi-account-cash </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -270,7 +337,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 用户充值积分 -->
-          <v-col cols="12" sm="6" md="2.4">
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="info" class="mb-2"> mdi-cash-plus </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -281,7 +348,7 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 平台赠送积分 -->
-          <v-col cols="12" sm="6" md="2.4">
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="orange" class="mb-2"> mdi-gift </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
@@ -292,13 +359,24 @@ const handleRecharge = () => {
           </v-col>
 
           <!-- 累计消耗积分 -->
-          <v-col cols="12" sm="6" md="2.4">
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
             <v-card class="pa-4 text-center" elevation="2">
               <v-icon size="32" color="error" class="mb-2"> mdi-trending-down </v-icon>
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.totalCreditsConsumption || 0 }}
               </div>
               <div class="text-caption text-medium-emphasis">累计消耗积分</div>
+            </v-card>
+          </v-col>
+
+          <!-- 总过期积分（概览） -->
+          <v-col cols="12" sm="6" md="3" lg="3" xl="3">
+            <v-card class="pa-4 text-center" elevation="2">
+              <v-icon size="32" color="error" class="mb-2"> mdi-alert </v-icon>
+              <div class="text-h6 font-weight-bold mb-1">
+                {{ walletInfo?.totalExpiredCredits || 0 }}
+              </div>
+              <div class="text-caption text-medium-emphasis">总过期积分</div>
             </v-card>
           </v-col>
         </v-row>
@@ -318,6 +396,7 @@ const handleRecharge = () => {
           { title: '金额', key: 'amount', sortable: true },
           { title: '积分', key: 'creditsAmount', sortable: true },
           { title: '剩余积分', key: 'remainingCredits', sortable: true },
+          { title: '过期积分', key: 'expiredCredits', sortable: true },
           { title: '剩余有效期', key: 'validity', sortable: false },
           { title: '支付方式', key: 'paymentMethod', sortable: false },
           { title: '订单号', key: 'orderNo', sortable: false },
@@ -342,14 +421,17 @@ const handleRecharge = () => {
         </template>
 
         <template #item.remainingCredits="{ item }">
-          <span
-            :class="[
-              'font-weight-medium',
-              (item.remainingCredits || 0) > 0 ? 'text-primary' : 'text-medium-emphasis',
-            ]"
-          >
+          <span v-if="(item.remainingCredits || 0) > 0" class="font-weight-medium text-primary">
             {{ (item.remainingCredits || 0).toLocaleString() }}
           </span>
+          <span v-else class="text-medium-emphasis">-</span>
+        </template>
+
+        <template #item.expiredCredits="{ item }">
+          <span v-if="(item.expiredCredits || 0) > 0" class="font-weight-medium text-error">
+            {{ (item.expiredCredits || 0).toLocaleString() }}
+          </span>
+          <span v-else class="text-medium-emphasis">-</span>
         </template>
 
         <template #item.paymentMethod="{ item }">
@@ -379,6 +461,112 @@ const handleRecharge = () => {
       </v-data-table-server>
     </v-card>
   </div>
+
+  <!-- 已过期积分对话框 -->
+  <v-dialog v-model="expiredDialog" max-width="900">
+    <v-card>
+      <v-card-title class="d-flex align-center">
+        <v-icon class="mr-2">mdi-alert</v-icon>
+        已过期积分
+      </v-card-title>
+      <v-card-text>
+        <v-row class="mb-4">
+          <v-col cols="12" sm="6">
+            <div class="d-flex align-center ga-2">
+              <span class="text-medium-emphasis">总过期积分：</span>
+              <span class="text-error font-weight-bold">{{
+                expiredSummary.totalExpiredCredits
+              }}</span>
+            </div>
+          </v-col>
+          <v-col cols="12" sm="6" class="d-flex justify-end">
+            <v-select
+              label="充值类型过滤"
+              :items="[
+                { title: '全部', value: null },
+                { title: '微信支付', value: 'wechat' },
+                { title: '支付宝', value: 'alipay' },
+                { title: '手动充值', value: 'manual' },
+                { title: '积分赠送', value: 'give' },
+                { title: '机器人充值', value: 'bot' },
+              ]"
+              v-model="expiredFilter.paymentMethod"
+              density="compact"
+              style="max-width: 260px"
+            ></v-select>
+          </v-col>
+        </v-row>
+
+        <div class="d-flex flex-wrap ga-2 mb-4">
+          <v-chip color="green" variant="flat" size="small"
+            >微信：{{ expiredSummary.byPaymentMethod.wechat || 0 }}</v-chip
+          >
+          <v-chip color="blue" variant="flat" size="small"
+            >支付宝：{{ expiredSummary.byPaymentMethod.alipay || 0 }}</v-chip
+          >
+          <v-chip color="grey" variant="flat" size="small"
+            >手动：{{ expiredSummary.byPaymentMethod.manual || 0 }}</v-chip
+          >
+          <v-chip color="orange" variant="flat" size="small"
+            >赠送：{{ expiredSummary.byPaymentMethod.give || 0 }}</v-chip
+          >
+          <v-chip color="primary" variant="flat" size="small"
+            >机器人：{{ expiredSummary.byPaymentMethod.bot || 0 }}</v-chip
+          >
+        </div>
+
+        <v-data-table-server
+          :headers="[
+            { title: '过期时间', key: 'expiredAt', sortable: true },
+            { title: '过期积分', key: 'expiredCredits', sortable: true },
+            { title: '支付方式', key: 'paymentMethod', sortable: false },
+            { title: '订单号', key: 'orderNo', sortable: false },
+          ]"
+          :items="expiredData"
+          item-value="id"
+          class="elevation-0"
+          :loading="expiredLoading"
+          :items-per-page="expiredPagination.limit"
+          :items-length="expiredPagination.total"
+          :page="expiredPagination.page"
+          @update:items-per-page="handleExpiredItemsPerPageChange"
+          @update:page="handleExpiredPageChange"
+        >
+          <template #item.expiredAt="{ item }">
+            {{ formatDate(item.expiredAt) }}
+          </template>
+
+          <template #item.expiredCredits="{ item }">
+            <span v-if="(item.expiredCredits || 0) > 0" class="font-weight-medium text-error">
+              {{ (item.expiredCredits || 0).toLocaleString() }}
+            </span>
+            <span v-else class="text-medium-emphasis">-</span>
+          </template>
+
+          <template #item.paymentMethod="{ item }">
+            <div class="d-flex align-center">
+              <v-icon
+                :icon="getPaymentMethodIcon(item.recharge.paymentMethod)"
+                :color="getPaymentMethodColor(item.recharge.paymentMethod)"
+                size="20"
+                class="mr-2"
+              ></v-icon>
+              {{ getPaymentMethodText(item.recharge.paymentMethod) }}
+            </div>
+          </template>
+
+          <template #item.orderNo="{ item }">
+            <code class="text-caption">{{ item.recharge.orderNo }}</code>
+          </template>
+        </v-data-table-server>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn text="关闭" @click="expiredDialog = false" variant="tonal"></v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
