@@ -7,10 +7,10 @@ import {
   TransactionItem,
   WalletInfo,
 } from '~/src/api/walletApi';
+import ExpiredCreditsDialog from '~/src/components/zerocut/ExpiredCreditsDialog.vue';
 import { useWorkspaceStore } from '~/src/stores/workspaceStore';
 import { Pagination } from '~/src/types/api';
 import { formatDate } from '~/src/utils/date';
-import ExpiredCreditsDialog from '~/src/components/zerocut/ExpiredCreditsDialog.vue';
 
 // 获取当前工作空间ID
 const workspaceStore = useWorkspaceStore();
@@ -144,6 +144,18 @@ const calculateRemainingValidity = (item: TransactionItem) => {
     text: `${remainingDays}天`,
     color,
   };
+};
+
+// 是否需要在“剩余有效期”列展示内容
+// 规则：
+// - 如果有有效期信息并且已过期，显示“已过期”（即使剩余积分为 0）
+// - 如果未过期且剩余积分 > 0，显示剩余天数
+// - 其它情况显示 “-”
+const shouldShowValidity = (item: TransactionItem) => {
+  const validity = calculateRemainingValidity(item);
+  if (!validity) return false;
+  if (validity.expired) return true;
+  return (item.remainingCredits ?? 0) > 0;
 };
 
 // 获取钱包信息
@@ -391,7 +403,7 @@ const openExpiredDialog = () => {
         </template>
 
         <template #item.validity="{ item }">
-          <div v-if="(item.remainingCredits || 0) > 0 && calculateRemainingValidity(item)">
+          <div v-if="shouldShowValidity(item)">
             <v-chip :color="calculateRemainingValidity(item)!.color" size="small" variant="flat">
               {{ calculateRemainingValidity(item)!.text }}
             </v-chip>
