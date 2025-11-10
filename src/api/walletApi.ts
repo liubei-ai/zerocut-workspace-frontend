@@ -25,7 +25,6 @@ export interface TransactionItem {
   paidAt?: string;
   creditsValidityDays?: number;
   remainingCredits?: number; // 剩余积分数量（统一为数值类型，前端显示规则在视图中处理）
-  expiredCredits?: number; // 已过期积分数量
 }
 /**
  * 获取钱包信息
