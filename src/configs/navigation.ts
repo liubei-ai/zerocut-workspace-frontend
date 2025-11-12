@@ -8,22 +8,18 @@ import menuZeroCut from './menus/zerocut.menu';
 // 开发环境模版菜单
 const developmentMenus = [
   {
-    text: 'Landing',
     key: 'menu.landing',
     items: menuLanding,
   },
   {
-    text: 'UI - Theme Preview',
     key: 'menu.uiPreview',
     items: menuUI,
   },
   {
-    text: 'Pages',
     key: 'menu.pages',
     items: menuPages,
   },
   {
-    text: 'Charts',
     key: 'menu.charts',
     items: menuCharts,
   },
@@ -32,7 +28,6 @@ const developmentMenus = [
 // 生产环境菜单（只包含zerocut）
 const productionMenus = [
   {
-    text: 'zerocut',
     key: 'menu.zerocut',
     items: menuZeroCut,
   },
@@ -52,14 +47,12 @@ export function generateNavigation(isSuperAdmin = false) {
     const zerocutIndex = baseMenus.findIndex(menu => menu.key === 'menu.zerocut');
     if (zerocutIndex !== -1) {
       baseMenus.splice(zerocutIndex + 1, 0, {
-        text: 'Admin',
         key: 'menu.admin',
         items: menuAdmin,
       });
     } else {
       // 如果没找到 zerocut 菜单，就添加到最后
       baseMenus.push({
-        text: 'Admin',
         key: 'menu.admin',
         items: menuAdmin,
       });

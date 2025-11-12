@@ -18,26 +18,22 @@ export default [
   // Tailwind
   {
     icon: 'mdi-format-color-fill',
-    text: 'Tailwind',
     link: '/ui/tailwind',
     key: 'menu.tailwind',
   },
   {
     icon: 'mdi-format-color-fill',
-    text: 'Colors',
     link: '/ui/colors',
     key: 'menu.colors',
   },
   {
     icon: 'mdi-gradient-vertical',
-    text: 'Gradient',
     link: '/ui/gradient',
     key: 'menu.gradient',
   },
   // lottie Animation
   {
     icon: 'mdi-animation-outline',
-    text: 'Lottie Animation',
     link: '/ui/lottie-animation',
     key: 'menu.lottieAnimation',
   },
@@ -56,38 +52,32 @@ export default [
   // },
   {
     icon: 'mdi-page-layout-sidebar-right',
-    text: 'Scrollbar',
     link: '/ui/scrollbar',
     key: 'menu.scrollbar',
   },
   {
     icon: 'mdi-waves',
-    text: 'WaterFall',
     link: '/ui/water-fall',
     key: 'menu.waterFall',
   },
   {
     icon: 'mdi-wall',
-    text: 'Masonry',
     link: '/ui/masonry',
     key: 'menu.masonry',
   },
   {
     icon: 'mdi-format-list-text',
-    text: 'VirtualList',
     link: '/ui/virtual-list',
     key: 'menu.virtualList',
   },
   {
     icon: 'mdi-format-list-bulleted-triangle',
-    text: 'VirtualScroller',
     link: '/ui/virtual-scroller',
     key: 'menu.virtualScroller',
   },
   // Facker
   {
     icon: 'mdi-format-list-bulleted-triangle',
-    text: 'Faker Api Reference',
     link: '/ui/faker-api-ref',
     key: 'menu.fakerApiRef',
   },

@@ -34,6 +34,23 @@ export default {
     signin: '登录',
   },
   menu: {
+    // 顶部与分组
+    landing: '模版演示',
+    uiPreview: 'UI主题预览',
+    zerocut: 'Zerocut',
+    admin: '管理员',
+    adminWorkspaceList: '工作区列表',
+    adminSystemConfig: '系统配置',
+    adminSystemConfigAudit: '配置审计',
+    // zerocut 子菜单
+    studio: '视频创作',
+    apikeys: '密钥管理',
+    usage: '使用日志',
+    wallet: '钱包管理',
+    packages: '积分套餐',
+    guide: '专业版',
+    // UI 演示
+    tailwind: 'Tailwind',
     search: '搜索（按“ Ctrl + /”进行聚焦）',
     dashboard: '仪表板',
     logout: '登出',

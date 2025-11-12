@@ -34,6 +34,25 @@ export default {
     signin: 'サインイン',
   },
   menu: {
+    // トップレベルとグループ
+    landing: 'ランディング',
+    uiPreview: 'UIテーマプレビュー',
+    zerocut: 'Zerocut',
+    admin: '管理者',
+    adminWorkspaceList: 'ワークスペース一覧',
+    adminSystemConfig: 'システム設定',
+    adminSystemConfigAudit: '設定監査',
+
+    // Zerocut サブメニュー
+    studio: '動画作成',
+    apikeys: 'APIキー',
+    usage: '利用ログ',
+    wallet: 'ウォレット管理',
+    packages: 'ポイントパッケージ',
+    guide: 'プロ版',
+
+    // UI デモ
+    tailwind: 'Tailwind',
     search: '検索（フォーカスするには「ctrl + /」を押します）',
     dashboard: 'ダッシュボード',
     logout: 'ログアウト',

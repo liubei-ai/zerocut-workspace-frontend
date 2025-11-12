@@ -34,6 +34,23 @@ export default {
     signin: 'Sign In',
   },
   menu: {
+    // Top-level groups
+    landing: 'Landing',
+    uiPreview: 'UI - Theme Preview',
+    zerocut: 'Zerocut',
+    admin: 'Admin',
+    adminWorkspaceList: 'Workspace List',
+    adminSystemConfig: 'System Config',
+    adminSystemConfigAudit: 'Config Audit',
+    // Zerocut submenu
+    studio: 'Studio',
+    apikeys: 'API Keys',
+    usage: 'Usage Logs',
+    wallet: 'Wallet',
+    packages: 'Credit Packages',
+    guide: 'Pro Guide',
+    // UI demo
+    tailwind: 'Tailwind',
     search: 'Search (press "ctrl + /" to focus)',
     dashboard: 'Dashboard',
     logout: 'Logout',
@@ -48,7 +65,6 @@ export default {
     unsplash: 'Unsplash',
     booking: 'Booking',
     ikea: 'IKEA',
-
     board: 'Task Board',
     users: 'Users',
     usersList: 'List',
