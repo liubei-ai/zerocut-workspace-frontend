@@ -115,7 +115,7 @@ onMounted(() => {
           @click="handleRecharge"
         >
           <v-icon class="mr-2">mdi-plus-circle</v-icon>
-          立即充值
+          {{ t('zerocut.wallet.recharge') }}
         </v-btn>
 
         <!-- 新人优惠（条件显示） -->
