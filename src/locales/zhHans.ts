@@ -7,6 +7,10 @@ export default {
     title: '标题',
     save: '保存',
     refresh: '刷新',
+    create: '创建',
+    search: '搜索',
+    reset: '重置',
+    unknown: '未知',
     faq: '常见问题',
     contact: '联系我们',
     tos: '服务条款',
@@ -201,6 +205,45 @@ export default {
 
   // Zerocut 视图
   zerocut: {
+    usage: {
+      title: '使用日志',
+      subtitle: '查看详细的积分使用记录',
+      filters: {
+        title: '筛选条件',
+        startDate: '开始日期',
+        endDate: '结束日期',
+      },
+      service: {
+        all: '全部服务',
+        video: '视频生成',
+        image: '图片生成',
+        audio: '音频生成',
+        text: '文本处理',
+      },
+      errors: {
+        fetchFail: '获取数据失败，请稍后重试',
+        invalidDateRange: '结束日期不能早于开始日期',
+      },
+      table: {
+        title: '使用记录',
+        columns: {
+          time: '时间',
+          serviceType: '服务类型',
+          creditsAmount: '消耗数量',
+          reason: '消耗原因',
+          transactionId: '交易ID',
+          apiKeyId: 'API密钥ID',
+          // actions: '操作',
+        },
+      },
+      empty: {
+        title: '暂无使用记录',
+        subtitle: {
+          failed: '数据加载失败',
+          noResult: '当前筛选条件下没有找到相关记录',
+        },
+      },
+    },
     wallet: {
       subtitle: '管理您的账户余额和充值明细',
       recharge: '充值',
@@ -235,6 +278,79 @@ export default {
       daysSuffix: '天',
       fetchInfoFailed: '获取钱包信息失败',
       fetchTransactionsFailed: '获取充值记录失败',
+    },
+    apikeys: {
+      title: '密钥管理',
+      subtitle: '管理您的API访问密钥',
+      actions: {
+        create: '创建密钥',
+      },
+      stats: {
+        total: '总密钥数',
+        active: '活跃密钥',
+        expired: '已过期',
+      },
+      table: {
+        title: '密钥列表',
+        columns: {
+          name: '名称',
+          description: '描述',
+          key: '密钥',
+          creator: '创建者',
+          createdAt: '创建时间',
+          expiresAt: '过期时间',
+          status: '状态',
+          actions: '操作',
+          lastUsedAt: '最后使用',
+        },
+      },
+      copyMCP: {
+        tooltip: '复制MCP配置',
+      },
+      unknownUser: '未知用户',
+      neverUsed: '从未使用',
+      neverExpire: '永不过期',
+      status: {
+        active: '活跃',
+        expired: '已过期',
+        disabled: '已禁用',
+      },
+      dialog: {
+        create: {
+          title: '创建新密钥',
+          nameLabel: '密钥名称',
+          namePlaceholder: '输入密钥名称',
+          descLabel: '描述',
+          descPlaceholder: '输入密钥用途描述',
+          expireLabel: '过期时间（可选）',
+          expireHint: '留空表示永不过期',
+        },
+        delete: {
+          title: '确认删除',
+          content: '确定要删除密钥 "{name}" 吗？此操作不可撤销。',
+        },
+      },
+      rules: {
+        nameRequired: '密钥名称不能为空',
+        nameMin: '密钥名称至少需要3个字符',
+        nameMax: '密钥名称不能超过50个字符',
+        descMax: '描述不能超过200个字符',
+      },
+      errors: {
+        noWorkspace: '请先选择工作空间',
+        loadFail: '加载密钥列表时发生错误',
+        invalidName: '请输入有效的密钥名称（至少3个字符）',
+        createFail: '创建密钥时发生错误',
+        deleteFail: '删除密钥时发生错误',
+        copyFail: '复制密钥失败',
+        copyMcpFail: '复制 MCP 配置失败',
+      },
+      messages: {
+        createSuccess: '密钥创建成功',
+        deleteSuccess: '密钥删除成功',
+        copySuccess: '密钥已复制到剪贴板',
+        copyMcpSuccess: 'MCP 配置已复制到剪贴板',
+      },
     },
   },
   // Vuetify 组件内部翻译

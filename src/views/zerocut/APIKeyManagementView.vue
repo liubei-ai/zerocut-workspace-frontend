@@ -4,6 +4,7 @@ import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDate } from '~/src/utils/date';
 import { maskApiKey } from '~/src/utils/stringUtils';
 
@@ -26,14 +27,18 @@ const newToken = ref({
   expiresAt: '',
 });
 
+const { t } = useI18n();
+
 // 表单验证规则
 const nameRules = [
-  (v: string) => !!v || '密钥名称不能为空',
-  (v: string) => v.length >= 3 || '密钥名称至少需要3个字符',
-  (v: string) => v.length <= 50 || '密钥名称不能超过50个字符',
+  (v: string) => !!v || t('zerocut.apikeys.rules.nameRequired'),
+  (v: string) => v.length >= 3 || t('zerocut.apikeys.rules.nameMin'),
+  (v: string) => v.length <= 50 || t('zerocut.apikeys.rules.nameMax'),
 ];
 
-const descriptionRules = [(v: string) => !v || v.length <= 200 || '描述不能超过200个字符'];
+const descriptionRules = [
+  (v: string) => !v || v.length <= 200 || t('zerocut.apikeys.rules.descMax'),
+];
 
 // 权限选项（暂时隐藏）
 // const permissionOptions = [
@@ -55,14 +60,14 @@ const loadTokens = async () => {
   try {
     const workspaceId = workspaceStore.currentWorkspaceId;
     if (!workspaceId) {
-      showError('请先选择工作空间');
+      showError(t('zerocut.apikeys.errors.noWorkspace'));
       return;
     }
     const apikeys = await getApiKeys(workspaceId);
     tokens.value = apikeys;
   } catch (error) {
     console.error('加载密钥列表失败:', error);
-    showError('加载密钥列表时发生错误');
+    showError(t('zerocut.apikeys.errors.loadFail'));
   } finally {
     loading.value = false;
   }
@@ -79,13 +84,13 @@ const stats = computed(() => ({
 // 创建密钥
 const createToken = async () => {
   if (!newToken.value.name || newToken.value.name.length < 3) {
-    showError('请输入有效的密钥名称（至少3个字符）');
+    showError(t('zerocut.apikeys.errors.invalidName'));
     return;
   }
 
   const workspaceId = workspaceStore.currentWorkspaceId;
   if (!workspaceId) {
-    showError('请先选择工作空间');
+    showError(t('zerocut.apikeys.errors.noWorkspace'));
     return;
   }
 
@@ -106,10 +111,10 @@ const createToken = async () => {
     await loadTokens();
     createTokenDialog.value = false;
     resetForm();
-    showSuccess('密钥创建成功');
+    showSuccess(t('zerocut.apikeys.messages.createSuccess'));
   } catch (error) {
     console.error('创建密钥失败:', error);
-    showError('创建密钥时发生错误');
+    showError(t('zerocut.apikeys.errors.createFail'));
   } finally {
     creating.value = false;
   }
@@ -121,7 +126,7 @@ const deleteToken = async () => {
 
   const workspaceId = workspaceStore.currentWorkspaceId;
   if (!workspaceId) {
-    showError('请先选择工作空间');
+    showError(t('zerocut.apikeys.errors.noWorkspace'));
     return;
   }
 
@@ -129,10 +134,10 @@ const deleteToken = async () => {
   try {
     await deleteApiKey(workspaceId, selectedToken.value!.id);
     await loadTokens();
-    showSuccess('密钥删除成功');
+    showSuccess(t('zerocut.apikeys.messages.deleteSuccess'));
   } catch (error) {
     console.error('删除密钥失败:', error);
-    showError('删除密钥时发生错误');
+    showError(t('zerocut.apikeys.errors.deleteFail'));
   } finally {
     deleting.value = false;
     deleteTokenDialog.value = false;
@@ -155,10 +160,10 @@ const copyToken = async (token: ApiKey) => {
   try {
     const keyToCopy = token.apiKey || token.apiKeyPrefix;
     await navigator.clipboard.writeText(keyToCopy);
-    showSuccess('密钥已复制到剪贴板');
+    showSuccess(t('zerocut.apikeys.messages.copySuccess'));
   } catch (error) {
     console.error('复制失败:', error);
-    showError('复制密钥失败');
+    showError(t('zerocut.apikeys.errors.copyFail'));
   }
 };
 
@@ -181,10 +186,10 @@ const copyMCPConfig = async (token: ApiKey) => {
 }`;
   try {
     await navigator.clipboard.writeText(mcpConfigTemplate);
-    showSuccess('MCP 配置已复制到剪贴板');
+    showSuccess(t('zerocut.apikeys.messages.copyMcpSuccess'));
   } catch (error) {
     console.error('复制失败:', error);
-    showError('复制 MCP 配置失败');
+    showError(t('zerocut.apikeys.errors.copyMcpFail'));
   }
 };
 
@@ -223,8 +228,8 @@ const getStatusColor = (status: string) => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">密钥管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的API访问密钥</p>
+        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.apikeys.title') }}</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">{{ t('zerocut.apikeys.subtitle') }}</p>
       </div>
       <div class="d-flex gap-2">
         <v-btn
@@ -233,10 +238,10 @@ const getStatusColor = (status: string) => {
           @click="createTokenDialog = true"
           :loading="loading"
         >
-          创建密钥
+          {{ t('zerocut.apikeys.actions.create') }}
         </v-btn>
         <v-btn variant="outlined" prepend-icon="mdi-refresh" @click="loadTokens" :loading="loading">
-          刷新
+          {{ t('common.refresh') }}
         </v-btn>
       </div>
     </div>
@@ -249,7 +254,9 @@ const getStatusColor = (status: string) => {
           <div class="text-h4 font-weight-bold mb-1">
             {{ stats.total }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">总密钥数</div>
+          <div class="text-subtitle-2 text-medium-emphasis">
+            {{ t('zerocut.apikeys.stats.total') }}
+          </div>
         </v-card>
       </v-col>
 
@@ -259,7 +266,9 @@ const getStatusColor = (status: string) => {
           <div class="text-h4 font-weight-bold mb-1">
             {{ stats.active }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">活跃密钥</div>
+          <div class="text-subtitle-2 text-medium-emphasis">
+            {{ t('zerocut.apikeys.stats.active') }}
+          </div>
         </v-card>
       </v-col>
 
@@ -269,7 +278,9 @@ const getStatusColor = (status: string) => {
           <div class="text-h4 font-weight-bold mb-1">
             {{ stats.expired }}
           </div>
-          <div class="text-subtitle-2 text-medium-emphasis">已过期</div>
+          <div class="text-subtitle-2 text-medium-emphasis">
+            {{ t('zerocut.apikeys.stats.expired') }}
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -278,20 +289,29 @@ const getStatusColor = (status: string) => {
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
-        密钥列表
+        {{ t('zerocut.apikeys.table.title') }}
       </v-card-title>
 
       <v-data-table
         :headers="[
-          { title: '名称', key: 'name', sortable: true },
-          { title: '描述', key: 'description', sortable: false },
-          { title: '密钥', key: 'key', sortable: false, width: '240px' },
-          { title: '创建者', key: 'creator', sortable: true },
-          { title: '创建时间', key: 'createdAt', sortable: true },
-          { title: '过期时间', key: 'expiresAt', sortable: true },
-          { title: '状态', key: 'status', sortable: true },
-          // { title: '操作', key: 'actions', sortable: false },
-          // { title: '最后使用', key: 'lastUsedAt', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.name'), key: 'name', sortable: true },
+          {
+            title: t('zerocut.apikeys.table.columns.description'),
+            key: 'description',
+            sortable: false,
+          },
+          {
+            title: t('zerocut.apikeys.table.columns.key'),
+            key: 'key',
+            sortable: false,
+            width: '240px',
+          },
+          { title: t('zerocut.apikeys.table.columns.creator'), key: 'creator', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.createdAt'), key: 'createdAt', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.expiresAt'), key: 'expiresAt', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.status'), key: 'status', sortable: true },
+          // { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
+          // { title: t('zerocut.apikeys.table.columns.lastUsedAt'), key: 'lastUsedAt', sortable: true },
         ]"
         :items="tokens"
         item-value="id"
@@ -308,7 +328,7 @@ const getStatusColor = (status: string) => {
               icon="mdi-robot"
               size="x-small"
               variant="text"
-              tooltip="复制MCP配置"
+              :tooltip="t('zerocut.apikeys.copyMCP.tooltip')"
               @click="copyMCPConfig(item)"
               >MCP</v-btn
             >
@@ -321,7 +341,9 @@ const getStatusColor = (status: string) => {
               <v-icon icon="mdi-account" size="16"></v-icon>
             </v-avatar>
             <span class="text-body-2">
-              {{ item.creator?.username || item.creator?.email || '未知用户' }}
+              {{
+                item.creator?.username || item.creator?.email || t('zerocut.apikeys.unknownUser')
+              }}
             </span>
           </div>
         </template>
@@ -331,17 +353,21 @@ const getStatusColor = (status: string) => {
         </template>
 
         <template #item.lastUsedAt="{ item }">
-          {{ item.lastUsedAt || '从未使用' }}
+          {{ item.lastUsedAt || t('zerocut.apikeys.neverUsed') }}
         </template>
 
         <template #item.expiresAt="{ item }">
-          {{ item.expiresAt ? formatDate(item.expiresAt) : '永不过期' }}
+          {{ item.expiresAt ? formatDate(item.expiresAt) : t('zerocut.apikeys.neverExpire') }}
         </template>
 
         <template #item.status="{ item }">
           <v-chip :color="getStatusColor(item.status)" size="small" variant="tonal">
             {{
-              item.status === 'active' ? '活跃' : item.status === 'expired' ? '已过期' : '已禁用'
+              item.status === 'active'
+                ? t('zerocut.apikeys.status.active')
+                : item.status === 'expired'
+                  ? t('zerocut.apikeys.status.expired')
+                  : t('zerocut.apikeys.status.disabled')
             }}
           </v-chip>
         </template>
@@ -353,15 +379,15 @@ const getStatusColor = (status: string) => {
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2">mdi-plus</v-icon>
-          创建新密钥
+          {{ t('zerocut.apikeys.dialog.create.title') }}
         </v-card-title>
 
         <v-card-text>
           <v-form>
             <v-text-field
               v-model="newToken.name"
-              label="密钥名称"
-              placeholder="输入密钥名称"
+              :label="t('zerocut.apikeys.dialog.create.nameLabel')"
+              :placeholder="t('zerocut.apikeys.dialog.create.namePlaceholder')"
               :rules="nameRules"
               required
               class="mb-4"
@@ -369,8 +395,8 @@ const getStatusColor = (status: string) => {
 
             <v-textarea
               v-model="newToken.description"
-              label="描述"
-              placeholder="输入密钥用途描述"
+              :label="t('zerocut.apikeys.dialog.create.descLabel')"
+              :placeholder="t('zerocut.apikeys.dialog.create.descPlaceholder')"
               :rules="descriptionRules"
               rows="3"
               class="mb-4"
@@ -398,9 +424,9 @@ const getStatusColor = (status: string) => {
 
             <v-text-field
               v-model="newToken.expiresAt"
-              label="过期时间（可选）"
+              :label="t('zerocut.apikeys.dialog.create.expireLabel')"
               type="date"
-              hint="留空表示永不过期"
+              :hint="t('zerocut.apikeys.dialog.create.expireHint')"
               persistent-hint
             ></v-text-field>
           </v-form>
@@ -415,7 +441,7 @@ const getStatusColor = (status: string) => {
               resetForm();
             "
           >
-            取消
+            {{ t('common.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -424,7 +450,7 @@ const getStatusColor = (status: string) => {
             :disabled="!newToken.name || creating"
             :loading="creating"
           >
-            创建
+            {{ t('common.create') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -435,10 +461,12 @@ const getStatusColor = (status: string) => {
       <v-card>
         <v-card-title class="d-flex align-center text-error">
           <v-icon class="mr-2">mdi-alert</v-icon>
-          确认删除
+          {{ t('zerocut.apikeys.dialog.delete.title') }}
         </v-card-title>
 
-        <v-card-text> 确定要删除密钥 "{{ selectedToken?.name }}" 吗？此操作不可撤销。 </v-card-text>
+        <v-card-text>
+          {{ t('zerocut.apikeys.dialog.delete.content', { name: selectedToken?.name }) }}
+        </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -449,10 +477,10 @@ const getStatusColor = (status: string) => {
               selectedToken = null;
             "
           >
-            取消
+            {{ t('common.cancel') }}
           </v-btn>
           <v-btn color="error" variant="flat" @click="deleteToken" :loading="deleting">
-            删除
+            {{ t('common.delete') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -476,3 +504,4 @@ code {
   font-family: 'Courier New', monospace;
 }
 </style>
+// i18n const { t } = useI18n();

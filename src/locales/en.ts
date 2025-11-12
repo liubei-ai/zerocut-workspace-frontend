@@ -5,6 +5,10 @@ export default {
     save: 'Save',
     refresh: 'Refresh',
     delete: 'Delete',
+    create: 'Create',
+    search: 'Search',
+    reset: 'Reset',
+    unknown: 'Unknown',
     title: 'Title',
     description: 'Description',
     faq: 'FAQ',
@@ -204,6 +208,45 @@ export default {
 
   // Zerocut Views
   zerocut: {
+    usage: {
+      title: 'Usage Logs',
+      subtitle: 'View detailed credits consumption records',
+      filters: {
+        title: 'Filters',
+        startDate: 'Start Date',
+        endDate: 'End Date',
+      },
+      service: {
+        all: 'All Services',
+        video: 'Video Generation',
+        image: 'Image Generation',
+        audio: 'Audio Generation',
+        text: 'Text Processing',
+      },
+      errors: {
+        fetchFail: 'Failed to fetch data, please try again later',
+        invalidDateRange: 'End date cannot be earlier than start date',
+      },
+      table: {
+        title: 'Usage Records',
+        columns: {
+          time: 'Time',
+          serviceType: 'Service Type',
+          creditsAmount: 'Credits Used',
+          reason: 'Reason',
+          transactionId: 'Transaction ID',
+          apiKeyId: 'API Key ID',
+          // actions: 'Actions',
+        },
+      },
+      empty: {
+        title: 'No usage records',
+        subtitle: {
+          failed: 'Data load failed',
+          noResult: 'No records found for current filters',
+        },
+      },
+    },
     wallet: {
       subtitle: 'Manage your account balance and recharge history',
       recharge: 'Recharge',
@@ -238,6 +281,79 @@ export default {
       daysSuffix: 'days',
       fetchInfoFailed: 'Failed to fetch wallet info',
       fetchTransactionsFailed: 'Failed to fetch recharge records',
+    },
+    apikeys: {
+      title: 'API Key Management',
+      subtitle: 'Manage your API access keys',
+      actions: {
+        create: 'Create Key',
+      },
+      stats: {
+        total: 'Total Keys',
+        active: 'Active Keys',
+        expired: 'Expired',
+      },
+      table: {
+        title: 'API Keys',
+        columns: {
+          name: 'Name',
+          description: 'Description',
+          key: 'Key',
+          creator: 'Creator',
+          createdAt: 'Created At',
+          expiresAt: 'Expires At',
+          status: 'Status',
+          actions: 'Actions',
+          lastUsedAt: 'Last Used',
+        },
+      },
+      copyMCP: {
+        tooltip: 'Copy MCP config',
+      },
+      unknownUser: 'Unknown User',
+      neverUsed: 'Never Used',
+      neverExpire: 'Never Expire',
+      status: {
+        active: 'Active',
+        expired: 'Expired',
+        disabled: 'Disabled',
+      },
+      dialog: {
+        create: {
+          title: 'Create New Key',
+          nameLabel: 'Key Name',
+          namePlaceholder: 'Enter key name',
+          descLabel: 'Description',
+          descPlaceholder: 'Enter key purpose description',
+          expireLabel: 'Expiration (optional)',
+          expireHint: 'Leave empty for no expiration',
+        },
+        delete: {
+          title: 'Confirm Deletion',
+          content: 'Are you sure you want to delete key "{name}"? This action cannot be undone.',
+        },
+      },
+      rules: {
+        nameRequired: 'Key name cannot be empty',
+        nameMin: 'Key name must be at least 3 characters',
+        nameMax: 'Key name cannot exceed 50 characters',
+        descMax: 'Description cannot exceed 200 characters',
+      },
+      errors: {
+        noWorkspace: 'Please select a workspace first',
+        loadFail: 'Error loading key list',
+        invalidName: 'Please enter a valid key name (at least 3 characters)',
+        createFail: 'Error creating key',
+        deleteFail: 'Error deleting key',
+        copyFail: 'Failed to copy key',
+        copyMcpFail: 'Failed to copy MCP config',
+      },
+      messages: {
+        createSuccess: 'Key created successfully',
+        deleteSuccess: 'Key deleted successfully',
+        copySuccess: 'Key copied to clipboard',
+        copyMcpSuccess: 'MCP config copied to clipboard',
+      },
     },
   },
 

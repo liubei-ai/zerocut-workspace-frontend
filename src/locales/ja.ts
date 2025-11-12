@@ -7,6 +7,10 @@ export default {
     title: 'タイトル',
     save: '保存',
     refresh: '更新',
+    create: '作成',
+    search: '検索',
+    reset: 'リセット',
+    unknown: '不明',
     faq: 'よくある質問',
     contact: 'お問い合わせ',
     tos: '利用規約',
@@ -203,6 +207,45 @@ export default {
 
   // Zerocut ビュー
   zerocut: {
+    usage: {
+      title: '利用ログ',
+      subtitle: '詳細なポイント使用記録を表示',
+      filters: {
+        title: 'フィルター',
+        startDate: '開始日',
+        endDate: '終了日',
+      },
+      service: {
+        all: 'すべてのサービス',
+        video: '動画生成',
+        image: '画像生成',
+        audio: '音声生成',
+        text: 'テキスト処理',
+      },
+      errors: {
+        fetchFail: 'データの取得に失敗しました。後でもう一度お試しください',
+        invalidDateRange: '終了日は開始日より前にできません',
+      },
+      table: {
+        title: '使用記録',
+        columns: {
+          time: '時間',
+          serviceType: 'サービス種別',
+          creditsAmount: '消費ポイント',
+          reason: '理由',
+          transactionId: '取引ID',
+          apiKeyId: 'APIキーID',
+          // actions: '操作',
+        },
+      },
+      empty: {
+        title: '使用記録はありません',
+        subtitle: {
+          failed: 'データ読み込みに失敗しました',
+          noResult: '現在の条件に一致する記録が見つかりません',
+        },
+      },
+    },
     wallet: {
       subtitle: 'アカウント残高とチャージ履歴を管理する',
       recharge: 'チャージ',
@@ -237,6 +280,79 @@ export default {
       daysSuffix: '日',
       fetchInfoFailed: 'ウォレット情報の取得に失敗しました',
       fetchTransactionsFailed: 'チャージ履歴の取得に失敗しました',
+    },
+    apikeys: {
+      title: 'APIキー管理',
+      subtitle: 'APIアクセスキーを管理する',
+      actions: {
+        create: 'キーを作成',
+      },
+      stats: {
+        total: 'キー総数',
+        active: '有効キー',
+        expired: '失効',
+      },
+      table: {
+        title: 'APIキー一覧',
+        columns: {
+          name: '名称',
+          description: '説明',
+          key: 'キー',
+          creator: '作成者',
+          createdAt: '作成日時',
+          expiresAt: '有効期限',
+          status: 'ステータス',
+          actions: '操作',
+          lastUsedAt: '最終使用',
+        },
+      },
+      copyMCP: {
+        tooltip: 'MCP設定をコピー',
+      },
+      unknownUser: '不明なユーザー',
+      neverUsed: '未使用',
+      neverExpire: '無期限',
+      status: {
+        active: '有効',
+        expired: '失効',
+        disabled: '無効',
+      },
+      dialog: {
+        create: {
+          title: '新しいキーを作成',
+          nameLabel: 'キー名',
+          namePlaceholder: 'キー名を入力',
+          descLabel: '説明',
+          descPlaceholder: 'キーの用途説明を入力',
+          expireLabel: '有効期限（任意）',
+          expireHint: '空欄は無期限を意味します',
+        },
+        delete: {
+          title: '削除の確認',
+          content: 'キー「{name}」を削除してもよろしいですか？この操作は元に戻せません。',
+        },
+      },
+      rules: {
+        nameRequired: 'キー名は必須です',
+        nameMin: 'キー名は3文字以上である必要があります',
+        nameMax: 'キー名は50文字以下である必要があります',
+        descMax: '説明は200文字以下にしてください',
+      },
+      errors: {
+        noWorkspace: 'まずワークスペースを選択してください',
+        loadFail: 'キー一覧の読み込み中にエラーが発生しました',
+        invalidName: '有効なキー名（3文字以上）を入力してください',
+        createFail: 'キーの作成中にエラーが発生しました',
+        deleteFail: 'キーの削除中にエラーが発生しました',
+        copyFail: 'キーのコピーに失敗しました',
+        copyMcpFail: 'MCP設定のコピーに失敗しました',
+      },
+      messages: {
+        createSuccess: 'キーを作成しました',
+        deleteSuccess: 'キーを削除しました',
+        copySuccess: 'キーをクリップボードにコピーしました',
+        copyMcpSuccess: 'MCP設定をクリップボードにコピーしました',
+      },
     },
   },
 

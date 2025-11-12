@@ -3,6 +3,7 @@ import { getConsumptionRecords } from '@/api/workspaceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ConsumptionRecord } from '@/types/api';
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDate } from '~/src/utils/date';
 
 // 使用工作空间store
@@ -26,13 +27,15 @@ const filters = ref({
   apiKeyId: '',
 });
 
-// 服务类型选项
+const { t } = useI18n();
+
+// 服务类型选项（本地化）
 const serviceOptions = [
-  { value: '', title: '全部服务' },
-  { value: 'video_generation', title: '视频生成' },
-  { value: 'image_generation', title: '图片生成' },
-  { value: 'audio_generation', title: '音频生成' },
-  { value: 'text_generation', title: '文本处理' },
+  { value: '', title: t('zerocut.usage.service.all') },
+  { value: 'video_generation', title: t('zerocut.usage.service.video') },
+  { value: 'image_generation', title: t('zerocut.usage.service.image') },
+  { value: 'audio_generation', title: t('zerocut.usage.service.audio') },
+  { value: 'text_generation', title: t('zerocut.usage.service.text') },
 ];
 
 // 获取数据函数
@@ -74,7 +77,8 @@ const fetchConsumptionRecords = async () => {
     };
   } catch (err) {
     console.error('获取消费记录失败:', err);
-    error.value = err.message || '获取数据失败，请稍后重试';
+    // 统一错误提示本地化
+    error.value = (err as any).message || t('zerocut.usage.errors.fetchFail');
     usageLogs.value = [];
   } finally {
     loading.value = false;
@@ -131,7 +135,7 @@ const handleReset = () => {
 const validateDateRange = () => {
   const [startDate, endDate] = filters.value.dateRange;
   if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-    error.value = '结束日期不能早于开始日期';
+    error.value = t('zerocut.usage.errors.invalidDateRange');
     return false;
   }
   error.value = '';
@@ -149,8 +153,8 @@ onMounted(() => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">使用日志</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">查看详细的积分使用记录</p>
+        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.usage.title') }}</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">{{ t('zerocut.usage.subtitle') }}</p>
       </div>
     </div>
 
@@ -158,7 +162,7 @@ onMounted(() => {
     <v-card class="mb-6" elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-filter</v-icon>
-        筛选条件
+        {{ t('zerocut.usage.filters.title') }}
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -185,7 +189,7 @@ onMounted(() => {
           <v-col cols="12" md="3">
             <v-text-field
               v-model="filters.dateRange[0]"
-              label="开始日期"
+              :label="t('zerocut.usage.filters.startDate')"
               type="date"
               prepend-inner-icon="mdi-calendar"
               clearable
@@ -195,7 +199,7 @@ onMounted(() => {
           <v-col cols="12" md="3">
             <v-text-field
               v-model="filters.dateRange[1]"
-              label="结束日期"
+              :label="t('zerocut.usage.filters.endDate')"
               type="date"
               prepend-inner-icon="mdi-calendar"
               clearable
@@ -213,7 +217,7 @@ onMounted(() => {
               "
               :loading="loading"
             >
-              搜索
+              {{ t('common.search') }}
             </v-btn>
             <v-btn
               variant="outlined"
@@ -221,7 +225,7 @@ onMounted(() => {
               @click="handleReset"
               :disabled="loading"
             >
-              重置
+              {{ t('common.reset') }}
             </v-btn>
           </v-col>
         </v-row>
@@ -237,18 +241,34 @@ onMounted(() => {
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
-        使用记录
+        {{ t('zerocut.usage.table.title') }}
       </v-card-title>
 
       <v-data-table-server
         :headers="[
-          { title: '时间', key: 'createdAt', sortable: true },
-          { title: '服务类型', key: 'serviceType', sortable: true },
-          { title: '消耗数量', key: 'creditsAmount', sortable: true },
-          { title: '消耗原因', key: 'serviceDetails', sortable: false },
-          { title: '交易ID', key: 'transactionId', sortable: false },
-          { title: 'API密钥ID', key: 'apiKeyId', sortable: false },
-          // { title: '操作', key: 'actions', sortable: false },
+          { title: t('zerocut.usage.table.columns.time'), key: 'createdAt', sortable: true },
+          {
+            title: t('zerocut.usage.table.columns.serviceType'),
+            key: 'serviceType',
+            sortable: true,
+          },
+          {
+            title: t('zerocut.usage.table.columns.creditsAmount'),
+            key: 'creditsAmount',
+            sortable: true,
+          },
+          {
+            title: t('zerocut.usage.table.columns.reason'),
+            key: 'serviceDetails',
+            sortable: false,
+          },
+          {
+            title: t('zerocut.usage.table.columns.transactionId'),
+            key: 'transactionId',
+            sortable: false,
+          },
+          { title: t('zerocut.usage.table.columns.apiKeyId'), key: 'apiKeyId', sortable: false },
+          // { title: t('zerocut.usage.table.columns.actions'), key: 'actions', sortable: false },
         ]"
         :items="usageLogs"
         item-value="id"
@@ -279,12 +299,12 @@ onMounted(() => {
 
         <template #item.serviceDetails="{ item }">
           <div class="d-flex align-center">
-            {{ item.serviceDetails?.reason || 'unknown' }}
+            {{ item.serviceDetails?.reason || t('common.unknown') }}
           </div>
         </template>
 
         <template #item.apiKeyId="{ item }">
-          <code class="text-caption">{{ item.apiKeyId || '未知' }}</code>
+          <code class="text-caption">{{ item.apiKeyId || t('common.unknown') }}</code>
         </template>
 
         <!-- 空状态 -->
@@ -293,9 +313,13 @@ onMounted(() => {
             <v-icon size="64" color="grey-lighten-1" class="mb-4">
               mdi-file-document-outline
             </v-icon>
-            <div class="text-h6 text-grey-darken-1 mb-2">暂无使用记录</div>
+            <div class="text-h6 text-grey-darken-1 mb-2">{{ t('zerocut.usage.empty.title') }}</div>
             <div class="text-body-2 text-grey">
-              {{ error ? '数据加载失败' : '当前筛选条件下没有找到相关记录' }}
+              {{
+                error
+                  ? t('zerocut.usage.empty.subtitle.failed')
+                  : t('zerocut.usage.empty.subtitle.noResult')
+              }}
             </div>
           </div>
         </template>
@@ -321,3 +345,4 @@ code {
   font-size: 0.75rem;
 }
 </style>
+// i18n const { t } = useI18n();
