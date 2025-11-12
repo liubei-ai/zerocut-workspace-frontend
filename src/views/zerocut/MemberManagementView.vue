@@ -26,57 +26,93 @@ const editMemberForm = ref({
 // 要删除的成员
 const memberToRemove = ref<any>(null);
 
-// 角色选项
-const roles = [
+// 角色选项（i18n）
+const roles = computed(() => [
   {
     value: 'owner',
-    title: '所有者',
-    description: '拥有所有权限，包括删除团队',
+    title: t('zerocut.members.roles.owner.title'),
+    description: t('zerocut.members.roles.owner.desc'),
     color: 'error',
     icon: 'mdi-crown',
   },
   {
     value: 'admin',
-    title: '管理员',
-    description: '管理成员和项目设置',
+    title: t('zerocut.members.roles.admin.title'),
+    description: t('zerocut.members.roles.admin.desc'),
     color: 'warning',
     icon: 'mdi-shield-account',
   },
   {
     value: 'editor',
-    title: '编辑者',
-    description: '创建和编辑项目内容',
+    title: t('zerocut.members.roles.editor.title'),
+    description: t('zerocut.members.roles.editor.desc'),
     color: 'primary',
     icon: 'mdi-pencil',
   },
   {
     value: 'viewer',
-    title: '查看者',
-    description: '只能查看项目内容',
+    title: t('zerocut.members.roles.viewer.title'),
+    description: t('zerocut.members.roles.viewer.desc'),
     color: 'info',
     icon: 'mdi-eye',
   },
   {
     value: 'member',
-    title: '成员',
-    description: '基本访问权限',
+    title: t('zerocut.members.roles.member.title'),
+    description: t('zerocut.members.roles.member.desc'),
     color: 'success',
     icon: 'mdi-account',
   },
-];
+]);
 
-// 权限选项
-const permissions = [
-  { value: 'project.create', title: '创建项目', description: '允许创建新项目' },
-  { value: 'project.edit', title: '编辑项目', description: '允许编辑现有项目' },
-  { value: 'project.delete', title: '删除项目', description: '允许删除项目' },
-  { value: 'member.invite', title: '邀请成员', description: '允许邀请新成员' },
-  { value: 'member.manage', title: '管理成员', description: '允许管理成员权限' },
-  { value: 'billing.view', title: '查看账单', description: '允许查看账单信息' },
-  { value: 'billing.manage', title: '管理账单', description: '允许管理账单和付款' },
-  { value: 'settings.view', title: '查看设置', description: '允许查看团队设置' },
-  { value: 'settings.manage', title: '管理设置', description: '允许修改团队设置' },
-];
+// 权限选项（i18n）
+const permissions = computed(() => [
+  {
+    value: 'project.create',
+    title: t('zerocut.members.permissions.projectCreate.title'),
+    description: t('zerocut.members.permissions.projectCreate.desc'),
+  },
+  {
+    value: 'project.edit',
+    title: t('zerocut.members.permissions.projectEdit.title'),
+    description: t('zerocut.members.permissions.projectEdit.desc'),
+  },
+  {
+    value: 'project.delete',
+    title: t('zerocut.members.permissions.projectDelete.title'),
+    description: t('zerocut.members.permissions.projectDelete.desc'),
+  },
+  {
+    value: 'member.invite',
+    title: t('zerocut.members.permissions.memberInvite.title'),
+    description: t('zerocut.members.permissions.memberInvite.desc'),
+  },
+  {
+    value: 'member.manage',
+    title: t('zerocut.members.permissions.memberManage.title'),
+    description: t('zerocut.members.permissions.memberManage.desc'),
+  },
+  {
+    value: 'billing.view',
+    title: t('zerocut.members.permissions.billingView.title'),
+    description: t('zerocut.members.permissions.billingView.desc'),
+  },
+  {
+    value: 'billing.manage',
+    title: t('zerocut.members.permissions.billingManage.title'),
+    description: t('zerocut.members.permissions.billingManage.desc'),
+  },
+  {
+    value: 'settings.view',
+    title: t('zerocut.members.permissions.settingsView.title'),
+    description: t('zerocut.members.permissions.settingsView.desc'),
+  },
+  {
+    value: 'settings.manage',
+    title: t('zerocut.members.permissions.settingsManage.title'),
+    description: t('zerocut.members.permissions.settingsManage.desc'),
+  },
+]);
 
 // 成员列表
 const members = ref([
@@ -170,13 +206,19 @@ const filters = ref({
   search: '',
 });
 
-// 状态选项
-const statusOptions = [
-  { value: 'all', title: '全部状态' },
-  { value: 'active', title: '活跃' },
-  { value: 'pending', title: '待激活' },
-  { value: 'inactive', title: '非活跃' },
-];
+// 状态选项（i18n）
+const statusOptions = computed(() => [
+  { value: 'all', title: t('zerocut.members.filters.statusAll') },
+  { value: 'active', title: t('zerocut.members.status.active') },
+  { value: 'pending', title: t('zerocut.members.status.pending') },
+  { value: 'inactive', title: t('zerocut.members.status.inactive') },
+]);
+
+// 角色选择项（包含“全部角色”）
+const roleSelectItems = computed(() => [
+  { value: 'all', title: t('zerocut.members.filters.roleAll') },
+  ...roles.value,
+]);
 
 // 筛选后的成员列表
 const filteredMembers = computed(() => {
@@ -213,9 +255,19 @@ const stats = computed(() => {
   };
 });
 
+// 表头（i18n）
+const tableHeaders = computed(() => [
+  { title: t('zerocut.members.table.columns.member'), key: 'member', sortable: true },
+  { title: t('zerocut.members.table.columns.role'), key: 'role', sortable: true },
+  { title: t('zerocut.members.table.columns.status'), key: 'status', sortable: true },
+  { title: t('zerocut.members.table.columns.joinedAt'), key: 'joinedAt', sortable: true },
+  { title: t('zerocut.members.table.columns.lastActive'), key: 'lastActive', sortable: true },
+  { title: t('zerocut.members.table.columns.actions'), key: 'actions', sortable: false },
+]);
+
 // 获取角色信息
 const getRoleInfo = (roleValue: string) => {
-  return roles.find(role => role.value === roleValue) || roles[4]; // 默认为member
+  return roles.value.find(role => role.value === roleValue) || roles.value[4]; // 默认为member
 };
 
 // 获取状态颜色
@@ -236,13 +288,13 @@ const getStatusColor = (status: string) => {
 const getStatusText = (status: string) => {
   switch (status) {
     case 'active':
-      return '活跃';
+      return t('zerocut.members.status.active');
     case 'pending':
-      return '待激活';
+      return t('zerocut.members.status.pending');
     case 'inactive':
-      return '非活跃';
+      return t('zerocut.members.status.inactive');
     default:
-      return '未知';
+      return t('zerocut.members.status.unknown');
   }
 };
 
@@ -314,7 +366,7 @@ const resendInvite = (member: any) => {
 const getDefaultPermissions = (role: string): string[] => {
   switch (role) {
     case 'owner':
-      return permissions.map(p => p.value);
+      return permissions.value.map(p => p.value);
     case 'admin':
       return ['project.create', 'project.edit', 'member.invite', 'member.manage', 'settings.view'];
     case 'editor':
@@ -339,7 +391,7 @@ const resetInviteForm = () => {
 
 // 导出成员列表
 const exportMembers = () => {
-  console.log('导出成员列表');
+  console.log(t('zerocut.members.actions.export'));
 };
 
 onMounted(() => {
@@ -352,15 +404,15 @@ onMounted(() => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">成员管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理团队成员、角色权限和协作设置</p>
+        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.members.title') }}</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">{{ t('zerocut.members.subtitle') }}</p>
       </div>
       <div class="d-flex ga-2">
         <v-btn variant="outlined" prepend-icon="mdi-download" @click="exportMembers">
-          导出列表
+          {{ t('zerocut.members.actions.export') }}
         </v-btn>
         <v-btn color="primary" prepend-icon="mdi-account-plus" @click="inviteDialog = true">
-          邀请成员
+          {{ t('zerocut.members.actions.invite') }}
         </v-btn>
       </div>
     </div>
@@ -373,7 +425,9 @@ onMounted(() => {
           <div class="text-h6 font-weight-bold mb-1">
             {{ stats.totalMembers }}
           </div>
-          <div class="text-caption text-medium-emphasis">总成员数</div>
+          <div class="text-caption text-medium-emphasis">
+            {{ t('zerocut.members.stats.total') }}
+          </div>
         </v-card>
       </v-col>
 
@@ -383,7 +437,9 @@ onMounted(() => {
           <div class="text-h6 font-weight-bold mb-1">
             {{ stats.activeMembers }}
           </div>
-          <div class="text-caption text-medium-emphasis">活跃成员</div>
+          <div class="text-caption text-medium-emphasis">
+            {{ t('zerocut.members.stats.active') }}
+          </div>
         </v-card>
       </v-col>
 
@@ -393,7 +449,9 @@ onMounted(() => {
           <div class="text-h6 font-weight-bold mb-1">
             {{ stats.pendingMembers }}
           </div>
-          <div class="text-caption text-medium-emphasis">待激活</div>
+          <div class="text-caption text-medium-emphasis">
+            {{ t('zerocut.members.stats.pending') }}
+          </div>
         </v-card>
       </v-col>
 
@@ -403,7 +461,9 @@ onMounted(() => {
           <div class="text-h6 font-weight-bold mb-1">
             {{ stats.inactiveMembers }}
           </div>
-          <div class="text-caption text-medium-emphasis">非活跃</div>
+          <div class="text-caption text-medium-emphasis">
+            {{ t('zerocut.members.stats.inactive') }}
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -412,16 +472,16 @@ onMounted(() => {
     <v-card class="mb-6" elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-filter</v-icon>
-        筛选条件
+        {{ t('zerocut.members.filters.title') }}
       </v-card-title>
       <v-card-text>
         <v-row>
           <v-col cols="12" md="4">
             <v-text-field
               v-model="filters.search"
-              label="搜索成员"
+              :label="t('zerocut.members.filters.searchLabel')"
               prepend-inner-icon="mdi-magnify"
-              placeholder="搜索姓名或邮箱"
+              :placeholder="t('zerocut.members.filters.searchPlaceholder')"
               clearable
             ></v-text-field>
           </v-col>
@@ -429,10 +489,10 @@ onMounted(() => {
           <v-col cols="12" md="4">
             <v-select
               v-model="filters.role"
-              :items="[{ value: 'all', title: '全部角色' }, ...roles]"
+              :items="roleSelectItems"
               item-title="title"
               item-value="value"
-              label="角色"
+              :label="t('zerocut.members.filters.roleLabel')"
               prepend-inner-icon="mdi-account-cog"
             ></v-select>
           </v-col>
@@ -443,7 +503,7 @@ onMounted(() => {
               :items="statusOptions"
               item-title="title"
               item-value="value"
-              label="状态"
+              :label="t('zerocut.members.filters.statusLabel')"
               prepend-inner-icon="mdi-check-circle"
             ></v-select>
           </v-col>
@@ -455,18 +515,11 @@ onMounted(() => {
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-account-group</v-icon>
-        成员列表
+        {{ t('zerocut.members.table.title') }}
       </v-card-title>
 
       <v-data-table
-        :headers="[
-          { title: '成员', key: 'member', sortable: true },
-          { title: '角色', key: 'role', sortable: true },
-          { title: '状态', key: 'status', sortable: true },
-          { title: '加入时间', key: 'joinedAt', sortable: true },
-          { title: '最后活跃', key: 'lastActive', sortable: true },
-          { title: '操作', key: 'actions', sortable: false },
-        ]"
+        :headers="tableHeaders"
         :items="filteredMembers"
         item-value="id"
         class="elevation-0"
@@ -502,7 +555,9 @@ onMounted(() => {
                 {{ getRoleInfo(item.role).title }}
               </div>
               <div class="text-caption text-medium-emphasis">
-                {{ item.permissions.length }} 项权限
+                {{
+                  t('zerocut.members.role.permissions_count', { count: item.permissions.length })
+                }}
               </div>
             </div>
           </div>
@@ -536,7 +591,9 @@ onMounted(() => {
               @click="resendInvite(item)"
             >
               <v-icon>mdi-email-send</v-icon>
-              <v-tooltip activator="parent" location="top"> 重新发送邀请 </v-tooltip>
+              <v-tooltip activator="parent" location="top">
+                {{ t('zerocut.members.actions.resendInviteTooltip') }}
+              </v-tooltip>
             </v-btn>
 
             <v-btn
@@ -548,7 +605,9 @@ onMounted(() => {
               :disabled="item.role === 'owner'"
             >
               <v-icon>mdi-pencil</v-icon>
-              <v-tooltip activator="parent" location="top"> 编辑成员 </v-tooltip>
+              <v-tooltip activator="parent" location="top">
+                {{ t('zerocut.members.actions.editMemberTooltip') }}
+              </v-tooltip>
             </v-btn>
 
             <v-btn
@@ -560,7 +619,9 @@ onMounted(() => {
               :disabled="item.role === 'owner'"
             >
               <v-icon>mdi-delete</v-icon>
-              <v-tooltip activator="parent" location="top"> 移除成员 </v-tooltip>
+              <v-tooltip activator="parent" location="top">
+                {{ t('zerocut.members.actions.removeMemberTooltip') }}
+              </v-tooltip>
             </v-btn>
           </div>
         </template>
@@ -572,18 +633,21 @@ onMounted(() => {
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2" color="primary">mdi-account-plus</v-icon>
-          邀请新成员
+          {{ t('zerocut.members.inviteDialog.title') }}
         </v-card-title>
 
         <v-card-text>
           <v-form>
             <v-text-field
               v-model="inviteForm.email"
-              label="邮箱地址"
+              :label="t('zerocut.members.inviteDialog.emailLabel')"
               type="email"
               prepend-inner-icon="mdi-email"
               required
-              :rules="[v => !!v || '邮箱不能为空', v => /.+@.+\..+/.test(v) || '邮箱格式不正确']"
+              :rules="[
+                v => !!v || t('zerocut.members.inviteDialog.rules.emailRequired'),
+                v => /.+@.+\..+/.test(v) || t('zerocut.members.inviteDialog.rules.emailInvalid'),
+              ]"
               class="mb-4"
             ></v-text-field>
 
@@ -592,7 +656,7 @@ onMounted(() => {
               :items="roles.filter(r => r.value !== 'owner')"
               item-title="title"
               item-value="value"
-              label="角色"
+              :label="t('zerocut.members.inviteDialog.roleLabel')"
               prepend-inner-icon="mdi-account-cog"
               class="mb-4"
             >
@@ -609,10 +673,10 @@ onMounted(() => {
 
             <v-textarea
               v-model="inviteForm.message"
-              label="邀请消息（可选）"
+              :label="t('zerocut.members.inviteDialog.messageLabel')"
               prepend-inner-icon="mdi-message-text"
               rows="3"
-              placeholder="添加个人消息..."
+              :placeholder="t('zerocut.members.inviteDialog.messagePlaceholder')"
             ></v-textarea>
           </v-form>
         </v-card-text>
@@ -626,7 +690,7 @@ onMounted(() => {
               resetInviteForm();
             "
           >
-            取消
+            {{ t('common.cancel') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -634,7 +698,7 @@ onMounted(() => {
             @click="inviteMember"
             :disabled="!inviteForm.email || !/.+@.+\..+/.test(inviteForm.email)"
           >
-            发送邀请
+            {{ t('zerocut.members.inviteDialog.send') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -645,7 +709,7 @@ onMounted(() => {
       <v-card>
         <v-card-title class="d-flex align-center">
           <v-icon class="mr-2" color="primary">mdi-account-edit</v-icon>
-          编辑成员权限
+          {{ t('zerocut.members.editDialog.title') }}
         </v-card-title>
 
         <v-card-text>
@@ -655,7 +719,7 @@ onMounted(() => {
               :items="roles.filter(r => r.value !== 'owner')"
               item-title="title"
               item-value="value"
-              label="角色"
+              :label="t('zerocut.members.editDialog.roleLabel')"
               prepend-inner-icon="mdi-account-cog"
               class="mb-4"
             >
@@ -672,7 +736,9 @@ onMounted(() => {
 
             <v-divider class="mb-4"></v-divider>
 
-            <div class="text-subtitle-1 font-weight-medium mb-3">自定义权限</div>
+            <div class="text-subtitle-1 font-weight-medium mb-3">
+              {{ t('zerocut.members.editDialog.customPermissions') }}
+            </div>
 
             <v-row>
               <v-col v-for="permission in permissions" :key="permission.value" cols="12" md="6">
@@ -690,8 +756,10 @@ onMounted(() => {
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="editMemberDialog = false"> 取消 </v-btn>
-          <v-btn color="primary" variant="flat" @click="saveMemberEdit"> 保存更改 </v-btn>
+          <v-btn variant="text" @click="editMemberDialog = false"> {{ t('common.cancel') }} </v-btn>
+          <v-btn color="primary" variant="flat" @click="saveMemberEdit">
+            {{ t('zerocut.members.editDialog.save') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -701,23 +769,27 @@ onMounted(() => {
       <v-card>
         <v-card-title class="text-error">
           <v-icon class="mr-2">mdi-alert</v-icon>
-          确认移除成员
+          {{ t('zerocut.members.removeDialog.title') }}
         </v-card-title>
 
         <v-card-text>
           <v-alert type="warning" variant="tonal" class="mb-4">
-            您确定要移除成员 <strong>{{ memberToRemove?.name }}</strong> 吗？
+            {{ t('zerocut.members.removeDialog.confirm', { name: memberToRemove?.name }) }}
           </v-alert>
 
           <p class="text-body-2 text-medium-emphasis">
-            移除成员后，该用户将失去对团队的所有访问权限。此操作可以撤销，您可以重新邀请该用户。
+            {{ t('zerocut.members.removeDialog.desc') }}
           </p>
         </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn variant="text" @click="removeMemberDialog = false"> 取消 </v-btn>
-          <v-btn color="error" variant="flat" @click="confirmRemoveMember"> 确认移除 </v-btn>
+          <v-btn variant="text" @click="removeMemberDialog = false">
+            {{ t('common.cancel') }}
+          </v-btn>
+          <v-btn color="error" variant="flat" @click="confirmRemoveMember">
+            {{ t('zerocut.members.removeDialog.confirmButton') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

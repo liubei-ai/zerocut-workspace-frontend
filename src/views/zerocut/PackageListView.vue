@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import {
   getPackageList,
@@ -14,6 +15,9 @@ import { useSnackbarStore } from '~/src/stores/snackbarStore';
 // 状态管理
 const snackbarStore = useSnackbarStore();
 const router = useRouter();
+
+// i18n
+const { t } = useI18n();
 
 // 加载状态
 const loading = ref(false);
@@ -46,7 +50,7 @@ const fetchPackages = async () => {
     packages.value = packageList.filter(pkg => pkg.isActive);
   } catch (error) {
     console.error('获取套餐列表失败:', error);
-    snackbarStore.showErrorMessage('获取套餐列表失败，请稍后重试');
+    snackbarStore.showErrorMessage(t('zerocut.packages.fetch_failed'));
   } finally {
     loading.value = false;
   }
@@ -106,11 +110,11 @@ onMounted(() => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">套餐中心</h1>
+        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.packages.title') }}</h1>
       </div>
       <div class="d-flex ga-2">
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="fetchPackages" :loading="loading">
-          刷新
+          {{ t('common.refresh') }}
         </v-btn>
       </div>
     </div>
@@ -119,27 +123,31 @@ onMounted(() => {
     <v-card class="mb-6" variant="outlined">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2" color="info">mdi-information-outline</v-icon>
-        积分购买说明
+        {{ t('zerocut.packages.purchaseInfo.title') }}
       </v-card-title>
       <v-card-text>
         <v-list density="compact" class="pa-0">
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
               <span class="font-weight-medium">1.</span> 购买后的积分，以订单计，有效期为
-              <span class="font-weight-bold text-primary">365 天</span
-              >，到期该笔订单的余量自动清零。
+              <span class="font-weight-bold text-primary">{{
+                t('zerocut.packages.purchaseInfo.days_value', { days: 365 })
+              }}</span
+              >，{{ t('zerocut.packages.purchaseInfo.validity_clear') }}
             </v-list-item-title>
           </v-list-item>
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
-              <span class="font-weight-medium">2.</span> 积分消耗时优先消耗接近有效期的积分。
+              <span class="font-weight-medium">2.</span>
+              {{ t('zerocut.packages.purchaseInfo.consume_priority') }}
             </v-list-item-title>
           </v-list-item>
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
-              <span class="font-weight-medium">3.</span> 可用并发数为
-              <span class="font-weight-bold text-primary">5</span
-              >，可用并发数是指可以同时运行的最大任务数量，超出的任务将处于排队状态。
+              <span class="font-weight-medium">3.</span>
+              {{ t('zerocut.packages.purchaseInfo.concurrency_prefix') }}
+              <span class="font-weight-bold text-primary">{{ 5 }}</span
+              >，{{ t('zerocut.packages.purchaseInfo.concurrency_desc') }}
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -149,7 +157,7 @@ onMounted(() => {
     <!-- 套餐列表 -->
     <div v-if="loading" class="text-center py-8">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-      <div class="text-subtitle-1 mt-4">加载套餐信息中...</div>
+      <div class="text-subtitle-1 mt-4">{{ t('zerocut.packages.loading') }}</div>
     </div>
 
     <v-row v-else>
@@ -161,8 +169,8 @@ onMounted(() => {
     <!-- 空状态 -->
     <div v-if="!loading && packages.length === 0" class="text-center py-12">
       <v-icon size="96" color="grey-lighten-2" class="mb-4">mdi-package-variant-closed</v-icon>
-      <div class="text-h6 text-medium-emphasis mb-2">暂无可用套餐</div>
-      <div class="text-body-2 text-medium-emphasis">请稍后再试或联系客服</div>
+      <div class="text-h6 text-medium-emphasis mb-2">{{ t('zerocut.packages.empty.title') }}</div>
+      <div class="text-body-2 text-medium-emphasis">{{ t('zerocut.packages.empty.subtitle') }}</div>
     </div>
 
     <!-- 支付对话框 -->

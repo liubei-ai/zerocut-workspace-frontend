@@ -7,9 +7,11 @@ import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
 import type { MetricCardData } from '@/types/stats';
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();
+const { t } = useI18n();
 
 // 加载状态
 const loading = ref(true);
@@ -63,15 +65,17 @@ const handleMetricAction = (metric: MetricCardData) => {
       <div class="mb-6">
         <div class="d-flex align-center justify-space-between mb-4">
           <div>
-            <h1 class="text-h4 font-weight-bold mb-2">数据看板</h1>
-            <p class="text-subtitle-1 text-medium-emphasis">实时监控您的视频创作数据和使用情况</p>
+            <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.dashboard.title') }}</h1>
+            <p class="text-subtitle-1 text-medium-emphasis">
+              {{ t('zerocut.dashboard.subtitle') }}
+            </p>
           </div>
           <div class="d-flex flex-column align-end">
             <StudioLaunchButton
               variant="elevated"
               size="default"
               color="primary"
-              text="开始创作"
+              :text="t('zerocut.dashboard.cta.start')"
               icon="mdi-video-plus"
               class="mb-1 studio-cta-btn"
             />
@@ -82,7 +86,7 @@ const handleMetricAction = (metric: MetricCardData) => {
       <!-- 加载状态 -->
       <div v-if="loading" class="text-center py-8">
         <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-        <div class="mt-4 text-h6">加载数据中...</div>
+        <div class="mt-4 text-h6">{{ t('zerocut.dashboard.loading') }}</div>
       </div>
 
       <div v-else>
@@ -119,15 +123,20 @@ const handleMetricAction = (metric: MetricCardData) => {
             <v-card class="mb-6" elevation="2">
               <v-card-title class="d-flex align-center">
                 <v-icon class="mr-2" color="primary">mdi-chart-line</v-icon>
-                <span>使用统计趋势</span>
+                <span>{{ t('zerocut.dashboard.chart.title') }}</span>
                 <v-spacer></v-spacer>
                 <v-chip size="small" color="success" variant="outlined">
-                  {{ statsStore.selectedDateRange.start }} 至 {{ statsStore.selectedDateRange.end }}
+                  {{
+                    t('zerocut.dashboard.dateRange', {
+                      start: statsStore.selectedDateRange.start,
+                      end: statsStore.selectedDateRange.end,
+                    })
+                  }}
                 </v-chip>
               </v-card-title>
               <v-card-text>
                 <StatisticsChart
-                  title="日常使用统计"
+                  :title="t('zerocut.dashboard.chart.dailyUsage')"
                   :categories="statisticsChartData.categories"
                   :series="statisticsChartData.series"
                   height="400px"
