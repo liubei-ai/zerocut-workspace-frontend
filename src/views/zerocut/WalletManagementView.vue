@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import {
   getWalletInfo,
   getWalletRechargeRecords,
@@ -18,6 +19,9 @@ const workspaceId = workspaceStore.currentWorkspaceId!;
 
 // 路由实例
 const router = useRouter();
+
+// i18n
+const { t } = useI18n();
 
 // 加载状态
 const loading = ref(false);
@@ -71,21 +75,21 @@ const getPaymentMethodIcon = (paymentMethod: string) => {
 const getPaymentMethodText = (paymentMethod: string) => {
   switch (paymentMethod) {
     case 'alipay':
-      return '支付宝';
+      return t('zerocut.wallet.payment.alipay');
     case 'wechat':
-      return '微信支付';
+      return t('zerocut.wallet.payment.wechat');
     case 'bank_card':
-      return '银行卡';
+      return t('zerocut.wallet.payment.bankCard');
     case 'credit_card':
-      return '信用卡';
+      return t('zerocut.wallet.payment.creditCard');
     case 'manual':
-      return '手动充值';
+      return t('zerocut.wallet.payment.manual');
     case 'bot':
-      return '机器人充值';
+      return t('zerocut.wallet.payment.bot');
     case 'give':
-      return '积分赠送';
+      return t('zerocut.wallet.payment.gift');
     default:
-      return '其他';
+      return t('zerocut.wallet.payment.other');
   }
 };
 
@@ -126,7 +130,7 @@ const calculateRemainingValidity = (item: TransactionItem) => {
     return {
       expired: true,
       remainingDays: 0,
-      text: '已过期',
+      text: t('zerocut.wallet.expired'),
       color: 'error',
     };
   }
@@ -141,7 +145,7 @@ const calculateRemainingValidity = (item: TransactionItem) => {
   return {
     expired: false,
     remainingDays,
-    text: `${remainingDays}天`,
+    text: `${remainingDays}${t('zerocut.wallet.daysSuffix')}`,
     color,
   };
 };
@@ -166,8 +170,8 @@ const fetchWalletInfo = async () => {
     const wallet = await getWalletInfo(workspaceId);
     walletInfo.value = wallet;
   } catch (err) {
-    error.value = '获取钱包信息失败';
-    console.error('获取钱包信息失败:', err);
+    error.value = t('zerocut.wallet.fetchInfoFailed');
+    console.error(t('zerocut.wallet.fetchInfoFailed') + ':', err);
   } finally {
     loading.value = false;
   }
@@ -187,8 +191,8 @@ const fetchTransactions = async () => {
     transactions.value = list;
     pagination.value = rest;
   } catch (err) {
-    error.value = '获取充值记录失败';
-    console.error('获取充值记录失败:', err);
+    error.value = t('zerocut.wallet.fetchTransactionsFailed');
+    console.error(t('zerocut.wallet.fetchTransactionsFailed') + ':', err);
   } finally {
     transactionsLoading.value = false;
   }
@@ -247,8 +251,8 @@ const openExpiredDialog = () => {
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
-        <h1 class="text-h4 font-weight-bold mb-2">钱包管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理您的账户余额和充值明细</p>
+        <h1 class="text-h4 font-weight-bold mb-2">{{ $t('menu.wallet') }}</h1>
+        <p class="text-subtitle-1 text-medium-emphasis">{{ $t('zerocut.wallet.subtitle') }}</p>
       </div>
       <div class="d-flex ga-2">
         <v-btn
@@ -257,10 +261,10 @@ const openExpiredDialog = () => {
           @click="handleRecharge"
           variant="elevated"
         >
-          充值
+          {{ $t('zerocut.wallet.recharge') }}
         </v-btn>
         <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
-          刷新
+          {{ $t('common.refresh') }}
         </v-btn>
         <!-- 过期积分入口移入概览卡片，去除顶部入口 -->
       </div>
@@ -277,7 +281,9 @@ const openExpiredDialog = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.availableCredits || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">剩余可用积分</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ $t('zerocut.wallet.availableCredits') }}
+              </div>
             </v-card>
           </v-col>
 
@@ -288,7 +294,9 @@ const openExpiredDialog = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 ¥{{ walletInfo?.userRechargeAmount || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">用户累计充值金额</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ $t('zerocut.wallet.userRechargeAmount') }}
+              </div>
             </v-card>
           </v-col>
 
@@ -299,7 +307,9 @@ const openExpiredDialog = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.userRechargeCredits || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">用户累计充值积分</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ $t('zerocut.wallet.userRechargeCredits') }}
+              </div>
             </v-card>
           </v-col>
 
@@ -310,7 +320,9 @@ const openExpiredDialog = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.platformGiftCredits || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">平台累计赠送积分</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ $t('zerocut.wallet.platformGiftCredits') }}
+              </div>
             </v-card>
           </v-col>
 
@@ -321,7 +333,9 @@ const openExpiredDialog = () => {
               <div class="text-h6 font-weight-bold mb-1">
                 {{ walletInfo?.totalCreditsConsumption || 0 }}
               </div>
-              <div class="text-caption text-medium-emphasis">累计消耗积分</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ $t('zerocut.wallet.totalCreditsConsumption') }}
+              </div>
             </v-card>
           </v-col>
 
@@ -334,7 +348,7 @@ const openExpiredDialog = () => {
               </div>
               <div class="text-caption text-medium-emphasis">
                 <v-btn variant="text" size="small" color="primary" @click="openExpiredDialog">
-                  查看过期积分
+                  {{ $t('zerocut.wallet.viewExpiredCredits') }}
                 </v-btn>
               </div>
             </v-card>
@@ -347,19 +361,35 @@ const openExpiredDialog = () => {
     <v-card elevation="2">
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-format-list-bulleted</v-icon>
-        充值记录
+        {{ $t('zerocut.wallet.rechargeRecords') }}
       </v-card-title>
 
       <v-data-table-server
         :headers="[
-          { title: '时间', key: 'createdAt', sortable: true },
-          { title: '金额', key: 'amount', sortable: true },
-          { title: '积分', key: 'creditsAmount', sortable: true },
-          { title: '剩余积分', key: 'remainingCredits', sortable: true },
-          { title: '剩余有效期', key: 'validity', sortable: false },
-          { title: '支付方式', key: 'paymentMethod', sortable: false },
-          { title: '订单号', key: 'orderNo', sortable: false },
-          { title: '第三方订单号', key: 'thirdPartyOrderNo', sortable: false },
+          { title: $t('zerocut.wallet.columns.time'), key: 'createdAt', sortable: true },
+          { title: $t('zerocut.wallet.columns.amount'), key: 'amount', sortable: true },
+          { title: $t('zerocut.wallet.columns.credits'), key: 'creditsAmount', sortable: true },
+          {
+            title: $t('zerocut.wallet.columns.remainingCredits'),
+            key: 'remainingCredits',
+            sortable: true,
+          },
+          {
+            title: $t('zerocut.wallet.columns.remainingValidity'),
+            key: 'validity',
+            sortable: false,
+          },
+          {
+            title: $t('zerocut.wallet.columns.paymentMethod'),
+            key: 'paymentMethod',
+            sortable: false,
+          },
+          { title: $t('zerocut.wallet.columns.orderNo'), key: 'orderNo', sortable: false },
+          {
+            title: $t('zerocut.wallet.columns.thirdPartyOrderNo'),
+            key: 'thirdPartyOrderNo',
+            sortable: false,
+          },
         ]"
         :items="transactions"
         item-value="id"
