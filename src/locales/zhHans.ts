@@ -14,7 +14,6 @@ export default {
   login: {
     title: '登录',
     email: '电子邮件',
-    username: '用户名',
     password: '密码',
     button: '登录',
     orsign: '或使用',
@@ -185,6 +184,10 @@ export default {
   $vuetify: {
     badge: '徽章',
     close: '关',
+    open: '开',
+    input: {
+      clear: '清除',
+    },
     dataIterator: {
       noResultsText: '未找到匹配的记录',
       loadingText: '正在载入项目...',
@@ -243,6 +246,7 @@ export default {
         previous: '上一页',
         page: '转到页面{0}',
         currentPage: '当前页，第{0}页',
+        root: '分页导航',
       },
     },
   },

@@ -9,10 +9,12 @@ import menuZeroCut from './menus/zerocut.menu';
 const developmentMenus = [
   {
     text: 'Landing',
+    key: 'menu.landing',
     items: menuLanding,
   },
   {
     text: 'UI - Theme Preview',
+    key: 'menu.uiPreview',
     items: menuUI,
   },
   {

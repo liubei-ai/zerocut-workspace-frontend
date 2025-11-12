@@ -8,18 +8,20 @@ import { useAuthStore } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
 import { computed } from 'vue';
 import StatusMenu from './StatusMenu.vue';
+import { useI18n } from 'vue-i18n';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const userName = computed(() => {
-  if (!userStore.isLoggedIn) return 'Guest';
-  return userStore.username || 'Unknown User';
+  if (!userStore.isLoggedIn) return t('user.guest');
+  return userStore.username || t('user.unknown');
 });
 
 const userEmail = computed(() => {
-  if (!userStore.isLoggedIn) return 'Please login';
-  return userStore.email || 'No email';
+  if (!userStore.isLoggedIn) return t('user.pleaseLogin');
+  return userStore.email || t('user.noEmail');
 });
 
 // 计算用户头像
@@ -30,11 +32,11 @@ const userAvatar = computed(() => {
 
 // 获取用户名首字母用于头像显示
 const userInitials = computed(() => {
-  const name = userName.value;
-  if (name && name !== 'Guest' && name !== 'Unknown User') {
+  const name = userStore.username;
+  if (userStore.isLoggedIn && name) {
     return name.charAt(0).toUpperCase();
   }
-  return userStore.isLoggedIn ? 'U' : 'G'; // 已登录显示 U (User)，未登录显示 G (Guest)
+  return userStore.isLoggedIn ? 'U' : 'G';
 });
 
 const handleLogout = () => {

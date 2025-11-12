@@ -42,6 +42,7 @@ export const useCustomizeThemeStore = defineStore('customizeTheme', {
       this.primaryColor = payload;
     },
     setLocalCode(localCode: string) {
+      console.log('setLocalCode', localCode);
       this.localCode = localCode;
     },
   },

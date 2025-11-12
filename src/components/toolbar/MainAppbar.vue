@@ -30,7 +30,7 @@ const showMobileSearch = ref(false);
         append-inner-icon="mdi-close"
         @click:append-inner="showMobileSearch = false"
         hide-details
-        placeholder="Search"
+        :placeholder="$t('menu.search')"
       ></v-text-field>
     </div>
     <div v-else class="px-2 d-flex align-center justify-space-between w-100">

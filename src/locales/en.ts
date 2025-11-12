@@ -14,7 +14,6 @@ export default {
   login: {
     title: 'Sign In',
     email: 'Email',
-    username: 'Username',
     password: 'Password',
     button: 'Sign In',
     orsign: 'Or sign in with',
@@ -190,6 +189,10 @@ export default {
   $vuetify: {
     badge: 'Badge',
     close: 'Close',
+    open: 'Open',
+    input: {
+      clear: 'Clear',
+    },
     dataIterator: {
       noResultsText: 'No matching records found',
       loadingText: 'Loading items...',
@@ -206,7 +209,6 @@ export default {
       },
       sortBy: 'Sort by',
     },
-
     dataFooter: {
       itemsPerPageText: 'Items per page:',
       itemsPerPageAll: 'All',
@@ -244,6 +246,7 @@ export default {
     },
     pagination: {
       ariaLabel: {
+        root: 'Pagination',
         wrapper: 'Pagination Navigation',
         next: 'Next page',
         previous: 'Previous page',
