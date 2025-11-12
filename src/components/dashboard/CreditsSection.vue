@@ -4,9 +4,11 @@ import { getWalletInfo, getWalletRechargeRecords } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
+const { t } = useI18n();
 
 // 响应式数据
 const walletInfo = ref<WalletInfo | null>(null);
@@ -93,7 +95,9 @@ onMounted(() => {
             <v-icon color="primary" class="mr-2" :size="$vuetify.display.xs ? 20 : 24"
               >mdi-wallet</v-icon
             >
-            <span class="text-subtitle-1 font-weight-medium">可用积分</span>
+            <span class="text-subtitle-1 font-weight-medium">{{
+              t('zerocut.wallet.availableCredits')
+            }}</span>
           </div>
           <div class="credits-amount">
             {{ availableCredits.toLocaleString() }}
