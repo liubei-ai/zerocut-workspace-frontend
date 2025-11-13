@@ -25,6 +25,18 @@ const AdminRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'workspaces/:workspaceId/consumption',
+        name: 'admin-workspace-consumption',
+        component: () => import('@/views/admin/WorkspaceConsumptionPage.vue'),
+        meta: {
+          title: '消费记录',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
         path: 'system-config',
         name: 'admin-system-config',
         component: () => import('@/views/admin/SystemConfigPage.vue'),

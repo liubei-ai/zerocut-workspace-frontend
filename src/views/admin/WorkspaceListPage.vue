@@ -5,6 +5,7 @@ import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 // 响应式数据
 const loading = ref(false);
@@ -57,7 +58,7 @@ const headers = [
     align: 'center' as const,
   },
   { title: '创建时间', key: 'createdAt', sortable: false, width: '100px' },
-  { title: '操作', key: 'actions', sortable: false, width: '80px', align: 'center' as const },
+  { title: '操作', key: 'actions', sortable: false, width: '180px', align: 'center' as const },
 ];
 
 // 格式化日期
@@ -226,6 +227,15 @@ const showSnackbar = (
 onMounted(() => {
   fetchWorkspaces();
 });
+
+// 跳转到消费记录页面
+const router = useRouter();
+const goToConsumption = (workspace: WorkspaceListItem) => {
+  router.push({
+    name: 'admin-workspace-consumption',
+    params: { workspaceId: workspace.workspaceId },
+  });
+};
 </script>
 
 <template>
@@ -392,16 +402,27 @@ onMounted(() => {
 
         <!-- 操作按钮 -->
         <template #item.actions="{ item }">
-          <v-btn
-            color="primary"
-            variant="flat"
-            size="small"
-            @click="openRechargeDialog(item)"
-            :loading="rechargeLoading"
-            prepend-icon="mdi-cash-plus"
-          >
-            充值
-          </v-btn>
+          <div class="d-flex gap-2 justify-center">
+            <v-btn
+              color="primary"
+              variant="flat"
+              size="small"
+              @click="openRechargeDialog(item)"
+              :loading="rechargeLoading"
+              prepend-icon="mdi-cash-plus"
+            >
+              充值
+            </v-btn>
+            <v-btn
+              variant="outlined"
+              size="small"
+              color="secondary"
+              prepend-icon="mdi-file-document-outline"
+              @click="goToConsumption(item)"
+            >
+              消费记录
+            </v-btn>
+          </div>
         </template>
       </v-data-table-server>
     </v-card>

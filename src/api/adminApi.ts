@@ -51,6 +51,27 @@ export interface RechargeResponse {
   updatedAt: string;
 }
 
+// 消费记录查询参数
+export interface QueryCreditsConsumptionParams {
+  serviceType?: string;
+  apiKeyId?: string;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
+  page?: number;
+  limit?: number;
+}
+
+// 消费记录项
+export interface CreditsConsumptionItem {
+  id: number;
+  transactionId: string;
+  serviceType?: string;
+  serviceDetails?: Record<string, any>;
+  creditsAmount: number;
+  apiKeyId?: string;
+  createdAt: string;
+}
+
 /**
  * 获取工作空间列表
  */
@@ -69,6 +90,20 @@ export const createRecharge = async (params: CreateRechargeParams): Promise<Rech
   const response = await apiClient.post<RechargeResponse>('/admin/recharge/create', params);
   return response.data;
 };
+
+/**
+ * 获取指定工作空间的积分消费记录（管理员）
+ */
+export async function getWorkspaceConsumptionRecords(
+  workspaceId: string,
+  params: QueryCreditsConsumptionParams = {}
+) {
+  const response = await apiClient.get<PaginationResponse<CreditsConsumptionItem>>(
+    `/admin/workspace/${workspaceId}/credits/consumption/records`,
+    { params }
+  );
+  return response.data;
+}
 
 // 系统配置相关接口
 
