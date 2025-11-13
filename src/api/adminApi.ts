@@ -98,8 +98,8 @@ export async function getWorkspaceConsumptionRecords(
   params: QueryCreditsConsumptionParams = {}
 ) {
   const response = await apiClient.get<PaginationResponse<CreditsConsumptionItem>>(
-    `/admin/workspace/${workspaceId}/credits/consumption/records`,
-    { params }
+    `/admin/workspace/credits/consumption/records`,
+    { params: { ...params, workspaceId } }
   );
   return response.data;
 }
