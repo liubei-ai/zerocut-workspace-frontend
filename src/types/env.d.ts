@@ -8,8 +8,6 @@ declare interface ImportMeta {
     readonly SSR: boolean;
 
     // Environment variables defined in .env
-    readonly VITE_UNSPLASH_ACCESS_KEY: string;
-    readonly VITE_GITHUB_CLIENT_ID: string;
     readonly VITE_API_BASE_URL: string;
     readonly VITE_API2_BASE_URL: string;
     // Removed legacy variables: VITE_OPENAI_API_KEY, VITE_TTS_KEY, VITE_TTS_REGION
