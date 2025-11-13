@@ -4,19 +4,21 @@ import {
   type CreditsConsumptionItem,
   type QueryCreditsConsumptionParams,
 } from '@/api/adminApi';
-import { onMounted, ref, watch } from 'vue';
+import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
 const workspaceId = route.params.workspaceId as string;
+const adminWorkspaceStore = useAdminWorkspaceStore();
+const currentWorkspace = computed(() => adminWorkspaceStore.currentWorkspace);
 
 const loading = ref(false);
 const items = ref<CreditsConsumptionItem[]>([]);
 const pagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
 const filters = ref<QueryCreditsConsumptionParams>({
   serviceType: '',
-  apiKeyId: '',
   startDate: '',
   endDate: '',
 });
@@ -31,7 +33,6 @@ const headers = [
     width: '120px',
     align: 'end' as const,
   },
-  { title: 'API Key ID', key: 'apiKeyId', sortable: false, width: '150px' },
   { title: '创建时间', key: 'createdAt', sortable: false, width: '160px' },
   { title: '服务详情', key: 'serviceDetails', sortable: false },
 ];
@@ -54,7 +55,6 @@ async function fetchData() {
       page: pagination.value.page,
       limit: pagination.value.limit,
       serviceType: filters.value.serviceType || undefined,
-      apiKeyId: filters.value.apiKeyId || undefined,
       startDate: filters.value.startDate || undefined,
       endDate: filters.value.endDate || undefined,
     };
@@ -83,7 +83,7 @@ function handleItemsPerPageChange(limit: number) {
 }
 
 function resetFilters() {
-  filters.value = { serviceType: '', apiKeyId: '', startDate: '', endDate: '' };
+  filters.value = { serviceType: '', startDate: '', endDate: '' };
   pagination.value.page = 1;
   fetchData();
 }
@@ -106,7 +106,27 @@ watch(
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h5 font-weight-bold mb-1">工作空间消费记录</h1>
-        <div class="text-medium-emphasis">WorkspaceID: {{ workspaceId }}</div>
+        <div class="text-medium-emphasis">{{ currentWorkspace?.name }} (ID: {{ workspaceId }})</div>
+        <div class="mt-2">
+          <v-alert
+            v-if="!currentWorkspace"
+            type="warning"
+            variant="tonal"
+            density="comfortable"
+            title="未获取到工作空间信息"
+            text="请从工作空间列表页进入本页面以便展示名称与所有者信息。"
+          />
+          <div v-else class="d-flex flex-column gap-1">
+            <div class="text-body-2 text-medium-emphasis">
+              所有者：
+              <span class="font-weight-medium">{{ currentWorkspace.ownerName || '未知' }}</span>
+              <span class="ml-2">{{ currentWorkspace.ownerEmail || '邮箱未知' }}</span>
+              <span v-if="currentWorkspace.ownerPhone" class="ml-2">{{
+                currentWorkspace.ownerPhone
+              }}</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="d-flex gap-2">
         <v-btn variant="outlined" prepend-icon="mdi-arrow-left" @click="router.back()">
@@ -134,16 +154,6 @@ watch(
                 { title: 'other', value: 'other' },
               ]"
               label="服务类型"
-              variant="outlined"
-              density="comfortable"
-              clearable
-            />
-          </v-col>
-          <v-col cols="12" md="3">
-            <v-text-field
-              v-model="filters.apiKeyId"
-              label="API Key ID"
-              placeholder="按 API Key 过滤"
               variant="outlined"
               density="comfortable"
               clearable
@@ -211,9 +221,7 @@ watch(
           {{ formatDate(item.createdAt) }}
         </template>
         <template #item.serviceDetails="{ item }">
-          <pre class="text-caption" style="white-space: pre-wrap">{{
-            JSON.stringify(item.serviceDetails || {}, null, 2)
-          }}</pre>
+          {{ item.serviceDetails }}
         </template>
         <template #item.creditsAmount="{ item }">
           <div class="text-right">

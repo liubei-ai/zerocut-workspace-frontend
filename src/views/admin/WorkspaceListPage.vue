@@ -3,6 +3,7 @@ import type { QueryWorkspacesParams, RechargeResponse, WorkspaceListItem } from 
 import { createRecharge, getWorkspaceList } from '@/api/adminApi';
 import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
+import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -230,7 +231,19 @@ onMounted(() => {
 
 // 跳转到消费记录页面
 const router = useRouter();
+const adminWorkspaceStore = useAdminWorkspaceStore();
 const goToConsumption = (workspace: WorkspaceListItem) => {
+  // 将当前工作空间信息写入管理员 store，便于消费记录页展示
+  adminWorkspaceStore.setCurrentWorkspace({
+    workspaceId: workspace.workspaceId,
+    name: workspace.name,
+    ownerName: workspace.ownerName,
+    ownerEmail: workspace.ownerEmail,
+    ownerPhone: workspace.ownerPhone,
+    creditsBalance: workspace.creditsBalance,
+    createdAt: workspace.createdAt,
+    memberCount: workspace.memberCount,
+  });
   router.push({
     name: 'admin-workspace-consumption',
     params: { workspaceId: workspace.workspaceId },

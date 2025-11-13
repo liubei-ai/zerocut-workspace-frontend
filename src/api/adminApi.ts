@@ -54,7 +54,6 @@ export interface RechargeResponse {
 // 消费记录查询参数
 export interface QueryCreditsConsumptionParams {
   serviceType?: string;
-  apiKeyId?: string;
   startDate?: string; // YYYY-MM-DD
   endDate?: string; // YYYY-MM-DD
   page?: number;
