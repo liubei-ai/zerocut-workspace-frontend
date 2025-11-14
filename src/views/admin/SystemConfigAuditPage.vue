@@ -201,7 +201,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="system-config-audit-page">
+  <div>
     <!-- 页面标题 -->
     <div class="d-flex align-center justify-space-between mb-6">
       <div>
@@ -381,10 +381,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.system-config-audit-page {
-  padding: 24px;
-}
-
 code {
   background-color: rgba(0, 0, 0, 0.05);
   padding: 2px 4px;
