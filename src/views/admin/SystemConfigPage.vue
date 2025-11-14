@@ -301,7 +301,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pa-6">
+  <div>
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>

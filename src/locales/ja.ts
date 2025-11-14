@@ -387,9 +387,6 @@ export default {
     dashboard: {
       title: 'ダッシュボード',
       subtitle: '動画作成データと利用状況をリアルタイムで監視',
-      cta: {
-        start: '作成を開始',
-      },
       loading: 'データを読み込み中...',
       chart: {
         title: '利用傾向',

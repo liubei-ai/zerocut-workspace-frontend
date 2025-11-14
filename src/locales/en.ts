@@ -366,9 +366,6 @@ export default {
     dashboard: {
       title: 'Dashboard',
       subtitle: 'Monitor your video creation data and usage in real time',
-      cta: {
-        start: 'Start Creating',
-      },
       loading: 'Loading data...',
       chart: {
         title: 'Usage Trend',

@@ -102,7 +102,7 @@ watch(
 </script>
 
 <template>
-  <div class="pa-6">
+  <div>
     <div class="d-flex justify-space-between align-center mb-6">
       <div>
         <h1 class="text-h5 font-weight-bold mb-1">工作空间消费记录</h1>

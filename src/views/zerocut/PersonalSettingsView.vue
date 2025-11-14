@@ -263,7 +263,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="pa-6">
+  <div>
     <!-- 页面标题 -->
     <div class="mb-6">
       <h1 class="text-h4 font-weight-bold mb-2">个人设置</h1>

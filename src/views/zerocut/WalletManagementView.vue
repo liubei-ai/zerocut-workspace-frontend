@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import {
   getWalletInfo,
   getWalletRechargeRecords,
@@ -247,7 +247,7 @@ const openExpiredDialog = () => {
 </script>
 
 <template>
-  <div class="pa-6">
+  <div>
     <!-- 页面标题 -->
     <div class="d-flex justify-space-between align-center mb-6">
       <div>

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import StudioLaunchButton from '@/components/common/StudioLaunchButton.vue';
 import CreditsSection from '@/components/dashboard/CreditsSection.vue';
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
@@ -69,16 +68,6 @@ const handleMetricAction = (metric: MetricCardData) => {
             <p class="text-subtitle-1 text-medium-emphasis">
               {{ t('zerocut.dashboard.subtitle') }}
             </p>
-          </div>
-          <div class="d-flex flex-column align-end">
-            <StudioLaunchButton
-              variant="elevated"
-              size="default"
-              color="primary"
-              :text="t('zerocut.dashboard.cta.start')"
-              icon="mdi-video-plus"
-              class="mb-1 studio-cta-btn"
-            />
           </div>
         </div>
       </div>

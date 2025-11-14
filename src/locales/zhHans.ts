@@ -364,9 +364,6 @@ export default {
     dashboard: {
       title: '数据看板',
       subtitle: '实时监控您的视频创作数据和使用情况',
-      cta: {
-        start: '开始创作',
-      },
       loading: '加载数据中...',
       chart: {
         title: '使用统计趋势',
