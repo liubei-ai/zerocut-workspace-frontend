@@ -246,7 +246,7 @@ const headerSecondaryActions = computed(() => [
   },
 ]);
 
-const goToConsumption = (workspace: WorkspaceListItem) => {
+const goToWorkspaceDetail = (workspace: WorkspaceListItem) => {
   // 将当前工作空间信息写入管理员 store，便于消费记录页展示
   adminWorkspaceStore.setCurrentWorkspace({
     workspaceId: workspace.workspaceId,
@@ -259,7 +259,7 @@ const goToConsumption = (workspace: WorkspaceListItem) => {
     memberCount: workspace.memberCount,
   });
   router.push({
-    name: 'admin-workspace-consumption',
+    name: 'admin-workspace-detail',
     params: { workspaceId: workspace.workspaceId },
   });
 };
@@ -444,10 +444,10 @@ const goToConsumption = (workspace: WorkspaceListItem) => {
               variant="outlined"
               size="small"
               color="secondary"
-              prepend-icon="mdi-file-document-outline"
-              @click="goToConsumption(item)"
+              prepend-icon="mdi-information-outline"
+              @click="goToWorkspaceDetail(item)"
             >
-              消费记录
+              查看详情
             </v-btn>
           </div>
         </template>
