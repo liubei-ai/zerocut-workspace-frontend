@@ -103,38 +103,59 @@ watch(
 
 <template>
   <div>
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h5 font-weight-bold mb-1">工作空间消费记录</h1>
-        <div class="text-medium-emphasis">{{ currentWorkspace?.name }} (ID: {{ workspaceId }})</div>
-        <div class="mt-2">
-          <v-alert
-            v-if="!currentWorkspace"
-            type="warning"
-            variant="tonal"
-            density="comfortable"
-            title="未获取到工作空间信息"
-            text="请从工作空间列表页进入本页面以便展示名称与所有者信息。"
-          />
-          <div v-else class="d-flex flex-column gap-1">
-            <div class="text-body-2 text-medium-emphasis">
-              所有者：
-              <span class="font-weight-medium">{{ currentWorkspace.ownerName || '未知' }}</span>
-              <span class="ml-2">{{ currentWorkspace.ownerEmail || '邮箱未知' }}</span>
-              <span v-if="currentWorkspace.ownerPhone" class="ml-2">{{
-                currentWorkspace.ownerPhone
-              }}</span>
+    <div class="mb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">工作空间消费记录</h1>
+          <div class="text-medium-emphasis text-sm sm:text-base break-all">
+            {{ currentWorkspace?.name }} (ID: {{ workspaceId }})
+          </div>
+          <div class="mt-2">
+            <v-alert
+              v-if="!currentWorkspace"
+              type="warning"
+              variant="tonal"
+              density="comfortable"
+              title="未获取到工作空间信息"
+              text="请从工作空间列表页进入本页面以便展示名称与所有者信息。"
+            />
+            <div v-else class="d-flex flex-column gap-1">
+              <div class="text-medium-emphasis text-sm sm:text-base">
+                所有者：
+                <span class="font-weight-medium">{{ currentWorkspace.ownerName || '未知' }}</span>
+                <span class="ml-2">{{ currentWorkspace.ownerEmail || '邮箱未知' }}</span>
+                <span v-if="currentWorkspace.ownerPhone" class="ml-2">{{
+                  currentWorkspace.ownerPhone
+                }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="d-flex gap-2">
-        <v-btn variant="outlined" prepend-icon="mdi-arrow-left" @click="router.back()">
-          返回
-        </v-btn>
-        <v-btn variant="outlined" prepend-icon="mdi-refresh" :loading="loading" @click="fetchData">
-          刷新
-        </v-btn>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <v-btn variant="outlined" prepend-icon="mdi-arrow-left" @click="router.back()">
+            返回
+          </v-btn>
+          <v-btn
+            class="!hidden sm:inline-flex"
+            variant="outlined"
+            prepend-icon="mdi-refresh"
+            :loading="loading"
+            @click="fetchData"
+          >
+            刷新
+          </v-btn>
+          <v-menu class="sm:hidden">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
+            </template>
+            <v-list>
+              <v-list-item @click="fetchData">
+                <v-icon class="mr-2">mdi-refresh</v-icon>
+                刷新
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </div>
 
