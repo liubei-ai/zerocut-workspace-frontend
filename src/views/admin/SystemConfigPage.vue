@@ -303,28 +303,49 @@ onMounted(() => {
 <template>
   <div>
     <!-- 页面标题 -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">系统配置管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理系统配置参数和权限控制</p>
-      </div>
-      <div class="d-flex gap-2">
-        <v-btn
-          variant="outlined"
-          prepend-icon="mdi-refresh"
-          @click="refreshList"
-          :loading="loading"
-        >
-          刷新
-        </v-btn>
-        <v-btn
-          variant="outlined"
-          prepend-icon="mdi-history"
-          @click="$router.push({ name: 'admin-system-config-audit' })"
-        >
-          审计日志
-        </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog"> 新建配置 </v-btn>
+    <div class="mb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">系统配置管理</h1>
+          <p class="text-medium-emphasis text-sm sm:text-base">管理系统配置参数和权限控制</p>
+        </div>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog">
+            新建配置
+          </v-btn>
+          <v-btn
+            class="!hidden sm:inline-flex"
+            variant="outlined"
+            prepend-icon="mdi-refresh"
+            @click="refreshList"
+            :loading="loading"
+          >
+            刷新
+          </v-btn>
+          <v-btn
+            class="!hidden sm:inline-flex"
+            variant="outlined"
+            prepend-icon="mdi-history"
+            @click="$router.push({ name: 'admin-system-config-audit' })"
+          >
+            审计日志
+          </v-btn>
+          <v-menu class="sm:hidden">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
+            </template>
+            <v-list>
+              <v-list-item @click="refreshList">
+                <v-icon class="mr-2">mdi-refresh</v-icon>
+                刷新
+              </v-list-item>
+              <v-list-item @click="$router.push({ name: 'admin-system-config-audit' })">
+                <v-icon class="mr-2">mdi-history</v-icon>
+                审计日志
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </div>
 

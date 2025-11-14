@@ -25,7 +25,7 @@ const customizeTheme = useCustomizeThemeStore();
       right: () => (customizeTheme.mainSidebar = true),
     }"
   >
-    <div class="flex-fill pa-5">
+    <div class="flex-fill pa-3">
       <slot></slot>
     </div>
   </v-main>

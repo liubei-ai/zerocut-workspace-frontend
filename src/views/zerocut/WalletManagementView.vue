@@ -249,24 +249,45 @@ const openExpiredDialog = () => {
 <template>
   <div>
     <!-- 页面标题 -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">{{ $t('menu.wallet') }}</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">{{ $t('zerocut.wallet.subtitle') }}</p>
-      </div>
-      <div class="d-flex ga-2">
-        <v-btn
-          color="success"
-          prepend-icon="mdi-cash-plus"
-          @click="handleRecharge"
-          variant="elevated"
-        >
-          {{ $t('zerocut.wallet.recharge') }}
-        </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-refresh" @click="refreshData" :loading="loading">
-          {{ $t('common.refresh') }}
-        </v-btn>
-        <!-- 过期积分入口移入概览卡片，去除顶部入口 -->
+    <div class="mb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">{{ $t('menu.wallet') }}</h1>
+          <p class="text-medium-emphasis text-sm sm:text-base">
+            {{ $t('zerocut.wallet.subtitle') }}
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <v-btn
+            color="success"
+            prepend-icon="mdi-cash-plus"
+            @click="handleRecharge"
+            variant="elevated"
+          >
+            {{ $t('zerocut.wallet.recharge') }}
+          </v-btn>
+          <v-btn
+            class="!hidden sm:inline-flex"
+            variant="outlined"
+            color="primary"
+            prepend-icon="mdi-refresh"
+            @click="refreshData"
+            :loading="loading"
+          >
+            {{ $t('common.refresh') }}
+          </v-btn>
+          <v-menu class="sm:hidden">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
+            </template>
+            <v-list>
+              <v-list-item @click="refreshData">
+                <v-icon class="mr-2">mdi-refresh</v-icon>
+                {{ $t('common.refresh') }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </div>
 

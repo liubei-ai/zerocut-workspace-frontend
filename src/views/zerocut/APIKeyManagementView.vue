@@ -226,23 +226,44 @@ const getStatusColor = (status: string) => {
 <template>
   <div>
     <!-- 页面标题 -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.apikeys.title') }}</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">{{ t('zerocut.apikeys.subtitle') }}</p>
-      </div>
-      <div class="d-flex gap-2">
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          @click="createTokenDialog = true"
-          :loading="loading"
-        >
-          {{ t('zerocut.apikeys.actions.create') }}
-        </v-btn>
-        <v-btn variant="outlined" prepend-icon="mdi-refresh" @click="loadTokens" :loading="loading">
-          {{ t('common.refresh') }}
-        </v-btn>
+    <div class="mb-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">{{ t('zerocut.apikeys.title') }}</h1>
+          <p class="text-medium-emphasis text-sm sm:text-base">
+            {{ t('zerocut.apikeys.subtitle') }}
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 sm:justify-end">
+          <v-btn
+            color="primary"
+            prepend-icon="mdi-plus"
+            @click="createTokenDialog = true"
+            :loading="loading"
+          >
+            {{ t('zerocut.apikeys.actions.create') }}
+          </v-btn>
+          <v-btn
+            class="!hidden sm:inline-flex"
+            variant="outlined"
+            prepend-icon="mdi-refresh"
+            @click="loadTokens"
+            :loading="loading"
+          >
+            {{ t('common.refresh') }}
+          </v-btn>
+          <v-menu class="sm:hidden">
+            <template #activator="{ props }">
+              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
+            </template>
+            <v-list>
+              <v-list-item @click="loadTokens">
+                <v-icon class="mr-2">mdi-refresh</v-icon>
+                {{ t('common.refresh') }}
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
       </div>
     </div>
 
