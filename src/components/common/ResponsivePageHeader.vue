@@ -41,14 +41,6 @@ const containerBreakClasses = computed(() => {
     ? 'flex flex-col gap-3 md:flex-row md:items-center md:justify-between'
     : 'flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between';
 });
-
-const secondaryInlineClass = computed(() => {
-  return props.breakpoint === 'md' ? '!hidden md:inline-flex' : '!hidden sm:inline-flex';
-});
-
-const menuHiddenClass = computed(() => {
-  return props.breakpoint === 'md' ? 'md:hidden' : 'sm:hidden';
-});
 </script>
 
 <template>
@@ -96,11 +88,10 @@ const menuHiddenClass = computed(() => {
         </template>
         <template v-for="action in secondaryActions" :key="action.key + '-inline'">
           <v-btn
-            :class="secondaryInlineClass"
             :color="action.color || undefined"
             :variant="action.variant || 'outlined'"
             :prepend-icon="action.icon"
-            :size="action.size || 'small'"
+            :size="action.size || 'default'"
             :loading="action.loading"
             :disabled="action.disabled"
             @click="handleAction(action)"
@@ -108,21 +99,6 @@ const menuHiddenClass = computed(() => {
             {{ action.label }}
           </v-btn>
         </template>
-        <v-menu v-if="secondaryActions && secondaryActions.length" :class="menuHiddenClass">
-          <template #activator="{ props }">
-            <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="action in secondaryActions"
-              :key="action.key + '-menu'"
-              @click="handleAction(action)"
-            >
-              <v-icon v-if="action.icon" class="mr-2">{{ action.icon }}</v-icon>
-              {{ action.label }}
-            </v-list-item>
-          </v-list>
-        </v-menu>
       </div>
     </div>
   </div>
