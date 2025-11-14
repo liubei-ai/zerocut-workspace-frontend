@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import {
   getWalletInfo,
   getWalletRechargeRecords,
   TransactionItem,
   WalletInfo,
-} from '~/src/api/walletApi';
-import ExpiredCreditsDialog from '~/src/components/zerocut/ExpiredCreditsDialog.vue';
-import { useWorkspaceStore } from '~/src/stores/workspaceStore';
-import { Pagination } from '~/src/types/api';
-import { formatDate } from '~/src/utils/date';
+} from '@/api/walletApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import ExpiredCreditsDialog from '@/components/zerocut/ExpiredCreditsDialog.vue';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { Pagination } from '@/types/api';
+import { formatDate } from '@/utils/date';
+import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 // 获取当前工作空间ID
 const workspaceStore = useWorkspaceStore();

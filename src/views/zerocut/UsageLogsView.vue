@@ -3,9 +3,9 @@ import { getConsumptionRecords } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ConsumptionRecord } from '@/types/api';
+import { formatDate } from '@/utils/date';
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatDate } from '~/src/utils/date';
 
 // 使用工作空间store
 const workspaceStore = useWorkspaceStore();

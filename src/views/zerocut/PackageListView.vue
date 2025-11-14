@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 import {
   getPackageList,
   type CreatePaymentOrderResponse,
   type PackageInfo,
-} from '~/src/api/packageApi';
-import ResponsivePageHeader from '~/src/components/common/ResponsivePageHeader.vue';
-import PackageCard from '~/src/components/zerocut/PackageCard.vue';
-import PaymentDialog from '~/src/components/zerocut/PaymentDialog.vue';
-import RechargeSuccessOverlay from '~/src/components/zerocut/RechargeSuccessOverlay.vue';
-import { useSnackbarStore } from '~/src/stores/snackbarStore';
+} from '@/api/packageApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import PackageCard from '@/components/zerocut/PackageCard.vue';
+import PaymentDialog from '@/components/zerocut/PaymentDialog.vue';
+import RechargeSuccessOverlay from '@/components/zerocut/RechargeSuccessOverlay.vue';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 // 状态管理
 const snackbarStore = useSnackbarStore();

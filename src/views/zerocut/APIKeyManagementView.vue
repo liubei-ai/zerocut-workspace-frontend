@@ -4,10 +4,10 @@ import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
+import { formatDate } from '@/utils/date';
+import { maskApiKey } from '@/utils/stringUtils';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { formatDate } from '~/src/utils/date';
-import { maskApiKey } from '~/src/utils/stringUtils';
 
 const { t } = useI18n();
 

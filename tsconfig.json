@@ -3,12 +3,7 @@
     "baseUrl": "./",
     "target": "ESNext",
     "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ],
+    "lib": ["ESNext", "dom", "dom.iterable", "scripthost"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
@@ -17,16 +12,8 @@
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": [
-        "./*"
-      ],
-      "@/*": [
-        "./src/*"
-      ]
+      "@/*": ["./src/*"]
     },
-    "types": [
-      "vitest/globals",
-      "vuetify/dist/vuetify.d.ts"
-    ]
+    "types": ["vitest/globals", "vuetify/dist/vuetify.d.ts"]
   }
 }
