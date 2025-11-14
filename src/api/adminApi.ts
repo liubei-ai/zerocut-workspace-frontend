@@ -24,7 +24,8 @@ export interface QueryWorkspacesParams {
   page?: number;
   limit?: number;
   email?: string;
-  name?: string;
+  phone?: string;
+  ownerName?: string;
 }
 
 // 充值请求参数接口

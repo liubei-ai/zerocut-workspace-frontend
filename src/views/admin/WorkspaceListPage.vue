@@ -28,7 +28,8 @@ const pagination = ref({
 // 搜索过滤器
 const searchFilters = ref<QueryWorkspacesParams>({
   email: '',
-  name: '',
+  ownerName: '',
+  phone: '',
 });
 
 // 提示信息
@@ -306,13 +307,25 @@ const goToConsumption = (workspace: WorkspaceListItem) => {
           </v-col>
           <v-col cols="12" md="4">
             <v-text-field
-              v-model="searchFilters.name"
-              label="工作空间名称"
-              placeholder="搜索工作空间名称"
+              v-model="searchFilters.ownerName"
+              label="用户姓名"
+              placeholder="搜索用户姓名"
               variant="outlined"
               density="comfortable"
               clearable
-              prepend-inner-icon="mdi-domain"
+              prepend-inner-icon="mdi-account"
+              @input="debouncedSearch"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="searchFilters.phone"
+              label="手机号"
+              placeholder="搜索手机号"
+              variant="outlined"
+              density="comfortable"
+              clearable
+              prepend-inner-icon="mdi-phone"
               @input="debouncedSearch"
             />
           </v-col>
