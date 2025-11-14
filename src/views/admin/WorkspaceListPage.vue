@@ -3,6 +3,7 @@ import type { QueryWorkspacesParams, RechargeResponse, WorkspaceListItem } from 
 import { createRecharge, getWorkspaceList } from '@/api/adminApi';
 import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onMounted, ref } from 'vue';
@@ -233,6 +234,18 @@ onMounted(() => {
 // 跳转到消费记录页面
 const router = useRouter();
 const adminWorkspaceStore = useAdminWorkspaceStore();
+
+const headerSecondaryActions = computed(() => [
+  {
+    key: 'refresh',
+    label: '刷新',
+    icon: 'mdi-refresh',
+    variant: 'outlined' as const,
+    loading: loading.value,
+    onClick: refreshList,
+  },
+]);
+
 const goToConsumption = (workspace: WorkspaceListItem) => {
   // 将当前工作空间信息写入管理员 store，便于消费记录页展示
   adminWorkspaceStore.setCurrentWorkspace({
@@ -254,23 +267,11 @@ const goToConsumption = (workspace: WorkspaceListItem) => {
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">工作空间管理</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">管理所有工作空间和充值操作</p>
-      </div>
-      <div class="d-flex gap-2">
-        <v-btn
-          variant="outlined"
-          prepend-icon="mdi-refresh"
-          @click="refreshList"
-          :loading="loading"
-        >
-          刷新
-        </v-btn>
-      </div>
-    </div>
+    <ResponsivePageHeader title="工作空间管理" :secondary-actions="headerSecondaryActions">
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">管理所有工作空间和充值操作</p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 统计卡片 -->
     <v-row class="mb-6">

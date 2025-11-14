@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { QueryAuditLogParams, SystemConfigAuditItem } from '@/api/adminApi';
 import { getSystemConfigAuditLogs } from '@/api/adminApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onMounted, ref } from 'vue';
 
@@ -202,13 +203,13 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="d-flex align-center justify-space-between mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">系统配置审计日志</h1>
-        <p class="text-body-1 text-medium-emphasis">查看系统配置的变更历史记录和操作日志</p>
-      </div>
-    </div>
+    <ResponsivePageHeader title="系统配置审计日志">
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">
+          查看系统配置的变更历史记录和操作日志
+        </p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 搜索和筛选 -->
     <v-card class="mb-6" elevation="2">
