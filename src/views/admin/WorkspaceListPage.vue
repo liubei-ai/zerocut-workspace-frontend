@@ -443,11 +443,11 @@ const goToWorkspaceDetail = (workspace: WorkspaceListItem) => {
             <v-btn
               variant="outlined"
               size="small"
-              color="secondary"
+              color="info"
               prepend-icon="mdi-information-outline"
               @click="goToWorkspaceDetail(item)"
             >
-              查看详情
+              详情
             </v-btn>
           </div>
         </template>
