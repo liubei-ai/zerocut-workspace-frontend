@@ -7,6 +7,7 @@ import {
   type CreatePaymentOrderResponse,
   type PackageInfo,
 } from '~/src/api/packageApi';
+import ResponsivePageHeader from '~/src/components/common/ResponsivePageHeader.vue';
 import PackageCard from '~/src/components/zerocut/PackageCard.vue';
 import PaymentDialog from '~/src/components/zerocut/PaymentDialog.vue';
 import RechargeSuccessOverlay from '~/src/components/zerocut/RechargeSuccessOverlay.vue';
@@ -55,6 +56,17 @@ const fetchPackages = async () => {
     loading.value = false;
   }
 };
+
+const headerSecondaryActions = [
+  {
+    key: 'refresh',
+    label: t('common.refresh'),
+    icon: 'mdi-refresh',
+    variant: 'outlined' as const,
+    loading: loading.value,
+    onClick: fetchPackages,
+  },
+];
 
 // 处理购买按钮点击
 const handlePurchase = (pkg: PackageInfo) => {
@@ -107,37 +119,10 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="mb-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">{{ t('zerocut.packages.title') }}</h1>
-        </div>
-        <div class="flex flex-wrap gap-2 sm:justify-end">
-          <v-btn
-            class="!hidden sm:inline-flex"
-            variant="outlined"
-            color="primary"
-            prepend-icon="mdi-refresh"
-            @click="fetchPackages"
-            :loading="loading"
-          >
-            {{ t('common.refresh') }}
-          </v-btn>
-          <v-menu class="sm:hidden">
-            <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
-            </template>
-            <v-list>
-              <v-list-item @click="fetchPackages">
-                <v-icon class="mr-2">mdi-refresh</v-icon>
-                {{ t('common.refresh') }}
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </div>
-    </div>
+    <ResponsivePageHeader
+      :title="t('zerocut.packages.title')"
+      :secondary-actions="headerSecondaryActions"
+    />
 
     <!-- 积分购买说明 -->
     <v-card class="mb-6" variant="outlined">

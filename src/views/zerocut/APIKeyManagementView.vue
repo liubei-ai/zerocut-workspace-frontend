@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { createApiKey, deleteApiKey, getApiKeys } from '@/api/workspaceApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
@@ -7,6 +8,8 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { formatDate } from '~/src/utils/date';
 import { maskApiKey } from '~/src/utils/stringUtils';
+
+const { t } = useI18n();
 
 // 加载状态
 const loading = ref(false);
@@ -27,7 +30,28 @@ const newToken = ref({
   expiresAt: '',
 });
 
-const { t } = useI18n();
+const headerPrimaryActions = computed(() => [
+  {
+    key: 'create',
+    label: t('zerocut.apikeys.actions.create'),
+    icon: 'mdi-plus',
+    color: 'success',
+    variant: 'flat' as const,
+    loading: loading.value,
+    onClick: () => (createTokenDialog.value = true),
+  },
+]);
+
+const headerSecondaryActions = computed(() => [
+  {
+    key: 'refresh',
+    label: t('common.refresh'),
+    icon: 'mdi-refresh',
+    variant: 'outlined' as const,
+    loading: loading.value,
+    onClick: loadTokens,
+  },
+]);
 
 // 表单验证规则
 const nameRules = [
@@ -225,47 +249,15 @@ const getStatusColor = (status: string) => {
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="mb-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">{{ t('zerocut.apikeys.title') }}</h1>
-          <p class="text-medium-emphasis text-sm sm:text-base">
-            {{ t('zerocut.apikeys.subtitle') }}
-          </p>
-        </div>
-        <div class="flex flex-wrap gap-2 sm:justify-end">
-          <v-btn
-            color="primary"
-            prepend-icon="mdi-plus"
-            @click="createTokenDialog = true"
-            :loading="loading"
-          >
-            {{ t('zerocut.apikeys.actions.create') }}
-          </v-btn>
-          <v-btn
-            class="!hidden sm:inline-flex"
-            variant="outlined"
-            prepend-icon="mdi-refresh"
-            @click="loadTokens"
-            :loading="loading"
-          >
-            {{ t('common.refresh') }}
-          </v-btn>
-          <v-menu class="sm:hidden">
-            <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
-            </template>
-            <v-list>
-              <v-list-item @click="loadTokens">
-                <v-icon class="mr-2">mdi-refresh</v-icon>
-                {{ t('common.refresh') }}
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </div>
-    </div>
+    <ResponsivePageHeader
+      :title="t('zerocut.apikeys.title')"
+      :primary-actions="headerPrimaryActions"
+      :secondary-actions="headerSecondaryActions"
+    >
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">{{ t('zerocut.apikeys.subtitle') }}</p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 统计卡片 -->
     <v-row class="mb-6">
@@ -525,4 +517,3 @@ code {
   font-family: 'Courier New', monospace;
 }
 </style>
-// i18n const { t } = useI18n();

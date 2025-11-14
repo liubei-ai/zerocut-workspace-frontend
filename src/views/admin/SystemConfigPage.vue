@@ -14,8 +14,12 @@ import {
   updateSystemConfig,
 } from '@/api/adminApi';
 import SystemConfigDialog from '@/components/admin/SystemConfigDialog.vue';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useDebounceFn } from '@vueuse/core';
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 // 响应式数据
 const loading = ref(false);
@@ -298,56 +302,48 @@ onMounted(() => {
   fetchEnums();
   fetchConfigs();
 });
+
+const headerPrimaryActions = computed(() => [
+  {
+    key: 'create',
+    label: '新建配置',
+    icon: 'mdi-plus',
+    color: 'primary',
+    variant: 'flat' as const,
+    onClick: openCreateDialog,
+  },
+]);
+
+const headerSecondaryActions = computed(() => [
+  {
+    key: 'refresh',
+    label: '刷新',
+    icon: 'mdi-refresh',
+    variant: 'outlined' as const,
+    loading: loading.value,
+    onClick: refreshList,
+  },
+  {
+    key: 'audit',
+    label: '审计日志',
+    icon: 'mdi-history',
+    variant: 'outlined' as const,
+    onClick: () => router.push({ name: 'admin-system-config-audit' }),
+  },
+]);
 </script>
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="mb-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">系统配置管理</h1>
-          <p class="text-medium-emphasis text-sm sm:text-base">管理系统配置参数和权限控制</p>
-        </div>
-        <div class="flex flex-wrap gap-2 sm:justify-end">
-          <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog">
-            新建配置
-          </v-btn>
-          <v-btn
-            class="!hidden sm:inline-flex"
-            variant="outlined"
-            prepend-icon="mdi-refresh"
-            @click="refreshList"
-            :loading="loading"
-          >
-            刷新
-          </v-btn>
-          <v-btn
-            class="!hidden sm:inline-flex"
-            variant="outlined"
-            prepend-icon="mdi-history"
-            @click="$router.push({ name: 'admin-system-config-audit' })"
-          >
-            审计日志
-          </v-btn>
-          <v-menu class="sm:hidden">
-            <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
-            </template>
-            <v-list>
-              <v-list-item @click="refreshList">
-                <v-icon class="mr-2">mdi-refresh</v-icon>
-                刷新
-              </v-list-item>
-              <v-list-item @click="$router.push({ name: 'admin-system-config-audit' })">
-                <v-icon class="mr-2">mdi-history</v-icon>
-                审计日志
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </div>
-    </div>
+    <ResponsivePageHeader
+      title="系统配置管理"
+      :primary-actions="headerPrimaryActions"
+      :secondary-actions="headerSecondaryActions"
+    >
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">管理系统配置参数和权限控制</p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 统计卡片 -->
     <v-row class="mb-6">

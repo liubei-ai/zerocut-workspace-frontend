@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getConsumptionRecords } from '@/api/workspaceApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ConsumptionRecord } from '@/types/api';
 import { onMounted, ref } from 'vue';
@@ -150,13 +151,11 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="d-flex justify-space-between align-center mb-6">
-      <div>
-        <h1 class="text-h4 font-weight-bold mb-2">{{ t('zerocut.usage.title') }}</h1>
-        <p class="text-subtitle-1 text-medium-emphasis">{{ t('zerocut.usage.subtitle') }}</p>
-      </div>
-    </div>
+    <ResponsivePageHeader :title="t('zerocut.usage.title')">
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">{{ t('zerocut.usage.subtitle') }}</p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 筛选器 -->
     <v-card class="mb-6" elevation="2">
@@ -166,26 +165,6 @@ onMounted(() => {
       </v-card-title>
       <v-card-text>
         <v-row>
-          <!-- <v-col cols="12" md="3">
-            <v-select
-              v-model="filters.serviceType"
-              :items="serviceOptions"
-              item-title="title"
-              item-value="value"
-              label="服务类型"
-              prepend-inner-icon="mdi-cog"
-            ></v-select>
-          </v-col> -->
-
-          <!-- <v-col cols="12" md="3">
-            <v-text-field
-              v-model="filters.apiKeyId"
-              label="API密钥ID"
-              prepend-inner-icon="mdi-key"
-              clearable
-            ></v-text-field>
-          </v-col> -->
-
           <v-col cols="12" md="3">
             <v-text-field
               v-model="filters.dateRange[0]"

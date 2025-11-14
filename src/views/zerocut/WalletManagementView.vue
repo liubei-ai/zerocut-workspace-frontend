@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -239,57 +240,44 @@ const handleRecharge = () => {
 // 过期积分对话框开关
 const expiredDialog = ref(false);
 
-// 概览卡片的“总过期积分”由 wallet/info 返回的字段提供
-
 const openExpiredDialog = () => {
   expiredDialog.value = true;
 };
+
+const headerPrimaryActions = [
+  {
+    key: 'recharge',
+    label: t('zerocut.wallet.recharge'),
+    icon: 'mdi-cash-plus',
+    color: 'success',
+    variant: 'elevated' as const,
+    onClick: handleRecharge,
+  },
+];
+
+const headerSecondaryActions = computed(() => [
+  {
+    key: 'refresh',
+    label: t('common.refresh'),
+    icon: 'mdi-refresh',
+    variant: 'outlined' as const,
+    onClick: refreshData,
+    loading: loading.value,
+  },
+]);
 </script>
 
 <template>
   <div>
-    <!-- 页面标题 -->
-    <div class="mb-6">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 class="font-bold mb-1 text-2xl sm:text-3xl">{{ $t('menu.wallet') }}</h1>
-          <p class="text-medium-emphasis text-sm sm:text-base">
-            {{ $t('zerocut.wallet.subtitle') }}
-          </p>
-        </div>
-        <div class="flex flex-wrap gap-2 sm:justify-end">
-          <v-btn
-            color="success"
-            prepend-icon="mdi-cash-plus"
-            @click="handleRecharge"
-            variant="elevated"
-          >
-            {{ $t('zerocut.wallet.recharge') }}
-          </v-btn>
-          <v-btn
-            class="!hidden sm:inline-flex"
-            variant="outlined"
-            color="primary"
-            prepend-icon="mdi-refresh"
-            @click="refreshData"
-            :loading="loading"
-          >
-            {{ $t('common.refresh') }}
-          </v-btn>
-          <v-menu class="sm:hidden">
-            <template #activator="{ props }">
-              <v-btn v-bind="props" variant="outlined" icon="mdi-dots-horizontal" size="small" />
-            </template>
-            <v-list>
-              <v-list-item @click="refreshData">
-                <v-icon class="mr-2">mdi-refresh</v-icon>
-                {{ $t('common.refresh') }}
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </div>
-    </div>
+    <ResponsivePageHeader
+      :title="$t('menu.wallet')"
+      :primary-actions="headerPrimaryActions"
+      :secondary-actions="headerSecondaryActions"
+    >
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">{{ $t('zerocut.wallet.subtitle') }}</p>
+      </template>
+    </ResponsivePageHeader>
 
     <!-- 钱包概览 -->
     <v-row class="mb-6">
