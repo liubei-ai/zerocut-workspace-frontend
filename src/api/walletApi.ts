@@ -91,9 +91,42 @@ export async function getExpiredCredits(params: {
   limit?: number;
   paymentMethod?: string;
 }): Promise<ExpiredCreditsResponse> {
-  const response = await client.get<ExpiredCreditsResponse>(`/wallet/credits/expired`, { params });
+  const response = await client.get<ExpiredCreditsResponse>(`/wallet/credits/expired/records`, {
+    params,
+  });
   return response.data;
 }
 
-// 充值提现功能暂不实现，相关接口已移除
-// 统计、导出、通知等高级功能暂不实现，专注于核心钱包信息和交易记录功能
+// 消费记录查询参数
+export interface QueryCreditsConsumptionParams {
+  serviceType?: string;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
+  page?: number;
+  limit?: number;
+}
+
+// 消费记录项
+export interface CreditsConsumptionItem {
+  id: number;
+  transactionId: string;
+  serviceType?: string;
+  serviceDetails?: Record<string, any>;
+  creditsAmount: number;
+  apiKeyId?: string;
+  createdAt: string;
+}
+
+/**
+ * 获取指定工作空间的积分消费记录（管理员）
+ */
+export async function getWorkspaceConsumptionRecords(
+  workspaceId: string,
+  params: QueryCreditsConsumptionParams = {}
+) {
+  const response = await client.get<PaginationResponse<CreditsConsumptionItem>>(
+    `/wallet/credits/consumption/records`,
+    { params: { ...params, workspaceId } }
+  );
+  return response.data;
+}

@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import {
-  getWorkspaceConsumptionRecords,
-  type CreditsConsumptionItem,
-  type QueryCreditsConsumptionParams,
-} from '@/api/adminApi';
-import {
   getExpiredCredits,
   getWalletInfo,
   getWalletRechargeRecords,
+  getWorkspaceConsumptionRecords,
+  type CreditsConsumptionItem,
   type ExpiredCreditItem,
   type ExpiredCreditsResponse,
+  type QueryCreditsConsumptionParams,
   type TransactionItem,
   type WalletInfo,
 } from '@/api/walletApi';
@@ -485,37 +483,7 @@ onMounted(refreshAll);
         </v-window-item>
         <v-window-item value="expired">
           <v-card flat>
-            <v-card-title class="d-flex align-center">
-              <v-icon class="mr-2">mdi-alert</v-icon>
-              已过期积分
-            </v-card-title>
             <v-card-text>
-              <v-row class="mb-4">
-                <v-col cols="12" sm="6">
-                  <div class="d-flex align-center ga-2">
-                    <span class="text-medium-emphasis">总过期积分：</span>
-                    <span class="text-error font-weight-bold">{{
-                      expiredSummary.totalExpiredCredits
-                    }}</span>
-                  </div>
-                </v-col>
-                <v-col cols="12" sm="6" class="d-flex justify-end">
-                  <v-select
-                    label="充值类型过滤"
-                    :items="[
-                      { title: '全部', value: null },
-                      { title: '微信支付', value: 'wechat' },
-                      { title: '支付宝', value: 'alipay' },
-                      { title: '手动充值', value: 'manual' },
-                      { title: '积分赠送', value: 'give' },
-                      { title: '机器人充值', value: 'bot' },
-                    ]"
-                    v-model="expiredFilter.paymentMethod"
-                    density="compact"
-                    style="max-width: 260px"
-                  ></v-select>
-                </v-col>
-              </v-row>
               <div class="d-flex flex-wrap ga-2 mb-4">
                 <v-chip color="green" variant="flat" size="small"
                   >微信：{{ expiredSummary.byPaymentMethod?.wechat || 0 }}</v-chip
@@ -529,6 +497,20 @@ onMounted(refreshAll);
                 <v-chip color="orange" variant="flat" size="small"
                   >赠送：{{ expiredSummary.byPaymentMethod?.give || 0 }}</v-chip
                 >
+                <v-select
+                  label="充值类型过滤"
+                  :items="[
+                    { title: '全部', value: null },
+                    { title: '微信支付', value: 'wechat' },
+                    { title: '支付宝', value: 'alipay' },
+                    { title: '手动充值', value: 'manual' },
+                    { title: '积分赠送', value: 'give' },
+                    { title: '机器人充值', value: 'bot' },
+                  ]"
+                  v-model="expiredFilter.paymentMethod"
+                  density="compact"
+                  style="max-width: 260px"
+                ></v-select>
               </div>
               <v-data-table-server
                 :headers="[

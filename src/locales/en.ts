@@ -53,7 +53,7 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
-    workflows: 'Workflow Status',
+    workflows: 'Workflows',
     guide: 'Pro Guide',
     // Admin submenu
     adminWorkspaceList: 'Workspaces',

@@ -65,7 +65,7 @@ const AdminRoutes: RouteRecordRaw[] = [
         name: 'admin-workflows',
         component: () => import('@/views/admin/WorkflowRecordsView.vue'),
         meta: {
-          title: '工作流状态',
+          title: '工作流',
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
