@@ -236,3 +236,33 @@ export async function getSystemConfigEnums() {
   const response = await apiClient.get<SystemConfigEnumsResponse>('/admin/system-config/enums');
   return response.data;
 }
+
+// 工作流记录类型
+export type WorkflowRunStatus = 'pending' | 'running' | 'success' | 'fail';
+
+export interface WorkflowRecordItem {
+  workflowId: string;
+  executeId: string;
+  status: WorkflowRunStatus;
+  debugUrl?: string;
+  debugUrlExpired: boolean;
+  startedAt: string;
+  endedAt?: string;
+  source?: string;
+}
+
+export interface QueryWorkflowRecordsParams {
+  page?: number;
+  limit?: number;
+  status?: WorkflowRunStatus;
+  workflowId?: string;
+  executeId?: string;
+}
+
+export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}) {
+  const response = await apiClient.get<PaginationResponse<WorkflowRecordItem>>(
+    '/admin/workflows/records',
+    { params }
+  );
+  return response.data;
+}
