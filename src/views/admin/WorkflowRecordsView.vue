@@ -18,8 +18,6 @@ const filters = ref<{ workflowId: string; executeId: string }>({ workflowId: '',
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'pending':
-      return 'grey';
     case 'running':
       return 'info';
     case 'success':
@@ -139,12 +137,12 @@ const headerSecondaryActions = computed(() => [
 
       <v-data-table-server
         :headers="[
-          { title: '开始时间', key: 'startedAt', sortable: true },
-          { title: '结束时间', key: 'endedAt', sortable: true },
+          { title: '调用时间', key: 'startedAt', sortable: true },
           { title: '工作流ID', key: 'workflowId', sortable: true },
           { title: '执行ID', key: 'executeId', sortable: true },
           { title: '状态', key: 'status', sortable: true },
           { title: '调试链接', key: 'debugUrl', sortable: false },
+          { title: '过期时间', key: 'debugUrlExpiresAt', sortable: true },
           { title: '来源', key: 'source', sortable: false },
         ]"
         :items="records"
@@ -176,13 +174,10 @@ const headerSecondaryActions = computed(() => [
           </v-chip>
         </template>
         <template #item.debugUrl="{ item }">
-          <div>
-            <v-chip v-if="item.debugUrlExpired" size="small" color="grey" variant="flat"
-              >已过期</v-chip
-            >
-            <a v-else-if="item.debugUrl" :href="item.debugUrl" target="_blank">打开</a>
-            <span v-else class="text-medium-emphasis">-</span>
-          </div>
+          <a :href="item.debugUrl" target="_blank">打开</a>
+        </template>
+        <template #item.debugUrlExpiresAt="{ item }">
+          {{ item.debugUrlExpiresAt ? formatDate(item.debugUrlExpiresAt) : '-' }}
         </template>
         <template #item.source="{ item }">
           <span class="text-body-2">{{ item.source || '-' }}</span>

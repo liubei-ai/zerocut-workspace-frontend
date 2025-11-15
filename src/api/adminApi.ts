@@ -245,7 +245,7 @@ export interface WorkflowRecordItem {
   executeId: string;
   status: WorkflowRunStatus;
   debugUrl?: string;
-  debugUrlExpired: boolean;
+  debugUrlExpiresAt?: string;
   startedAt: string;
   endedAt?: string;
   source?: string;
