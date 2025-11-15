@@ -18,14 +18,14 @@ const filters = ref<{ workflowId: string; executeId: string }>({ workflowId: '',
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'running':
-      return 'info';
-    case 'success':
-      return 'success';
-    case 'fail':
-      return 'error';
-    default:
-      return 'primary';
+  case 'running':
+    return 'info';
+  case 'success':
+    return 'success';
+  case 'fail':
+    return 'error';
+  default:
+    return 'primary';
   }
 };
 
