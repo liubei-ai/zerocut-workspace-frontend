@@ -53,9 +53,10 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
+    workflows: 'Workflow Status',
     guide: 'Pro Guide',
     // Admin submenu
-    adminWorkspaceList: 'Workspace List',
+    adminWorkspaceList: 'Workspaces',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     // Common actions

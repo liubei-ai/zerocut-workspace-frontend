@@ -60,6 +60,18 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
+      {
+        path: 'workflows',
+        name: 'admin-workflows',
+        component: () => import('@/views/admin/WorkflowRecordsView.vue'),
+        meta: {
+          title: '工作流状态',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
     ],
   },
 ];

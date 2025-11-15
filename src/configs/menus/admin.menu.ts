@@ -14,4 +14,9 @@ export default [
     link: '/admin/system-config-audit',
     icon: 'mdi-history',
   },
+  {
+    key: 'menu.workflows',
+    link: '/admin/workflows',
+    icon: 'mdi-clipboard-list-outline',
+  },
 ];

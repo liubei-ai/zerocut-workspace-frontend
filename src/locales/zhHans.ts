@@ -53,9 +53,10 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分套餐',
+    workflows: '工作流状态',
     guide: '专业版',
     // 管理员子菜单
-    adminWorkspaceList: '工作区列表',
+    adminWorkspaceList: '工作区',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     // 常用动作
