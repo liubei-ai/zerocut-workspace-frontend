@@ -119,7 +119,7 @@ const headerSecondaryActions = computed(() => [
 
     <v-card elevation="2" class="mb-4">
       <v-card-text>
-        <v-row>
+        <v-row align="center">
           <v-col cols="12" md="4">
             <v-text-field
               v-model="filters.workflowId"
@@ -140,11 +140,10 @@ const headerSecondaryActions = computed(() => [
               :disabled="loading"
             />
           </v-col>
-          <v-col cols="12" md="4" class="d-flex align-end">
+          <v-col cols="12" md="4" class="d-flex align-center">
             <v-btn color="primary" :loading="loading" @click="searchRecord">查询</v-btn>
           </v-col>
         </v-row>
-        <v-alert v-if="error" type="warning" variant="tonal" class="mt-2">{{ error }}</v-alert>
       </v-card-text>
     </v-card>
 
@@ -154,6 +153,7 @@ const headerSecondaryActions = computed(() => [
         查询结果
       </v-card-title>
       <v-card-text>
+        <v-alert v-if="error" type="warning" variant="tonal" class="mb-2">{{ error }}</v-alert>
         <div v-if="record">
           <v-row class="mb-4">
             <v-col cols="12" md="4">
@@ -214,7 +214,6 @@ const headerSecondaryActions = computed(() => [
             </v-col>
           </v-row>
         </div>
-        <div v-else class="text-medium-emphasis">无记录</div>
       </v-card-text>
     </v-card>
   </div>
