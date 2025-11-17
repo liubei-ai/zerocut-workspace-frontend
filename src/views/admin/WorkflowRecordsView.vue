@@ -155,7 +155,47 @@ const headerSecondaryActions = computed(() => [
       </v-card-title>
       <v-card-text>
         <div v-if="record">
-          <v-row>
+          <v-row class="mb-4">
+            <v-col cols="12" md="4">
+              <div class="text-subtitle-1 text-medium-emphasis">状态</div>
+              <v-chip
+                :color="getStatusColor(record.status)"
+                size="large"
+                variant="elevated"
+                class="status-chip"
+              >
+                {{ record.status }}
+              </v-chip>
+            </v-col>
+            <v-col cols="12" md="4">
+              <div class="text-subtitle-1 text-medium-emphasis">调试链接</div>
+              <div>
+                <template v-if="record.debugUrl && !isExpired(record.debugUrlExpiresAt)">
+                  <v-btn
+                    color="primary"
+                    variant="tonal"
+                    :href="record.debugUrl"
+                    target="_blank"
+                    prepend-icon="mdi-open-in-new"
+                    >打开</v-btn
+                  >
+                </template>
+                <template v-else>
+                  <v-chip color="error" variant="flat">已过期</v-chip>
+                </template>
+              </div>
+            </v-col>
+            <v-col cols="12" md="4">
+              <div class="text-subtitle-1 text-medium-emphasis">过期时间</div>
+              <div :class="isExpired(record.debugUrlExpiresAt) ? 'text-error' : 'text-success'">
+                {{ record.debugUrlExpiresAt ? formatDate(record.debugUrlExpiresAt) : '-' }}
+              </div>
+            </v-col>
+          </v-row>
+
+          <v-divider class="mb-4" />
+
+          <v-row class="muted">
             <v-col cols="12" md="6">
               <div class="text-caption">工作流ID</div>
               <code class="text-caption">{{ record.workflowId }}</code>
@@ -166,26 +206,7 @@ const headerSecondaryActions = computed(() => [
             </v-col>
             <v-col cols="12" md="6">
               <div class="text-caption">调用时间</div>
-              <div>{{ formatDate(record.startedAt) }}</div>
-            </v-col>
-            <v-col cols="12" md="6">
-              <div class="text-caption">状态</div>
-              <v-chip :color="getStatusColor(record.status)" size="small" variant="flat">
-                {{ record.status }}
-              </v-chip>
-            </v-col>
-            <v-col v-if="record.debugUrl && !isExpired(record.debugUrlExpiresAt)" cols="12" md="6">
-              <div class="text-caption">调试链接</div>
-              <div>
-                <a :href="record.debugUrl" target="_blank">打开</a>
-              </div>
-            </v-col>
-            <v-col cols="12" md="6">
-              <div class="text-caption">过期时间</div>
-              <template v-if="record.debugUrl && !isExpired(record.debugUrlExpiresAt)">
-                {{ record.debugUrlExpiresAt ? formatDate(record.debugUrlExpiresAt) : '-' }}
-              </template>
-              <template v-else> 已过期 </template>
+              <div class="text-body-2">{{ formatDate(record.startedAt) }}</div>
             </v-col>
             <v-col cols="12" md="6">
               <div class="text-caption">来源</div>
@@ -206,5 +227,12 @@ code {
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.75rem;
+}
+.status-chip {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.muted {
+  opacity: 0.85;
 }
 </style>
