@@ -51,6 +51,12 @@ const getStatusColor = (status: string) => {
   }
 };
 
+const isExpired = (expiresAt?: string) => {
+  if (!expiresAt) return false;
+  const ts = new Date(expiresAt).getTime();
+  return Number.isFinite(ts) ? ts < Date.now() : false;
+};
+
 const searchRecord = async () => {
   error.value = '';
   record.value = null;
@@ -163,16 +169,12 @@ const headerSecondaryActions = computed(() => [
               <div>{{ formatDate(record.startedAt) }}</div>
             </v-col>
             <v-col cols="12" md="6">
-              <div class="text-caption">结束时间</div>
-              <div>{{ record.endedAt ? formatDate(record.endedAt) : '-' }}</div>
-            </v-col>
-            <v-col cols="12" md="6">
               <div class="text-caption">状态</div>
               <v-chip :color="getStatusColor(record.status)" size="small" variant="flat">
                 {{ record.status }}
               </v-chip>
             </v-col>
-            <v-col cols="12" md="6">
+            <v-col v-if="record.debugUrl && !isExpired(record.debugUrlExpiresAt)" cols="12" md="6">
               <div class="text-caption">调试链接</div>
               <div>
                 <a :href="record.debugUrl" target="_blank">打开</a>
@@ -180,7 +182,10 @@ const headerSecondaryActions = computed(() => [
             </v-col>
             <v-col cols="12" md="6">
               <div class="text-caption">过期时间</div>
-              <div>{{ record.debugUrlExpiresAt ? formatDate(record.debugUrlExpiresAt) : '-' }}</div>
+              <template v-if="record.debugUrl && !isExpired(record.debugUrlExpiresAt)">
+                {{ record.debugUrlExpiresAt ? formatDate(record.debugUrlExpiresAt) : '-' }}
+              </template>
+              <template v-else> 已过期 </template>
             </v-col>
             <v-col cols="12" md="6">
               <div class="text-caption">来源</div>

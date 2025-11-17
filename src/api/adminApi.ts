@@ -247,7 +247,6 @@ export interface WorkflowRecordItem {
   debugUrl?: string;
   debugUrlExpiresAt?: string;
   startedAt: string;
-  endedAt?: string;
   source?: string;
 }
 
