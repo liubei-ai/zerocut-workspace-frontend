@@ -251,18 +251,12 @@ export interface WorkflowRecordItem {
   source?: string;
 }
 
-export interface QueryWorkflowRecordsParams {
-  page?: number;
-  limit?: number;
-  status?: WorkflowRunStatus;
-  workflowId?: string;
-  executeId?: string;
+export interface GetWorkflowRecordParams {
+  workflowId: string;
+  executeId: string;
 }
 
-export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}) {
-  const response = await apiClient.get<PaginationResponse<WorkflowRecordItem>>(
-    '/admin/workflows/records',
-    { params }
-  );
+export async function getWorkflowRecord(params: GetWorkflowRecordParams) {
+  const response = await apiClient.get<WorkflowRecordItem>('/admin/workflows/record', { params });
   return response.data;
 }
