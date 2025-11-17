@@ -1,12 +1,40 @@
 <script setup lang="ts">
-import { getWorkflowRecord, type WorkflowRecordItem } from '@/api/adminApi';
+import { getWorkflowRecord, getWorkflowStatus, type WorkflowRecordItem } from '@/api/adminApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { formatDate } from '@/utils/date';
-import { computed, ref } from 'vue';
+import { useIntervalFn } from '@vueuse/core';
+import { computed, onUnmounted, ref, watch } from 'vue';
 
 const loading = ref(false);
 const record = ref<WorkflowRecordItem | null>(null);
 const error = ref('');
+const polling = ref(false);
+const interval = useIntervalFn(
+  async () => {
+    if (!record.value) return;
+    const resp = await getWorkflowStatus({
+      workflowId: record.value.workflowId,
+      executeId: record.value.executeId,
+    });
+    record.value = resp;
+    if (resp.status !== 'running') {
+      stopPolling();
+    }
+  },
+  3000,
+  { immediate: false }
+);
+
+const startPolling = () => {
+  if (polling.value) return;
+  polling.value = true;
+  interval.resume();
+};
+
+const stopPolling = () => {
+  polling.value = false;
+  interval.pause();
+};
 
 const filters = ref<{ workflowId: string; executeId: string }>({ workflowId: '', executeId: '' });
 
@@ -37,8 +65,11 @@ const searchRecord = async () => {
       executeId: filters.value.executeId,
     });
     record.value = resp;
+    if (resp.status === 'running') startPolling();
+    else stopPolling();
   } catch (e) {
     error.value = '记录不存在';
+    stopPolling();
   } finally {
     loading.value = false;
   }
@@ -47,6 +78,18 @@ const searchRecord = async () => {
 const refreshData = async () => {
   await searchRecord();
 };
+
+watch(
+  () => record.value?.status,
+  s => {
+    if (s === 'running') startPolling();
+    else stopPolling();
+  }
+);
+
+onUnmounted(() => {
+  stopPolling();
+});
 
 const headerSecondaryActions = computed(() => [
   {
