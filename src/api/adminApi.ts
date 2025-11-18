@@ -255,11 +255,6 @@ export interface GetWorkflowRecordParams {
   executeId: string;
 }
 
-export async function getWorkflowRecord(params: GetWorkflowRecordParams) {
-  const response = await apiClient.get<WorkflowRecordItem>('/admin/workflows/record', { params });
-  return response.data;
-}
-
 export async function getWorkflowStatus(params: GetWorkflowRecordParams) {
   const response = await apiClient.get<WorkflowRecordItem>('/admin/workflows/status', { params });
   return response.data;
