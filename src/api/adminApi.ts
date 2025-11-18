@@ -264,3 +264,17 @@ export async function getWorkflowStatus(params: GetWorkflowRecordParams) {
   const response = await apiClient.get<WorkflowRecordItem>('/admin/workflows/status', { params });
   return response.data;
 }
+
+export interface QueryWorkflowRecordsParams {
+  executeId?: string;
+  page?: number;
+  limit?: number;
+}
+
+export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}) {
+  const response = await apiClient.get<PaginationResponse<WorkflowRecordItem>>(
+    '/admin/workflows/records',
+    { params }
+  );
+  return response.data;
+}
