@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { getWorkflowRecords, type WorkflowRecordItem } from '@/api/adminApi';
-import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { formatDate } from '@/utils/date';
 import { computed, onMounted, ref } from 'vue';
 
@@ -9,7 +8,7 @@ const error = ref('');
 const items = ref<WorkflowRecordItem[]>([]);
 const pagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
 
-const filters = ref<{ executeId: string }>({ executeId: '' });
+const filters = ref<{ workspaceId: string; executeId: string }>({ workspaceId: '', executeId: '' });
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -36,6 +35,7 @@ const fetchRecords = async () => {
     error.value = '';
     const params = {
       executeId: (filters.value.executeId || '').trim() || undefined,
+      workspaceId: (filters.value.workspaceId || '').trim() || undefined,
       page: pagination.value.page,
       limit: pagination.value.limit,
     };
@@ -67,6 +67,7 @@ const handleItemsPerPageChange = (itemsPerPage: number) => {
 
 const resetFilters = () => {
   filters.value.executeId = '';
+  filters.value.workspaceId = '';
   pagination.value.page = 1;
   fetchRecords();
 };
@@ -98,6 +99,24 @@ onMounted(() => {
     <v-card elevation="2" class="mb-4">
       <v-card-text>
         <v-row align="center">
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="filters.workspaceId"
+              @update:modelValue="val => (filters.workspaceId = (val ?? '').trim())"
+              @click:clear="
+                () => {
+                  filters.workspaceId = '';
+                  pagination.page = 1;
+                  fetchRecords();
+                }
+              "
+              label="工作空间ID"
+              placeholder="输入工作空间ID"
+              clearable
+              prepend-inner-icon="mdi-magnify"
+              :disabled="loading"
+            />
+          </v-col>
           <v-col cols="12" md="4">
             <v-text-field
               v-model="filters.executeId"
@@ -151,11 +170,13 @@ onMounted(() => {
         <v-data-table-server
           :headers="[
             { title: '状态', key: 'status', sortable: false },
-            { title: '调试链接', key: 'debugUrl', sortable: false },
+            { title: '调用时间', key: 'startedAt', sortable: false },
             { title: '过期时间', key: 'debugUrlExpiresAt', sortable: false },
+            { title: '调试链接', key: 'debugUrl', sortable: false },
+            { title: '工作空间', key: 'workspace', sortable: false },
+            { title: '所有者', key: 'owner', sortable: false },
             { title: '工作流ID', key: 'workflowId', sortable: false },
             { title: '执行ID', key: 'executeId', sortable: false },
-            { title: '调用时间', key: 'startedAt', sortable: false },
             { title: '来源', key: 'source', sortable: false },
           ]"
           :items="items"
@@ -215,6 +236,20 @@ onMounted(() => {
           </template>
           <template #item.source="{ item }">
             <span class="text-body-2">{{ item.source || '-' }}</span>
+          </template>
+          <template #item.workspace="{ item }">
+            <div>
+              <span class="text-body-2">{{ item.workspace?.name || '-' }}</span>
+              <br />
+              <code class="text-caption">{{ item.workspace?.workspaceId || '-' }}</code>
+            </div>
+          </template>
+          <template #item.owner="{ item }">
+            <div>
+              <span class="text-body-2">{{ item.owner?.name || item.owner?.username || '-' }}</span>
+              <br />
+              <span class="text-caption muted">{{ item.owner?.email || '-' }}</span>
+            </div>
           </template>
         </v-data-table-server>
       </v-card-text>

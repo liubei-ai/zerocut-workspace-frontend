@@ -248,6 +248,18 @@ export interface WorkflowRecordItem {
   debugUrlExpiresAt?: string;
   startedAt: string;
   source?: string;
+  workspace?: {
+    id: number;
+    workspaceId: string;
+    name: string;
+    isActive: boolean;
+  };
+  owner?: {
+    id: number;
+    username?: string;
+    name?: string;
+    email?: string;
+  };
 }
 
 export interface GetWorkflowRecordParams {
@@ -262,6 +274,7 @@ export async function getWorkflowStatus(params: GetWorkflowRecordParams) {
 
 export interface QueryWorkflowRecordsParams {
   executeId?: string;
+  workspaceId?: string;
   page?: number;
   limit?: number;
 }
