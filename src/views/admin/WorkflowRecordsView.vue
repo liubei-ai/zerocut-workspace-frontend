@@ -12,14 +12,14 @@ const filters = ref<{ workspaceId: string; executeId: string }>({ workspaceId: '
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'running':
-      return 'info';
-    case 'success':
-      return 'success';
-    case 'fail':
-      return 'error';
-    default:
-      return 'primary';
+  case 'running':
+    return 'info';
+  case 'success':
+    return 'success';
+  case 'fail':
+    return 'error';
+  default:
+    return 'primary';
   }
 };
 
@@ -145,10 +145,14 @@ onMounted(() => {
                   fetchRecords();
                 }
               "
-              >查询</v-btn
+            >查询</v-btn
             >
-            <v-btn variant="outlined" class="ml-2" :disabled="loading" @click="resetFilters"
-              >重置</v-btn
+            <v-btn
+              variant="outlined"
+              class="ml-2"
+              :disabled="loading"
+              @click="resetFilters"
+            >重置</v-btn
             >
           </v-col>
         </v-row>
@@ -208,7 +212,7 @@ onMounted(() => {
                     :href="item.debugUrl"
                     target="_blank"
                     prepend-icon="mdi-open-in-new"
-                    >打开</v-btn
+                  >打开</v-btn
                   >
                 </template>
                 <template v-else>
@@ -240,14 +244,14 @@ onMounted(() => {
           <template #item.workspace="{ item }">
             <div>
               <span class="text-body-2">{{ item.workspace?.name || '-' }}</span>
-              <br />
+              <br>
               <code class="text-caption">{{ item.workspace?.workspaceId || '-' }}</code>
             </div>
           </template>
           <template #item.owner="{ item }">
             <div>
               <span class="text-body-2">{{ item.owner?.name || item.owner?.username || '-' }}</span>
-              <br />
+              <br>
               <span class="text-caption muted">{{ item.owner?.email || '-' }}</span>
             </div>
           </template>
