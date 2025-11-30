@@ -136,7 +136,7 @@ const headerSecondaryActions = computed(() => [
 <template>
   <div>
     <ResponsivePageHeader
-      title="Persona 管理"
+      title="角色管理"
       :primary-actions="headerPrimaryActions"
       :secondary-actions="headerSecondaryActions"
     >
@@ -166,7 +166,7 @@ const headerSecondaryActions = computed(() => [
     <v-card>
       <v-card-title class="d-flex align-center">
         <v-icon class="mr-2">mdi-account</v-icon>
-        Persona 列表
+        角色列表
       </v-card-title>
       <v-data-table :headers="headers" :items="filteredItems" :loading="loading">
         <template #item.triggerPreview="{ item }">
