@@ -108,11 +108,14 @@ const save = async () => {
               />
             </v-col>
             <v-col cols="12">
-              <v-text-field
+              <v-textarea
                 v-model="formData.trigger"
                 label="触发词"
                 variant="outlined"
                 density="comfortable"
+                auto-grow
+                rows="4"
+                max-rows="6"
                 :rules="rules.trigger"
               />
             </v-col>
@@ -122,8 +125,9 @@ const save = async () => {
                 label="提示词"
                 variant="outlined"
                 density="comfortable"
-                rows="8"
                 auto-grow
+                rows="8"
+                max-rows="12"
                 :rules="rules.prompt"
               />
             </v-col>

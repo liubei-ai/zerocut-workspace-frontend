@@ -4,9 +4,6 @@ import { createPersona, deletePersona, getPersonas, updatePersona } from '@/api/
 import PersonaDialog from '@/components/admin/PersonaDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
 
 const loading = ref(false);
 const personas = ref<PersonaItem[]>([]);
@@ -23,10 +20,10 @@ const snackbar = ref({
 
 const headers = [
   { title: '名称', key: 'name', sortable: false, width: '200px' },
-  { title: '触发词', key: 'trigger', sortable: false, width: '200px' },
+  { title: '触发词', key: 'triggerPreview', sortable: false },
   { title: '提示词', key: 'promptPreview', sortable: false },
   { title: '更新时间', key: 'updatedAt', sortable: false, width: '160px' },
-  { title: '操作', key: 'actions', sortable: false, width: '160px', align: 'center' as const },
+  { title: '操作', key: 'actions', sortable: false, width: '200px', align: 'center' as const },
 ];
 
 const filteredItems = computed(() => {
@@ -94,6 +91,14 @@ const confirmDelete = async () => {
 
 const formatDate = (s: string) => new Date(s).toLocaleString('zh-CN');
 const truncate = (s: string, len = 80) => (s?.length > len ? s.slice(0, len) + '...' : s || '-');
+const previewDialogOpen = ref(false);
+const previewTitle = ref('');
+const previewText = ref('');
+const openPreview = (title: string, text: string) => {
+  previewTitle.value = title;
+  previewText.value = text;
+  previewDialogOpen.value = true;
+};
 const showSnackbar = (
   message: string,
   color: 'success' | 'error' | 'warning' | 'info' = 'success'
@@ -164,8 +169,17 @@ const headerSecondaryActions = computed(() => [
         Persona 列表
       </v-card-title>
       <v-data-table :headers="headers" :items="filteredItems" :loading="loading">
+        <template #item.triggerPreview="{ item }">
+          <div class="clamped-2">{{ item.trigger }}</div>
+          <v-btn size="x-small" variant="text" @click="openPreview('触发词', item.trigger)"
+            >查看全文</v-btn
+          >
+        </template>
         <template #item.promptPreview="{ item }">
-          <span>{{ truncate(item.prompt) }}</span>
+          <div class="clamped-3">{{ item.prompt }}</div>
+          <v-btn size="x-small" variant="text" @click="openPreview('提示词', item.prompt)"
+            >查看全文</v-btn
+          >
         </template>
         <template #item.updatedAt="{ item }">
           <span>{{ formatDate(item.updatedAt) }}</span>
@@ -195,8 +209,35 @@ const headerSecondaryActions = computed(() => [
       </v-card>
     </v-dialog>
 
+    <v-dialog v-model="previewDialogOpen" max-width="720">
+      <v-card>
+        <v-card-title class="text-h6">{{ previewTitle }}</v-card-title>
+        <v-card-text>
+          <div style="white-space: pre-wrap">{{ previewText }}</div>
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="previewDialogOpen = false">关闭</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">{{
       snackbar.message
     }}</v-snackbar>
   </div>
 </template>
+
+<style scoped>
+.clamped-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clamped-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+</style>
