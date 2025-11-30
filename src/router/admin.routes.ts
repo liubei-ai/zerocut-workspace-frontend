@@ -72,6 +72,18 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
+      {
+        path: 'personas',
+        name: 'admin-personas',
+        component: () => import('@/views/admin/PersonaManagementPage.vue'),
+        meta: {
+          title: 'Persona 管理',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
     ],
   },
 ];

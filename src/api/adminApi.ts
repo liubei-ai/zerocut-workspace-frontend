@@ -286,3 +286,44 @@ export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}
   );
   return response.data;
 }
+
+export interface PersonaItem {
+  id: number;
+  name: string;
+  trigger: string;
+  prompt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePersonaParams {
+  name: string;
+  trigger: string;
+  prompt: string;
+}
+
+export interface UpdatePersonaParams {
+  name?: string;
+  trigger?: string;
+  prompt?: string;
+}
+
+export async function getPersonas() {
+  const response = await apiClient.get<PersonaItem[]>('/admin/personas');
+  return response.data;
+}
+
+export async function createPersona(params: CreatePersonaParams) {
+  const response = await apiClient.post<PersonaItem>('/admin/personas', params);
+  return response.data;
+}
+
+export async function updatePersona(id: number, params: UpdatePersonaParams) {
+  const response = await apiClient.put<PersonaItem>(`/admin/personas/${id}`, params);
+  return response.data;
+}
+
+export async function deletePersona(id: number) {
+  const response = await apiClient.delete<{ message: string }>(`/admin/personas/${id}`);
+  return response.data;
+}

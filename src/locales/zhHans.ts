@@ -59,6 +59,7 @@ export default {
     adminWorkspaceList: '工作区',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
+    adminPersonas: 'Persona 管理',
     // 常用动作
     search: '搜索（按“ Ctrl + /”进行聚焦）',
     logout: '登出',

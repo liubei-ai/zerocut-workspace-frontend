@@ -15,6 +15,11 @@ export default [
     icon: 'mdi-history',
   },
   {
+    key: 'menu.adminPersonas',
+    link: '/admin/personas',
+    icon: 'mdi-account',
+  },
+  {
     key: 'menu.workflows',
     link: '/admin/workflows',
     icon: 'mdi-clipboard-list-outline',
