@@ -1,92 +1,104 @@
 <script setup lang="ts">
-import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { listBagelPayProducts, type BagelPayProduct } from '@/api/bagelpayApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import Pricing from '@/views/landing/pricing/components/Pricing.vue';
 import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
-const { t } = useI18n();
+type Cycle = 'monthly' | 'yearly' | 'one_time';
+type PricingOption = { type: Cycle; price: number; currency: string; productUrl?: string };
+type PricingPlan = {
+  tier: string;
+  color: string;
+  colorClass: string;
+  features: string[];
+  options: PricingOption[];
+};
 
 const loading = ref(false);
-const products = ref<BagelPayProduct[]>([]);
+const plans = ref<PricingPlan[]>([]);
 const error = ref<string | null>(null);
 
-async function fetchProducts() {
+function normalizeTier(name: string) {
+  const normalized = name.replace('（', '(').replace('）', ')');
+  const lower = normalized.toLowerCase();
+  if (lower.startsWith('based')) return 'Based';
+  if (lower.startsWith('standard')) return 'Standard';
+  if (lower.startsWith('senior')) return 'Senior';
+  return normalized;
+}
+
+function tierColor(tier: string) {
+  if (tier === 'Based') return { color: '#13BB70', colorClass: 'community-color' };
+  if (tier === 'Standard') return { color: '#4945ff', colorClass: 'pro-color' };
+  if (tier === 'Senior') return { color: '#AC56F5', colorClass: 'team-color' };
+  return { color: '#4945ff', colorClass: 'pro-color' };
+}
+
+function toOption(p: any): PricingOption | null {
+  if (p.billingType === 'subscription' && p.recurringInterval === 'monthly') {
+    return { type: 'monthly', price: p.price, currency: p.currency, productUrl: p.productUrl };
+  }
+  if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
+    return { type: 'yearly', price: p.price, currency: p.currency, productUrl: p.productUrl };
+  }
+  if (p.billingType === 'single_payment') {
+    return { type: 'one_time', price: p.price, currency: p.currency, productUrl: p.productUrl };
+  }
+  return null;
+}
+
+function extractFeatures(desc?: string) {
+  if (!desc) return [] as string[];
+  return desc
+    .split(/\n+/)
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+async function fetchPlans() {
   try {
     loading.value = true;
     error.value = null;
-    const list = await listBagelPayProducts({ page: 1, limit: 20 });
-    products.value = list;
+    const res = await listBagelPayProducts();
+    const items: BagelPayProduct[] = Array.isArray(res) ? res : (res as any).items || [];
+    const map = new Map<string, PricingPlan>();
+    items.forEach(p => {
+      if ((p as any).isArchive) return;
+      const tier = normalizeTier(p.name);
+      const opt = toOption(p);
+      if (!opt) return;
+      const { color, colorClass } = tierColor(tier);
+      if (!map.has(tier)) {
+        map.set(tier, {
+          tier,
+          color,
+          colorClass,
+          features: extractFeatures(p.description),
+          options: [opt],
+        });
+      } else {
+        const existing = map.get(tier)!;
+        if (!existing.options.find(o => o.type === opt.type)) existing.options.push(opt);
+        if (existing.features.length === 0) existing.features = extractFeatures(p.description);
+      }
+    });
+    plans.value = Array.from(map.values());
   } catch (e: any) {
-    error.value = e?.message || 'Failed to load products';
+    error.value = e?.message || 'Failed to load pricing';
   } finally {
     loading.value = false;
   }
 }
 
-onMounted(fetchProducts);
+onMounted(fetchPlans);
 </script>
 
 <template>
   <div>
-    <ResponsivePageHeader :title="t('zerocut.bagelpay.productsTitle')" />
-
-    <v-alert v-if="error" type="error" class="mb-4">{{ error }}</v-alert>
-
-    <v-row>
-      <v-col cols="12">
-        <v-card>
-          <v-card-title class="d-flex align-center">
-            <v-icon class="mr-2" color="primary">mdi-shopping-outline</v-icon>
-            <span>{{ t('zerocut.bagelpay.productsSubtitle') }}</span>
-            <v-spacer></v-spacer>
-            <v-btn :loading="loading" variant="text" color="primary" @click="fetchProducts">
-              {{ t('common.refresh') }}
-            </v-btn>
-          </v-card-title>
-          <v-divider />
-          <v-card-text>
-            <v-row>
-              <v-col v-for="item in products" :key="item.id" cols="12" md="4">
-                <v-card class="mb-4" variant="outlined">
-                  <v-card-title class="text-h6">{{ item.name }}</v-card-title>
-                  <v-card-subtitle class="text-caption">
-                    {{
-                      item.billingType === 'subscription'
-                        ? t('zerocut.bagelpay.subscription')
-                        : t('zerocut.bagelpay.singlePayment')
-                    }}
-                  </v-card-subtitle>
-                  <v-card-text>
-                    <div class="text-h6">
-                      {{ item.price }} {{ item.currency }}
-                      <span v-if="item.recurringInterval" class="text-caption ml-1">
-                        / {{ item.recurringInterval }}
-                      </span>
-                    </div>
-                    <div class="text-body-2 mt-2">{{ item.description }}</div>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn
-                      v-if="item.productUrl"
-                      :href="item.productUrl"
-                      target="_blank"
-                      color="primary"
-                      variant="flat"
-                    >
-                      {{ t('zerocut.bagelpay.viewProduct') }}
-                      <v-icon end>mdi-open-in-new</v-icon>
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-skeleton-loader v-if="loading" type="card, card, card"></v-skeleton-loader>
-            <div v-if="!loading && products.length === 0" class="text-medium-emphasis">
-              {{ t('zerocut.bagelpay.noProducts') }}
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+    <ResponsivePageHeader :title="$t('zerocut.bagelpay.productsTitle')" />
+    <v-alert v-if="error" type="error" class="ma-4">{{ error }}</v-alert>
+    <Pricing :plans="plans" :loading="loading" />
   </div>
 </template>
+
+<style lang="scss"></style>

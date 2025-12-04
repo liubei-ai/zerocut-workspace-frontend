@@ -53,7 +53,7 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分套餐',
-    bagelpayProducts: 'BagelPay 商品',
+    bagelpayProducts: '会员定价',
     workflows: '工作流',
     guide: '专业版',
     // 管理员子菜单

@@ -53,7 +53,7 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
-    bagelpayProducts: 'BagelPay Products',
+    bagelpayProducts: 'Membership Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
     // Admin submenu

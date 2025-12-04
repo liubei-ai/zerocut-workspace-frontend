@@ -11,12 +11,9 @@ export interface BagelPayProduct {
   productUrl?: string;
 }
 
-export interface ListProductsParams {
-  page?: number;
-  limit?: number;
-}
-
-export async function listBagelPayProducts(params: ListProductsParams = {}) {
-  const response = await client.get<BagelPayProduct[]>('/bagelpay/products', { params });
+export async function listBagelPayProducts() {
+  const response = await client.get<{ total: number; items: BagelPayProduct[] }>(
+    '/bagelpay/products'
+  );
   return response.data;
 }

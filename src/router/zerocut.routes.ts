@@ -98,7 +98,7 @@ export default [
     meta: {
       requiresAuth: true,
       layout: 'landing',
-      title: 'BagelPay 商品',
+      title: '会员定价',
       category: 'ZeroCut',
     },
     component: () =>
