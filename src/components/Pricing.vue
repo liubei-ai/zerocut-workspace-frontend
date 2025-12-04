@@ -4,9 +4,9 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
-type Cycle = 'monthly' | 'yearly' | 'one_time';
+type Cycle = 'monthly' | 'yearly';
 type PricingOption = {
   type: Cycle;
   price: number;
@@ -27,7 +27,7 @@ const selectedCycle = ref<Cycle>('monthly');
 function displayOption(plan: PricingPlan) {
   const prefer = plan.options.find(o => o.type === selectedCycle.value);
   if (prefer) return prefer;
-  const fallbackOrder: Cycle[] = ['monthly', 'yearly', 'one_time'];
+  const fallbackOrder: Cycle[] = ['monthly', 'yearly'];
   for (const c of fallbackOrder) {
     const opt = plan.options.find(o => o.type === c);
     if (opt) return opt;
@@ -40,35 +40,42 @@ const hasCycle = computed(() => {
   props.plans.forEach(p => p.options.forEach(o => types.add(o.type)));
   return types;
 });
+
+const hasMonthly = computed(() => hasCycle.value.has('monthly'));
+const hasYearly = computed(() => hasCycle.value.has('yearly'));
+
+function ensureSelectedCycle() {
+  if (selectedCycle.value === 'monthly' && !hasMonthly.value) {
+    selectedCycle.value = hasYearly.value ? 'yearly' : selectedCycle.value;
+  } else if (selectedCycle.value === 'yearly' && !hasYearly.value) {
+    selectedCycle.value = hasMonthly.value ? 'monthly' : selectedCycle.value;
+  }
+}
+
+watch(() => props.plans, ensureSelectedCycle, { immediate: true });
+
+const sortedPlans = computed(() => {
+  const arr = [...props.plans];
+  const priceOf = (p: PricingPlan) => {
+    const opt =
+      p.options.find(o => o.type === selectedCycle.value) ||
+      p.options.find(o => o.type === 'monthly') ||
+      p.options.find(o => o.type === 'yearly');
+    return opt ? opt.price : Number.POSITIVE_INFINITY;
+  };
+  return arr.sort((a, b) => priceOf(a) - priceOf(b));
+});
 </script>
 
 <template>
   <v-card class="my-5" rounded color="grey-50">
-    <v-card-title class="card-title">Pricing</v-card-title>
-    <v-divider></v-divider>
     <div class="pa-10">
       <v-card max-width="1600" class="mx-auto" variant="flat" color="transparent">
-        <div class="d-flex mb-4">
-          <v-chip-group v-model="selectedCycle" class="mr-4" column>
-            <v-chip
-              v-if="hasCycle.has('monthly')"
-              value="monthly"
-              color="primary"
-              variant="outlined"
-              >Monthly</v-chip
-            >
-            <v-chip v-if="hasCycle.has('yearly')" value="yearly" color="primary" variant="outlined"
-              >Yearly</v-chip
-            >
-            <v-chip
-              v-if="hasCycle.has('one_time')"
-              value="one_time"
-              color="primary"
-              variant="outlined"
-              >One-time</v-chip
-            >
-          </v-chip-group>
-          <v-spacer></v-spacer>
+        <div class="d-flex justify-center mb-6">
+          <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" class="mr-3">
+            <v-btn v-if="hasMonthly" value="monthly">Monthly</v-btn>
+            <v-btn v-if="hasYearly" value="yearly">Yearly</v-btn>
+          </v-btn-toggle>
           <v-progress-circular
             v-if="props.loading"
             indeterminate
@@ -77,7 +84,7 @@ const hasCycle = computed(() => {
         </div>
         <v-item-group mandatory selected-class="active-card">
           <v-row align="stretch">
-            <v-col cols="12" md="4" v-for="plan in props.plans" :key="plan.tier">
+            <v-col cols="12" md="4" v-for="plan in sortedPlans" :key="plan.tier">
               <v-item v-slot="{ selectedClass, toggle }">
                 <v-card
                   elevation="0"

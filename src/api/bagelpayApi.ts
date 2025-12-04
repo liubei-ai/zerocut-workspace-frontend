@@ -6,8 +6,8 @@ export interface BagelPayProduct {
   description?: string;
   price: number;
   currency: string;
-  billingType: 'subscription' | 'single_payment';
-  recurringInterval?: 'daily' | 'weekly' | 'monthly' | '3months' | '6months';
+  billingType: 'subscription';
+  recurringInterval?: 'monthly' | 'yearly';
   productUrl?: string;
 }
 

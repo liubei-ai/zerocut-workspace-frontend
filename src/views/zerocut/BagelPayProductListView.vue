@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { listBagelPayProducts, type BagelPayProduct } from '@/api/bagelpayApi';
-import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import Pricing from '@/views/landing/pricing/components/Pricing.vue';
+import Pricing from '@/components/Pricing.vue';
 import { onMounted, ref } from 'vue';
 
-type Cycle = 'monthly' | 'yearly' | 'one_time';
+type Cycle = 'monthly' | 'yearly';
 type PricingOption = { type: Cycle; price: number; currency: string; productUrl?: string };
 type PricingPlan = {
   tier: string;
@@ -34,15 +33,12 @@ function tierColor(tier: string) {
   return { color: '#4945ff', colorClass: 'pro-color' };
 }
 
-function toOption(p: any): PricingOption | null {
+function toOption(p: BagelPayProduct): PricingOption | null {
   if (p.billingType === 'subscription' && p.recurringInterval === 'monthly') {
     return { type: 'monthly', price: p.price, currency: p.currency, productUrl: p.productUrl };
   }
   if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
     return { type: 'yearly', price: p.price, currency: p.currency, productUrl: p.productUrl };
-  }
-  if (p.billingType === 'single_payment') {
-    return { type: 'one_time', price: p.price, currency: p.currency, productUrl: p.productUrl };
   }
   return null;
 }
@@ -83,7 +79,7 @@ async function fetchPlans() {
       }
     });
     plans.value = Array.from(map.values());
-  } catch (e: any) {
+  } catch (e) {
     error.value = e?.message || 'Failed to load pricing';
   } finally {
     loading.value = false;
@@ -95,7 +91,6 @@ onMounted(fetchPlans);
 
 <template>
   <div>
-    <ResponsivePageHeader :title="$t('zerocut.bagelpay.productsTitle')" />
     <v-alert v-if="error" type="error" class="ma-4">{{ error }}</v-alert>
     <Pricing :plans="plans" :loading="loading" />
   </div>
