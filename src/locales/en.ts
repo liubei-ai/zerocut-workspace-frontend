@@ -53,6 +53,7 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
+    bagelpayProducts: 'BagelPay Products',
     workflows: 'Workflows',
     guide: 'Pro Guide',
     // Admin submenu
@@ -111,6 +112,14 @@ export default {
 
   // Zerocut Views
   zerocut: {
+    bagelpay: {
+      productsTitle: 'BagelPay Products',
+      productsSubtitle: 'Fetched via BagelPay SDK',
+      subscription: 'Subscription',
+      singlePayment: 'Single Payment',
+      viewProduct: 'View Product',
+      noProducts: 'No products available',
+    },
     usage: {
       title: 'Usage Logs',
       subtitle: 'View detailed credits consumption records',
