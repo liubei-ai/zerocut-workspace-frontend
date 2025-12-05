@@ -35,7 +35,7 @@ import members from '@/data/members';
                     class="mr-2 mt-3"
                     v-for="item in member.social"
                     :to="item.link"
-                    ><v-icon class="text-blue-grey">{{ item.icon }}</v-icon></v-btn
+                  ><v-icon class="text-blue-grey">{{ item.icon }}</v-icon></v-btn
                   >
                 </div>
               </div>

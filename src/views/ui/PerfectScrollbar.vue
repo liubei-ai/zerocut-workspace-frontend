@@ -30,7 +30,7 @@ import { Icon } from '@iconify/vue';
               <td># {{ user.id }}</td>
               <td>
                 <v-avatar>
-                  <img :src="user.avatar" alt="alt" />
+                  <img :src="user.avatar" alt="alt">
                 </v-avatar>
                 {{ user.name }}
               </td>

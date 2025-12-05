@@ -207,7 +207,7 @@ const formTitle = computed(() => {
               :disabled="editedItem.username == '' || editedItem.usermail == ''"
               variant="flat"
               @click="save"
-              >Save</v-btn
+            >Save</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -252,23 +252,35 @@ const formTitle = computed(() => {
             "
             size="small"
             label
-            >{{ item.role }}</v-chip
+          >{{ item.role }}</v-chip
           >
         </td>
         <td>
           <div class="d-flex align-center">
             <v-tooltip text="Edit">
               <template v-slot:activator="{ props }">
-                <v-btn icon flat @click="editItem(item)" v-bind="props"
-                  ><img width="26" src="https://img.icons8.com/fluency/48/null/edit.png"
-                /></v-btn>
+                <v-btn
+                  icon
+                  flat
+                  @click="editItem(item)"
+                  v-bind="props"
+                ><img
+                  width="26"
+                  src="https://img.icons8.com/fluency/48/null/edit.png"
+                ></v-btn>
               </template>
             </v-tooltip>
             <v-tooltip text="Delete">
               <template v-slot:activator="{ props }">
-                <v-btn icon flat @click="deleteItem(item)" v-bind="props"
-                  ><img width="26" src="https://img.icons8.com/fluency/48/null/filled-trash.png"
-                /></v-btn>
+                <v-btn
+                  icon
+                  flat
+                  @click="deleteItem(item)"
+                  v-bind="props"
+                ><img
+                  width="26"
+                  src="https://img.icons8.com/fluency/48/null/filled-trash.png"
+                ></v-btn>
               </template>
             </v-tooltip>
           </div>

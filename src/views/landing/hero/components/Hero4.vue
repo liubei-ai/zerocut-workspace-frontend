@@ -13,7 +13,7 @@
       <v-col cols="12" md="6">
         <v-sheet color="transparent" elevation="0" class="py-10">
           <v-card color="transparent" elevation="0" max-width="800" class="mx-auto my-10 px-10">
-            <img class="mb-10" width="200" src="@/assets/logo2.svg" alt="" />
+            <img class="mb-10" width="200" src="@/assets/logo2.svg" alt="">
             <h1 style="color: #4a4d6d" class="font-weight-black text-h3 text-lg-h2 text-xl-h1">
               We organize chaotic
               <span class="text-primary">internet</span>
@@ -23,13 +23,21 @@
             </h2>
             <v-row class="mt-5">
               <v-col cols="12" sm="6">
-                <v-btn block size="x-large" class="text-white mr-5" color="primary"
-                  >Get Stack</v-btn
+                <v-btn
+                  block
+                  size="x-large"
+                  class="text-white mr-5"
+                  color="primary"
+                >Get Stack</v-btn
                 >
               </v-col>
               <v-col cols="12" sm="6">
-                <v-btn variant="outlined" block size="x-large" class="text-primary"
-                  >Watch Demo</v-btn
+                <v-btn
+                  variant="outlined"
+                  block
+                  size="x-large"
+                  class="text-primary"
+                >Watch Demo</v-btn
                 >
               </v-col>
             </v-row>

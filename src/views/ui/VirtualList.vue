@@ -8,8 +8,13 @@
         variant="outlined"
         color="primary"
       ></v-text-field>
-      <v-btn class="ml-2" variant="elevated" color="primary" height="56" @click="handleScrollTo"
-        >Go</v-btn
+      <v-btn
+        class="ml-2"
+        variant="elevated"
+        color="primary"
+        height="56"
+        @click="handleScrollTo"
+      >Go</v-btn
       >
       <v-spacer></v-spacer>
       <v-text-field
@@ -26,7 +31,13 @@
       <div v-bind="wrapperProps">
         <v-container class="">
           <v-row>
-            <v-col cols="12" sm="6" md="4" xl="2" v-for="item in list" :key="item.index">
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+              xl="2"
+              v-for="item in list"
+              :key="item.index">
               <v-card height="500" elevation="4">
                 <v-img
                   class="align-end text-white"
@@ -44,7 +55,7 @@
                     </v-row>
                   </template>
                   <v-card-title class="d-flex justify-space-between align-center"
-                    >No.{{ item.index }}
+                  >No.{{ item.index }}
 
                     <v-btn size="small" variant="text" icon="mdi-heart"></v-btn>
                   </v-card-title>

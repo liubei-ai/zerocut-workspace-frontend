@@ -46,7 +46,7 @@ const selectedItem = ref<any>();
             <template v-slot:prepend>
               <span class="mr-3">{{ item.id }}</span>
               <v-avatar size="40" :color="item.color">
-                <img :src="item.avatar" />
+                <img :src="item.avatar">
               </v-avatar>
             </template>
             <!-- ---------------------------------------------- -->

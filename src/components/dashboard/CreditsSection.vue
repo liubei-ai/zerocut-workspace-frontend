@@ -92,8 +92,11 @@ onMounted(() => {
         <!-- 积分余额显示 -->
         <div class="mb-4">
           <div class="d-flex align-center mb-2">
-            <v-icon color="primary" class="mr-2" :size="$vuetify.display.xs ? 20 : 24"
-              >mdi-wallet</v-icon
+            <v-icon
+              color="primary"
+              class="mr-2"
+              :size="$vuetify.display.xs ? 20 : 24"
+            >mdi-wallet</v-icon
             >
             <span class="text-subtitle-1 font-weight-medium">{{
               t('zerocut.wallet.availableCredits')

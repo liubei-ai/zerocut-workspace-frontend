@@ -21,28 +21,28 @@
                 <img
                   src="https://ggayane.github.io/css-experiments/cards/dark_rider-cover.jpg"
                   class="cover-image"
-                />
+                >
               </div>
               <img
                 src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png"
                 class="title"
-              />
+              >
               <img
                 src="https://ggayane.github.io/css-experiments/cards/dark_rider-character.webp"
                 class="character"
-              />
+              >
             </div>
           </v-col>
           <v-col cols="12" md="4">
             <div class="card my-10">
               <div class="wrapper">
-                <img src="@/assets/images/card2/yoimiya_bg.jpg" class="cover-image" />
+                <img src="@/assets/images/card2/yoimiya_bg.jpg" class="cover-image">
               </div>
               <img
                 src="https://ggayane.github.io/css-experiments/cards/dark_rider-title.png"
                 class="title"
-              />
-              <img src="@/assets/images/card2/yoimiya.png" class="character" />
+              >
+              <img src="@/assets/images/card2/yoimiya.png" class="character">
             </div>
           </v-col>
           <v-col cols="12" md="4">
@@ -51,16 +51,16 @@
                 <img
                   src="https://ggayane.github.io/css-experiments/cards/force_mage-cover.jpg"
                   class="cover-image"
-                />
+                >
               </div>
               <img
                 src="https://ggayane.github.io/css-experiments/cards/force_mage-title.png"
                 class="title"
-              />
+              >
               <img
                 src="https://ggayane.github.io/css-experiments/cards/force_mage-character.webp"
                 class="character"
-              />
+              >
             </div>
           </v-col>
         </v-row>

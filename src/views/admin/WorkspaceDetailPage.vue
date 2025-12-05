@@ -52,62 +52,62 @@ const expiredFilter = ref<{ paymentMethod: string | null }>({ paymentMethod: nul
 
 function getPaymentMethodIcon(paymentMethod: string) {
   switch (paymentMethod) {
-    case 'alipay':
-      return 'mdi-alipay';
-    case 'wechat':
-      return 'mdi-wechat';
-    case 'bank_card':
-      return 'mdi-credit-card';
-    case 'credit_card':
-      return 'mdi-credit-card-outline';
-    case 'manual':
-      return 'mdi-account-cash';
-    case 'bot':
-      return 'mdi-robot';
-    case 'give':
-      return 'mdi-gift';
-    default:
-      return 'mdi-cash';
+  case 'alipay':
+    return 'mdi-alipay';
+  case 'wechat':
+    return 'mdi-wechat';
+  case 'bank_card':
+    return 'mdi-credit-card';
+  case 'credit_card':
+    return 'mdi-credit-card-outline';
+  case 'manual':
+    return 'mdi-account-cash';
+  case 'bot':
+    return 'mdi-robot';
+  case 'give':
+    return 'mdi-gift';
+  default:
+    return 'mdi-cash';
   }
 }
 
 function getPaymentMethodText(paymentMethod: string) {
   switch (paymentMethod) {
-    case 'alipay':
-      return '支付宝';
-    case 'wechat':
-      return '微信支付';
-    case 'bank_card':
-      return '银行卡';
-    case 'credit_card':
-      return '信用卡';
-    case 'manual':
-      return '手动充值';
-    case 'bot':
-      return '机器人充值';
-    case 'give':
-      return '积分赠送';
-    default:
-      return '其他';
+  case 'alipay':
+    return '支付宝';
+  case 'wechat':
+    return '微信支付';
+  case 'bank_card':
+    return '银行卡';
+  case 'credit_card':
+    return '信用卡';
+  case 'manual':
+    return '手动充值';
+  case 'bot':
+    return '机器人充值';
+  case 'give':
+    return '积分赠送';
+  default:
+    return '其他';
   }
 }
 
 function getPaymentMethodColor(paymentMethod: string) {
   switch (paymentMethod) {
-    case 'alipay':
-      return 'blue';
-    case 'wechat':
-      return 'green';
-    case 'bank_card':
-      return 'purple';
-    case 'credit_card':
-      return 'orange';
-    case 'manual':
-      return 'grey';
-    case 'bot':
-      return 'primary';
-    default:
-      return 'grey';
+  case 'alipay':
+    return 'blue';
+  case 'wechat':
+    return 'green';
+  case 'bank_card':
+    return 'purple';
+  case 'credit_card':
+    return 'orange';
+  case 'manual':
+    return 'grey';
+  case 'bot':
+    return 'primary';
+  default:
+    return 'grey';
   }
 }
 
@@ -374,7 +374,7 @@ onMounted(refreshAll);
                 <span v-else class="text-medium-emphasis">-</span>
               </template>
               <template #item.orderNo="{ item }"
-                ><code class="text-caption">{{ item.orderNo }}</code></template
+              ><code class="text-caption">{{ item.orderNo }}</code></template
               >
             </v-data-table-server>
           </v-card>
@@ -433,10 +433,13 @@ onMounted(refreshAll);
                       fetchConsumption();
                     }
                   "
-                  >搜索</v-btn
+                >搜索</v-btn
                 >
-                <v-btn variant="text" prepend-icon="mdi-backspace" @click="resetConsumptionFilters"
-                  >重置</v-btn
+                <v-btn
+                  variant="text"
+                  prepend-icon="mdi-backspace"
+                  @click="resetConsumptionFilters"
+                >重置</v-btn
                 >
               </div>
             </v-card-text>
@@ -485,17 +488,29 @@ onMounted(refreshAll);
           <v-card flat>
             <v-card-text>
               <div class="d-flex flex-wrap ga-2 mb-4">
-                <v-chip color="green" variant="flat" size="small"
-                  >微信：{{ expiredSummary.byPaymentMethod?.wechat || 0 }}</v-chip
+                <v-chip
+                  color="green"
+                  variant="flat"
+                  size="small"
+                >微信：{{ expiredSummary.byPaymentMethod?.wechat || 0 }}</v-chip
                 >
-                <v-chip color="blue" variant="flat" size="small"
-                  >支付宝：{{ expiredSummary.byPaymentMethod?.alipay || 0 }}</v-chip
+                <v-chip
+                  color="blue"
+                  variant="flat"
+                  size="small"
+                >支付宝：{{ expiredSummary.byPaymentMethod?.alipay || 0 }}</v-chip
                 >
-                <v-chip color="grey" variant="flat" size="small"
-                  >手动：{{ expiredSummary.byPaymentMethod?.manual || 0 }}</v-chip
+                <v-chip
+                  color="grey"
+                  variant="flat"
+                  size="small"
+                >手动：{{ expiredSummary.byPaymentMethod?.manual || 0 }}</v-chip
                 >
-                <v-chip color="orange" variant="flat" size="small"
-                  >赠送：{{ expiredSummary.byPaymentMethod?.give || 0 }}</v-chip
+                <v-chip
+                  color="orange"
+                  variant="flat"
+                  size="small"
+                >赠送：{{ expiredSummary.byPaymentMethod?.give || 0 }}</v-chip
                 >
                 <v-select
                   label="充值类型过滤"
@@ -534,7 +549,7 @@ onMounted(refreshAll);
                   <span
                     v-if="(item.expiredCredits || 0) > 0"
                     class="font-weight-medium text-error"
-                    >{{ (item.expiredCredits || 0).toLocaleString() }}</span
+                  >{{ (item.expiredCredits || 0).toLocaleString() }}</span
                   >
                   <span v-else class="text-medium-emphasis">-</span>
                 </template>
@@ -550,7 +565,7 @@ onMounted(refreshAll);
                   </div>
                 </template>
                 <template #item.orderNo="{ item }"
-                  ><code class="text-caption">{{ item.recharge.orderNo }}</code></template
+                ><code class="text-caption">{{ item.recharge.orderNo }}</code></template
                 >
               </v-data-table-server>
             </v-card-text>

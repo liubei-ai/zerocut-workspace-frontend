@@ -54,7 +54,7 @@ const navs = [
       <v-sheet class="mx-auto" color="transparent" elevation="0" max-width="1600">
         <v-row>
           <v-col cols="12" md="6">
-            <img class="mt-2 mb-11" width="150" src="@/assets/logo_light.svg" alt="" />
+            <img class="mt-2 mb-11" width="150" src="@/assets/logo_light.svg" alt="">
             <p class="my-4">2000+ Our clients are subscribe Around the World</p>
           </v-col>
           <v-col cols="12" md="6">
@@ -78,7 +78,7 @@ const navs = [
             </div>
           </v-col>
         </v-row>
-        <hr class="my-3" />
+        <hr class="my-3">
         <p class="text-center my-5">Liubei AI © All Rights Reserved</p>
       </v-sheet>
     </v-container>

@@ -97,7 +97,7 @@ const navs: Array<{
       <v-btn class="mx-2" icon v-bind="props">
         <v-badge content="2" color="success" dot bordered>
           <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
-            <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
+            <img v-if="userAvatar" :src="userAvatar" :alt="userName">
             <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
           </v-avatar>
         </v-badge>
@@ -111,7 +111,7 @@ const navs: Array<{
         <v-list-item>
           <template v-slot:prepend>
             <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
-              <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
+              <img v-if="userAvatar" :src="userAvatar" :alt="userName">
               <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
             </v-avatar>
           </template>

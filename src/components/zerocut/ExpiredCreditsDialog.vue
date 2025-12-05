@@ -30,62 +30,62 @@ const expiredFilter = ref<{ paymentMethod: string | null }>({ paymentMethod: nul
 // 支付方式相关展示
 const getPaymentMethodIcon = (paymentMethod: string) => {
   switch (paymentMethod) {
-    case 'alipay':
-      return 'mdi-alipay';
-    case 'wechat':
-      return 'mdi-wechat';
-    case 'bank_card':
-      return 'mdi-credit-card';
-    case 'credit_card':
-      return 'mdi-credit-card-outline';
-    case 'manual':
-      return 'mdi-account-cash';
-    case 'bot':
-      return 'mdi-robot';
-    case 'give':
-      return 'mdi-gift';
-    default:
-      return 'mdi-cash';
+  case 'alipay':
+    return 'mdi-alipay';
+  case 'wechat':
+    return 'mdi-wechat';
+  case 'bank_card':
+    return 'mdi-credit-card';
+  case 'credit_card':
+    return 'mdi-credit-card-outline';
+  case 'manual':
+    return 'mdi-account-cash';
+  case 'bot':
+    return 'mdi-robot';
+  case 'give':
+    return 'mdi-gift';
+  default:
+    return 'mdi-cash';
   }
 };
 
 const getPaymentMethodText = (paymentMethod: string) => {
   switch (paymentMethod) {
-    case 'alipay':
-      return '支付宝';
-    case 'wechat':
-      return '微信支付';
-    case 'bank_card':
-      return '银行卡';
-    case 'credit_card':
-      return '信用卡';
-    case 'manual':
-      return '手动充值';
-    case 'bot':
-      return '机器人充值';
-    case 'give':
-      return '积分赠送';
-    default:
-      return '其他';
+  case 'alipay':
+    return '支付宝';
+  case 'wechat':
+    return '微信支付';
+  case 'bank_card':
+    return '银行卡';
+  case 'credit_card':
+    return '信用卡';
+  case 'manual':
+    return '手动充值';
+  case 'bot':
+    return '机器人充值';
+  case 'give':
+    return '积分赠送';
+  default:
+    return '其他';
   }
 };
 
 const getPaymentMethodColor = (paymentMethod: string) => {
   switch (paymentMethod) {
-    case 'alipay':
-      return 'blue';
-    case 'wechat':
-      return 'green';
-    case 'bank_card':
-      return 'purple';
-    case 'credit_card':
-      return 'orange';
-    case 'manual':
-      return 'grey';
-    case 'bot':
-      return 'primary';
-    default:
-      return 'grey';
+  case 'alipay':
+    return 'blue';
+  case 'wechat':
+    return 'green';
+  case 'bank_card':
+    return 'purple';
+  case 'credit_card':
+    return 'orange';
+  case 'manual':
+    return 'grey';
+  case 'bot':
+    return 'primary';
+  default:
+    return 'grey';
   }
 };
 
