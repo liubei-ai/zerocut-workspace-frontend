@@ -165,6 +165,9 @@ importers:
       '@vue/test-utils':
         specifier: ^2.4.6
         version: 2.4.6
+      bagelpay:
+        specifier: ^1.0.6
+        version: 1.0.6
       eslint:
         specifier: ^9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1804,6 +1807,14 @@ packages:
 
   axios@1.9.0:
     resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
+
+  bagelpay@1.0.4:
+    resolution: {integrity: sha512-fL9sxh0iamDiBE8nQPsm+xDFTyfFQRA9Ue7RKv+JCVCc4dD6TmUPCCMlPDTWQhbzrISrWy2xnwXTPFhM4GUUSQ==}
+    engines: {node: '>=16.0.0'}
+
+  bagelpay@1.0.6:
+    resolution: {integrity: sha512-T1hbpvKRrRYaq06SilJLUmz1aKr85+B/mTxqzO5yLHMyZHV69gPKYvMzSEEqORnuBkL1Moqtrc5lTap/ZrgIdQ==}
+    engines: {node: '>=16.0.0'}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -5590,6 +5601,19 @@ snapshots:
       follow-redirects: 1.15.9
       form-data: 4.0.3
       proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  bagelpay@1.0.4:
+    dependencies:
+      axios: 1.9.0
+    transitivePeerDependencies:
+      - debug
+
+  bagelpay@1.0.6:
+    dependencies:
+      axios: 1.9.0
+      bagelpay: 1.0.4
     transitivePeerDependencies:
       - debug
 

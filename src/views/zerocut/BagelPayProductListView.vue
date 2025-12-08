@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { listBagelPayProducts, type BagelPayProduct } from '@/api/bagelpayApi';
+import { listBagelPayProducts } from '@/api/bagelpayApi';
 import Pricing from '@/components/Pricing.vue';
+import { type Product as BagelPayProduct } from 'bagelpay';
 import { onMounted, ref } from 'vue';
 
 type Cycle = 'monthly' | 'yearly';
-type PricingOption = { type: Cycle; price: number; currency: string; productUrl?: string };
+type PricingOption = {
+  type: Cycle;
+  price: number;
+  currency: string;
+  productUrl: string;
+};
 type PricingPlan = {
   tier: string;
   color: string;
@@ -17,7 +23,8 @@ const loading = ref(false);
 const plans = ref<PricingPlan[]>([]);
 const error = ref<string | null>(null);
 
-function normalizeTier(name: string) {
+function normalizeTier(name?: string) {
+  if (!name) return '';
   const normalized = name.replace('（', '(').replace('）', ')');
   const lower = normalized.toLowerCase();
   if (lower.startsWith('based')) return 'Based';
@@ -35,10 +42,10 @@ function tierColor(tier: string) {
 
 function toOption(p: BagelPayProduct): PricingOption | null {
   if (p.billingType === 'subscription' && p.recurringInterval === 'monthly') {
-    return { type: 'monthly', price: p.price, currency: p.currency, productUrl: p.productUrl };
+    return { type: 'monthly', price: p.price!, currency: p.currency!, productUrl: p.productUrl! };
   }
   if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
-    return { type: 'yearly', price: p.price, currency: p.currency, productUrl: p.productUrl };
+    return { type: 'yearly', price: p.price!, currency: p.currency!, productUrl: p.productUrl! };
   }
   return null;
 }
@@ -56,10 +63,10 @@ async function fetchPlans() {
     loading.value = true;
     error.value = null;
     const res = await listBagelPayProducts();
-    const items: BagelPayProduct[] = Array.isArray(res) ? res : (res as any).items || [];
+    const items: BagelPayProduct[] = Array.isArray(res) ? res : res.items || [];
     const map = new Map<string, PricingPlan>();
     items.forEach(p => {
-      if ((p as any).isArchive) return;
+      if (p.isArchive) return;
       const tier = normalizeTier(p.name);
       const opt = toOption(p);
       if (!opt) return;
