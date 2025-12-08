@@ -6,12 +6,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-type Cycle = 'monthly' | 'yearly';
+type Cycle = 'monthly' | 'yearly' | 'one_time';
 type PricingOption = {
   type: Cycle;
   price: number;
   currency: string;
-  productUrl?: string;
+  productUrl: string;
+  productId: string;
 };
 type PricingPlan = {
   tier: string;
@@ -22,12 +23,19 @@ type PricingPlan = {
 };
 
 const props = defineProps<{ plans: PricingPlan[]; loading?: boolean }>();
-const selectedCycle = ref<Cycle>('monthly');
+const emit = defineEmits<{
+  (
+    e: 'subscribe',
+    payload: { productId?: string; productUrl?: string; cycle: Cycle; tier: string }
+  ): void;
+}>();
+
+const selectedCycle = ref<Cycle>('yearly');
 
 function displayOption(plan: PricingPlan) {
   const prefer = plan.options.find(o => o.type === selectedCycle.value);
   if (prefer) return prefer;
-  const fallbackOrder: Cycle[] = ['monthly', 'yearly'];
+  const fallbackOrder: Cycle[] = ['yearly', 'monthly', 'one_time'];
   for (const c of fallbackOrder) {
     const opt = plan.options.find(o => o.type === c);
     if (opt) return opt;
@@ -41,8 +49,9 @@ const hasCycle = computed(() => {
   return types;
 });
 
-const hasMonthly = computed(() => hasCycle.value.has('monthly'));
 const hasYearly = computed(() => hasCycle.value.has('yearly'));
+const hasMonthly = computed(() => hasCycle.value.has('monthly'));
+const hasOneTime = computed(() => hasCycle.value.has('one_time'));
 
 function ensureSelectedCycle() {
   if (selectedCycle.value === 'monthly' && !hasMonthly.value) {
@@ -60,11 +69,22 @@ const sortedPlans = computed(() => {
     const opt =
       p.options.find(o => o.type === selectedCycle.value) ||
       p.options.find(o => o.type === 'monthly') ||
-      p.options.find(o => o.type === 'yearly');
+      p.options.find(o => o.type === 'yearly') ||
+      p.options.find(o => o.type === 'one_time');
     return opt ? opt.price : Number.POSITIVE_INFINITY;
   };
   return arr.sort((a, b) => priceOf(a) - priceOf(b));
 });
+
+function onSubscribe(plan: PricingPlan) {
+  const opt = displayOption(plan) as PricingOption | undefined;
+  emit('subscribe', {
+    productId: opt?.productId,
+    productUrl: opt?.productUrl,
+    cycle: (opt?.type as Cycle) ?? selectedCycle.value,
+    tier: plan.tier,
+  });
+}
 </script>
 
 <template>
@@ -73,8 +93,9 @@ const sortedPlans = computed(() => {
       <v-card max-width="1600" class="mx-auto" variant="flat" color="transparent">
         <div class="d-flex justify-center mb-6">
           <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" class="mr-3">
-            <v-btn v-if="hasMonthly" value="monthly">Monthly</v-btn>
             <v-btn v-if="hasYearly" value="yearly">Yearly</v-btn>
+            <v-btn v-if="hasMonthly" value="monthly">Monthly</v-btn>
+            <v-btn v-if="hasOneTime" value="one_time">One-time</v-btn>
           </v-btn-toggle>
           <v-progress-circular
             v-if="props.loading"
@@ -108,18 +129,31 @@ const sortedPlans = computed(() => {
                       <p class="font-weight-bold">
                         <span v-if="displayOption(plan)?.type === 'monthly'">/ month</span>
                         <span v-else-if="displayOption(plan)?.type === 'yearly'">/ year</span>
-                        <span v-else>/ one-time</span>
+                        <span v-else-if="displayOption(plan)?.type === 'one_time'">/ one-time</span>
                       </p>
                       <p class="px-5 pt-5">
                         <v-btn
+                          v-if="
+                            displayOption(plan)?.type === 'monthly' ||
+                            displayOption(plan)?.type === 'yearly'
+                          "
                           size="x-large"
                           class="text-white my-5"
                           block
                           :color="plan.color"
-                          :href="displayOption(plan)?.productUrl"
-                          target="_blank"
+                          @click="onSubscribe(plan)"
                         >
                           Subscribe
+                        </v-btn>
+                        <v-btn
+                          v-if="displayOption(plan)?.type === 'one_time'"
+                          size="x-large"
+                          class="text-white my-5"
+                          block
+                          :color="plan.color"
+                          @click="onSubscribe(plan)"
+                        >
+                          Purchase
                         </v-btn>
                       </p>
                     </v-card>

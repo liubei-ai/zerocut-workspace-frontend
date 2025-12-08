@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { listBagelPayProducts } from '@/api/bagelpayApi';
+import { createCheckout, listBagelPayProducts } from '@/api/bagelpayApi';
 import Pricing from '@/components/Pricing.vue';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { type Product as BagelPayProduct } from 'bagelpay';
 import { onMounted, ref } from 'vue';
 
-type Cycle = 'monthly' | 'yearly';
+type Cycle = 'monthly' | 'yearly' | 'one_time';
 type PricingOption = {
   type: Cycle;
   price: number;
   currency: string;
   productUrl: string;
+  productId: string;
 };
 type PricingPlan = {
   tier: string;
@@ -22,6 +25,10 @@ type PricingPlan = {
 const loading = ref(false);
 const plans = ref<PricingPlan[]>([]);
 const error = ref<string | null>(null);
+
+const snackbarStore = useSnackbarStore();
+const workspaceStore = useWorkspaceStore();
+const currentWorkspaceId = workspaceStore.currentWorkspaceId;
 
 function normalizeTier(name?: string) {
   if (!name) return '';
@@ -42,10 +49,31 @@ function tierColor(tier: string) {
 
 function toOption(p: BagelPayProduct): PricingOption | null {
   if (p.billingType === 'subscription' && p.recurringInterval === 'monthly') {
-    return { type: 'monthly', price: p.price!, currency: p.currency!, productUrl: p.productUrl! };
+    return {
+      type: 'monthly',
+      price: p.price!,
+      currency: p.currency!,
+      productUrl: p.productUrl!,
+      productId: p.productId!,
+    };
   }
   if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
-    return { type: 'yearly', price: p.price!, currency: p.currency!, productUrl: p.productUrl! };
+    return {
+      type: 'yearly',
+      price: p.price!,
+      currency: p.currency!,
+      productUrl: p.productUrl!,
+      productId: p.productId!,
+    };
+  }
+  if (p.billingType === 'single_payment') {
+    return {
+      type: 'one_time',
+      price: p.price!,
+      currency: p.currency!,
+      productUrl: p.productUrl!,
+      productId: p.productId!,
+    };
   }
   return null;
 }
@@ -93,13 +121,33 @@ async function fetchPlans() {
   }
 }
 
+async function handleClickSubscribe(payload: {
+  productId?: string;
+  productUrl?: string;
+  cycle: Cycle;
+  tier: string;
+}) {
+  try {
+    const res = await createCheckout({
+      workspaceId: currentWorkspaceId!,
+      productId: payload.productId!,
+      metadata: { cycle: payload.cycle, tier: payload.tier },
+    });
+    if (res.checkoutUrl) {
+      window.open(res.checkoutUrl, '_blank');
+    }
+  } catch (error) {
+    snackbarStore.showErrorMessage(error?.message || 'Failed to create checkout');
+  }
+}
+
 onMounted(fetchPlans);
 </script>
 
 <template>
   <div>
     <v-alert v-if="error" type="error" class="ma-4">{{ error }}</v-alert>
-    <Pricing :plans="plans" :loading="loading" />
+    <Pricing :plans="plans" :loading="loading" @subscribe="handleClickSubscribe" />
   </div>
 </template>
 
