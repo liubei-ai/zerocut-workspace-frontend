@@ -187,6 +187,7 @@ export default {
         manual: 'Manual Recharge',
         bot: 'Bot Recharge',
         gift: 'Credits Gift',
+        bagelpay: 'BagelPay',
         other: 'Other',
       },
       expired: 'Expired',

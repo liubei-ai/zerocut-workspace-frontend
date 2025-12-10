@@ -53,64 +53,68 @@ const filterOptions = ref({
 // 获取支付方式图标
 const getPaymentMethodIcon = (paymentMethod: string) => {
   switch (paymentMethod) {
-  case 'alipay':
-    return 'mdi-alipay';
-  case 'wechat':
-    return 'mdi-wechat';
-  case 'bank_card':
-    return 'mdi-credit-card';
-  case 'credit_card':
-    return 'mdi-credit-card-outline';
-  case 'manual':
-    return 'mdi-account-cash';
-  case 'bot':
-    return 'mdi-robot';
-  case 'give':
-    return 'mdi-gift';
-  default:
-    return 'mdi-cash';
+    case 'alipay':
+      return 'mdi-alipay';
+    case 'wechat':
+      return 'mdi-wechat';
+    case 'bank_card':
+      return 'mdi-credit-card';
+    case 'credit_card':
+      return 'mdi-credit-card-outline';
+    case 'manual':
+      return 'mdi-account-cash';
+    case 'bot':
+      return 'mdi-robot';
+    case 'give':
+      return 'mdi-gift';
+    case 'bagelpay':
+      return 'mdi-account-group';
+    default:
+      return 'mdi-cash';
   }
 };
 
 // 获取支付方式文本
 const getPaymentMethodText = (paymentMethod: string) => {
   switch (paymentMethod) {
-  case 'alipay':
-    return t('zerocut.wallet.payment.alipay');
-  case 'wechat':
-    return t('zerocut.wallet.payment.wechat');
-  case 'bank_card':
-    return t('zerocut.wallet.payment.bankCard');
-  case 'credit_card':
-    return t('zerocut.wallet.payment.creditCard');
-  case 'manual':
-    return t('zerocut.wallet.payment.manual');
-  case 'bot':
-    return t('zerocut.wallet.payment.bot');
-  case 'give':
-    return t('zerocut.wallet.payment.gift');
-  default:
-    return t('zerocut.wallet.payment.other');
+    case 'alipay':
+      return t('zerocut.wallet.payment.alipay');
+    case 'wechat':
+      return t('zerocut.wallet.payment.wechat');
+    case 'bank_card':
+      return t('zerocut.wallet.payment.bankCard');
+    case 'credit_card':
+      return t('zerocut.wallet.payment.creditCard');
+    case 'manual':
+      return t('zerocut.wallet.payment.manual');
+    case 'bot':
+      return t('zerocut.wallet.payment.bot');
+    case 'give':
+      return t('zerocut.wallet.payment.gift');
+    case 'bagelpay':
+      return t('zerocut.wallet.payment.bagelpay');
+    default:
+      return t('zerocut.wallet.payment.other');
   }
 };
 
 // 获取支付方式颜色
 const getPaymentMethodColor = (paymentMethod: string) => {
   switch (paymentMethod) {
-  case 'alipay':
-    return 'blue';
-  case 'wechat':
-    return 'green';
-  case 'bank_card':
-    return 'purple';
-  case 'credit_card':
-    return 'orange';
-  case 'manual':
-    return 'grey';
-  case 'bot':
-    return 'primary';
-  default:
-    return 'grey';
+    case 'alipay':
+      return 'blue';
+    case 'wechat':
+      return 'green';
+    case 'bank_card':
+      return 'purple';
+    case 'credit_card':
+      return 'orange';
+    case 'manual':
+      return 'grey';
+    case 'bot':
+      return 'primary';
+    default:
+      return 'grey';
   }
 };
 

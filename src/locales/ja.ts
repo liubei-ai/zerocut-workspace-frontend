@@ -200,6 +200,7 @@ export default {
         manual: '手動チャージ',
         bot: 'ボットチャージ',
         gift: 'ポイント付与',
+        bagelpay: 'BagelPay',
         other: 'その他',
       },
       expired: '失効',

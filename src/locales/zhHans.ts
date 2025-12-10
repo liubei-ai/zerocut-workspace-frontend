@@ -187,6 +187,7 @@ export default {
         manual: '手动充值',
         bot: '机器人充值',
         gift: '积分赠送',
+        bagelpay: 'BagelPay',
         other: '其他',
       },
       expired: '已过期',
