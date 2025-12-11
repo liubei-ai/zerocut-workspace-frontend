@@ -98,12 +98,11 @@ async function fetchPlans() {
       const tier = normalizeTier(p.name);
       const opt = toOption(p);
       if (!opt) return;
-      const { color, colorClass } = tierColor(tier);
+
       if (!map.has(tier)) {
         map.set(tier, {
           tier,
-          color,
-          colorClass,
+          ...tierColor(tier),
           features: extractFeatures(p.description),
           options: [opt],
         });
