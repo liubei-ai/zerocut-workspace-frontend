@@ -400,6 +400,8 @@ onMounted(() => {
                 { title: '操作', key: 'actions', sortable: false, align: 'end' },
               ]"
               :items="workflowItems"
+              :items-per-page="30"
+              :items-per-page-options="[{ title: '30', value: 30 }]"
               :loading="workflowsLoading"
             >
               <template #item.workflow_name="{ item }">
