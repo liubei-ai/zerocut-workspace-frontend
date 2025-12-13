@@ -287,6 +287,55 @@ export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}
   return response.data;
 }
 
+// Coze 工作流相关类型
+export interface CozeWorkflowItem {
+  workflow_id: string;
+  workflow_name: string;
+  description: string;
+  app_id: string;
+  creator: string;
+  icon_url: string;
+  created_at: string;
+  updated_at: string;
+  has_metadata: boolean;
+  metadata?: Record<string, any>;
+}
+
+export interface ListCozeWorkflowsParams {
+  pageNum?: number;
+  pageSize?: number;
+}
+
+export interface ListCozeWorkflowsResponse {
+  items: CozeWorkflowItem[];
+  has_more: boolean;
+}
+
+export async function listCozeWorkflows(params: ListCozeWorkflowsParams = {}) {
+  const response = await apiClient.get<ListCozeWorkflowsResponse>('/admin/workflows/list', {
+    params,
+  });
+  return response.data;
+}
+
+export interface WorkflowMetadata {
+  workflowId: string;
+  metadata?: Record<string, any>;
+}
+
+export async function getWorkflowMetadata(workflowId: string) {
+  const response = await apiClient.get<WorkflowMetadata>(`/admin/workflows/metadata/${workflowId}`);
+  return response.data;
+}
+
+export async function saveWorkflowMetadata(workflowId: string, metadata: Record<string, any>) {
+  const response = await apiClient.put<WorkflowMetadata>(
+    `/admin/workflows/metadata/${workflowId}`,
+    { metadata }
+  );
+  return response.data;
+}
+
 export interface PersonaItem {
   id: number;
   name: string;
