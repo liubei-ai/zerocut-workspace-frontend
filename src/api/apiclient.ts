@@ -1,6 +1,5 @@
 import type { ApiError, ApiResponse } from '@/types/api';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
-import { handleAuthFailure } from './helper';
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -35,7 +34,7 @@ apiClient.interceptors.response.use(
     } else if (code === 401) {
       // Handle authentication failure
       console.warn('Authentication failed, redirecting to login page');
-      handleAuthFailure();
+      // handleAuthFailure();
 
       // Still reject the promise so the calling code can handle it
       const apiError: ApiError = {
@@ -62,7 +61,7 @@ apiClient.interceptors.response.use(
       // Handle HTTP 401 Unauthorized
       if (status === 401) {
         console.warn('HTTP 401 Unauthorized, redirecting to login page');
-        handleAuthFailure();
+        // handleAuthFailure();
       }
 
       // Server responded with error status
