@@ -27,14 +27,7 @@ export default defineConfig({
       mockPath: 'src/mocks',
       enable: false,
     }),
-    basicSsl({
-      /** name of certification */
-      name: 'local',
-      /** custom trust domains */
-      domains: ['local-workspace.zerocut.cn'],
-      /** custom certification directory */
-      certDir: 'cert',
-    }),
+    basicSsl(),
   ],
   define: { 'process.env': {} },
   resolve: {
