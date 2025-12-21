@@ -101,6 +101,15 @@ export default [
       'no-var': 'error',
       'no-unused-vars': 'warn',
       'no-undef': 'warn', // 将未定义变量改为警告
+      'sort-imports': [
+        'warn',
+        {
+          ignoreCase: true,
+          ignoreDeclarationSort: true,
+          ignoreMemberSort: true,
+          allowSeparatedGroups: true,
+        },
+      ],
 
       // Vue 规则
       'vue/multi-word-component-names': 'off',
