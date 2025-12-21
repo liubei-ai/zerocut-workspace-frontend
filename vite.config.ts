@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 // Plugins
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import vue from '@vitejs/plugin-vue';
 import { viteMockServe } from 'vite-plugin-mock';
 import vuetify from 'vite-plugin-vuetify';
@@ -26,6 +27,7 @@ export default defineConfig({
       mockPath: 'src/mocks',
       enable: false,
     }),
+    basicSsl(),
   ],
   define: { 'process.env': {} },
   resolve: {
@@ -37,7 +39,6 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 8080,
     watch: {
       usePolling: true,
     },
@@ -62,7 +63,6 @@ export default defineConfig({
         api: 'modern-compiler',
         prependData: `@use 'src/styles/main.scss' as *;`,
       },
-      css: { charset: false },
     },
   },
 });

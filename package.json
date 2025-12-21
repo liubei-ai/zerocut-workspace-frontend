@@ -66,6 +66,7 @@
     "@types/qrcode": "^1.5.5",
     "@typescript-eslint/eslint-plugin": "^8.34.1",
     "@typescript-eslint/parser": "^8.34.1",
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-vue": "^5.1.2",
     "@vitest/ui": "^2.0.5",
     "@vue/eslint-config-typescript": "^14.5.0",
