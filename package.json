@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --mode dev",
-    "build": "vite build --base=/ --mode pro",
+    "build": "vite build --mode pro",
+    "build:vercel": "vite build --mode vercel",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
