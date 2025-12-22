@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite --mode dev",
     "build": "vite build --mode pro",
-    "build:vercel": "vite build --mode vercel",
+    "build:railway": "vite build --mode railway",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -96,10 +96,6 @@
     "*.{scss,css,md,json}": [
       "prettier --write"
     ]
-  },
-  "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=10.12.1"
   },
   "packageManager": "pnpm@10.12.1"
 }
