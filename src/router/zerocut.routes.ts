@@ -1,6 +1,8 @@
 // Zerocut 视频 Agent 管理台路由配置
 // 对应新的扁平化菜单结构
 
+import { authGuard } from '@auth0/auth0-vue';
+
 export default [
   {
     path: '/dashboard',
@@ -13,6 +15,7 @@ export default [
     },
     component: () =>
       import(/* webpackChunkName: "dashboard" */ '@/views/zerocut/DashboardView.vue'),
+    beforeEnter: authGuard,
   },
   {
     path: '/apikey',

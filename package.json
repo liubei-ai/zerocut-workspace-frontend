@@ -17,6 +17,7 @@
     "commit": "claude -p 'make a commit' --model 'claude-haiku-4-5-20251001' --dangerously-skip-permissions"
   },
   "dependencies": {
+    "@auth0/auth0-vue": "^2.5.0",
     "@authing/guard-vue3": "^5.3.9",
     "@formkit/auto-animate": "^0.8.2",
     "@mdi/font": "7.4.47",

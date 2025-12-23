@@ -11,6 +11,25 @@ export const routes = [
     meta: {},
   },
   {
+    path: '/auth/auth0',
+    name: 'auth-auth0',
+    component: () => import(/* webpackChunkName: "auth-auth0" */ '@/views/auth/Auth0Page.vue'),
+    meta: {
+      layout: 'auth',
+      title: 'Auth0认证',
+    },
+  },
+  {
+    path: '/auth/callback',
+    name: 'auth-auth0-callback',
+    component: () =>
+      import(/* webpackChunkName: "auth-auth0-callback" */ '@/views/auth/Auth0Callback.vue'),
+    meta: {
+      layout: 'auth',
+      title: 'Auth0认证回调',
+    },
+  },
+  {
     path: '/auth/authing',
     name: 'auth-authing',
     component: () => import(/* webpackChunkName: "auth-authing" */ '@/views/auth/AuthingPage.vue'),
@@ -84,7 +103,7 @@ router.beforeEach(async to => {
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (userStore.isLoggedIn && to.path.startsWith('/auth/')) {
+  if (userStore.isLoggedIn && to.path === '/auth/authing') {
     return '/';
   }
 
