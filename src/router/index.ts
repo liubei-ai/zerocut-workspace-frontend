@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
-// import LandingRoutes from './landing.routes';
+import { auth0Routes, authingRoutes } from './auth.routes';
 import ZerocutRoutes from './zerocut.routes';
 
 export const routes = [
@@ -10,43 +10,14 @@ export const routes = [
     redirect: '/dashboard',
     meta: {},
   },
-  {
-    path: '/auth/auth0',
-    name: 'auth-auth0',
-    component: () => import(/* webpackChunkName: "auth-auth0" */ '@/views/auth/Auth0Page.vue'),
-    meta: {
-      layout: 'auth',
-      title: 'Auth0认证',
-    },
-  },
-  {
-    path: '/auth/callback',
-    name: 'auth-auth0-callback',
-    component: () =>
-      import(/* webpackChunkName: "auth-auth0-callback" */ '@/views/auth/Auth0Callback.vue'),
-    meta: {
-      layout: 'auth',
-      title: 'Auth0认证回调',
-    },
-  },
-  {
-    path: '/auth/authing',
-    name: 'auth-authing',
-    component: () => import(/* webpackChunkName: "auth-authing" */ '@/views/auth/AuthingPage.vue'),
-    meta: {
-      layout: 'auth',
-      title: 'Authing认证',
-    },
-  },
+  ...(import.meta.env.VITE_AUTH_MODE === 'auth0' ? auth0Routes : authingRoutes),
+  ...ZerocutRoutes,
+  ...AdminRoutes,
   {
     path: '/:pathMatch(.*)*',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
   },
-  // ...LandingRoutes,
-  // ...ChartsRoutes,
-  ...ZerocutRoutes,
-  ...AdminRoutes,
 ];
 
 // 动态路由，基于用户权限动态去加载
@@ -103,7 +74,7 @@ router.beforeEach(async to => {
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (userStore.isLoggedIn && to.path === '/auth/authing') {
+  if (userStore.isLoggedIn && to.path.startsWith('/auth/')) {
     return '/';
   }
 

@@ -1,36 +1,29 @@
 import router from '@/router';
 import type { RechargeRecord } from '@/types/api';
-import { useGuard, type User as AuthingUser } from '@authing/guard-vue3';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { requestLogout, syncUserProfile } from '../api/authApi';
+import { requestAuthingLogout, syncAuth0Token, syncAuthingToken } from '../api/authApi';
 import { useUserStore } from './userStore';
 import { useWorkspaceStore } from './workspaceStore';
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('authing', () => {
   // 状态
   const loading = ref(false);
   const error = ref<string | null>(null);
   const newbieCreditsRecord = ref<RechargeRecord | null>(null);
-
-  // 在 store 顶层初始化 composable
-  const guard = useGuard();
   const userStore = useUserStore();
 
   /**
    * Handle Authing login success
    */
-  const setAuthingUser = async (authingUser: AuthingUser) => {
+  const setAuthingUser = async (token: string, authType: 'authing' | 'auth0') => {
     // 调用 API 同步用户信息
-    const response = await syncUserProfile({
-      authingId: authingUser.id,
-      name: authingUser.name as string,
-      username: authingUser.username as string,
-      avatar: authingUser.photo as string,
-      email: authingUser.email as string,
-      phone: authingUser.phone as string,
-      token: authingUser.token as string,
-    });
+    let response;
+    if (authType === 'authing') {
+      response = await syncAuthingToken(token);
+    } else if (authType === 'auth0') {
+      response = await syncAuth0Token(token);
+    }
 
     error.value = null;
     const { newbieCreditsRecord: record, ...rest } = response.data;
@@ -54,8 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true;
 
     try {
-      await requestLogout();
-      await guard.logout();
+      await requestAuthingLogout();
     } catch (err) {
       console.error('Logout failed:', err);
     } finally {

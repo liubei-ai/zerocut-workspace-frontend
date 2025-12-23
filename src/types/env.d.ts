@@ -7,12 +7,11 @@ declare interface ImportMeta {
     readonly BASE_URL: string;
     readonly SSR: boolean;
 
-    // Environment variables defined in .env
     readonly VITE_API_BASE_URL: string;
     readonly VITE_API2_BASE_URL: string;
 
+    readonly VITE_AUTH_MODE: 'auth0' | 'authing';
     readonly VITE_AUTHING_APP_ID: string;
-
     readonly VITE_AUTH0_DOMAIN: string;
     readonly VITE_AUTH0_CLIENT_ID: string;
     readonly VITE_AUTH0_CALLBACK_URL: string;

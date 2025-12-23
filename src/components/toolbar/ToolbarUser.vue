@@ -7,8 +7,8 @@
 import { useAuthStore } from '@/stores/authStore';
 import { useUserStore } from '@/stores/userStore';
 import { computed } from 'vue';
-import StatusMenu from './StatusMenu.vue';
 import { useI18n } from 'vue-i18n';
+import StatusMenu from './StatusMenu.vue';
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
