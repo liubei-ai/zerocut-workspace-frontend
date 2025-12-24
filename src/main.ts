@@ -35,26 +35,25 @@ app.use(VueVirtualScroller);
 app.use(VueApexCharts);
 app.use(pinia);
 app.use(i18n);
+app.use(vuetify);
 app.use(Vue3Lottie, { name: 'LottieAnimation' });
 app.use(autoAnimatePlugin);
+app.use(
+  createGuard({
+    appId: import.meta.env.VITE_AUTHING_APP_ID,
+  })
+);
+app.use(
+  createAuth0({
+    domain: import.meta.env.VITE_AUTH0_DOMAIN,
+    clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
+    cacheLocation: 'localstorage',
+    useRefreshTokens: true,
+    authorizationParams: {
+      audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+      redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
+    },
+  }) as any // eslint-disable-line @typescript-eslint/no-explicit-any
+);
 
-if (import.meta.env.VITE_AUTH_MODE === 'authing') {
-  app.use(
-    createGuard({
-      appId: import.meta.env.VITE_AUTHING_APP_ID,
-    })
-  );
-} else if (import.meta.env.VITE_AUTH_MODE === 'auth0') {
-  app.use(
-    createAuth0({
-      domain: import.meta.env.VITE_AUTH0_DOMAIN,
-      clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
-      authorizationParams: { redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL },
-      cacheLocation: 'localstorage', // 将状态持久化到本地存储
-      useRefreshTokens: true, // 强烈建议开启，配合持久化使用
-    }) as any // eslint-disable-line @typescript-eslint/no-explicit-any
-  );
-}
-
-app.use(vuetify);
 app.mount('#app');

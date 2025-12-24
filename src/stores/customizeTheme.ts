@@ -23,7 +23,7 @@ export const useCustomizeThemeStore = defineStore('customizeTheme', {
       colorName: 'grey',
       colorValue: '#344767',
     },
-    localCode: 'zhHans',
+    localCode: import.meta.env.VITE_DEFAULT_LANGUAGE,
     mainSidebar: true,
     // mainSidebar: isMobile() ? false : true,
   }),

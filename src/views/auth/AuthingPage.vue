@@ -31,8 +31,7 @@ const showError = ref(false);
 guard.on('login', async (authingUser: User) => {
   try {
     if (authingUser) {
-      console.log('登录成功，用户信息:', authingUser);
-      await authStore.setAuthingUser(authingUser.token as string, 'authing');
+      await authStore.setAuthingUser(authingUser.token as string);
       await router.push('/');
     }
   } catch (error) {

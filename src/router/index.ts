@@ -4,13 +4,16 @@ import AdminRoutes from './admin.routes';
 import { auth0Routes, authingRoutes } from './auth.routes';
 import ZerocutRoutes from './zerocut.routes';
 
+const authType = import.meta.env.VITE_AUTH_MODE;
+const authRouteName = authType === 'auth0' ? 'auth-auth0' : 'auth-authing';
+
 export const routes = [
   {
     path: '/',
     redirect: '/dashboard',
     meta: {},
   },
-  ...(import.meta.env.VITE_AUTH_MODE === 'auth0' ? auth0Routes : authingRoutes),
+  ...(authType === 'auth0' ? auth0Routes : authingRoutes),
   ...ZerocutRoutes,
   ...AdminRoutes,
   {
@@ -60,10 +63,8 @@ router.beforeEach(async to => {
   if (requiresAuth && !userStore.isLoggedIn) {
     const userInfo = await checkAuthorization();
     if (!userInfo) {
-      console.log('checkAuthorization failed, redirecting to auth-authing');
-      return { name: 'auth-authing', query: { redirect: to.fullPath } };
+      return { name: authRouteName, query: { redirect: to.fullPath } };
     } else {
-      console.log('checkAuthorization success, userInfo:', userInfo);
       userStore.updateUserInfo(userInfo);
     }
   }

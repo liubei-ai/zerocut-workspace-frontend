@@ -2,7 +2,12 @@ import router from '@/router';
 import type { RechargeRecord } from '@/types/api';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { requestAuthingLogout, syncAuth0Token, syncAuthingToken } from '../api/authApi';
+import {
+  requestAuth0Logout,
+  requestAuthingLogout,
+  syncAuth0Token,
+  syncAuthingToken,
+} from '../api/authApi';
 import { useUserStore } from './userStore';
 import { useWorkspaceStore } from './workspaceStore';
 
@@ -12,11 +17,13 @@ export const useAuthStore = defineStore('authing', () => {
   const error = ref<string | null>(null);
   const newbieCreditsRecord = ref<RechargeRecord | null>(null);
   const userStore = useUserStore();
+  const authType = import.meta.env.VITE_AUTH_MODE;
+  const authRouteName = authType === 'auth0' ? 'auth-auth0' : 'auth-authing';
 
   /**
    * Handle Authing login success
    */
-  const setAuthingUser = async (token: string, authType: 'authing' | 'auth0') => {
+  const setAuthingUser = async (token: string) => {
     // 调用 API 同步用户信息
     let response;
     if (authType === 'authing') {
@@ -47,15 +54,19 @@ export const useAuthStore = defineStore('authing', () => {
     loading.value = true;
 
     try {
-      await requestAuthingLogout();
+      if (authType === 'authing') {
+        await requestAuthingLogout();
+      } else if (authType === 'auth0') {
+        await requestAuth0Logout();
+      }
     } catch (err) {
       console.error('Logout failed:', err);
     } finally {
       clearAuthState();
       loading.value = false;
-      if (router.currentRoute.value.name !== 'auth-authing') {
+      if (router.currentRoute.value.name !== authRouteName) {
         router.push({
-          name: 'auth-authing',
+          name: authRouteName,
           query: { redirect: router.currentRoute.value.fullPath },
         });
       }

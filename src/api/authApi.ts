@@ -2,7 +2,15 @@ import { type SyncedUser } from '../types/api';
 import apiClient from './api2client';
 
 export async function syncAuthingToken(token: string) {
-  return apiClient.post<SyncedUser>('/auth/sync', { token });
+  return apiClient.post<SyncedUser>(
+    '/auth/sync',
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 }
 
 export async function requestAuthingLogout() {
@@ -10,7 +18,15 @@ export async function requestAuthingLogout() {
 }
 
 export async function syncAuth0Token(token: string) {
-  return apiClient.post<SyncedUser>('/auth0/sync', { token });
+  return apiClient.post<SyncedUser>(
+    '/auth0/sync',
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 }
 
 export async function requestAuth0Logout() {

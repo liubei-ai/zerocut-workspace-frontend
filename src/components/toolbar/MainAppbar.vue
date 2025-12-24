@@ -5,10 +5,6 @@ import { useDisplay } from 'vuetify';
 import ThemeToggle from './ThemeToggle.vue';
 import ToolbarUser from './ToolbarUser.vue';
 
-// import ToolbarNotifications from './ToolbarNotifications.vue';
-// import { useTodoStore } from '@/views/app/todo/todoStore';
-
-// const todoStore = useTodoStore();
 const { mdAndUp } = useDisplay();
 const customizeTheme = useCustomizeThemeStore();
 const showMobileSearch = ref(false);
