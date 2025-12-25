@@ -1,4 +1,4 @@
-export default [
+const zerocutMenu = [
   {
     key: 'menu.studio',
     link: 'https://studio.zerocut.cn/auth/authing?redirect=/projects',
@@ -25,27 +25,21 @@ export default [
     link: '/wallet',
     icon: 'mdi-wallet-outline',
   },
-  {
+];
+
+if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
+  zerocutMenu.push({
     key: 'menu.packages',
     link: '/packages',
     icon: 'mdi-gift',
-  },
-  {
-    key: 'menu.guide',
-    link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
-    icon: 'mdi-open-in-new',
-    external: true,
-  },
-  // {
-  //   key: 'menu.settings',
-  //   text: '工作区设置',
-  //   link: '/settings',
-  //   icon: 'mdi-account-cog-outline',
-  // },
-  // {
-  //   key: 'menu.members',
-  //   text: '成员管理',
-  //   link: '/members',
-  //   icon: 'mdi-account-group-outline',
-  // },
-];
+  });
+}
+
+zerocutMenu.push({
+  key: 'menu.guide',
+  link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
+  icon: 'mdi-open-in-new',
+  external: true,
+});
+
+export default zerocutMenu;

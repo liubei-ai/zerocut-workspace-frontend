@@ -16,3 +16,6 @@ VITE_AUTH0_DOMAIN=zerocut.us.auth0.com
 VITE_AUTH0_CLIENT_ID=UjtGDSOCj4mujCu725M8nh1fbNyh5hWg
 VITE_AUTH0_CALLBACK_URL=https://workspace.zerocut.art/auth/auth0/callback
 VITE_AUTH0_AUDIENCE=https://zerocut-workspace-server-production.up.railway.app
+
+# 功能开关
+VITE_PACKAGE_PAGE_ENABLE=false
