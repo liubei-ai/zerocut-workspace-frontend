@@ -18,4 +18,5 @@ VITE_AUTH0_CALLBACK_URL=https://workspace.zerocut.art/auth/auth0/callback
 VITE_AUTH0_AUDIENCE=https://zerocut-workspace-server-production.up.railway.app
 
 # 功能开关
+VITE_PRO_GUIDE_ENABLE=true
 VITE_PACKAGE_PAGE_ENABLE=true

@@ -35,11 +35,13 @@ if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
   });
 }
 
-zerocutMenu.push({
-  key: 'menu.guide',
-  link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
-  icon: 'mdi-open-in-new',
-  external: true,
-});
+if (import.meta.env.VITE_PRO_GUIDE_ENABLE === 'true') {
+  zerocutMenu.push({
+    key: 'menu.guide',
+    link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
+    icon: 'mdi-open-in-new',
+    external: true,
+  });
+}
 
 export default zerocutMenu;
