@@ -177,8 +177,11 @@ const filterdFileInfos = computed(() => {
             <v-card>
               <v-card-title>
                 <v-spacer></v-spacer>
-                <v-btn @click="removeImage" class="text-primary" variant="flat"
-                  ><v-icon size="30">mdi-delete</v-icon></v-btn
+                <v-btn
+                  @click="removeImage"
+                  class="text-primary"
+                  variant="flat"
+                ><v-icon size="30">mdi-delete</v-icon></v-btn
                 ></v-card-title
               >
               <v-divider></v-divider>
@@ -234,7 +237,7 @@ const filterdFileInfos = computed(() => {
               class="font-weight-bold"
               variant="flat"
               color="blue"
-              >Yes</v-btn
+            >Yes</v-btn
             >
             <v-btn v-else class="font-weight-bold" variant="flat" color="error">No</v-btn>
           </template>

@@ -65,6 +65,8 @@ const getPaymentMethodText = (paymentMethod: string) => {
       return '机器人充值';
     case 'give':
       return '积分赠送';
+    case 'bagelpay':
+      return 'BagelPay';
     default:
       return '其他';
   }

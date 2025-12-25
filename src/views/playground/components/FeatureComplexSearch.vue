@@ -243,11 +243,11 @@ const search = ref<string>('');
                   <span class="text-blue-grey"> {{ item.author }}</span>
                   <span>
                     <span class="mr-2"
-                      ><v-icon>mdi-download</v-icon>
+                    ><v-icon>mdi-download</v-icon>
                       {{ item.downloadsAndViews?.split('\n')[0] }}</span
                     >
                     <span
-                      ><v-icon>mdi-eye</v-icon> {{ item.downloadsAndViews?.split('\n')[1] }}</span
+                    ><v-icon>mdi-eye</v-icon> {{ item.downloadsAndViews?.split('\n')[1] }}</span
                     >
                   </span>
                 </div>

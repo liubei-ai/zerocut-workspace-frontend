@@ -29,8 +29,11 @@ import members from '@/data/members';
               <p class="text-body-1 text-blue-grey">{{ member.position }}</p>
               <p class="text-body-2 text-grey">{{ member.description }}</p>
               <div>
-                <v-btn icon v-for="item in member.social" :to="item.link"
-                  ><v-icon>{{ item.icon }}</v-icon></v-btn
+                <v-btn
+                  icon
+                  v-for="item in member.social"
+                  :to="item.link"
+                ><v-icon>{{ item.icon }}</v-icon></v-btn
                 >
               </div>
             </v-card>

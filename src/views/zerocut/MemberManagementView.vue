@@ -273,28 +273,28 @@ const getRoleInfo = (roleValue: string) => {
 // 获取状态颜色
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'active':
-      return 'success';
-    case 'pending':
-      return 'warning';
-    case 'inactive':
-      return 'grey';
-    default:
-      return 'info';
+  case 'active':
+    return 'success';
+  case 'pending':
+    return 'warning';
+  case 'inactive':
+    return 'grey';
+  default:
+    return 'info';
   }
 };
 
 // 获取状态文本
 const getStatusText = (status: string) => {
   switch (status) {
-    case 'active':
-      return t('zerocut.members.status.active');
-    case 'pending':
-      return t('zerocut.members.status.pending');
-    case 'inactive':
-      return t('zerocut.members.status.inactive');
-    default:
-      return t('zerocut.members.status.unknown');
+  case 'active':
+    return t('zerocut.members.status.active');
+  case 'pending':
+    return t('zerocut.members.status.pending');
+  case 'inactive':
+    return t('zerocut.members.status.inactive');
+  default:
+    return t('zerocut.members.status.unknown');
   }
 };
 
@@ -365,18 +365,18 @@ const resendInvite = (member: any) => {
 // 获取默认权限
 const getDefaultPermissions = (role: string): string[] => {
   switch (role) {
-    case 'owner':
-      return permissions.value.map(p => p.value);
-    case 'admin':
-      return ['project.create', 'project.edit', 'member.invite', 'member.manage', 'settings.view'];
-    case 'editor':
-      return ['project.create', 'project.edit'];
-    case 'viewer':
-      return [];
-    case 'member':
-      return ['project.edit'];
-    default:
-      return [];
+  case 'owner':
+    return permissions.value.map(p => p.value);
+  case 'admin':
+    return ['project.create', 'project.edit', 'member.invite', 'member.manage', 'settings.view'];
+  case 'editor':
+    return ['project.create', 'project.edit'];
+  case 'viewer':
+    return [];
+  case 'member':
+    return ['project.edit'];
+  default:
+    return [];
   }
 };
 

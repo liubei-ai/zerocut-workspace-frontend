@@ -191,6 +191,7 @@ const getPaymentMethodText = (method?: string) => {
     manual: '手动充值',
     give: '积分赠送',
     admin: '管理员充值',
+    bagelpay: 'BagelPay',
   };
   return methodMap[method || ''] || method || '未知';
 };

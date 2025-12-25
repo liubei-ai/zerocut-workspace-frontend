@@ -97,7 +97,7 @@
                             color="#E89888"
                             rounded
                           ></v-progress-linear
-                        ></v-col>
+                          ></v-col>
                         <v-col cols="2">79%</v-col>
                       </v-row>
                     </template>
@@ -115,7 +115,7 @@
                             color="#B931F0"
                             rounded
                           ></v-progress-linear
-                        ></v-col>
+                          ></v-col>
                         <v-col cols="2">70%</v-col>
                       </v-row>
                       <div></div>

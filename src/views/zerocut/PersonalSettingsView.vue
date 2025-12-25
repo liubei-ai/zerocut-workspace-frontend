@@ -563,7 +563,7 @@ onMounted(() => {
                     </span>
                   </div>
                   <div class="text-caption text-medium-emphasis ml-6">
-                    {{ login.location }}<br />
+                    {{ login.location }}<br>
                     {{ login.timestamp }}
                   </div>
                   <v-divider
@@ -899,7 +899,7 @@ onMounted(() => {
               style="display: none"
               ref="fileInput"
               @change="uploadAvatar"
-            />
+            >
             <v-btn
               color="primary"
               variant="outlined"

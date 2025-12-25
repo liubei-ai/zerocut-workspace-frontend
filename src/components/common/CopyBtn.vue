@@ -38,8 +38,11 @@ const copyText = (event: Event) => {
       </template>
     </v-snackbar>
 
-    <v-btn v-bind="$attrs" icon @click="copyText($event)"
-      ><v-icon>mdi-content-copy</v-icon>
+    <v-btn
+      v-bind="$attrs"
+      icon
+      @click="copyText($event)"
+    ><v-icon>mdi-content-copy</v-icon>
       <v-tooltip activator="parent" location="bottom" text="Copy"></v-tooltip>
     </v-btn>
   </div>

@@ -62,14 +62,14 @@ const width = computed(() => {
   // name is reactive and
   // must use .value
   switch (name.value) {
-    case 'md':
-      return 125;
-    case 'lg':
-      return 175;
-    case 'xl':
-      return 275;
-    case 'xxl':
-      return 375;
+  case 'md':
+    return 125;
+  case 'lg':
+    return 175;
+  case 'xl':
+    return 275;
+  case 'xxl':
+    return 375;
   }
   console.log(name.value);
   return undefined;

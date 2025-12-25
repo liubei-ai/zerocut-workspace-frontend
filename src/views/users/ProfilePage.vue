@@ -140,7 +140,7 @@ Basic with Icons
                   type="text"
                   placeholder="John Deo"
                   hide-details
-              /></v-col>
+                /></v-col>
             </v-row>
           </v-card-text>
           <v-divider></v-divider>
@@ -241,7 +241,7 @@ Basic with Icons
                   @click:append-inner="confirmPasswordShow = !confirmPasswordShow"
                 >
                 </v-text-field
-              ></v-col>
+                ></v-col>
             </v-row>
           </v-card-text>
           <v-divider></v-divider>

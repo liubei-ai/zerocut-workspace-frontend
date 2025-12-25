@@ -5,7 +5,13 @@
       <v-container>
         <h1 class="text-h4">Card 1</h1>
         <v-row align="center" justify="center">
-          <v-col cols="12" md="6" lg="4" xl="3" v-for="i in 4" :key="i">
+          <v-col
+            cols="12"
+            md="6"
+            lg="4"
+            xl="3"
+            v-for="i in 4"
+            :key="i">
             <v-card class="card-1 pa-5 mx-auto" height="400" width="300">
               <h1 class="text-white">Let Test Some thing</h1>
 
@@ -17,7 +23,13 @@
         <v-divider class="my-10"></v-divider>
         <h1 class="text-h4">Card 2</h1>
         <v-row align="center" justify="center">
-          <v-col cols="12" md="6" lg="4" xl="3" v-for="i in 4" :key="i">
+          <v-col
+            cols="12"
+            md="6"
+            lg="4"
+            xl="3"
+            v-for="i in 4"
+            :key="i">
             <div class="card-2">
               <div class="cup-warp">
                 <Icon class="animate-icon cup" icon="fxemoji:sunrays" />
@@ -31,7 +43,13 @@
         <v-divider class="my-10"></v-divider>
         <h1 class="text-h4">Card 3</h1>
         <v-row align="center" justify="center">
-          <v-col cols="12" md="6" lg="4" xl="3" v-for="i in 4" :key="i">
+          <v-col
+            cols="12"
+            md="6"
+            lg="4"
+            xl="3"
+            v-for="i in 4"
+            :key="i">
             <div class="card-3 mx-auto my-5">
               <v-card height="400" width="300"> </v-card>
             </div>
@@ -40,7 +58,13 @@
         <v-divider class="my-10"></v-divider>
         <h1 class="text-h4">Card 4</h1>
         <v-row align="center" justify="center">
-          <v-col cols="12" md="6" lg="4" xl="3" v-for="i in 4" :key="i">
+          <v-col
+            cols="12"
+            md="6"
+            lg="4"
+            xl="3"
+            v-for="i in 4"
+            :key="i">
             <div class="card-4 mx-auto my-5">
               <v-card variant="flat" height="400" width="300">
                 <v-img :src="'https://picsum.photos/400/400?random=' + i"></v-img>

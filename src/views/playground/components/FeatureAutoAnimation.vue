@@ -52,8 +52,12 @@ const dialog = ref(false);
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn variant="elevated" color="primary" block @click="dialog = false"
-              >Close Dialog</v-btn
+            <v-btn
+              variant="elevated"
+              color="primary"
+              block
+              @click="dialog = false"
+            >Close Dialog</v-btn
             >
           </v-card-actions>
         </v-card>

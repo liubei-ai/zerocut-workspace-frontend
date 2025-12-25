@@ -59,7 +59,7 @@ const comments = [
                   >
                     <div>
                       <v-avatar size="50" class="mr-4">
-                        <img :src="comment.avatar" />
+                        <img :src="comment.avatar">
                       </v-avatar>
                     </div>
                     <div class="user-info text-body-2">

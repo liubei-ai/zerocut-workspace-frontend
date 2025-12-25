@@ -92,6 +92,20 @@ export default [
     component: () =>
       import(/* webpackChunkName: "package-list" */ '@/views/zerocut/PackageListView.vue'),
   },
+  {
+    path: '/bagelpay/products',
+    name: 'BagelPayProducts',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '会员定价',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
+      ),
+  },
   // {
   //   path: '/profile',
   //   name: 'profile',

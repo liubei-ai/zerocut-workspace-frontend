@@ -33,7 +33,7 @@ const handleInput = event => {
 </script>
 
 <template>
-  <input type="text" v-bind="$attrs" :value="formattedValue" @input="handleInput" />
+  <input type="text" v-bind="$attrs" :value="formattedValue" @input="handleInput">
 </template>
 
 <style scoped lang="scss"></style>

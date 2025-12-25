@@ -166,7 +166,13 @@ onMounted(() => {
     </div>
 
     <v-row v-else>
-      <v-col v-for="pkg in packages" :key="pkg.id" cols="12" sm="6" md="4" lg="3">
+      <v-col
+        v-for="pkg in packages"
+        :key="pkg.id"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3">
         <PackageCard :package-info="pkg" @purchase="handlePurchase" />
       </v-col>
     </v-row>

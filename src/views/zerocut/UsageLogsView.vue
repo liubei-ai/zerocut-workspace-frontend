@@ -272,7 +272,7 @@ onMounted(() => {
 
         <template #item.creditsAmount="{ item }">
           <span class="text-error font-weight-medium"
-            >-{{ formatCredits(item.creditsAmount) }}</span
+          >-{{ formatCredits(item.creditsAmount) }}</span
           >
         </template>
 

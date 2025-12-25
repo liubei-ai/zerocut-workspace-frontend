@@ -34,7 +34,7 @@
                 <div class="d-flex justify-space-between align-center">
                   <span class="text-body-2 text-medium-emphasis">支付金额</span>
                   <span class="text-h6 font-weight-bold text-primary"
-                    >¥{{ packageInfo?.currentPrice }}</span
+                  >¥{{ packageInfo?.currentPrice }}</span
                   >
                 </div>
               </v-card-text>

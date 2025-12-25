@@ -235,14 +235,14 @@ onMounted(() => {
 // 获取状态颜色
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'active':
-      return 'success';
-    case 'expired':
-      return 'error';
-    case 'disabled':
-      return 'warning';
-    default:
-      return 'grey';
+  case 'active':
+    return 'success';
+  case 'expired':
+    return 'error';
+  case 'disabled':
+    return 'warning';
+  default:
+    return 'grey';
   }
 };
 </script>
@@ -343,7 +343,7 @@ const getStatusColor = (status: string) => {
               variant="text"
               :tooltip="t('zerocut.apikeys.copyMCP.tooltip')"
               @click="copyMCPConfig(item)"
-              >MCP</v-btn
+            >MCP</v-btn
             >
           </div>
         </template>

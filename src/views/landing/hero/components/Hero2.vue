@@ -11,7 +11,7 @@
     <v-divider></v-divider>
     <v-row class="pa-10">
       <v-col cols="12" md="6">
-        <img class="mx-auto" width="200" src="@/assets/logo2.svg" alt="" />
+        <img class="mx-auto" width="200" src="@/assets/logo2.svg" alt="">
         <v-card variant="flat" max-width="800" class="mx-auto my-10">
           <h1 style="color: #4a4d6d" class="font-weight-black text-h3 text-lg-h2 text-xl-h1">
             We organize chaotic

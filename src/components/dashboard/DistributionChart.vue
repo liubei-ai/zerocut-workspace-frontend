@@ -76,19 +76,19 @@ const chartOptions = computed<EChartsOption>(() => {
     return {
       title: props.title
         ? {
-            text: props.title,
-            subtext: props.subtitle,
-            left: 'left',
-            textStyle: {
-              color: theme.text,
-              fontSize: 16,
-              fontWeight: 'bold',
-            },
-            subtextStyle: {
-              color: theme.textSecondary,
-              fontSize: 12,
-            },
-          }
+          text: props.title,
+          subtext: props.subtitle,
+          left: 'left',
+          textStyle: {
+            color: theme.text,
+            fontSize: 16,
+            fontWeight: 'bold',
+          },
+          subtextStyle: {
+            color: theme.textSecondary,
+            fontSize: 12,
+          },
+        }
         : undefined,
 
       tooltip: {
@@ -174,13 +174,13 @@ const chartOptions = computed<EChartsOption>(() => {
           barWidth: '60%',
           label: props.showLabels
             ? {
-                show: true,
-                position: 'top',
-                color: theme.text,
-                formatter: props.showPercentage
-                  ? (params: any) => `${params.data.percentage?.toFixed(1) || '0'}%`
-                  : '{c}',
-              }
+              show: true,
+              position: 'top',
+              color: theme.text,
+              formatter: props.showPercentage
+                ? (params: any) => `${params.data.percentage?.toFixed(1) || '0'}%`
+                : '{c}',
+            }
             : undefined,
         },
       ],
@@ -191,19 +191,19 @@ const chartOptions = computed<EChartsOption>(() => {
   return {
     title: props.title
       ? {
-          text: props.title,
-          subtext: props.subtitle,
-          left: 'left',
-          textStyle: {
-            color: theme.text,
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-          subtextStyle: {
-            color: theme.textSecondary,
-            fontSize: 12,
-          },
-        }
+        text: props.title,
+        subtext: props.subtitle,
+        left: 'left',
+        textStyle: {
+          color: theme.text,
+          fontSize: 16,
+          fontWeight: 'bold',
+        },
+        subtextStyle: {
+          color: theme.textSecondary,
+          fontSize: 12,
+        },
+      }
       : undefined,
 
     tooltip: {
@@ -229,14 +229,14 @@ const chartOptions = computed<EChartsOption>(() => {
 
     legend: props.showLegend
       ? {
-          orient: 'vertical',
-          right: 10,
-          top: 'center',
-          textStyle: {
-            color: theme.text,
-          },
-          itemGap: 10,
-        }
+        orient: 'vertical',
+        right: 10,
+        top: 'center',
+        textStyle: {
+          color: theme.text,
+        },
+        itemGap: 10,
+      }
       : undefined,
 
     series: [
@@ -265,13 +265,13 @@ const chartOptions = computed<EChartsOption>(() => {
         },
         label: props.showLabels
           ? {
-              show: true,
-              color: theme.text,
-              formatter: props.showPercentage ? '{b}: {d}%' : '{b}: {c}',
-            }
+            show: true,
+            color: theme.text,
+            formatter: props.showPercentage ? '{b}: {d}%' : '{b}: {c}',
+          }
           : {
-              show: false,
-            },
+            show: false,
+          },
         labelLine: {
           show: props.showLabels,
         },

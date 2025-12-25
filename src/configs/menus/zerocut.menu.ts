@@ -31,6 +31,11 @@ export default [
     icon: 'mdi-gift',
   },
   {
+    key: 'menu.bagelpayProducts',
+    link: '/bagelpay/products',
+    icon: 'mdi-shopping-outline',
+  },
+  {
     key: 'menu.guide',
     link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
     icon: 'mdi-open-in-new',

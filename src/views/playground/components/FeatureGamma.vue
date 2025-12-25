@@ -175,7 +175,7 @@ const cards = [
         icon
         variant="text"
         color="accent"
-        ><Icon width="24" :icon="item.icon" />
+      ><Icon width="24" :icon="item.icon" />
         <!-- tooltip -->
         <v-tooltip
           activator="parent"

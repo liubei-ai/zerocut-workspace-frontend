@@ -54,6 +54,7 @@ export default {
     usage: '利用ログ',
     wallet: 'ウォレット管理',
     packages: 'ポイントパッケージ',
+    bagelpayProducts: 'メンバーシップ価格',
     guide: 'プロ版',
 
     // 管理者サブメニュー
@@ -199,6 +200,7 @@ export default {
         manual: '手動チャージ',
         bot: 'ボットチャージ',
         gift: 'ポイント付与',
+        bagelpay: 'BagelPay',
         other: 'その他',
       },
       expired: '失効',

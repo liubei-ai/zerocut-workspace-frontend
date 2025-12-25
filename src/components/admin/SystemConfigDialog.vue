@@ -172,38 +172,38 @@ const validateConfigValue = (value: string, type: ValueType) => {
   if (!value) return '配置值不能为空';
 
   switch (type) {
-    case 'number':
-      if (!/^-?\d+$/.test(value)) {
-        return '请输入有效的整数';
-      }
-      break;
-    case 'decimal':
-      if (!/^-?\d+(\.\d+)?$/.test(value)) {
-        return '请输入有效的小数';
-      }
-      break;
-    case 'boolean':
-      if (!['true', 'false'].includes(value.toLowerCase())) {
-        return '布尔值只能是 true 或 false';
-      }
-      break;
-    case 'json':
-      try {
-        JSON.parse(value);
-      } catch {
-        return '请输入有效的JSON格式';
-      }
-      break;
-    case 'array':
-      try {
-        const parsed = JSON.parse(value);
-        if (!Array.isArray(parsed)) {
-          return '请输入有效的数组格式';
-        }
-      } catch {
+  case 'number':
+    if (!/^-?\d+$/.test(value)) {
+      return '请输入有效的整数';
+    }
+    break;
+  case 'decimal':
+    if (!/^-?\d+(\.\d+)?$/.test(value)) {
+      return '请输入有效的小数';
+    }
+    break;
+  case 'boolean':
+    if (!['true', 'false'].includes(value.toLowerCase())) {
+      return '布尔值只能是 true 或 false';
+    }
+    break;
+  case 'json':
+    try {
+      JSON.parse(value);
+    } catch {
+      return '请输入有效的JSON格式';
+    }
+    break;
+  case 'array':
+    try {
+      const parsed = JSON.parse(value);
+      if (!Array.isArray(parsed)) {
         return '请输入有效的数组格式';
       }
-      break;
+    } catch {
+      return '请输入有效的数组格式';
+    }
+    break;
   }
 
   return true;
@@ -214,49 +214,49 @@ const formatConfigValue = () => {
   const { valueType, configValue } = formData.value;
 
   switch (valueType) {
-    case 'boolean':
-      formData.value.configValue = configValue.toLowerCase();
-      break;
-    case 'json':
-    case 'array':
-      try {
-        const parsed = JSON.parse(configValue);
-        formData.value.configValue = JSON.stringify(parsed, null, 2);
-      } catch {
-        // 保持原值
-      }
-      break;
+  case 'boolean':
+    formData.value.configValue = configValue.toLowerCase();
+    break;
+  case 'json':
+  case 'array':
+    try {
+      const parsed = JSON.parse(configValue);
+      formData.value.configValue = JSON.stringify(parsed, null, 2);
+    } catch {
+      // 保持原值
+    }
+    break;
   }
 };
 
 // 获取配置值输入提示
 const getValuePlaceholder = (type: ValueType) => {
   switch (type) {
-    case 'string':
-      return '请输入字符串值';
-    case 'number':
-      return '请输入整数，如：123';
-    case 'decimal':
-      return '请输入小数，如：123.45';
-    case 'boolean':
-      return '请输入 true 或 false';
-    case 'json':
-      return '请输入JSON格式，如：{"key": "value"}';
-    case 'array':
-      return '请输入数组格式，如：["item1", "item2"]';
-    default:
-      return '请输入配置值';
+  case 'string':
+    return '请输入字符串值';
+  case 'number':
+    return '请输入整数，如：123';
+  case 'decimal':
+    return '请输入小数，如：123.45';
+  case 'boolean':
+    return '请输入 true 或 false';
+  case 'json':
+    return '请输入JSON格式，如：{"key": "value"}';
+  case 'array':
+    return '请输入数组格式，如：["item1", "item2"]';
+  default:
+    return '请输入配置值';
   }
 };
 
 // 获取配置值输入类型
 const getValueInputType = (type: ValueType) => {
   switch (type) {
-    case 'json':
-    case 'array':
-      return 'textarea';
-    default:
-      return 'text';
+  case 'json':
+  case 'array':
+    return 'textarea';
+  default:
+    return 'text';
   }
 };
 </script>

@@ -235,34 +235,34 @@ const formatConfigValue = (value: string, type: string) => {
 // 获取分类颜色
 const getCategoryColor = (category: string) => {
   switch (category) {
-    case 'SYSTEM':
-      return 'error';
-    case 'SECURITY':
-      return 'warning';
-    case 'FEATURE':
-      return 'info';
-    case 'UI':
-      return 'success';
-    default:
-      return 'primary';
+  case 'SYSTEM':
+    return 'error';
+  case 'SECURITY':
+    return 'warning';
+  case 'FEATURE':
+    return 'info';
+  case 'UI':
+    return 'success';
+  default:
+    return 'primary';
   }
 };
 
 // 获取值类型颜色
 const getValueTypeColor = (type: string) => {
   switch (type) {
-    case 'STRING':
-      return 'primary';
-    case 'NUMBER':
-    case 'DECIMAL':
-      return 'success';
-    case 'BOOLEAN':
-      return 'warning';
-    case 'JSON':
-    case 'ARRAY':
-      return 'info';
-    default:
-      return 'default';
+  case 'STRING':
+    return 'primary';
+  case 'NUMBER':
+  case 'DECIMAL':
+    return 'success';
+  case 'BOOLEAN':
+    return 'warning';
+  case 'JSON':
+  case 'ARRAY':
+    return 'info';
+  default:
+    return 'default';
   }
 };
 

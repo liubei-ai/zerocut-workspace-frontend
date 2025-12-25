@@ -67,6 +67,8 @@ const getPaymentMethodIcon = (paymentMethod: string) => {
       return 'mdi-robot';
     case 'give':
       return 'mdi-gift';
+    case 'bagelpay':
+      return 'mdi-account-group';
     default:
       return 'mdi-cash';
   }
@@ -89,6 +91,8 @@ const getPaymentMethodText = (paymentMethod: string) => {
       return t('zerocut.wallet.payment.bot');
     case 'give':
       return t('zerocut.wallet.payment.gift');
+    case 'bagelpay':
+      return t('zerocut.wallet.payment.bagelpay');
     default:
       return t('zerocut.wallet.payment.other');
   }

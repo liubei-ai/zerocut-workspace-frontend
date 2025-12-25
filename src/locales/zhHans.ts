@@ -53,6 +53,7 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分套餐',
+    bagelpayProducts: '会员定价',
     workflows: '工作流',
     guide: '专业版',
     // 管理员子菜单
@@ -111,6 +112,14 @@ export default {
 
   // Zerocut 视图
   zerocut: {
+    bagelpay: {
+      productsTitle: 'BagelPay 商品列表',
+      productsSubtitle: '展示通过 BagelPay SDK 获取的商品',
+      subscription: '订阅',
+      singlePayment: '一次性支付',
+      viewProduct: '查看商品',
+      noProducts: '暂无商品',
+    },
     usage: {
       title: '使用日志',
       subtitle: '查看详细的积分使用记录',
@@ -178,6 +187,7 @@ export default {
         manual: '手动充值',
         bot: '机器人充值',
         gift: '积分赠送',
+        bagelpay: 'BagelPay',
         other: '其他',
       },
       expired: '已过期',
