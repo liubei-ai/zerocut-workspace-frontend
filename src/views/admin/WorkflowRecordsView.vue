@@ -397,8 +397,9 @@ onMounted(() => {
 
             <v-data-table-server
               :headers="[
-                { title: '工作流名称', key: 'workflow_name', sortable: false },
                 { title: '工作流ID', key: 'workflow_id', sortable: false },
+                { title: '工作流名称', key: 'workflow_name', sortable: false },
+                { title: '模版名称', key: 'template_name', sortable: false },
                 { title: '描述', key: 'description', sortable: false },
                 { title: '操作', key: 'actions', sortable: false, align: 'end' },
               ]"
@@ -411,6 +412,9 @@ onMounted(() => {
               @update:page="handleWorkflowsPageChange"
               @update:items-per-page="handleWorkflowsItemsPerPageChange"
             >
+              <template #item.workflow_id="{ item }">
+                <code class="text-caption">{{ item.workflowId }}</code>
+              </template>
               <template #item.workflow_name="{ item }">
                 <div class="d-flex align-center">
                   <v-avatar v-if="item.iconUrl" size="32" class="mr-2">
@@ -419,8 +423,10 @@ onMounted(() => {
                   <span class="font-weight-medium">{{ item.workflowName }}</span>
                 </div>
               </template>
-              <template #item.workflow_id="{ item }">
-                <code class="text-caption">{{ item.workflowId }}</code>
+              <template #item.template_name="{ item }">
+                <span class="text-caption text-truncate d-inline-block" style="max-width: 300px">
+                  {{ item.metadata?.name || '-' }}
+                </span>
               </template>
               <template #item.description="{ item }">
                 <span class="text-caption text-truncate d-inline-block" style="max-width: 300px">
