@@ -400,7 +400,6 @@ onMounted(() => {
                 { title: '工作流名称', key: 'workflow_name', sortable: false },
                 { title: '工作流ID', key: 'workflow_id', sortable: false },
                 { title: '描述', key: 'description', sortable: false },
-                { title: '元数据状态', key: 'has_metadata', sortable: false },
                 { title: '操作', key: 'actions', sortable: false, align: 'end' },
               ]"
               :items="workflowItems"
