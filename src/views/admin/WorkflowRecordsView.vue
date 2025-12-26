@@ -16,7 +16,7 @@ const activeTab = ref('records');
 const recordsLoading = ref(false);
 const recordsError = ref('');
 const recordItems = ref<WorkflowRecordItem[]>([]);
-const recordsPagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
+const recordsPagination = ref({ page: 1, limit: 20, total: 0, totalPages: 0 });
 const recordFilters = ref<{ workspaceId: string; executeId: string }>({
   workspaceId: '',
   executeId: '',
@@ -88,8 +88,7 @@ const resetRecordsFilters = () => {
 const workflowsLoading = ref(false);
 const workflowsError = ref('');
 const workflowItems = ref<CozeWorkflowItem[]>([]);
-const hasMore = ref(false);
-const workflowsPage = ref(1);
+const workflowsPagination = ref({ page: 1, limit: 20, total: 0, totalPages: 0 });
 
 // 元数据编辑 Dialog
 const metadataDialog = ref(false);
@@ -100,24 +99,32 @@ const savingMetadata = ref(false);
 
 const fetchWorkflows = async () => {
   try {
-    workflowsLoading.value = true;
     workflowsError.value = '';
+    workflowsLoading.value = true;
     const resp = await listCozeWorkflows({
-      pageNum: workflowsPage.value,
-      pageSize: 20,
+      page: workflowsPagination.value.page,
+      limit: workflowsPagination.value.limit,
     });
-    // 排序：先显示有元数据的，然后显示无元数据的
-    workflowItems.value = resp.items.sort((a, b) => {
-      if (a.has_metadata === b.has_metadata) return 0;
-      return a.has_metadata ? -1 : 1;
-    });
-    hasMore.value = resp.has_more;
+    const { list, ...pagination } = resp;
+    workflowItems.value = list;
+    workflowsPagination.value = pagination;
   } catch (err) {
     workflowsError.value = '查询失败';
     console.error('获取工作流列表失败:', err);
   } finally {
     workflowsLoading.value = false;
   }
+};
+
+const handleWorkflowsPageChange = (page: number) => {
+  workflowsPagination.value.page = page;
+  fetchWorkflows();
+};
+
+const handleWorkflowsItemsPerPageChange = (itemsPerPage: number) => {
+  workflowsPagination.value.limit = itemsPerPage;
+  workflowsPagination.value.page = 1;
+  fetchWorkflows();
 };
 
 const openMetadataDialog = (workflow: CozeWorkflowItem) => {
@@ -143,15 +150,14 @@ const validateAndSaveMetadata = async () => {
     metadataError.value = '';
     savingMetadata.value = true;
 
-    await saveWorkflowMetadata(editingWorkflow.value.workflow_id, metadata);
+    await saveWorkflowMetadata(editingWorkflow.value.workflowId, metadata);
 
     // 更新本地数据
     const index = workflowItems.value.findIndex(
-      w => w.workflow_id === editingWorkflow.value!.workflow_id
+      w => w.workflowId === editingWorkflow.value!.workflowId
     );
     if (index !== -1) {
       workflowItems.value[index].metadata = metadata;
-      workflowItems.value[index].has_metadata = true;
     }
 
     closeMetadataDialog();
@@ -301,6 +307,7 @@ onMounted(() => {
               :page="recordsPagination.page"
               :items-per-page="recordsPagination.limit"
               :items-length="recordsPagination.total"
+              :items-per-page-options="[20, 30, 50, 100]"
               @update:page="handleRecordsPageChange"
               @update:items-per-page="handleRecordsItemsPerPageChange"
             >
@@ -382,16 +389,13 @@ onMounted(() => {
             <v-icon class="mr-2">mdi-sitemap</v-icon>
             Coze 工作流列表
             <v-spacer />
-            <v-chip v-if="workflowItems.length > 0" color="primary" variant="outlined" size="small">
-              共 {{ workflowItems.length }} 个工作流
-            </v-chip>
           </v-card-title>
           <v-card-text>
             <v-alert v-if="workflowsError" type="warning" variant="tonal" class="mb-2">
               {{ workflowsError }}
             </v-alert>
 
-            <v-data-table
+            <v-data-table-server
               :headers="[
                 { title: '工作流名称', key: 'workflow_name', sortable: false },
                 { title: '工作流ID', key: 'workflow_id', sortable: false },
@@ -400,34 +404,29 @@ onMounted(() => {
                 { title: '操作', key: 'actions', sortable: false, align: 'end' },
               ]"
               :items="workflowItems"
-              :items-per-page="30"
-              :items-per-page-options="[{ title: '30', value: 30 }]"
               :loading="workflowsLoading"
+              :page="workflowsPagination.page"
+              :items-per-page="workflowsPagination.limit"
+              :items-length="workflowsPagination.total"
+              :items-per-page-options="[20, 30, 50, 100]"
+              @update:page="handleWorkflowsPageChange"
+              @update:items-per-page="handleWorkflowsItemsPerPageChange"
             >
               <template #item.workflow_name="{ item }">
                 <div class="d-flex align-center">
-                  <v-avatar v-if="item.icon_url" size="32" class="mr-2">
-                    <v-img :src="item.icon_url" />
+                  <v-avatar v-if="item.iconUrl" size="32" class="mr-2">
+                    <v-img :src="item.iconUrl" />
                   </v-avatar>
-                  <span class="font-weight-medium">{{ item.workflow_name }}</span>
+                  <span class="font-weight-medium">{{ item.workflowName }}</span>
                 </div>
               </template>
               <template #item.workflow_id="{ item }">
-                <code class="text-caption">{{ item.workflow_id }}</code>
+                <code class="text-caption">{{ item.workflowId }}</code>
               </template>
               <template #item.description="{ item }">
                 <span class="text-caption text-truncate d-inline-block" style="max-width: 300px">
                   {{ item.description || '-' }}
                 </span>
-              </template>
-              <template #item.has_metadata="{ item }">
-                <v-chip
-                  :color="item.has_metadata ? 'success' : 'default'"
-                  size="small"
-                  variant="flat"
-                >
-                  {{ item.has_metadata ? '已配置' : '未配置' }}
-                </v-chip>
               </template>
               <template #item.actions="{ item }">
                 <v-btn
@@ -439,7 +438,7 @@ onMounted(() => {
                   编辑元数据
                 </v-btn>
               </template>
-            </v-data-table>
+            </v-data-table-server>
           </v-card-text>
         </v-card>
       </v-window-item>
@@ -453,7 +452,7 @@ onMounted(() => {
           编辑工作流元数据
         </v-card-title>
         <v-card-subtitle v-if="editingWorkflow">
-          {{ editingWorkflow.workflow_name }} ({{ editingWorkflow.workflow_id }})
+          {{ editingWorkflow.workflowName }} ({{ editingWorkflow.workflowId }})
         </v-card-subtitle>
         <v-card-text>
           <v-alert v-if="metadataError" type="error" variant="tonal" class="mb-4">

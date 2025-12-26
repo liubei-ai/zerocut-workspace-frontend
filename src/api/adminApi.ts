@@ -289,32 +289,28 @@ export async function getWorkflowRecords(params: QueryWorkflowRecordsParams = {}
 
 // Coze 工作流相关类型
 export interface CozeWorkflowItem {
-  workflow_id: string;
-  workflow_name: string;
+  workflowId: string;
+  workflowName: string;
   description: string;
-  app_id: string;
   creator: string;
-  icon_url: string;
-  created_at: string;
-  updated_at: string;
-  has_metadata: boolean;
+  iconUrl: string;
+  createdAt: string;
+  updatedAt: string;
   metadata?: Record<string, any>;
 }
 
 export interface ListCozeWorkflowsParams {
-  pageNum?: number;
-  pageSize?: number;
-}
-
-export interface ListCozeWorkflowsResponse {
-  items: CozeWorkflowItem[];
-  has_more: boolean;
+  page?: number;
+  limit?: number;
 }
 
 export async function listCozeWorkflows(params: ListCozeWorkflowsParams = {}) {
-  const response = await apiClient.get<ListCozeWorkflowsResponse>('/admin/workflows/list', {
-    params,
-  });
+  const response = await apiClient.get<PaginationResponse<CozeWorkflowItem>>(
+    '/admin/workflows/list',
+    {
+      params,
+    }
+  );
   return response.data;
 }
 
