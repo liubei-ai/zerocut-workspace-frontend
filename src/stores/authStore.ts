@@ -11,7 +11,7 @@ import {
 import { useUserStore } from './userStore';
 import { useWorkspaceStore } from './workspaceStore';
 
-export const useAuthStore = defineStore('authing', () => {
+export const useAuthStore = defineStore('auth', () => {
   // 状态
   const loading = ref(false);
   const error = ref<string | null>(null);
