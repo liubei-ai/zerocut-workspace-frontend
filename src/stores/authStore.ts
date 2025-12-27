@@ -65,7 +65,7 @@ export const useAuthStore = defineStore('auth', () => {
       clearAuthState();
       loading.value = false;
       if (router.currentRoute.value.name !== authRouteName) {
-        router.push({
+        await router.push({
           name: authRouteName,
           query: { redirect: router.currentRoute.value.fullPath },
         });
@@ -77,6 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
    * Clear authentication state
    */
   const clearAuthState = () => {
+    userStore.reset();
     localStorage.removeItem('auth');
     localStorage.removeItem('user');
     localStorage.removeItem('workspace');
