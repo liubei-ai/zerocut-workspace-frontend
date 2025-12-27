@@ -31,7 +31,7 @@ const showError = ref(false);
 guard.on('login', async (authingUser: User) => {
   try {
     if (authingUser) {
-      await authStore.setAuthingUser(authingUser.token as string);
+      await authStore.setAuthToken(authingUser.token as string);
       await router.push('/');
     }
   } catch (error) {

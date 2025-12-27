@@ -56,7 +56,7 @@ watch(
       try {
         isSynced = true;
         const token = await getAccessTokenSilently();
-        await authStore.setAuthingUser(token);
+        await authStore.setAuthToken(token);
       } catch (error) {
         console.error('❌ 同步会话失败', error);
       }

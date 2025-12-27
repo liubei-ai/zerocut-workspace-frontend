@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('authing', () => {
   /**
    * Handle Authing login success
    */
-  const setAuthingUser = async (token: string) => {
+  const setAuthToken = async (token: string) => {
     // 调用 API 同步用户信息
     let response;
     if (authType === 'authing') {
@@ -104,7 +104,7 @@ export const useAuthStore = defineStore('authing', () => {
     newbieCreditsRecord,
 
     // 方法
-    setAuthingUser,
+    setAuthToken,
     logout,
     clearAuthState,
     clearError,
