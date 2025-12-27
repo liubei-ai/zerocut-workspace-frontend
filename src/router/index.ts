@@ -44,10 +44,8 @@ async function checkAuthorization() {
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) return null;
     const data = await response.json();
-    console.log('checkAuthorization', data);
     return data.code === 401 ? null : data.data;
-  } catch (error) {
-    console.log('checkAuthorization error:', error);
+  } catch {
     return null;
   }
 }

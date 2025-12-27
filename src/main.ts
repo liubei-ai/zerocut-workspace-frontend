@@ -44,16 +44,22 @@ app.use(
   })
 );
 app.use(
-  createAuth0({
-    domain: import.meta.env.VITE_AUTH0_DOMAIN,
-    clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
-    cacheLocation: 'localstorage',
-    useRefreshTokens: true,
-    authorizationParams: {
-      audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-      redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
+  createAuth0(
+    {
+      domain: import.meta.env.VITE_AUTH0_DOMAIN,
+      clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
+      cacheLocation: 'localstorage',
+      useRefreshTokens: true,
+      authorizationParams: {
+        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
+        redirect_uri: import.meta.env.VITE_AUTH0_CALLBACK_URL,
+      },
     },
-  }) as any // eslint-disable-line @typescript-eslint/no-explicit-any
+    {
+      // 开启此参数后，Auth0Callback.vue 组件会手动处理回调
+      skipRedirectCallback: true,
+    }
+  ) as any // eslint-disable-line @typescript-eslint/no-explicit-any
 );
 
 app.mount('#app');
