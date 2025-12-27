@@ -17,15 +17,14 @@ interface State {
 export const useCustomizeThemeStore = defineStore('customizeTheme', {
   state: (): State => ({
     miniSidebar: false,
+    mainSidebar: true,
     darkTheme: false,
+    localCode: import.meta.env.VITE_DEFAULT_LANGUAGE || 'en',
     primaryColor: {
       colorId: 2,
       colorName: 'grey',
       colorValue: '#344767',
     },
-    localCode: import.meta.env.VITE_DEFAULT_LANGUAGE,
-    mainSidebar: true,
-    // mainSidebar: isMobile() ? false : true,
   }),
 
   persist: {
