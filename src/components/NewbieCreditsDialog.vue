@@ -19,7 +19,7 @@
           </v-chip>
         </div>
         <div class="mt-3 text-body-1 text-medium-emphasis">
-          积分有效期为30天，请尽快体验ZeroCut。
+          积分有效期为 90 天，请尽快体验 ZeroCut。
         </div>
       </v-card-text>
 
