@@ -1,4 +1,4 @@
-# Language 配置
+# 应用配置
 VITE_DEFAULT_LANGUAGE=zhHans
 
 # API 配置
