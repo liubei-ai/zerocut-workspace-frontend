@@ -46,6 +46,7 @@ export default {
     admin: '管理员',
     pages: '页面',
     charts: '图表',
+
     // Zerocut 子菜单
     studio: '视频创作',
     dashboard: '仪表板',
@@ -55,14 +56,18 @@ export default {
     packages: '积分套餐',
     workflows: '工作流',
     guide: '专业版',
+
     // 管理员子菜单
     adminWorkspaceList: '工作区',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',
+    adminWorkflows: '工作流',
+
     // 常用动作
     search: '搜索（按“ Ctrl + /”进行聚焦）',
     logout: '登出',
+
     // Landing 子页面
     heroPage: '引导页面',
     featurePage: '功能页面',
@@ -77,6 +82,7 @@ export default {
     faqPage: 'FAQ 页面',
     toolbarPage: '工具栏页面',
     footerPage: '页脚页面',
+
     // UI 演示子页面
     tailwind: 'Tailwind',
     colors: '色彩',
@@ -88,6 +94,7 @@ export default {
     virtualList: '虚拟列表 ',
     virtualScroller: '虚拟滚动 ',
     fakerApiRef: 'FakerAPI参考',
+
     // 图表示例
     echartLine: 'Echart Line ',
     echartBar: 'Echart Bar ',

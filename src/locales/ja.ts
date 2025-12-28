@@ -60,6 +60,8 @@ export default {
     adminWorkspaceList: 'ワークスペース一覧',
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
+    adminPersonas: 'ロール管理',
+    adminWorkflows: 'ワークフロー',
 
     // 共通アクション
     search: '検索（フォーカスするには「ctrl + /」を押します）',
