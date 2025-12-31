@@ -4,6 +4,7 @@ import {
   getWorkflowRecords,
   listCozeWorkflows,
   saveWorkflowMetadata,
+  syncWorkflows,
   type WorkflowRecordItem,
 } from '@/api/adminApi';
 import { formatDate } from '@/utils/date';
@@ -89,6 +90,7 @@ const workflowsLoading = ref(false);
 const workflowsError = ref('');
 const workflowItems = ref<CozeWorkflowItem[]>([]);
 const workflowsPagination = ref({ page: 1, limit: 20, total: 0, totalPages: 0 });
+const syncingWorkflows = ref(false);
 
 // 元数据编辑 Dialog
 const metadataDialog = ref(false);
@@ -125,6 +127,23 @@ const handleWorkflowsItemsPerPageChange = (itemsPerPage: number) => {
   workflowsPagination.value.limit = itemsPerPage;
   workflowsPagination.value.page = 1;
   fetchWorkflows();
+};
+
+const handleSyncWorkflows = async () => {
+  try {
+    syncingWorkflows.value = true;
+    workflowsError.value = '';
+    const result = await syncWorkflows();
+    // 同步成功后刷新列表
+    await fetchWorkflows();
+    // 可以显示成功消息，这里暂时不添加，保持简洁
+    console.log(`同步成功，共同步 ${result.count} 个工作流`);
+  } catch (err: any) {
+    workflowsError.value = '同步失败: ' + (err.message || '未知错误');
+    console.error('同步工作流失败:', err);
+  } finally {
+    syncingWorkflows.value = false;
+  }
 };
 
 const openMetadataDialog = (workflow: CozeWorkflowItem) => {
@@ -389,6 +408,16 @@ onMounted(() => {
             <v-icon class="mr-2">mdi-sitemap</v-icon>
             Coze 工作流列表
             <v-spacer />
+            <v-btn
+              color="primary"
+              variant="outlined"
+              :loading="syncingWorkflows"
+              :disabled="workflowsLoading"
+              prepend-icon="mdi-sync"
+              @click="handleSyncWorkflows"
+            >
+              同步
+            </v-btn>
           </v-card-title>
           <v-card-text>
             <v-alert v-if="workflowsError" type="warning" variant="tonal" class="mb-2">

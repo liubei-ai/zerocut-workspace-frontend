@@ -314,6 +314,15 @@ export async function listCozeWorkflows(params: ListCozeWorkflowsParams = {}) {
   return response.data;
 }
 
+export interface SyncWorkflowsResponse {
+  count: number;
+}
+
+export async function syncWorkflows() {
+  const response = await apiClient.get<SyncWorkflowsResponse>('/admin/workflows/sync');
+  return response.data;
+}
+
 export interface WorkflowMetadata {
   workflowId: string;
   metadata?: Record<string, any>;
