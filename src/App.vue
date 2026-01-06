@@ -11,10 +11,9 @@ import { useAppStore } from '@/stores/appStore';
 
 import { useTheme } from 'vuetify';
 
-const appStore = useAppStore();
 const theme = useTheme();
-
 const route = useRoute();
+const appStore = useAppStore();
 
 const isRouterLoaded = computed(() => {
   if (route.name !== null) return true;

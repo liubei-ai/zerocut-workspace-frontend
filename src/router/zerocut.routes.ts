@@ -1,7 +1,7 @@
 // Zerocut 视频 Agent 管理台路由配置
 // 对应新的扁平化菜单结构
 
-export default [
+const zerocutRoutes = [
   {
     path: '/dashboard',
     name: 'Dashboard',
@@ -53,34 +53,23 @@ export default [
       ),
   },
   {
-    path: '/settings',
-    name: 'Settings',
+    path: '/bagelpay/products',
+    name: 'BagelPayProducts',
     meta: {
       requiresAuth: true,
       layout: 'landing',
-      title: '个人设置',
+      title: '会员',
       category: 'ZeroCut',
     },
     component: () =>
       import(
-        /* webpackChunkName: "personal-settings" */ '@/views/zerocut/PersonalSettingsView.vue'
+        /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
       ),
   },
-  {
-    path: '/members',
-    name: 'Members',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-      title: '成员管理',
-      category: 'ZeroCut',
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "member-management" */ '@/views/zerocut/MemberManagementView.vue'
-      ),
-  },
-  {
+];
+
+if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
+  zerocutRoutes.push({
     path: '/packages',
     name: 'Packages',
     meta: {
@@ -91,31 +80,7 @@ export default [
     },
     component: () =>
       import(/* webpackChunkName: "package-list" */ '@/views/zerocut/PackageListView.vue'),
-  },
-  {
-    path: '/bagelpay/products',
-    name: 'BagelPayProducts',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-      title: '会员定价',
-      category: 'ZeroCut',
-    },
-    component: () =>
-      import(
-        /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
-      ),
-  },
-  // {
-  //   path: '/profile',
-  //   name: 'profile',
-  //   component: () =>
-  //     import(/* webpackChunkName: "profile" */ '@/views/users/ProfilePage.vue'),
-  //   meta: {
-  //     requiresAuth: true,
-  //     layout: 'ui',
-  //     title: 'Profile',
-  //     category: 'Config',
-  //   },
-  // }
-];
+  });
+}
+
+export default zerocutRoutes;

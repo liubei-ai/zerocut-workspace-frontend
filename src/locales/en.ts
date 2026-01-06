@@ -46,6 +46,7 @@ export default {
     admin: 'Admin',
     pages: 'Pages',
     charts: 'Charts',
+
     // Zerocut submenu
     studio: 'Studio',
     dashboard: 'Dashboard',
@@ -56,13 +57,18 @@ export default {
     bagelpayProducts: 'Membership Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
+
     // Admin submenu
     adminWorkspaceList: 'Workspaces',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
+    adminPersonas: 'Personas',
+    adminWorkflows: 'Workflows',
+
     // Common actions
     search: 'Search (press "ctrl + /" to focus)',
     logout: 'Logout',
+
     // Landing pages
     heroPage: 'Hero Page',
     featurePage: 'Feature Page',
@@ -77,6 +83,7 @@ export default {
     faqPage: 'FAQ Page',
     toolbarPage: 'Toolbar Page',
     footerPage: 'Footer Page',
+
     // UI demo
     tailwind: 'Tailwind',
     colors: 'Colors',
@@ -88,6 +95,7 @@ export default {
     virtualList: 'Virtual List ',
     virtualScroller: 'Virtual Scroller ',
     fakerApiRef: 'Faker API Reference',
+
     // Charts
     echartLine: 'Echart Line ',
     echartBar: 'Echart Bar ',

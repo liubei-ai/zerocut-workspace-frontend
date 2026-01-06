@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
-// import LandingRoutes from './landing.routes';
+import { auth0Routes, authingRoutes } from './auth.routes';
 import ZerocutRoutes from './zerocut.routes';
+
+const authType = import.meta.env.VITE_AUTH_MODE;
+const authRouteName = authType === 'auth0' ? 'auth-auth0' : 'auth-authing';
 
 export const routes = [
   {
@@ -10,24 +13,14 @@ export const routes = [
     redirect: '/dashboard',
     meta: {},
   },
-  {
-    path: '/auth/authing',
-    name: 'auth-authing',
-    component: () => import(/* webpackChunkName: "auth-authing" */ '@/views/auth/AuthingPage.vue'),
-    meta: {
-      layout: 'auth',
-      title: 'Authing认证',
-    },
-  },
+  ...(authType === 'auth0' ? auth0Routes : authingRoutes),
+  ...ZerocutRoutes,
+  ...AdminRoutes,
   {
     path: '/:pathMatch(.*)*',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
   },
-  // ...LandingRoutes,
-  // ...ChartsRoutes,
-  ...ZerocutRoutes,
-  ...AdminRoutes,
 ];
 
 // 动态路由，基于用户权限动态去加载
@@ -51,10 +44,8 @@ async function checkAuthorization() {
     const response = await fetch(url, { credentials: 'include' });
     if (!response.ok) return null;
     const data = await response.json();
-    console.log('checkAuthorization', data);
     return data.code === 401 ? null : data.data;
-  } catch (error) {
-    console.log('checkAuthorization error:', error);
+  } catch {
     return null;
   }
 }
@@ -70,10 +61,8 @@ router.beforeEach(async to => {
   if (requiresAuth && !userStore.isLoggedIn) {
     const userInfo = await checkAuthorization();
     if (!userInfo) {
-      console.log('checkAuthorization failed, redirecting to auth-authing');
-      return { name: 'auth-authing', query: { redirect: to.fullPath } };
+      return { name: authRouteName, query: { redirect: to.fullPath } };
     } else {
-      console.log('checkAuthorization success, userInfo:', userInfo);
       userStore.updateUserInfo(userInfo);
     }
   }
