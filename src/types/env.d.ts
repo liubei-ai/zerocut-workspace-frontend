@@ -21,5 +21,8 @@ declare interface ImportMeta {
 
     readonly VITE_PRO_GUIDE_ENABLE: string;
     readonly VITE_PACKAGE_PAGE_ENABLE: string;
+    readonly VITE_MEMBER_PRICE_ENABLE: string;
+
+    readonly VITE_ZEROCUT_STUDIO_PROJECT: string;
   };
 }
