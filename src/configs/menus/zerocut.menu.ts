@@ -46,7 +46,7 @@ if (import.meta.env.VITE_PRO_GUIDE_ENABLE === 'true') {
 
 if (import.meta.env.VITE_MEMBER_PRICE_ENABLE === 'true') {
   zerocutMenu.push({
-    key: 'menu.bagelpayProducts',
+    key: 'menu.pricing',
     link: '/bagelpay/products',
     icon: 'mdi-shopping-outline',
   });

@@ -54,7 +54,7 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分套餐',
-    bagelpayProducts: '会员定价',
+    pricing: '定价',
     workflows: '工作流',
     guide: '专业版',
 

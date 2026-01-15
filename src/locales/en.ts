@@ -54,7 +54,7 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
-    bagelpayProducts: 'Membership Pricing',
+    pricing: 'Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
 

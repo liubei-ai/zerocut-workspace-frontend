@@ -54,7 +54,7 @@ export default {
     usage: '利用ログ',
     wallet: 'ウォレット管理',
     packages: 'ポイントパッケージ',
-    bagelpayProducts: 'メンバーシップ価格',
+    pricing: '価格',
     guide: 'プロ版',
 
     // 管理者サブメニュー
