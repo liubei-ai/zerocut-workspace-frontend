@@ -34,9 +34,9 @@ function normalizeTier(name?: string) {
   if (!name) return '';
   const normalized = name.replace('（', '(').replace('）', ')');
   const lower = normalized.toLowerCase();
-  if (lower.startsWith('based')) return 'Based';
-  if (lower.startsWith('standard')) return 'Standard';
-  if (lower.startsWith('senior')) return 'Senior';
+  if (lower.includes('based')) return 'Based';
+  if (lower.includes('standard')) return 'Standard';
+  if (lower.includes('senior')) return 'Senior';
   return normalized;
 }
 
@@ -57,15 +57,15 @@ function toOption(p: BagelPayProduct): PricingOption | null {
       productId: p.productId!,
     };
   }
-  if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
-    return {
-      type: 'yearly',
-      price: p.price!,
-      currency: p.currency!,
-      productUrl: p.productUrl!,
-      productId: p.productId!,
-    };
-  }
+  // if (p.billingType === 'subscription' && p.recurringInterval === 'yearly') {
+  //   return {
+  //     type: 'yearly',
+  //     price: p.price,
+  //     currency: p.currency,
+  //     productUrl: p.productUrl,
+  //     productId: p.productId,
+  //   };
+  // }
   if (p.billingType === 'single_payment') {
     return {
       type: 'one_time',
@@ -108,8 +108,12 @@ async function fetchPlans() {
         });
       } else {
         const existing = map.get(tier)!;
-        if (!existing.options.find(o => o.type === opt.type)) existing.options.push(opt);
-        if (existing.features.length === 0) existing.features = extractFeatures(p.description);
+        if (!existing.options.find(o => o.type === opt.type)) {
+          existing.options.push(opt);
+        }
+        if (existing.features.length === 0) {
+          existing.features = extractFeatures(p.description);
+        }
       }
     });
     plans.value = Array.from(map.values());
