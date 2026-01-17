@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { QueryWorkspacesParams, RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
-import { createRecharge, getWorkspaceList } from '@/api/adminApi';
+import { createRecharge, getWorkspaceList, syncUserFromAuthing } from '@/api/adminApi';
 import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
@@ -17,6 +17,7 @@ const rechargeDialogOpen = ref(false);
 const selectedWorkspace = ref<WorkspaceListItem | null>(null);
 const rechargeResultDialogOpen = ref(false);
 const rechargeResult = ref<RechargeResponse | null>(null);
+const syncingUsers = ref<Set<number>>(new Set());
 
 // 分页信息
 const pagination = ref({
@@ -263,6 +264,24 @@ const goToWorkspaceDetail = (workspace: WorkspaceListItem) => {
     params: { workspaceId: workspace.workspaceId },
   });
 };
+
+// 同步用户信息处理函数
+const handleSyncUser = async (workspace: WorkspaceListItem) => {
+  if (syncingUsers.value.has(workspace.ownerId)) return; // 防止重复点击
+
+  try {
+    syncingUsers.value.add(workspace.ownerId);
+    const result = await syncUserFromAuthing(workspace.ownerId);
+    showSnackbar(result.message, 'success');
+    await fetchWorkspaces(); // 刷新列表
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.message || error?.message || '同步失败，请检查网络连接';
+    showSnackbar(errorMessage, 'error');
+  } finally {
+    syncingUsers.value.delete(workspace.ownerId);
+  }
+};
 </script>
 
 <template>
@@ -371,9 +390,24 @@ const goToWorkspaceDetail = (workspace: WorkspaceListItem) => {
 
         <!-- 所有者姓名 -->
         <template #item.ownerName="{ item }">
-          <div class="text-body-2">
-            <span v-if="item.ownerName" class="font-weight-medium">{{ item.ownerName }}</span>
-            <span v-else class="text-medium-emphasis">未设置</span>
+          <div class="d-flex align-center gap-2">
+            <div class="text-body-2">
+              <span v-if="item.ownerName" class="font-weight-medium">{{ item.ownerName }}</span>
+              <span v-else class="text-medium-emphasis">未设置</span>
+            </div>
+            <v-btn
+              icon="mdi-sync"
+              size="x-small"
+              variant="text"
+              color="primary"
+              :loading="syncingUsers.has(item.ownerId)"
+              :disabled="syncingUsers.has(item.ownerId)"
+              @click.stop="handleSyncUser(item)"
+              title="从 Authing 同步用户信息"
+            >
+              <v-icon>mdi-sync</v-icon>
+              <v-tooltip activator="parent" location="top"> 从 Authing 同步用户信息 </v-tooltip>
+            </v-btn>
           </div>
         </template>
 

@@ -381,3 +381,24 @@ export async function deletePersona(id: number) {
   const response = await apiClient.delete<{ message: string }>(`/admin/personas/${id}`);
   return response.data;
 }
+
+// 同步用户信息响应接口
+export interface SyncUserResponse {
+  id: number;
+  authingId: string;
+  username: string;
+  name?: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  updatedAt: string;
+  message: string;
+}
+
+/**
+ * 从 Authing 同步用户信息
+ */
+export async function syncUserFromAuthing(userId: number): Promise<SyncUserResponse> {
+  const response = await apiClient.post<SyncUserResponse>(`/admin/users/${userId}/sync`);
+  return response.data;
+}
