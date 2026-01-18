@@ -176,10 +176,12 @@ export interface ComputedStatsData {
 
 // API请求参数
 export interface HourlyStatsParams {
+  workspaceId: string;
   date: string; // yyyy-mm-dd
 }
 
 export interface DailyStatsParams {
+  workspaceId: string;
   start: string; // yyyy-mm-dd
   end: string; // yyyy-mm-dd
 }

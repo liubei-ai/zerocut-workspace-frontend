@@ -249,12 +249,12 @@ export const useStatsStore = defineStore('stats', () => {
   };
 
   // Actions
-  const fetchHourlyStats = async (date: string) => {
+  const fetchHourlyStats = async (workspaceId: string, date: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await getUserHourlyStats({ date });
+      const response = await getUserHourlyStats({ workspaceId, date });
       hourlyData.value = response;
     } catch (err) {
       error.value = err.message || '网络错误';
@@ -264,12 +264,12 @@ export const useStatsStore = defineStore('stats', () => {
     }
   };
 
-  const fetchDailyStats = async (start: string, end: string) => {
+  const fetchDailyStats = async (workspaceId: string, start: string, end: string) => {
     loading.value = true;
     error.value = null;
 
     try {
-      const response = await getUserDailyStats({ start, end });
+      const response = await getUserDailyStats({ workspaceId, start, end });
       dailyData.value = response;
     } catch (err) {
       error.value = err.message || '网络错误';
@@ -279,15 +279,17 @@ export const useStatsStore = defineStore('stats', () => {
     }
   };
 
-  const refreshData = async () => {
+  const refreshData = async (workspaceId: string) => {
     const promises: Promise<void>[] = [];
 
     // 获取日统计数据
-    promises.push(fetchDailyStats(selectedDateRange.value.start, selectedDateRange.value.end));
+    promises.push(
+      fetchDailyStats(workspaceId, selectedDateRange.value.start, selectedDateRange.value.end)
+    );
 
     // 获取今天的小时统计数据
-    // const today = new Date().toISOString().split('T')[0];
-    // promises.push(fetchHourlyStats(today));
+    const today = new Date().toISOString().split('T')[0];
+    promises.push(fetchHourlyStats(workspaceId, today));
 
     await Promise.all(promises);
   };

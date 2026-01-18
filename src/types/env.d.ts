@@ -9,7 +9,6 @@ declare interface ImportMeta {
 
     readonly VITE_DEFAULT_LANGUAGE: string;
 
-    readonly VITE_API_BASE_URL: string;
     readonly VITE_API2_BASE_URL: string;
 
     readonly VITE_AUTH_MODE: 'auth0' | 'authing';

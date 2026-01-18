@@ -4,12 +4,14 @@ import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { MetricCardData } from '@/types/stats';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();
+const workspaceStore = useWorkspaceStore();
 const { t } = useI18n();
 
 // 加载状态
@@ -41,9 +43,10 @@ onMounted(async () => {
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     statsStore.setDateRange({ start: startDate, end: endDate });
-
-    // 获取数据
-    await statsStore.refreshData();
+    // if (!workspaceStore.currentWorkspaceId) {
+    //   await workspaceStore.loadWorkspaces();
+    // }
+    await statsStore.refreshData(workspaceStore.currentWorkspaceId!);
   } catch (error) {
     console.error('Failed to load dashboard data:', error);
   } finally {

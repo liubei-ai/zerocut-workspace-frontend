@@ -4,7 +4,7 @@ import type {
   HourlyStatsData,
   HourlyStatsParams,
 } from '../types/stats';
-import client from './apiclient';
+import client from './api2client';
 
 /**
  * 获取用户小时统计数据 (新版API)
