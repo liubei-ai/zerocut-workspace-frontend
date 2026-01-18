@@ -7,26 +7,28 @@
       </div>
 
       <!-- 标题 -->
-      <v-card-title class="text-h4 font-weight-bold text-center mb-2"> 🎉 欢迎加入！ </v-card-title>
+      <v-card-title class="text-h4 font-weight-bold text-center mb-2">
+        {{ t('zerocut.newbieCredits.title') }}
+      </v-card-title>
 
       <!-- 内容 -->
       <v-card-text class="text-h6 mb-4">
-        <div class="mb-3">恭喜您成功注册！我们为您准备了</div>
+        <div class="mb-3">{{ t('zerocut.newbieCredits.congratulations') }}</div>
         <div class="credits-amount">
           <v-chip color="primary" size="large" variant="elevated" class="text-h5 pa-4">
             <v-icon start>mdi-star</v-icon>
-            {{ creditsAmount }} 积分
+            {{ creditsAmount }} {{ t('zerocut.newbieCredits.creditsUnit') }}
           </v-chip>
         </div>
         <div class="mt-3 text-body-1 text-medium-emphasis">
-          积分有效期为 90 天，请尽快体验 ZeroCut。
+          {{ t('zerocut.newbieCredits.validityNotice') }}
         </div>
       </v-card-text>
 
       <!-- 操作按钮 -->
       <v-card-actions class="justify-center pt-4">
         <v-btn color="primary" variant="elevated" size="large" @click="handleClose" class="px-8">
-          开始体验
+          {{ t('zerocut.newbieCredits.startButton') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -36,6 +38,9 @@
 <script setup lang="ts">
 import type { RechargeRecord } from '@/types/api';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 interface Props {
   modelValue: boolean;

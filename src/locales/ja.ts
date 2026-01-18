@@ -174,6 +174,13 @@ export default {
         },
       },
     },
+    newbieCredits: {
+      title: '🎉 ようこそ！',
+      congratulations: '登録が完了しました！ご用意したのは',
+      creditsUnit: 'ポイント',
+      validityNotice: 'ポイントの有効期限は90日です。できるだけ早く ZeroCut をお試しください。',
+      startButton: '始める',
+    },
     wallet: {
       subtitle: 'アカウント残高とチャージ履歴を管理する',
       recharge: 'チャージ',
