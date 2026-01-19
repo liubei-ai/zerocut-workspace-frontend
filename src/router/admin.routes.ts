@@ -84,6 +84,18 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
+      {
+        path: 'toolbox',
+        name: 'admin-toolbox',
+        component: () => import('@/views/admin/AdminToolboxView.vue'),
+        meta: {
+          title: '工具箱',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
     ],
   },
 ];

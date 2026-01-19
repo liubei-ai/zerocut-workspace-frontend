@@ -64,6 +64,7 @@ export default {
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Personas',
     adminWorkflows: 'Workflows',
+    adminToolbox: 'Admin Toolbox',
 
     // Common actions
     search: 'Search (press "ctrl + /" to focus)',

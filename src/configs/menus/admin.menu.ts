@@ -24,4 +24,9 @@ export default [
     link: '/admin/workflows',
     icon: 'mdi-clipboard-list-outline',
   },
+  {
+    key: 'menu.adminToolbox',
+    link: '/admin/toolbox',
+    icon: 'mdi-toolbox',
+  },
 ];

@@ -63,6 +63,7 @@ export default {
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'ロール管理',
     adminWorkflows: 'ワークフロー',
+    adminToolbox: '管理ツールボックス',
 
     // 共通アクション
     search: '検索（フォーカスするには「ctrl + /」を押します）',

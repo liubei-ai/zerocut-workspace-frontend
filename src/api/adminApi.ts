@@ -237,6 +237,14 @@ export async function getSystemConfigEnums() {
   return response.data;
 }
 
+/**
+ * 根据配置键获取单个系统配置
+ */
+export async function getSystemConfigByKey(configKey: string): Promise<SystemConfigItem> {
+  const response = await apiClient.get<SystemConfigItem>(`/admin/system-config/${configKey}`);
+  return response.data;
+}
+
 // 工作流记录类型
 export type WorkflowRunStatus = 'pending' | 'running' | 'success' | 'fail';
 
