@@ -109,6 +109,9 @@ const loadPricingData = async () => {
     resolutionIndex.value = 0;
     resetDurationAndAudio();
 
+    // Calculate initial price
+    calculatePrice();
+
     showSnackbar('定价数据加载成功', 'success');
   } catch (error) {
     console.error('Failed to load pricing data:', error);

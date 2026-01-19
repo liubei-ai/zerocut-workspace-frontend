@@ -64,7 +64,7 @@ export default {
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',
     adminWorkflows: '工作流',
-    adminToolbox: '管理员工具箱',
+    adminToolbox: '工具箱',
 
     // 常用动作
     search: '搜索（按“ Ctrl + /”进行聚焦）',

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import PriceCalculatorTool from '@/views/admin/tools/PriceCalculatorTool.vue';
-import { type Component } from 'vue';
+import { computed, ref, type Component } from 'vue';
 
 // Tool categories
 const categories = [
