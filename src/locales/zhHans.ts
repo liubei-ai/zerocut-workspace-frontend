@@ -53,7 +53,7 @@ export default {
     apikeys: '密钥管理',
     usage: '使用日志',
     wallet: '钱包管理',
-    packages: '积分套餐',
+    packages: '积分充值',
     pricing: '定价',
     workflows: '工作流',
     guide: '专业版',
@@ -215,11 +215,13 @@ export default {
       fetch_failed: '获取套餐列表失败，请稍后重试',
       purchaseInfo: {
         title: '积分购买说明',
+        discount_9off: '活动期间，线上充值享9折优惠。',
         days_value: '{days} 天',
         validity_clear: '到期该笔订单的余量自动清零。',
         consume_priority: '积分消耗时优先消耗接近有效期的积分。',
         concurrency_prefix: '可用并发数为',
         concurrency_desc: '可用并发数是指可以同时运行的最大任务数量，超出的任务将处于排队状态。',
+        bulk_contact: '大量采购，请联系我们，微信号：{wechat}',
       },
       loading: '加载套餐信息中...',
       empty: {

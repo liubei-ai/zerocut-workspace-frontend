@@ -134,7 +134,13 @@ onMounted(() => {
         <v-list density="compact" class="pa-0">
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
-              <span class="font-weight-medium">1.</span> 购买后的积分，以订单计，有效期为
+              <span class="font-weight-medium">1.</span>
+              {{ t('zerocut.packages.purchaseInfo.discount_9off') }}
+            </v-list-item-title>
+          </v-list-item>
+          <v-list-item class="px-0">
+            <v-list-item-title class="text-body-2">
+              <span class="font-weight-medium">2.</span> 购买后的积分，以订单计，有效期为
               <span class="font-weight-bold text-primary">{{
                 t('zerocut.packages.purchaseInfo.days_value', { days: 365 })
               }}</span
@@ -143,16 +149,17 @@ onMounted(() => {
           </v-list-item>
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
-              <span class="font-weight-medium">2.</span>
+              <span class="font-weight-medium">3.</span>
               {{ t('zerocut.packages.purchaseInfo.consume_priority') }}
+              {{ t('zerocut.packages.purchaseInfo.concurrency_prefix') }}
+              <span class="font-weight-bold text-primary">{{ 5 }}</span
+              >，{{ t('zerocut.packages.purchaseInfo.concurrency_desc') }}
             </v-list-item-title>
           </v-list-item>
           <v-list-item class="px-0">
             <v-list-item-title class="text-body-2">
-              <span class="font-weight-medium">3.</span>
-              {{ t('zerocut.packages.purchaseInfo.concurrency_prefix') }}
-              <span class="font-weight-bold text-primary">{{ 5 }}</span
-              >，{{ t('zerocut.packages.purchaseInfo.concurrency_desc') }}
+              <span class="font-weight-medium">4.</span>
+              {{ t('zerocut.packages.purchaseInfo.bulk_contact', { wechat: 'ZeroCut001' }) }}
             </v-list-item-title>
           </v-list-item>
         </v-list>
@@ -166,13 +173,7 @@ onMounted(() => {
     </div>
 
     <v-row v-else>
-      <v-col
-        v-for="pkg in packages"
-        :key="pkg.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3">
+      <v-col v-for="pkg in packages" :key="pkg.id" cols="12" sm="6" md="4" lg="3">
         <PackageCard :package-info="pkg" @purchase="handlePurchase" />
       </v-col>
     </v-row>
