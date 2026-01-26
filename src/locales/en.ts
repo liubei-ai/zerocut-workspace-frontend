@@ -54,6 +54,7 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
+    membership: 'Membership',
     pricing: 'Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
@@ -128,6 +129,96 @@ export default {
       singlePayment: 'Single Payment',
       viewProduct: 'View Product',
       noProducts: 'No products available',
+    },
+    membership: {
+      title: 'Membership Plans',
+      subtitle: 'Choose a plan to unlock more features and credits',
+      loading: 'Loading...',
+      actions: {
+        subscribe: 'Subscribe',
+      },
+      cycles: {
+        yearly: 'Yearly',
+        monthly: 'Monthly',
+        one_time: 'One-time',
+      },
+      priceList: {
+        title: 'Price List',
+        subtitle: 'Compare benefits across plans',
+        headers: {
+          tier: 'Tier',
+          oneTime: 'One-time (1 month)',
+          autoMonthly: 'Auto-renew (Monthly)',
+          autoYearly: 'Auto-renew (Yearly)',
+          benefits: 'Benefits',
+        },
+        formats: {
+          priceYuan: '¥{price}',
+          priceYearly: '¥{price}/yr',
+          unitPrice: '{price} CNY/credit',
+        },
+        discounts: {
+          basic: {
+            oneTimeMonth: '20% off',
+            autoMonthly: '30% off',
+            autoYearly: '40% off',
+          },
+          standard: {
+            oneTimeMonth: '26% off',
+            autoMonthly: '34% off',
+            autoYearly: '44% off',
+          },
+          premium: {
+            oneTimeMonth: '36% off',
+            autoMonthly: '44% off',
+            autoYearly: '54% off',
+          },
+        },
+        benefits: {
+          monthlyCredits: '{credits} credits / month',
+          quotas: {
+            basic: 'Up to 310 images or 250s video (default model)',
+            standard: 'Up to 1000 images or 800s video (default model)',
+            premium: 'Up to 3125 images or 2500s video (default model)',
+          },
+          universal: {
+            allModels: 'Access to all models',
+            hdVideo: 'HD video generation',
+            noWatermark: 'Watermark-free output',
+          },
+        },
+        notes: {
+          title: 'Credit Rules',
+          monthlyReset: 'Credits are issued per billing period only',
+          noRollover: 'Unused credits expire at period end (no rollover)',
+          yearlyMonthlyQuota:
+            'Yearly plan bills once per year, but credits are issued monthly (each month expires)',
+        },
+      },
+      tiers: {
+        basic: 'Basic',
+        standard: 'Standard',
+        premium: 'Premium',
+        unknown: '{tier}',
+      },
+      prices: {
+        monthly: '¥{price}/mo',
+        yearly: '¥{price}/yr',
+        oneTime: '¥{price} one-time',
+      },
+      credits: {
+        monthly: '{credits} credits/mo',
+      },
+      errors: {
+        fetchPlansFailed: 'Failed to load membership plans',
+      },
+      empty: {
+        title: 'No membership plans available',
+        subtitle: 'Please try again later or contact support',
+      },
+      messages: {
+        selectedPlan: 'Selected {planName} - {cycle} ({productId})',
+      },
     },
     usage: {
       title: 'Usage Logs',

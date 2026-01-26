@@ -54,6 +54,7 @@ export default {
     usage: '利用ログ',
     wallet: 'ウォレット管理',
     packages: 'ポイントパッケージ',
+    membership: '会員',
     pricing: '価格',
     guide: 'プロ版',
 
@@ -136,6 +137,95 @@ export default {
 
   // Zerocut ビュー
   zerocut: {
+    membership: {
+      title: '会員プラン',
+      subtitle: '最適なプランを選んで、より多くの機能とポイント枠を解放',
+      loading: '読み込み中…',
+      actions: {
+        subscribe: '購読',
+      },
+      cycles: {
+        yearly: '年払い',
+        monthly: '月払い',
+        one_time: '単発',
+      },
+      priceList: {
+        title: '料金表',
+        subtitle: 'プラン間の特典差を確認',
+        headers: {
+          tier: '会員タイプ',
+          oneTime: '単月購入',
+          autoMonthly: '継続（月額）',
+          autoYearly: '継続（年額）',
+          benefits: '特典',
+        },
+        formats: {
+          priceYuan: '¥{price}',
+          priceYearly: '¥{price}/年',
+          unitPrice: '{price}元/ポイント',
+        },
+        discounts: {
+          basic: {
+            oneTimeMonth: '8割',
+            autoMonthly: '7割',
+            autoYearly: '6割',
+          },
+          standard: {
+            oneTimeMonth: '7.4割',
+            autoMonthly: '6.6割',
+            autoYearly: '5.6割',
+          },
+          premium: {
+            oneTimeMonth: '6.4割',
+            autoMonthly: '5.6割',
+            autoYearly: '4.6割',
+          },
+        },
+        benefits: {
+          monthlyCredits: '毎月 {credits} ポイント',
+          quotas: {
+            basic: '最大 310 枚の画像、または 250 秒の動画（デフォルトモデル）',
+            standard: '最大 1000 枚の画像、または 800 秒の動画（デフォルトモデル）',
+            premium: '最大 3125 枚の画像、または 2500 秒の動画（デフォルトモデル）',
+          },
+          universal: {
+            allModels: 'すべてのモデルを利用可能',
+            hdVideo: '高画質動画の生成',
+            noWatermark: '透かしなし',
+          },
+        },
+        notes: {
+          title: 'ポイントルール',
+          monthlyReset: '各請求期間ごとに当月分のみ付与',
+          noRollover: '未使用分は期限到来で失効（繰り越しなし）',
+          yearlyMonthlyQuota: '年払いは年1回請求ですが、ポイントは毎月付与（各月の枠は月末で失効）',
+        },
+      },
+      tiers: {
+        basic: 'ベーシック',
+        standard: 'スタンダード',
+        premium: 'プレミアム',
+        unknown: '{tier}',
+      },
+      prices: {
+        monthly: '¥{price}/月',
+        yearly: '¥{price}/年',
+        oneTime: '¥{price} 単発',
+      },
+      credits: {
+        monthly: '{credits} ポイント/月',
+      },
+      errors: {
+        fetchPlansFailed: '会員プランの読み込みに失敗しました',
+      },
+      empty: {
+        title: '利用可能な会員プランはありません',
+        subtitle: 'しばらくしてから再度お試しいただくか、サポートにお問い合わせください',
+      },
+      messages: {
+        selectedPlan: '{planName} - {cycle} を選択しました（{productId}）',
+      },
+    },
     usage: {
       title: '利用ログ',
       subtitle: '詳細なポイント使用記録を表示',

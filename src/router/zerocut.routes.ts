@@ -53,6 +53,18 @@ const zerocutRoutes = [
       ),
   },
   {
+    path: '/membership',
+    name: 'Membership',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '会员计划',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
+  },
+  {
     path: '/bagelpay/products',
     name: 'BagelPayProducts',
     meta: {
