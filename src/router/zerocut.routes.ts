@@ -65,6 +65,18 @@ const zerocutRoutes = [
       import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
   },
   {
+    path: '/plans-and-billing',
+    name: 'PlansAndBilling',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '套餐与账单',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "plans-and-billing" */ '@/views/zerocut/PlansAndBillingView.vue'),
+  },
+  {
     path: '/bagelpay/products',
     name: 'BagelPayProducts',
     meta: {

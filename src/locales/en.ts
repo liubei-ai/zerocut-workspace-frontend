@@ -55,6 +55,7 @@ export default {
     wallet: 'Wallet',
     packages: 'Credit Packages',
     membership: 'Membership',
+    plansAndBilling: 'Plans & Billing',
     pricing: 'Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
@@ -156,6 +157,7 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/yr',
           unitPrice: '{price} CNY/credit',
+          savePercent: 'Save {percent}%',
         },
         discounts: {
           basic: {
@@ -218,6 +220,40 @@ export default {
       },
       messages: {
         selectedPlan: 'Selected {planName} - {cycle} ({productId})',
+      },
+    },
+    plansAndBilling: {
+      title: 'Plans & Billing',
+      subtitle: 'Manage subscription, billing and cancel auto-renew',
+      sections: {
+        current: 'Current Subscription',
+        cancel: 'Cancel Auto-Renew',
+      },
+      fields: {
+        plan: 'Plan',
+        billingMode: 'Billing Mode',
+        price: 'Amount',
+        nextBillingAt: 'Next Billing At',
+        currentPeriodEndAt: 'Current Period Ends At',
+      },
+      status: {
+        active: 'Active',
+        canceled: 'Auto-renew canceled',
+      },
+      cancel: {
+        description:
+          'After cancellation, your current period remains active. Auto-renewal will stop at period end.',
+        pathTitle: 'Navigation Path',
+        path: 'Avatar menu → Plans & Billing → Cancel Auto-Renew',
+        button: 'Cancel Auto-Renew',
+        viewPlans: 'View Plans',
+        dialogTitle: 'Confirm cancellation?',
+        dialogDesc:
+          'Auto-renewal will stop after confirmation. You can continue using benefits until the current period ends.',
+        confirm: 'Confirm',
+      },
+      messages: {
+        cancelSuccess: 'Auto-renew canceled',
       },
     },
     usage: {

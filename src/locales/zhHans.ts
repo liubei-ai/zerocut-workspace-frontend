@@ -54,7 +54,8 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分充值',
-    membership: '会员',
+    membership: '开通会员',
+    plansAndBilling: '套餐与账单',
     pricing: '定价',
     workflows: '工作流',
     guide: '专业版',
@@ -155,6 +156,7 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/年',
           unitPrice: '{price}元/积分',
+          savePercent: '省{percent}%',
         },
         discounts: {
           basic: {
@@ -216,6 +218,38 @@ export default {
       },
       messages: {
         selectedPlan: '已选择 {planName} - {cycle} ({productId})',
+      },
+    },
+    plansAndBilling: {
+      title: '套餐与账单',
+      subtitle: '管理订阅、账单与取消自动续费',
+      sections: {
+        current: '当前订阅',
+        cancel: '取消自动续费',
+      },
+      fields: {
+        plan: '会员类型',
+        billingMode: '购买方式',
+        price: '支付金额',
+        nextBillingAt: '下次扣费时间',
+        currentPeriodEndAt: '当前周期结束时间',
+      },
+      status: {
+        active: '生效中',
+        canceled: '已取消自动续费',
+      },
+      cancel: {
+        description: '取消后本期仍可使用，到期后不再自动续费与扣费。',
+        pathTitle: '路径指引',
+        path: '头像菜单 → 套餐与账单 → 取消自动续费',
+        button: '取消自动续费',
+        viewPlans: '查看会员计划',
+        dialogTitle: '确认取消自动续费？',
+        dialogDesc: '确认后将停止自动续费，本期结束前仍可继续使用会员权益。',
+        confirm: '确认取消',
+      },
+      messages: {
+        cancelSuccess: '已取消自动续费',
       },
     },
     usage: {

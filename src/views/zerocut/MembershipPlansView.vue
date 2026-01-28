@@ -3,6 +3,7 @@ import { getMembershipPlans, type MembershipPlanDto } from '@/api/membershipApi'
 import SubscribePricing, {
   type SubscriptionPlan,
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
+import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,6 +14,9 @@ const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
 const error = ref<string | null>(null);
 const selectedCycle = ref<Cycle>('yearly'); // Default to yearly
+const membershipPaymentOpen = ref(false);
+const selectedPlanForPayment = ref<MembershipPlanDto | null>(null);
+const selectedPlanTitle = ref<string>('');
 
 const snackbarStore = useSnackbarStore();
 const { t, locale } = useI18n();
@@ -22,76 +26,46 @@ type PriceListTier = 'basic' | 'standard' | 'premium';
 type ModeCell = {
   priceYuan: number;
   unitPriceYuanPerCredit: number;
-  discountTextKey: string;
+  discountText?: string;
 };
 
 type TierComparisonRow = {
-  tier: PriceListTier;
-  monthlyCredits: number;
-  oneTime: ModeCell;
-  autoMonthly: ModeCell;
-  autoYearly: ModeCell;
+  tier: string;
+  tierKey: PriceListTier;
+  oneTime: ModeCell | undefined;
+  autoMonthly: ModeCell | undefined;
+  autoYearly: ModeCell | undefined;
+  benefits: string[];
 };
 
-const PRICE_COMPARISON_ROWS: TierComparisonRow[] = [
-  {
-    tier: 'basic',
-    monthlyCredits: 2500,
-    oneTime: {
-      priceYuan: 99,
-      unitPriceYuanPerCredit: 0.04,
-      discountTextKey: 'zerocut.membership.priceList.discounts.basic.oneTimeMonth',
-    },
-    autoMonthly: {
-      priceYuan: 88,
-      unitPriceYuanPerCredit: 0.035,
-      discountTextKey: 'zerocut.membership.priceList.discounts.basic.autoMonthly',
-    },
-    autoYearly: {
-      priceYuan: 888,
-      unitPriceYuanPerCredit: 0.03,
-      discountTextKey: 'zerocut.membership.priceList.discounts.basic.autoYearly',
-    },
-  },
-  {
-    tier: 'standard',
-    monthlyCredits: 8000,
-    oneTime: {
-      priceYuan: 299,
-      unitPriceYuanPerCredit: 0.037,
-      discountTextKey: 'zerocut.membership.priceList.discounts.standard.oneTimeMonth',
-    },
-    autoMonthly: {
-      priceYuan: 265,
-      unitPriceYuanPerCredit: 0.033,
-      discountTextKey: 'zerocut.membership.priceList.discounts.standard.autoMonthly',
-    },
-    autoYearly: {
-      priceYuan: 2650,
-      unitPriceYuanPerCredit: 0.028,
-      discountTextKey: 'zerocut.membership.priceList.discounts.standard.autoYearly',
-    },
-  },
-  {
-    tier: 'premium',
-    monthlyCredits: 25000,
-    oneTime: {
-      priceYuan: 799,
-      unitPriceYuanPerCredit: 0.032,
-      discountTextKey: 'zerocut.membership.priceList.discounts.premium.oneTimeMonth',
-    },
-    autoMonthly: {
-      priceYuan: 699,
-      unitPriceYuanPerCredit: 0.028,
-      discountTextKey: 'zerocut.membership.priceList.discounts.premium.autoMonthly',
-    },
-    autoYearly: {
-      priceYuan: 6990,
-      unitPriceYuanPerCredit: 0.023,
-      discountTextKey: 'zerocut.membership.priceList.discounts.premium.autoYearly',
-    },
-  },
-];
+const PRICE_LIST_TIER_ORDER: PriceListTier[] = ['basic', 'standard', 'premium'];
+
+function buildModeCell(params: {
+  plan: MembershipPlanDto;
+  monthlyCredits: number;
+  oneTimeMonthlyPlan?: MembershipPlanDto;
+}): ModeCell {
+  const isYearly = params.plan.purchaseMode === 'auto_yearly';
+  const intervalMonths = isYearly ? params.plan.billingIntervalMonths : 1;
+  const totalCredits = params.monthlyCredits * intervalMonths;
+  const unitPriceYuanPerCredit =
+    totalCredits > 0 ? params.plan.priceYuan / totalCredits : params.plan.priceYuan;
+
+  let discountText: string | undefined;
+  if (params.oneTimeMonthlyPlan && params.oneTimeMonthlyPlan.priceYuan > 0) {
+    const basePrice = params.oneTimeMonthlyPlan.priceYuan * intervalMonths;
+    const percent = Math.round((1 - params.plan.priceYuan / basePrice) * 100);
+    if (Number.isFinite(percent) && percent > 0) {
+      discountText = t('zerocut.membership.priceList.formats.savePercent', { percent });
+    }
+  }
+
+  return {
+    priceYuan: params.plan.priceYuan,
+    unitPriceYuanPerCredit,
+    discountText,
+  };
+}
 
 /**
  * Tier name mapping
@@ -105,26 +79,20 @@ const TIER_NAME_KEYS: Record<string, string> = {
 /**
  * Tier feature descriptions
  */
-const TIER_FEATURE_KEYS: Record<string, string[]> = {
-  basic: [
-    'zerocut.membership.priceList.benefits.quotas.basic',
-    'zerocut.membership.priceList.benefits.universal.allModels',
-    'zerocut.membership.priceList.benefits.universal.hdVideo',
-    'zerocut.membership.priceList.benefits.universal.noWatermark',
-  ],
-  standard: [
-    'zerocut.membership.priceList.benefits.quotas.standard',
-    'zerocut.membership.priceList.benefits.universal.allModels',
-    'zerocut.membership.priceList.benefits.universal.hdVideo',
-    'zerocut.membership.priceList.benefits.universal.noWatermark',
-  ],
-  premium: [
-    'zerocut.membership.priceList.benefits.quotas.premium',
-    'zerocut.membership.priceList.benefits.universal.allModels',
-    'zerocut.membership.priceList.benefits.universal.hdVideo',
-    'zerocut.membership.priceList.benefits.universal.noWatermark',
-  ],
-};
+function formatPlanFeatures(plan: MembershipPlanDto): string[] {
+  const sorted = [...(plan.features ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  return sorted
+    .map(feature => {
+      if (feature.i18nKey) {
+        return t(feature.i18nKey, feature.i18nParams ?? {});
+      }
+      if (feature.label) {
+        return feature.label;
+      }
+      return feature.key;
+    })
+    .filter(Boolean);
+}
 
 /**
  * Format price display
@@ -162,27 +130,58 @@ function formatUnitPrice(unitPriceYuanPerCredit: number): string {
   });
 }
 
-const priceComparisonRows = computed(() => {
+const priceComparisonRows = computed<TierComparisonRow[]>(() => {
   locale.value;
-  return PRICE_COMPARISON_ROWS.map(row => {
-    const tierName = t(TIER_NAME_KEYS[row.tier]);
-    const monthlyCredits = row.monthlyCredits.toLocaleString();
+
+  const tierPlanMap = rawPlans.value.reduce(
+    (acc, plan) => {
+      if (!acc[plan.tier]) {
+        acc[plan.tier] = {};
+      }
+      acc[plan.tier][plan.purchaseMode] = plan;
+      return acc;
+    },
+    {} as Record<
+      PriceListTier,
+      Partial<Record<MembershipPlanDto['purchaseMode'], MembershipPlanDto>>
+    >
+  );
+
+  const rows = PRICE_LIST_TIER_ORDER.map(tier => {
+    const oneTimePlan = tierPlanMap[tier]?.one_time_month;
+    const autoMonthlyPlan = tierPlanMap[tier]?.auto_monthly;
+    const autoYearlyPlan = tierPlanMap[tier]?.auto_yearly;
+
+    const samplePlan = oneTimePlan || autoMonthlyPlan || autoYearlyPlan;
+    if (!samplePlan) {
+      return null;
+    }
+
+    const tierName = t(TIER_NAME_KEYS[tier]);
+    const monthlyCredits = samplePlan.monthlyCredits;
+    const monthlyCreditsText = monthlyCredits.toLocaleString();
     const benefits: string[] = [
-      t('zerocut.membership.priceList.benefits.monthlyCredits', { credits: monthlyCredits }),
-      t(`zerocut.membership.priceList.benefits.quotas.${row.tier}`),
-      t('zerocut.membership.priceList.benefits.universal.allModels'),
-      t('zerocut.membership.priceList.benefits.universal.hdVideo'),
-      t('zerocut.membership.priceList.benefits.universal.noWatermark'),
+      t('zerocut.membership.priceList.benefits.monthlyCredits', { credits: monthlyCreditsText }),
+      ...formatPlanFeatures(samplePlan),
     ];
+
     return {
       tier: tierName,
-      tierKey: row.tier,
-      oneTime: row.oneTime,
-      autoMonthly: row.autoMonthly,
-      autoYearly: row.autoYearly,
+      tierKey: tier,
+      oneTime: oneTimePlan
+        ? buildModeCell({ plan: oneTimePlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+        : undefined,
+      autoMonthly: autoMonthlyPlan
+        ? buildModeCell({ plan: autoMonthlyPlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+        : undefined,
+      autoYearly: autoYearlyPlan
+        ? buildModeCell({ plan: autoYearlyPlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+        : undefined,
       benefits,
     };
   });
+
+  return rows.filter((row): row is TierComparisonRow => row !== null);
 });
 
 /**
@@ -208,7 +207,7 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
     }),
     price: formatPrice(plan),
     credits: formatCredits(plan.monthlyCredits),
-    features: (TIER_FEATURE_KEYS[plan.tier] || []).map(key => t(key)),
+    features: formatPlanFeatures(plan),
     productId: plan.code,
   }));
 });
@@ -249,6 +248,19 @@ async function fetchMembershipPlans() {
  * Handle subscribe button click
  */
 function handleSubscribe(productId: string, planName: string) {
+  const plan = rawPlans.value.find(p => p.code === productId);
+  if (!plan) {
+    snackbarStore.showErrorMessage(t('zerocut.membership.errors.fetchPlansFailed'));
+    return;
+  }
+
+  if (selectedCycle.value === 'one_time' && plan.purchaseMode === 'one_time_month') {
+    selectedPlanForPayment.value = plan;
+    selectedPlanTitle.value = planName;
+    membershipPaymentOpen.value = true;
+    return;
+  }
+
   const cycleName = t(`zerocut.membership.cycles.${selectedCycle.value}`);
   snackbarStore.showInfoMessage(
     t('zerocut.membership.messages.selectedPlan', {
@@ -257,8 +269,27 @@ function handleSubscribe(productId: string, planName: string) {
       productId,
     })
   );
+}
 
-  // TODO Phase 3: Call subscription signing API
+function handleMembershipPaymentSuccess() {
+  membershipPaymentOpen.value = false;
+  if (selectedPlanForPayment.value) {
+    snackbarStore.showSuccessMessage(
+      t('zerocut.membership.messages.selectedPlan', {
+        planName: selectedPlanTitle.value || selectedPlanForPayment.value.code,
+        cycle: t('zerocut.membership.cycles.one_time'),
+        productId: selectedPlanForPayment.value.code,
+      })
+    );
+  }
+  selectedPlanForPayment.value = null;
+  selectedPlanTitle.value = '';
+}
+
+function handleMembershipPaymentCancel() {
+  membershipPaymentOpen.value = false;
+  selectedPlanForPayment.value = null;
+  selectedPlanTitle.value = '';
 }
 
 onMounted(fetchMembershipPlans);
@@ -317,25 +348,40 @@ onMounted(fetchMembershipPlans);
                 <div class="font-weight-bold">{{ row.tier }}</div>
               </td>
               <td class="price-cell">
-                <div class="price-main">{{ formatYuanPrice(row.oneTime.priceYuan) }}</div>
-                <div class="price-sub">
-                  {{ formatUnitPrice(row.oneTime.unitPriceYuanPerCredit) }}
-                </div>
-                <div class="price-sub">{{ t(row.oneTime.discountTextKey) }}</div>
+                <template v-if="row.oneTime">
+                  <div class="price-main">{{ formatYuanPrice(row.oneTime.priceYuan) }}</div>
+                  <div class="price-sub">
+                    {{ formatUnitPrice(row.oneTime.unitPriceYuanPerCredit) }}
+                  </div>
+                  <div v-if="row.oneTime.discountText" class="price-sub">
+                    {{ row.oneTime.discountText }}
+                  </div>
+                </template>
+                <template v-else>-</template>
               </td>
               <td class="price-cell">
-                <div class="price-main">{{ formatYuanPrice(row.autoMonthly.priceYuan) }}</div>
-                <div class="price-sub">
-                  {{ formatUnitPrice(row.autoMonthly.unitPriceYuanPerCredit) }}
-                </div>
-                <div class="price-sub">{{ t(row.autoMonthly.discountTextKey) }}</div>
+                <template v-if="row.autoMonthly">
+                  <div class="price-main">{{ formatYuanPrice(row.autoMonthly.priceYuan) }}</div>
+                  <div class="price-sub">
+                    {{ formatUnitPrice(row.autoMonthly.unitPriceYuanPerCredit) }}
+                  </div>
+                  <div v-if="row.autoMonthly.discountText" class="price-sub">
+                    {{ row.autoMonthly.discountText }}
+                  </div>
+                </template>
+                <template v-else>-</template>
               </td>
               <td class="price-cell">
-                <div class="price-main">{{ formatYuanYearly(row.autoYearly.priceYuan) }}</div>
-                <div class="price-sub">
-                  {{ formatUnitPrice(row.autoYearly.unitPriceYuanPerCredit) }}
-                </div>
-                <div class="price-sub">{{ t(row.autoYearly.discountTextKey) }}</div>
+                <template v-if="row.autoYearly">
+                  <div class="price-main">{{ formatYuanYearly(row.autoYearly.priceYuan) }}</div>
+                  <div class="price-sub">
+                    {{ formatUnitPrice(row.autoYearly.unitPriceYuanPerCredit) }}
+                  </div>
+                  <div v-if="row.autoYearly.discountText" class="price-sub">
+                    {{ row.autoYearly.discountText }}
+                  </div>
+                </template>
+                <template v-else>-</template>
               </td>
               <td class="benefits-cell">
                 <ul class="benefits-list">
@@ -374,6 +420,14 @@ onMounted(fetchMembershipPlans);
         {{ t('zerocut.membership.empty.subtitle') }}
       </div>
     </v-card>
+
+    <MembershipPaymentDialog
+      v-model:open="membershipPaymentOpen"
+      :membership-plan="selectedPlanForPayment"
+      :title="selectedPlanTitle"
+      @success="handleMembershipPaymentSuccess"
+      @cancel="handleMembershipPaymentCancel"
+    />
   </v-container>
 </template>
 

@@ -55,6 +55,7 @@ export default {
     wallet: 'ウォレット管理',
     packages: 'ポイントパッケージ',
     membership: '会員',
+    plansAndBilling: 'プランと請求',
     pricing: '価格',
     guide: 'プロ版',
 
@@ -163,6 +164,7 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/年',
           unitPrice: '{price}元/ポイント',
+          savePercent: '{percent}%お得',
         },
         discounts: {
           basic: {
@@ -224,6 +226,39 @@ export default {
       },
       messages: {
         selectedPlan: '{planName} - {cycle} を選択しました（{productId}）',
+      },
+    },
+    plansAndBilling: {
+      title: 'プランと請求',
+      subtitle: '購読、請求、継続課金の解約を管理',
+      sections: {
+        current: '現在の購読',
+        cancel: '自動更新の解約',
+      },
+      fields: {
+        plan: '会員タイプ',
+        billingMode: '購入方式',
+        price: '支払金額',
+        nextBillingAt: '次回請求日時',
+        currentPeriodEndAt: '現在の期間終了日時',
+      },
+      status: {
+        active: '有効',
+        canceled: '自動更新を解約済み',
+      },
+      cancel: {
+        description: '解約後も当月分は利用可能で、期間終了後に自動更新と請求が停止します。',
+        pathTitle: '手順',
+        path: 'アバターメニュー → プランと請求 → 自動更新の解約',
+        button: '自動更新を解約',
+        viewPlans: '会員プランを見る',
+        dialogTitle: '自動更新を解約しますか？',
+        dialogDesc:
+          '確認後は自動更新が停止します。現在の期間が終了するまで特典は引き続き利用できます。',
+        confirm: '解約する',
+      },
+      messages: {
+        cancelSuccess: '自動更新を解約しました',
       },
     },
     usage: {
