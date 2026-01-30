@@ -25,11 +25,6 @@ const zerocutMenu = [
     link: '/wallet',
     icon: 'mdi-wallet-outline',
   },
-  {
-    key: 'menu.membership',
-    link: '/membership',
-    icon: 'mdi-account-check-outline',
-  },
 ];
 
 if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {

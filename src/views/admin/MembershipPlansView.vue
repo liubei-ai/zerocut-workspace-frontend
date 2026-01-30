@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import { getMembershipPlans, type MembershipPlanDto } from '@/api/membershipApi';
+import {
+  getMembershipPlans,
+  type MembershipPlanDto,
+  type SigningSessionStatus,
+} from '@/api/membershipApi';
 import SubscribePricing, {
   type SubscriptionPlan,
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
 import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
+import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -17,6 +22,9 @@ const selectedCycle = ref<Cycle>('yearly'); // Default to yearly
 const membershipPaymentOpen = ref(false);
 const selectedPlanForPayment = ref<MembershipPlanDto | null>(null);
 const selectedPlanTitle = ref<string>('');
+const membershipSigningOpen = ref(false);
+const selectedPlanForSigning = ref<MembershipPlanDto | null>(null);
+const selectedSigningTitle = ref<string>('');
 
 const snackbarStore = useSnackbarStore();
 const { t, locale } = useI18n();
@@ -254,10 +262,17 @@ function handleSubscribe(productId: string, planName: string) {
     return;
   }
 
-  if (selectedCycle.value === 'one_time' && plan.purchaseMode === 'one_time_month') {
+  if (plan.purchaseMode === 'one_time_month') {
     selectedPlanForPayment.value = plan;
     selectedPlanTitle.value = planName;
     membershipPaymentOpen.value = true;
+    return;
+  }
+
+  if (plan.purchaseMode === 'auto_monthly' || plan.purchaseMode === 'auto_yearly') {
+    selectedPlanForSigning.value = plan;
+    selectedSigningTitle.value = planName;
+    membershipSigningOpen.value = true;
     return;
   }
 
@@ -290,6 +305,21 @@ function handleMembershipPaymentCancel() {
   membershipPaymentOpen.value = false;
   selectedPlanForPayment.value = null;
   selectedPlanTitle.value = '';
+}
+
+function handleMembershipSigningSuccess(status: SigningSessionStatus) {
+  membershipSigningOpen.value = false;
+  const planLabel = selectedSigningTitle.value || selectedPlanForSigning.value?.code || '';
+  const suffix = status.subscriptionId ? `（订阅ID：${status.subscriptionId}）` : '';
+  snackbarStore.showSuccessMessage(`签约成功：${planLabel}${suffix}`);
+  selectedPlanForSigning.value = null;
+  selectedSigningTitle.value = '';
+}
+
+function handleMembershipSigningCancel() {
+  membershipSigningOpen.value = false;
+  selectedPlanForSigning.value = null;
+  selectedSigningTitle.value = '';
 }
 
 onMounted(fetchMembershipPlans);
@@ -427,6 +457,14 @@ onMounted(fetchMembershipPlans);
       :title="selectedPlanTitle"
       @success="handleMembershipPaymentSuccess"
       @cancel="handleMembershipPaymentCancel"
+    />
+
+    <MembershipSigningDialog
+      v-model:open="membershipSigningOpen"
+      :membership-plan="selectedPlanForSigning"
+      :title="selectedSigningTitle"
+      @success="handleMembershipSigningSuccess"
+      @cancel="handleMembershipSigningCancel"
     />
   </v-container>
 </template>

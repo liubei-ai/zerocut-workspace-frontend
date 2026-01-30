@@ -52,30 +52,18 @@ const zerocutRoutes = [
         /* webpackChunkName: "wallet-management" */ '@/views/zerocut/WalletManagementView.vue'
       ),
   },
-  {
-    path: '/membership',
-    name: 'Membership',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-      title: '会员计划',
-      category: 'ZeroCut',
-    },
-    component: () =>
-      import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
-  },
-  {
-    path: '/plans-and-billing',
-    name: 'PlansAndBilling',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-      title: '套餐与账单',
-      category: 'ZeroCut',
-    },
-    component: () =>
-      import(/* webpackChunkName: "plans-and-billing" */ '@/views/zerocut/PlansAndBillingView.vue'),
-  },
+  // {
+  //   path: '/plans-and-billing',
+  //   name: 'PlansAndBilling',
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: 'landing',
+  //     title: '套餐与账单',
+  //     category: 'ZeroCut',
+  //   },
+  //   component: () =>
+  //     import(/* webpackChunkName: "plans-and-billing" */ '@/views/zerocut/PlansAndBillingView.vue'),
+  // },
   {
     path: '/bagelpay/products',
     name: 'BagelPayProducts',

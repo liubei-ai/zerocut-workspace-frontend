@@ -43,6 +43,24 @@ export interface CreateMembershipPaymentOrderResponse {
   outTradeNo: string;
 }
 
+export interface CreateSigningSessionParams {
+  workspaceId: string;
+  planCode: string;
+  displayAccountName?: string;
+}
+
+export interface SigningSessionResponse {
+  signingSessionId: string;
+  qrUrl: string;
+  expiresAt: string;
+}
+
+export interface SigningSessionStatus {
+  status: 'signing' | 'signed' | 'expired';
+  contractId: string | null;
+  subscriptionId: number | null;
+}
+
 /**
  * Get all membership plans
  * @param activeOnly - Only return active plans (default true)
@@ -64,4 +82,19 @@ export async function createMembershipWechatPayOrder(params: CreateMembershipPay
 
 export async function closeMembershipOrder(outTradeNo: string, workspaceId: string) {
   await client.post('/wechat-pay-native/close-membership-order', { outTradeNo, workspaceId });
+}
+
+export async function createSigningSession(params: CreateSigningSessionParams) {
+  const response = await client.post<SigningSessionResponse>(
+    '/subscriptions/signing-sessions',
+    params
+  );
+  return response.data;
+}
+
+export async function getSigningSessionStatus(sessionId: string) {
+  const response = await client.get<SigningSessionStatus>(
+    `/subscriptions/signing-sessions/${sessionId}`
+  );
+  return response.data;
 }
