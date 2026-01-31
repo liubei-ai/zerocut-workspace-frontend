@@ -203,7 +203,8 @@ const copyMCPConfig = async (token: ApiKey) => {
       ],
       "env": {
         "CEREVOX_API_KEY": "${token.apiKey || token.apiKeyPrefix}",
-        "ZEROCUT_PROJECT_CWD": "\${workspaceFolder}"
+        "ZEROCUT_PROJECT_CWD": "\${workspaceFolder}",
+        "RUN_MCP_TIMEOUT_MS": "900000"
       }
     }
   }
@@ -235,14 +236,14 @@ onMounted(() => {
 // 获取状态颜色
 const getStatusColor = (status: string) => {
   switch (status) {
-  case 'active':
-    return 'success';
-  case 'expired':
-    return 'error';
-  case 'disabled':
-    return 'warning';
-  default:
-    return 'grey';
+    case 'active':
+      return 'success';
+    case 'expired':
+      return 'error';
+    case 'disabled':
+      return 'warning';
+    default:
+      return 'grey';
   }
 };
 </script>
@@ -343,7 +344,7 @@ const getStatusColor = (status: string) => {
               variant="text"
               :tooltip="t('zerocut.apikeys.copyMCP.tooltip')"
               @click="copyMCPConfig(item)"
-            >MCP</v-btn
+              >MCP</v-btn
             >
           </div>
         </template>
