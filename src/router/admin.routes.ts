@@ -96,21 +96,6 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
-      {
-        path: '/membership',
-        name: 'Membership',
-        meta: {
-          title: '成为会员',
-          layout: 'landing',
-          category: 'Admin',
-          requiresAuth: true,
-          requiresSuperAdmin: true,
-        },
-        component: () =>
-          import(
-            /* webpackChunkName: "membership-plans" */ '@/views/admin/MembershipPlansView.vue'
-          ),
-      },
     ],
   },
 ];

@@ -12,13 +12,14 @@ import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialo
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time';
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
 const error = ref<string | null>(null);
-const selectedCycle = ref<Cycle>('yearly'); // Default to yearly
+const selectedCycle = ref<Cycle>('yearly');
 const membershipPaymentOpen = ref(false);
 const selectedPlanForPayment = ref<MembershipPlanDto | null>(null);
 const selectedPlanTitle = ref<string>('');
@@ -28,6 +29,7 @@ const selectedSigningTitle = ref<string>('');
 
 const snackbarStore = useSnackbarStore();
 const { t, locale } = useI18n();
+const router = useRouter();
 
 type PriceListTier = 'basic' | 'standard' | 'premium';
 
@@ -75,18 +77,12 @@ function buildModeCell(params: {
   };
 }
 
-/**
- * Tier name mapping
- */
 const TIER_NAME_KEYS: Record<string, string> = {
   basic: 'zerocut.membership.tiers.basic',
   standard: 'zerocut.membership.tiers.standard',
   premium: 'zerocut.membership.tiers.premium',
 };
 
-/**
- * Tier feature descriptions
- */
 function formatPlanFeatures(plan: MembershipPlanDto): string[] {
   const sorted = [...(plan.features ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   return sorted
@@ -102,9 +98,6 @@ function formatPlanFeatures(plan: MembershipPlanDto): string[] {
     .filter(Boolean);
 }
 
-/**
- * Format price display
- */
 function formatPrice(plan: MembershipPlanDto): string {
   if (plan.purchaseMode === 'auto_monthly') {
     return t('zerocut.membership.prices.monthly', { price: plan.priceYuan });
@@ -115,9 +108,6 @@ function formatPrice(plan: MembershipPlanDto): string {
   }
 }
 
-/**
- * Format credits display
- */
 function formatCredits(monthlyCredits: number): string {
   return t('zerocut.membership.credits.monthly', {
     credits: monthlyCredits.toLocaleString(),
@@ -192,13 +182,9 @@ const priceComparisonRows = computed<TierComparisonRow[]>(() => {
   return rows.filter((row): row is TierComparisonRow => row !== null);
 });
 
-/**
- * Filter and convert to display format
- */
 const displayPlans = computed<SubscriptionPlan[]>(() => {
   locale.value;
 
-  // Filter by selected cycle
   const cycleFilterMap: Record<Cycle, string[]> = {
     yearly: ['auto_yearly'],
     monthly: ['auto_monthly'],
@@ -208,7 +194,6 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
   const allowedModes = cycleFilterMap[selectedCycle.value];
   const filtered = rawPlans.value.filter(p => allowedModes.includes(p.purchaseMode));
 
-  // Convert to SubscriptionPlan format
   return filtered.map(plan => ({
     planName: t(TIER_NAME_KEYS[plan.tier] ?? 'zerocut.membership.tiers.unknown', {
       tier: plan.tier,
@@ -220,16 +205,10 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
   }));
 });
 
-/**
- * Check if specific cycle plans exist
- */
 const hasYearly = computed(() => rawPlans.value.some(p => p.purchaseMode === 'auto_yearly'));
 const hasMonthly = computed(() => rawPlans.value.some(p => p.purchaseMode === 'auto_monthly'));
 const hasOneTime = computed(() => rawPlans.value.some(p => p.purchaseMode === 'one_time_month'));
 
-/**
- * Fetch membership plans data
- */
 async function fetchMembershipPlans() {
   try {
     loading.value = true;
@@ -252,9 +231,6 @@ async function fetchMembershipPlans() {
   }
 }
 
-/**
- * Handle subscribe button click
- */
 function handleSubscribe(productId: string, planName: string) {
   const plan = rawPlans.value.find(p => p.code === productId);
   if (!plan) {
@@ -299,6 +275,7 @@ function handleMembershipPaymentSuccess() {
   }
   selectedPlanForPayment.value = null;
   selectedPlanTitle.value = '';
+  router.push('/plans-and-billing');
 }
 
 function handleMembershipPaymentCancel() {
@@ -314,6 +291,7 @@ function handleMembershipSigningSuccess(status: SigningSessionStatus) {
   snackbarStore.showSuccessMessage(`签约成功：${planLabel}${suffix}`);
   selectedPlanForSigning.value = null;
   selectedSigningTitle.value = '';
+  router.push('/plans-and-billing');
 }
 
 function handleMembershipSigningCancel() {
@@ -349,7 +327,6 @@ onMounted(fetchMembershipPlans);
       </v-card-text>
     </v-card>
 
-    <!-- Error alert -->
     <v-alert v-if="error" type="error" class="mb-4" closable @click:close="error = null">
       {{ error }}
     </v-alert>
@@ -438,7 +415,6 @@ onMounted(fetchMembershipPlans);
       </v-card-text>
     </v-card>
 
-    <!-- Empty state -->
     <v-card
       v-if="!loading && displayPlans.length === 0 && !error"
       class="section-card text-center pa-8"

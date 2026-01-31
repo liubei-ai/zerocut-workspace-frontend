@@ -61,6 +61,30 @@ export interface SigningSessionStatus {
   subscriptionId: number | null;
 }
 
+export type SubscriptionStatus =
+  | 'draft'
+  | 'signing'
+  | 'active'
+  | 'past_due'
+  | 'canceled'
+  | 'expired';
+
+export interface SubscriptionDetails {
+  subscriptionId: number;
+  planCode: string;
+  tier: 'basic' | 'standard' | 'premium';
+  purchaseMode: 'one_time_month' | 'auto_monthly' | 'auto_yearly';
+  status: SubscriptionStatus;
+  autoRenew: boolean;
+  termStartAt: string | null;
+  termEndAt: string | null;
+  currentPeriodStartAt: string | null;
+  currentPeriodEndAt: string | null;
+  monthlyQuota: number;
+  remainingInCurrentPeriod: number;
+  nextBillingAt: string | null;
+}
+
 /**
  * Get all membership plans
  * @param activeOnly - Only return active plans (default true)
@@ -95,6 +119,28 @@ export async function createSigningSession(params: CreateSigningSessionParams) {
 export async function getSigningSessionStatus(sessionId: string) {
   const response = await client.get<SigningSessionStatus>(
     `/subscriptions/signing-sessions/${sessionId}`
+  );
+  return response.data;
+}
+
+export async function getCurrentSubscription(workspaceId: string) {
+  const response = await client.get<SubscriptionDetails>('/subscriptions/me', {
+    params: { workspaceId },
+  });
+  return response.data;
+}
+
+export async function cancelSubscription(params: {
+  workspaceId: string;
+  subscriptionId: number;
+  reason?: string;
+}) {
+  const response = await client.post<SubscriptionDetails>(
+    `/subscriptions/${params.subscriptionId}/cancel`,
+    {
+      workspaceId: params.workspaceId,
+      reason: params.reason,
+    }
   );
   return response.data;
 }

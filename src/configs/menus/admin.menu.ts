@@ -29,9 +29,4 @@ export default [
     link: '/admin/toolbox',
     icon: 'mdi-toolbox',
   },
-  {
-    key: 'menu.membership',
-    link: '/membership',
-    icon: 'mdi-account-check-outline',
-  },
 ];
