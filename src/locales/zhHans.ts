@@ -62,6 +62,7 @@ export default {
 
     // 管理员子菜单
     adminWorkspaceList: '工作区',
+    adminMembers: '会员管理',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',

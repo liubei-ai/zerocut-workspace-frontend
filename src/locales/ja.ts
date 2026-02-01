@@ -61,6 +61,7 @@ export default {
 
     // 管理者サブメニュー
     adminWorkspaceList: 'ワークスペース一覧',
+    adminMembers: 'メンバー管理',
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'ロール管理',

@@ -62,6 +62,7 @@ export default {
 
     // Admin submenu
     adminWorkspaceList: 'Workspaces',
+    adminMembers: 'Members',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Personas',
