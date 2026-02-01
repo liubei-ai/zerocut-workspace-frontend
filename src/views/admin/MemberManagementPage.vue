@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid>
     <ResponsivePageHeader title="会员管理" subtitle="查看和管理所有会员订阅信息" />
 
     <!-- Summary Cards Section -->

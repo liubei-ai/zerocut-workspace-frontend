@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="pa-6">
+  <v-container fluid>
     <!-- Breadcrumb Navigation -->
     <v-breadcrumbs :items="breadcrumbs" class="pa-0 mb-4">
       <template #divider>
@@ -75,14 +75,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import { getMemberDetail, type MemberDetail } from '@/api/memberAdminApi';
-import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
-import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue';
-import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
 import CreditGrantsSection from '@/components/admin/CreditGrantsSection.vue';
 import CreditPeriodsSection from '@/components/admin/CreditPeriodsSection.vue';
+import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue';
+import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
+import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
