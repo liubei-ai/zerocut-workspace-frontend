@@ -5,6 +5,11 @@ export default [
     icon: 'mdi-domain',
   },
   {
+    key: 'menu.adminMembers',
+    link: '/admin/members',
+    icon: 'mdi-account-group',
+  },
+  {
     key: 'menu.adminSystemConfig',
     link: '/admin/system-config',
     icon: 'mdi-cog',
