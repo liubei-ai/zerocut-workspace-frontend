@@ -590,6 +590,57 @@ export default {
       },
     },
   },
+  // Resource Admin
+  resource: {
+    // Header
+    managementSubtitle: '管理您的视频创作资产库',
+    createLibrary: '创建资产库',
+    libraryName: '资产库名称',
+    libraryDescription: '资产库描述',
+
+    // Library List
+    noLibraries: '暂无资产库',
+    createFirstLibrary: '创建您的第一个资产库来开始管理素材',
+    manage: '管理',
+    createdAt: '创建时间',
+    uuid: 'UUID',
+
+    // Library Detail
+    subjects: '角色主体',
+    scenes: '场景背景',
+    materials: '其他素材',
+
+    // Subjects
+    subjectsPlaceholder: '暂无角色主体',
+    subjectsDescription: '创建角色主体资产，可以是人物、产品等',
+    createSubject: '创建角色主体',
+    voice: '声音特征',
+    styles: '风格标签',
+
+    // Scenes
+    scenesPlaceholder: '暂无场景背景',
+    scenesDescription: '创建场景背景资产，可以是室内、室外等环境',
+    createScene: '创建场景背景',
+
+    // Materials
+    materialsPlaceholder: '暂无其他素材',
+    materialsDescription: '上传音频、视频或图片等补充素材',
+    createMaterial: '上传素材',
+
+    // Reference Images
+    referenceImages: '参考图片',
+    uploadReferenceImages: '上传参考图片',
+    maxImages: '最多上传 {max} 张图片',
+
+    // AI Generation
+    generateVoice: '生成声音',
+    generateStyles: '生成风格',
+    generateDescription: '生成描述',
+    generating: '生成中...',
+
+    // Common
+    loading: '加载中...',
+  },
   // Vuetify 组件内部翻译
   $vuetify: {
     badge: '徽章',

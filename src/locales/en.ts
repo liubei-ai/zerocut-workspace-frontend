@@ -595,6 +595,58 @@ export default {
     },
   },
 
+  // Resource Admin
+  resource: {
+    // Header
+    managementSubtitle: 'Manage your video creation asset libraries',
+    createLibrary: 'Create Library',
+    libraryName: 'Library Name',
+    libraryDescription: 'Library Description',
+
+    // Library List
+    noLibraries: 'No asset libraries yet',
+    createFirstLibrary: 'Create your first asset library to start managing materials',
+    manage: 'Manage',
+    createdAt: 'Created At',
+    uuid: 'UUID',
+
+    // Library Detail
+    subjects: 'Subject Assets',
+    scenes: 'Scene Assets',
+    materials: 'Other Materials',
+
+    // Subjects
+    subjectsPlaceholder: 'No subject assets',
+    subjectsDescription: 'Create subject assets such as characters or products',
+    createSubject: 'Create Subject',
+    voice: 'Voice Characteristics',
+    styles: 'Style Tags',
+
+    // Scenes
+    scenesPlaceholder: 'No scene assets',
+    scenesDescription: 'Create scene assets such as indoor or outdoor environments',
+    createScene: 'Create Scene',
+
+    // Materials
+    materialsPlaceholder: 'No other materials',
+    materialsDescription: 'Upload audio, video, or image materials',
+    createMaterial: 'Upload Material',
+
+    // Reference Images
+    referenceImages: 'Reference Images',
+    uploadReferenceImages: 'Upload Reference Images',
+    maxImages: 'Upload up to {max} images',
+
+    // AI Generation
+    generateVoice: 'Generate Voice',
+    generateStyles: 'Generate Styles',
+    generateDescription: 'Generate Description',
+    generating: 'Generating...',
+
+    // Common
+    loading: 'Loading...',
+  },
+
   // Vuetify components translations
   $vuetify: {
     badge: 'Badge',

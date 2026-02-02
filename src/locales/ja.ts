@@ -603,6 +603,58 @@ export default {
     },
   },
 
+  // リソース管理
+  resource: {
+    // ヘッダー
+    managementSubtitle: '動画制作アセットライブラリを管理',
+    createLibrary: 'ライブラリ作成',
+    libraryName: 'ライブラリ名',
+    libraryDescription: 'ライブラリの説明',
+
+    // ライブラリリスト
+    noLibraries: 'アセットライブラリがありません',
+    createFirstLibrary: '最初のアセットライブラリを作成して素材管理を開始',
+    manage: '管理',
+    createdAt: '作成日',
+    uuid: 'UUID',
+
+    // ライブラリ詳細
+    subjects: 'サブジェクトアセット',
+    scenes: 'シーンアセット',
+    materials: 'その他の素材',
+
+    // サブジェクト
+    subjectsPlaceholder: 'サブジェクトアセットがありません',
+    subjectsDescription: 'キャラクターや製品などのサブジェクトアセットを作成',
+    createSubject: 'サブジェクト作成',
+    voice: '音声特性',
+    styles: 'スタイルタグ',
+
+    // シーン
+    scenesPlaceholder: 'シーンアセットがありません',
+    scenesDescription: '屋内や屋外などの環境のシーンアセットを作成',
+    createScene: 'シーン作成',
+
+    // 素材
+    materialsPlaceholder: 'その他の素材がありません',
+    materialsDescription: 'オーディオ、動画、画像などの素材をアップロード',
+    createMaterial: '素材アップロード',
+
+    // 参考画像
+    referenceImages: '参考画像',
+    uploadReferenceImages: '参考画像アップロード',
+    maxImages: '最大 {max} 枚の画像',
+
+    // AI生成
+    generateVoice: '音声生成',
+    generateStyles: 'スタイル生成',
+    generateDescription: '説明生成',
+    generating: '生成中...',
+
+    // 共通
+    loading: '読み込み中...',
+  },
+
   // コンポーネント
   $vuetify: {
     badge: 'バッジ',
