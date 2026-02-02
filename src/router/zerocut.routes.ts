@@ -15,6 +15,17 @@ const zerocutRoutes = [
       import(/* webpackChunkName: "dashboard" */ '@/views/zerocut/DashboardView.vue'),
   },
   {
+    path: '/resource-admin',
+    name: 'ResourceAdmin',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '资产管理',
+      category: 'ZeroCut',
+    },
+    component: () => import(/* webpackChunkName: "resource-admin" */ '@/pages/ResourceAdmin.vue'),
+  },
+  {
     path: '/apikey',
     name: 'APIKeys',
     meta: {

@@ -11,6 +11,11 @@ const zerocutMenu = [
     icon: 'mdi-view-dashboard-outline',
   },
   {
+    key: 'menu.resourceAdmin',
+    link: '/resource-admin',
+    icon: 'mdi-folder-multiple-outline',
+  },
+  {
     key: 'menu.apikeys',
     link: '/apikey',
     icon: 'mdi-key-variant',

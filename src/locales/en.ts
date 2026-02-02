@@ -50,6 +50,7 @@ export default {
     // Zerocut submenu
     studio: 'Studio',
     dashboard: 'Dashboard',
+    resourceAdmin: 'Resource Admin',
     apikeys: 'API Keys',
     usage: 'Usage Logs',
     wallet: 'Wallet',

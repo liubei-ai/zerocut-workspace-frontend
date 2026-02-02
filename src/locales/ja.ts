@@ -50,6 +50,7 @@ export default {
     // Zerocut サブメニュー
     studio: '動画作成',
     dashboard: 'ダッシュボード',
+    resourceAdmin: 'リソース管理',
     apikeys: 'APIキー',
     usage: '利用ログ',
     wallet: 'ウォレット管理',

@@ -50,6 +50,7 @@ export default {
     // Zerocut 子菜单
     studio: '视频创作',
     dashboard: '仪表板',
+    resourceAdmin: '资产管理',
     apikeys: '密钥管理',
     usage: '使用日志',
     wallet: '钱包管理',
