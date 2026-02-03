@@ -24,8 +24,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import type { MemberSummary } from '@/api/memberAdminApi';
+import { computed } from 'vue';
 
 const props = defineProps<{
   summary: MemberSummary | null;
@@ -35,10 +35,16 @@ const props = defineProps<{
 const cards = computed(() => {
   if (!props.summary) {
     return [
-      { title: '总会员数', value: '-', color: 'primary', icon: 'mdi-account-group' },
-      { title: '按月续费', value: '-', color: 'success', icon: 'mdi-calendar-month' },
-      { title: '按年续费', value: '-', color: 'info', icon: 'mdi-calendar' },
-      { title: '一次性会员', value: '-', color: 'warning', icon: 'mdi-account' },
+      {
+        title: '总会员数',
+        value: '-',
+        color: 'primary',
+        icon: 'mdi-account-group',
+        subtitle: '活跃/待付/已取消',
+      },
+      { title: '按月续费', value: '-', color: 'success', icon: 'mdi-calendar-month', subtitle: '' },
+      { title: '一次性月度会员', value: '-', color: 'warning', icon: 'mdi-account', subtitle: '' },
+      { title: '一次性年度会员', value: '-', color: 'warning', icon: 'mdi-account', subtitle: '' },
     ];
   }
 
@@ -58,17 +64,17 @@ const cards = computed(() => {
       subtitle: '自动月度订阅',
     },
     {
-      title: '按年续费',
-      value: props.summary.autoYearlyMembers.toLocaleString(),
-      color: 'info',
-      icon: 'mdi-calendar',
-      subtitle: '自动年度订阅',
-    },
-    {
-      title: '一次性会员',
+      title: '包月会员',
       value: props.summary.oneTimeMembers.toLocaleString(),
       color: 'warning',
       icon: 'mdi-account',
+      subtitle: '一次性购买',
+    },
+    {
+      title: '包年会员',
+      value: props.summary.oneTimeYearMembers.toLocaleString(),
+      color: 'warning',
+      icon: 'mdi-calendar',
       subtitle: '一次性购买',
     },
   ];

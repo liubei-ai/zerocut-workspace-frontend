@@ -19,6 +19,7 @@ export type PeriodStatus = 'pending' | 'granted';
 export interface MemberSummary {
   totalMembers: number;
   oneTimeMembers: number;
+  oneTimeYearMembers: number;
   autoMonthlyMembers: number;
   autoYearlyMembers: number;
 }
@@ -123,14 +124,6 @@ export interface QueryMembersParams {
   ownerName?: string;
   ownerEmail?: string;
   ownerPhone?: string;
-}
-
-/**
- * Get member summary statistics
- */
-export async function getMemberSummary(): Promise<MemberSummary> {
-  const response = await apiClient.get<MemberSummary>('/admin/members/summary');
-  return response.data;
 }
 
 /**
