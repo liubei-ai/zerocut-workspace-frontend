@@ -285,15 +285,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 import {
   getMemberDetail,
   type MemberDetail,
-  type SubscriptionStatus,
-  type PurchaseMode,
   type MembershipTier,
+  type PurchaseMode,
+  type SubscriptionStatus,
 } from '@/api/memberAdminApi';
 import { formatDate } from '@/utils/date';
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   subscriptionId: number;
@@ -373,6 +373,7 @@ function getPurchaseModeColor(mode: PurchaseMode): string {
 function getPurchaseModeLabel(mode: PurchaseMode): string {
   const labels: Record<PurchaseMode, string> = {
     one_time_month: '一次性月度',
+    one_time_year: '一次性年度',
     auto_monthly: '按月续费',
     auto_yearly: '按年续费',
   };

@@ -317,8 +317,8 @@ onMounted(fetchMembershipPlans);
           <v-btn v-if="hasMonthly" value="monthly">{{
             t('zerocut.membership.cycles.monthly')
           }}</v-btn>
-          <v-btn v-if="hasOneTimeMonth" value="one_time">{{
-            t('zerocut.membership.cycles.one_time')
+          <v-btn v-if="hasOneTimeMonth" value="one_time_month">{{
+            t('zerocut.membership.cycles.one_time_month')
           }}</v-btn>
           <v-btn v-if="hasOneTimeYear" value="one_time_year">{{
             t('zerocut.membership.cycles.one_time_year')

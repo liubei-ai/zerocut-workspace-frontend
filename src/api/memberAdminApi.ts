@@ -9,7 +9,7 @@ export type SubscriptionStatus =
   | 'past_due'
   | 'canceled'
   | 'expired';
-export type PurchaseMode = 'one_time_month' | 'auto_monthly' | 'auto_yearly';
+export type PurchaseMode = 'one_time_month' | 'one_time_year' | 'auto_monthly' | 'auto_yearly';
 export type MembershipTier = 'basic' | 'pro' | 'enterprise';
 export type OrderPurpose = 'initial' | 'renewal';
 export type OrderStatus = 'created' | 'processing' | 'success' | 'failed';

@@ -161,9 +161,9 @@
 <script setup lang="ts">
 import type {
   MemberDetail,
-  SubscriptionStatus,
-  PurchaseMode,
   MembershipTier,
+  PurchaseMode,
+  SubscriptionStatus,
 } from '@/api/memberAdminApi';
 import { formatDate } from '@/utils/date';
 
@@ -220,6 +220,7 @@ function getPurchaseModeLabel(mode: PurchaseMode): string {
     one_time_month: '一次性月度',
     auto_monthly: '按月续费',
     auto_yearly: '按年续费',
+    one_time_year: '一次性年度',
   };
   return labels[mode] || mode;
 }
