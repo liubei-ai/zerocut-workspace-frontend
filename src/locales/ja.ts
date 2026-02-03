@@ -627,18 +627,36 @@ export default {
     subjectsPlaceholder: 'サブジェクトアセットがありません',
     subjectsDescription: 'キャラクターや製品などのサブジェクトアセットを作成',
     createSubject: 'サブジェクト作成',
+    editSubject: 'サブジェクト編集',
+    subjectName: 'サブジェクト名',
     voice: '音声特性',
     styles: 'スタイルタグ',
+    description: '説明',
 
     // シーン
     scenesPlaceholder: 'シーンアセットがありません',
     scenesDescription: '屋内や屋外などの環境のシーンアセットを作成',
     createScene: 'シーン作成',
+    editScene: 'シーン編集',
+    sceneName: 'シーン名',
 
     // 素材
     materialsPlaceholder: 'その他の素材がありません',
     materialsDescription: 'オーディオ、動画、画像などの素材をアップロード',
     createMaterial: '素材アップロード',
+    materialName: '素材名',
+    materialType: '素材タイプ',
+    allMaterials: '全ての素材',
+    audioMaterial: 'オーディオ',
+    videoMaterial: '動画',
+    imageMaterial: '画像',
+    audioMaterials: 'オーディオ素材',
+    videoMaterials: '動画素材',
+    imageMaterials: '画像素材',
+    uploadAudio: 'オーディオファイルアップロード',
+    uploadVideo: '動画ファイルアップロード',
+    uploadImage: '画像ファイルアップロード',
+    uploadFile: 'ファイルアップロード',
 
     // 参考画像
     referenceImages: '参考画像',

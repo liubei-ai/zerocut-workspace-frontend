@@ -27,36 +27,27 @@
       <v-card-text class="pa-6">
         <v-window v-model="activeTab">
           <v-window-item value="subjects">
-            <div class="placeholder">
-              <v-icon icon="mdi-account" size="64" color="surface-variant" />
-              <h3>{{ $t('resource.subjectsPlaceholder') }}</h3>
-              <p>{{ $t('resource.subjectsDescription') }}</p>
-              <v-btn color="primary" prepend-icon="mdi-plus" @click="createSubject" class="mt-4">
-                {{ $t('resource.createSubject') }}
-              </v-btn>
-            </div>
+            <SubjectList
+              v-if="resourceStore.currentLibrary?.id"
+              :library-id="resourceStore.currentLibrary.id"
+              @update="handleSubjectsUpdate"
+            />
           </v-window-item>
 
           <v-window-item value="scenes">
-            <div class="placeholder">
-              <v-icon icon="mdi-image" size="64" color="surface-variant" />
-              <h3>{{ $t('resource.scenesPlaceholder') }}</h3>
-              <p>{{ $t('resource.scenesDescription') }}</p>
-              <v-btn color="primary" prepend-icon="mdi-plus" @click="createScene" class="mt-4">
-                {{ $t('resource.createScene') }}
-              </v-btn>
-            </div>
+            <SceneList
+              v-if="resourceStore.currentLibrary?.id"
+              :library-id="resourceStore.currentLibrary.id"
+              @update="handleScenesUpdate"
+            />
           </v-window-item>
 
           <v-window-item value="materials">
-            <div class="placeholder">
-              <v-icon icon="mdi-file-multiple" size="64" color="surface-variant" />
-              <h3>{{ $t('resource.materialsPlaceholder') }}</h3>
-              <p>{{ $t('resource.materialsDescription') }}</p>
-              <v-btn color="primary" prepend-icon="mdi-plus" @click="createMaterial" class="mt-4">
-                {{ $t('resource.createMaterial') }}
-              </v-btn>
-            </div>
+            <MaterialList
+              v-if="resourceStore.currentLibrary?.id"
+              :library-id="resourceStore.currentLibrary.id"
+              @update="handleMaterialsUpdate"
+            />
           </v-window-item>
         </v-window>
       </v-card-text>
@@ -67,6 +58,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import SubjectList from '@/components/SubjectAssets/SubjectList.vue';
+import SceneList from '@/components/SceneAssets/SceneList.vue';
+import MaterialList from '@/components/OtherMaterials/MaterialList.vue';
 
 defineEmits<{
   back: [];
@@ -88,6 +82,27 @@ const createScene = () => {
 const createMaterial = () => {
   // TODO: Implement create material dialog
   console.log('Create material');
+};
+
+const handleSubjectsUpdate = () => {
+  // Refresh library counts when subjects are updated
+  if (resourceStore.currentLibrary?.id) {
+    resourceStore.fetchLibrary(resourceStore.currentLibrary.id);
+  }
+};
+
+const handleScenesUpdate = () => {
+  // Refresh library counts when scenes are updated
+  if (resourceStore.currentLibrary?.id) {
+    resourceStore.fetchLibrary(resourceStore.currentLibrary.id);
+  }
+};
+
+const handleMaterialsUpdate = () => {
+  // Refresh library counts when materials are updated
+  if (resourceStore.currentLibrary?.id) {
+    resourceStore.fetchLibrary(resourceStore.currentLibrary.id);
+  }
 };
 </script>
 

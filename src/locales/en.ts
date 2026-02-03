@@ -619,18 +619,36 @@ export default {
     subjectsPlaceholder: 'No subject assets',
     subjectsDescription: 'Create subject assets such as characters or products',
     createSubject: 'Create Subject',
+    editSubject: 'Edit Subject',
+    subjectName: 'Subject Name',
     voice: 'Voice Characteristics',
     styles: 'Style Tags',
+    description: 'Description',
 
     // Scenes
     scenesPlaceholder: 'No scene assets',
     scenesDescription: 'Create scene assets such as indoor or outdoor environments',
     createScene: 'Create Scene',
+    editScene: 'Edit Scene',
+    sceneName: 'Scene Name',
 
     // Materials
     materialsPlaceholder: 'No other materials',
     materialsDescription: 'Upload audio, video, or image materials',
     createMaterial: 'Upload Material',
+    materialName: 'Material Name',
+    materialType: 'Material Type',
+    allMaterials: 'All Materials',
+    audioMaterial: 'Audio',
+    videoMaterial: 'Video',
+    imageMaterial: 'Image',
+    audioMaterials: 'Audio Materials',
+    videoMaterials: 'Video Materials',
+    imageMaterials: 'Image Materials',
+    uploadAudio: 'Upload Audio File',
+    uploadVideo: 'Upload Video File',
+    uploadImage: 'Upload Image File',
+    uploadFile: 'Upload File',
 
     // Reference Images
     referenceImages: 'Reference Images',

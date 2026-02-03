@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import resourceService, {
+import * as resourceApi from '@/api/resourceApi';
+import type {
   CreateLibraryDto,
   UpdateLibraryDto,
   CreateSubjectDto,
@@ -9,7 +10,7 @@ import resourceService, {
   CreateMaterialDto,
   UploadUrlRequestDto,
   GenerateRequestDto,
-} from '@/services/resourceService';
+} from '@/api/resourceApi';
 
 // State types
 export interface ResourceLibrary {
@@ -160,7 +161,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.getLibraries(page, limit);
+        const response = await resourceApi.getLibraries(page, limit);
         this.libraries = response.data.data.items;
         this.librariesTotal = response.data.data.total;
       } catch (error: any) {
@@ -179,7 +180,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.getLibrary(id);
+        const response = await resourceApi.getLibrary(id);
         this.currentLibrary = response.data.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to fetch library';
@@ -197,7 +198,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.createLibrary(data);
+        const response = await resourceApi.createLibrary(data);
         const newLibrary = response.data.data;
         this.libraries.unshift(newLibrary);
         this.librariesTotal += 1;
@@ -218,7 +219,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.updateLibrary(id, data);
+        const response = await resourceApi.updateLibrary(id, data);
         const updatedLibrary = response.data.data;
 
         // Update in list
@@ -265,9 +266,15 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.getSubjects(libraryId, page, limit);
+        const response = await resourceApi.getSubjects(libraryId, page, limit);
         this.subjects = response.data.data.items;
         this.subjectsTotal = response.data.data.total;
+
+        // Return data for component use
+        return {
+          data: response.data.data.items,
+          total: response.data.data.total,
+        };
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to fetch subjects';
         throw error;
@@ -284,7 +291,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.createSubject(libraryId, data);
+        const response = await resourceApi.createSubject(libraryId, data);
         const newSubject = response.data.data;
         this.subjects.unshift(newSubject);
         this.subjectsTotal += 1;
@@ -305,7 +312,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.updateSubject(id, data);
+        const response = await resourceApi.updateSubject(id, data);
         const updatedSubject = response.data.data;
 
         // Update in list
@@ -331,7 +338,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        await resourceService.deleteSubject(id);
+        await resourceApi.deleteSubject(id);
 
         // Remove from list
         this.subjects = this.subjects.filter(subj => subj.id !== id);
@@ -354,9 +361,15 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.getScenes(libraryId, page, limit);
+        const response = await resourceApi.getScenes(libraryId, page, limit);
         this.scenes = response.data.data.items;
         this.scenesTotal = response.data.data.total;
+
+        // Return data for component use
+        return {
+          data: response.data.data.items,
+          total: response.data.data.total,
+        };
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to fetch scenes';
         throw error;
@@ -373,7 +386,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.createScene(libraryId, data);
+        const response = await resourceApi.createScene(libraryId, data);
         const newScene = response.data.data;
         this.scenes.unshift(newScene);
         this.scenesTotal += 1;
@@ -394,7 +407,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.updateScene(id, data);
+        const response = await resourceApi.updateScene(id, data);
         const updatedScene = response.data.data;
 
         // Update in list
@@ -420,7 +433,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        await resourceService.deleteScene(id);
+        await resourceApi.deleteScene(id);
 
         // Remove from list
         this.scenes = this.scenes.filter(scene => scene.id !== id);
@@ -448,9 +461,15 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.getMaterials(libraryId, type, page, limit);
+        const response = await resourceApi.getMaterials(libraryId, type, page, limit);
         this.materials = response.data.data.items;
         this.materialsTotal = response.data.data.total;
+
+        // Return data for component use
+        return {
+          data: response.data.data.items,
+          total: response.data.data.total,
+        };
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to fetch materials';
         throw error;
@@ -467,7 +486,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        const response = await resourceService.createMaterial(libraryId, data);
+        const response = await resourceApi.createMaterial(libraryId, data);
         const newMaterial = response.data.data;
         this.materials.unshift(newMaterial);
         this.materialsTotal += 1;
@@ -488,7 +507,7 @@ export const useResourceStore = defineStore('resource', {
       this.error = null;
 
       try {
-        await resourceService.deleteMaterial(id);
+        await resourceApi.deleteMaterial(id);
 
         // Remove from list
         this.materials = this.materials.filter(mat => mat.id !== id);
@@ -508,7 +527,7 @@ export const useResourceStore = defineStore('resource', {
      */
     async getUploadUrl(data: UploadUrlRequestDto) {
       try {
-        const response = await resourceService.getUploadUrl(data);
+        const response = await resourceApi.getUploadUrl(data);
         return response.data.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to get upload URL';
@@ -521,12 +540,29 @@ export const useResourceStore = defineStore('resource', {
      */
     async verifyUpload(key: string) {
       try {
-        const response = await resourceService.verifyUpload(key);
+        const response = await resourceApi.verifyUpload(key);
         return response.data.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to verify upload';
         throw error;
       }
+    },
+
+    /**
+     * Get presigned upload URL (wrapper for component compatibility)
+     */
+    async getPresignedUploadUrl(data: UploadUrlRequestDto) {
+      return this.getUploadUrl(data);
+    },
+
+    /**
+     * Verify file exists (wrapper for component compatibility)
+     */
+    async verifyFileExists(fileUrl: string) {
+      // Extract key from fileUrl - assuming format like https://domain/bucket/key
+      const url = new URL(fileUrl);
+      const key = url.pathname.substring(1); // Remove leading slash
+      return this.verifyUpload(key);
     },
 
     // ==================== AI Generation ====================
@@ -536,7 +572,7 @@ export const useResourceStore = defineStore('resource', {
      */
     async generateVoice(data: GenerateRequestDto) {
       try {
-        const response = await resourceService.generateVoice(data);
+        const response = await resourceApi.generateVoice(data);
         return response.data.data.voice;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate voice';
@@ -545,11 +581,18 @@ export const useResourceStore = defineStore('resource', {
     },
 
     /**
+     * Generate voice for subject (wrapper for component compatibility)
+     */
+    async generateSubjectVoice(referenceImages: string[]) {
+      return this.generateVoice({ referenceImages });
+    },
+
+    /**
      * Generate styles for subject
      */
     async generateSubjectStyles(data: GenerateRequestDto) {
       try {
-        const response = await resourceService.generateSubjectStyles(data);
+        const response = await resourceApi.generateSubjectStyles(data);
         return response.data.data.styles;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate styles';
@@ -562,7 +605,7 @@ export const useResourceStore = defineStore('resource', {
      */
     async generateSubjectDescription(data: GenerateRequestDto) {
       try {
-        const response = await resourceService.generateSubjectDescription(data);
+        const response = await resourceApi.generateSubjectDescription(data);
         return response.data.data.description;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate description';
@@ -575,7 +618,7 @@ export const useResourceStore = defineStore('resource', {
      */
     async generateSceneStyles(data: GenerateRequestDto) {
       try {
-        const response = await resourceService.generateSceneStyles(data);
+        const response = await resourceApi.generateSceneStyles(data);
         return response.data.data.styles;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate styles';
@@ -588,7 +631,7 @@ export const useResourceStore = defineStore('resource', {
      */
     async generateSceneDescription(data: GenerateRequestDto) {
       try {
-        const response = await resourceService.generateSceneDescription(data);
+        const response = await resourceApi.generateSceneDescription(data);
         return response.data.data.description;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate description';

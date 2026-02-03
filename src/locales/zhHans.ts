@@ -614,18 +614,36 @@ export default {
     subjectsPlaceholder: '暂无角色主体',
     subjectsDescription: '创建角色主体资产，可以是人物、产品等',
     createSubject: '创建角色主体',
+    editSubject: '编辑角色主体',
+    subjectName: '角色主体名称',
     voice: '声音特征',
     styles: '风格标签',
+    description: '描述',
 
     // Scenes
     scenesPlaceholder: '暂无场景背景',
     scenesDescription: '创建场景背景资产，可以是室内、室外等环境',
     createScene: '创建场景背景',
+    editScene: '编辑场景背景',
+    sceneName: '场景背景名称',
 
     // Materials
     materialsPlaceholder: '暂无其他素材',
     materialsDescription: '上传音频、视频或图片等补充素材',
     createMaterial: '上传素材',
+    materialName: '素材名称',
+    materialType: '素材类型',
+    allMaterials: '全部素材',
+    audioMaterial: '音频',
+    videoMaterial: '视频',
+    imageMaterial: '图片',
+    audioMaterials: '音频素材',
+    videoMaterials: '视频素材',
+    imageMaterials: '图片素材',
+    uploadAudio: '上传音频文件',
+    uploadVideo: '上传视频文件',
+    uploadImage: '上传图片文件',
+    uploadFile: '上传文件',
 
     // Reference Images
     referenceImages: '参考图片',
