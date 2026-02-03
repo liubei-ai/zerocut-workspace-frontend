@@ -14,12 +14,12 @@ import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-type Cycle = 'monthly' | 'yearly' | 'one_time';
+type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
 const error = ref<string | null>(null);
-const selectedCycle = ref<Cycle>('yearly');
+const selectedCycle = ref<Cycle>('monthly');
 const membershipPaymentOpen = ref(false);
 const selectedPlanForPayment = ref<MembershipPlanDto | null>(null);
 const selectedPlanTitle = ref<string>('');
@@ -44,7 +44,7 @@ type TierComparisonRow = {
   tierKey: PriceListTier;
   oneTime: ModeCell | undefined;
   autoMonthly: ModeCell | undefined;
-  autoYearly: ModeCell | undefined;
+  oneTimeYear: ModeCell | undefined;
   benefits: string[];
 };
 
@@ -55,7 +55,8 @@ function buildModeCell(params: {
   monthlyCredits: number;
   oneTimeMonthlyPlan?: MembershipPlanDto;
 }): ModeCell {
-  const isYearly = params.plan.purchaseMode === 'auto_yearly';
+  const isYearly =
+    params.plan.purchaseMode === 'auto_yearly' || params.plan.purchaseMode === 'one_time_year';
   const intervalMonths = isYearly ? params.plan.billingIntervalMonths : 1;
   const totalCredits = params.monthlyCredits * intervalMonths;
   const unitPriceYuanPerCredit =
@@ -146,11 +147,11 @@ const priceComparisonRows = computed<TierComparisonRow[]>(() => {
   );
 
   const rows = PRICE_LIST_TIER_ORDER.map(tier => {
-    const oneTimePlan = tierPlanMap[tier]?.one_time_month;
+    const oneTimeMonthlyPlan = tierPlanMap[tier]?.one_time_month;
+    const oneTimeYearlyPlan = tierPlanMap[tier]?.one_time_year;
     const autoMonthlyPlan = tierPlanMap[tier]?.auto_monthly;
-    const autoYearlyPlan = tierPlanMap[tier]?.auto_yearly;
 
-    const samplePlan = oneTimePlan || autoMonthlyPlan || autoYearlyPlan;
+    const samplePlan = oneTimeMonthlyPlan || oneTimeYearlyPlan || autoMonthlyPlan;
     if (!samplePlan) {
       return null;
     }
@@ -166,14 +167,14 @@ const priceComparisonRows = computed<TierComparisonRow[]>(() => {
     return {
       tier: tierName,
       tierKey: tier,
-      oneTime: oneTimePlan
-        ? buildModeCell({ plan: oneTimePlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+      oneTime: oneTimeMonthlyPlan
+        ? buildModeCell({ plan: oneTimeMonthlyPlan, monthlyCredits, oneTimeMonthlyPlan })
         : undefined,
       autoMonthly: autoMonthlyPlan
-        ? buildModeCell({ plan: autoMonthlyPlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+        ? buildModeCell({ plan: autoMonthlyPlan, monthlyCredits, oneTimeMonthlyPlan })
         : undefined,
-      autoYearly: autoYearlyPlan
-        ? buildModeCell({ plan: autoYearlyPlan, monthlyCredits, oneTimeMonthlyPlan: oneTimePlan })
+      oneTimeYear: oneTimeYearlyPlan
+        ? buildModeCell({ plan: oneTimeYearlyPlan, monthlyCredits, oneTimeMonthlyPlan })
         : undefined,
       benefits,
     };
@@ -188,7 +189,8 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
   const cycleFilterMap: Record<Cycle, string[]> = {
     yearly: ['auto_yearly'],
     monthly: ['auto_monthly'],
-    one_time: ['one_time_month'],
+    one_time_month: ['one_time_month'],
+    one_time_year: ['one_time_year'],
   };
 
   const allowedModes = cycleFilterMap[selectedCycle.value];
@@ -207,7 +209,10 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
 
 const hasYearly = computed(() => rawPlans.value.some(p => p.purchaseMode === 'auto_yearly'));
 const hasMonthly = computed(() => rawPlans.value.some(p => p.purchaseMode === 'auto_monthly'));
-const hasOneTime = computed(() => rawPlans.value.some(p => p.purchaseMode === 'one_time_month'));
+const hasOneTimeMonth = computed(() =>
+  rawPlans.value.some(p => p.purchaseMode === 'one_time_month')
+);
+const hasOneTimeYear = computed(() => rawPlans.value.some(p => p.purchaseMode === 'one_time_year'));
 
 async function fetchMembershipPlans() {
   try {
@@ -238,7 +243,7 @@ function handleSubscribe(productId: string, planName: string) {
     return;
   }
 
-  if (plan.purchaseMode === 'one_time_month') {
+  if (plan.purchaseMode === 'one_time_month' || plan.purchaseMode === 'one_time_year') {
     selectedPlanForPayment.value = plan;
     selectedPlanTitle.value = planName;
     membershipPaymentOpen.value = true;
@@ -312,8 +317,11 @@ onMounted(fetchMembershipPlans);
           <v-btn v-if="hasMonthly" value="monthly">{{
             t('zerocut.membership.cycles.monthly')
           }}</v-btn>
-          <v-btn v-if="hasOneTime" value="one_time">{{
+          <v-btn v-if="hasOneTimeMonth" value="one_time">{{
             t('zerocut.membership.cycles.one_time')
+          }}</v-btn>
+          <v-btn v-if="hasOneTimeYear" value="one_time_year">{{
+            t('zerocut.membership.cycles.one_time_year')
           }}</v-btn>
         </v-btn-toggle>
       </v-card-text>
@@ -345,7 +353,7 @@ onMounted(fetchMembershipPlans);
               <th class="text-left">{{ t('zerocut.membership.priceList.headers.tier') }}</th>
               <th class="text-left">{{ t('zerocut.membership.priceList.headers.oneTime') }}</th>
               <th class="text-left">{{ t('zerocut.membership.priceList.headers.autoMonthly') }}</th>
-              <th class="text-left">{{ t('zerocut.membership.priceList.headers.autoYearly') }}</th>
+              <th class="text-left">{{ t('zerocut.membership.priceList.headers.oneTimeYear') }}</th>
               <th class="text-left">{{ t('zerocut.membership.priceList.headers.benefits') }}</th>
             </tr>
           </thead>
@@ -379,13 +387,13 @@ onMounted(fetchMembershipPlans);
                 <template v-else>-</template>
               </td>
               <td class="price-cell">
-                <template v-if="row.autoYearly">
-                  <div class="price-main">{{ formatYuanYearly(row.autoYearly.priceYuan) }}</div>
+                <template v-if="row.oneTimeYear">
+                  <div class="price-main">{{ formatYuanYearly(row.oneTimeYear.priceYuan) }}</div>
                   <div class="price-sub">
-                    {{ formatUnitPrice(row.autoYearly.unitPriceYuanPerCredit) }}
+                    {{ formatUnitPrice(row.oneTimeYear.unitPriceYuanPerCredit) }}
                   </div>
-                  <div v-if="row.autoYearly.discountText" class="price-sub">
-                    {{ row.autoYearly.discountText }}
+                  <div v-if="row.oneTimeYear.discountText" class="price-sub">
+                    {{ row.oneTimeYear.discountText }}
                   </div>
                 </template>
                 <template v-else>-</template>

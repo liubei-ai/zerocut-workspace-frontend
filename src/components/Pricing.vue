@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-type Cycle = 'monthly' | 'yearly' | 'one_time';
+type Cycle = 'monthly' | 'yearly' | 'one_time_month';
 type PricingOption = {
   type: Cycle;
   price: number;
@@ -30,7 +30,7 @@ const selectedCycle = ref<Cycle>('yearly');
 function displayOption(plan: PricingPlan) {
   const prefer = plan.options.find(o => o.type === selectedCycle.value);
   if (prefer) return prefer;
-  const fallbackOrder: Cycle[] = ['yearly', 'monthly', 'one_time'];
+  const fallbackOrder: Cycle[] = ['yearly', 'monthly', 'one_time_month'];
   for (const c of fallbackOrder) {
     const opt = plan.options.find(o => o.type === c);
     if (opt) return opt;
@@ -46,7 +46,7 @@ const hasCycle = computed(() => {
 
 const hasYearly = computed(() => hasCycle.value.has('yearly'));
 const hasMonthly = computed(() => hasCycle.value.has('monthly'));
-const hasOneTime = computed(() => hasCycle.value.has('one_time'));
+const hasOneTime = computed(() => hasCycle.value.has('one_time_month'));
 
 function ensureSelectedCycle() {
   if (selectedCycle.value === 'monthly' && !hasMonthly.value) {
@@ -65,7 +65,7 @@ const sortedPlans = computed(() => {
       p.options.find(o => o.type === selectedCycle.value) ||
       p.options.find(o => o.type === 'monthly') ||
       p.options.find(o => o.type === 'yearly') ||
-      p.options.find(o => o.type === 'one_time');
+      p.options.find(o => o.type === 'one_time_month');
     return opt ? opt.price : Number.POSITIVE_INFINITY;
   };
   return arr.sort((a, b) => priceOf(a) - priceOf(b));
@@ -124,7 +124,9 @@ function onSubscribe(plan: PricingPlan) {
                       <p class="font-weight-bold">
                         <span v-if="displayOption(plan)?.type === 'monthly'">/ month</span>
                         <span v-else-if="displayOption(plan)?.type === 'yearly'">/ year</span>
-                        <span v-else-if="displayOption(plan)?.type === 'one_time'">/ one-time</span>
+                        <span v-else-if="displayOption(plan)?.type === 'one_time_month'"
+                          >/ one-time</span
+                        >
                       </p>
                       <p class="px-5 pt-5">
                         <v-btn
@@ -141,7 +143,7 @@ function onSubscribe(plan: PricingPlan) {
                           Subscribe
                         </v-btn>
                         <v-btn
-                          v-if="displayOption(plan)?.type === 'one_time'"
+                          v-if="displayOption(plan)?.type === 'one_time_month'"
                           size="x-large"
                           class="text-white my-5"
                           block

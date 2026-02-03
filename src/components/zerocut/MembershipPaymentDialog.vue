@@ -159,9 +159,8 @@
 
 <script setup lang="ts">
 import {
-  createMembershipWechatPayOrder,
-  closeMembershipOrder,
-  type CreateMembershipPaymentOrderResponse,
+  closeOneTimeOrder,
+  purchaseOneTimeSubscription,
   type MembershipPlanDto,
 } from '@/api/membershipApi';
 import { queryOrderStatus } from '@/api/packageApi';
@@ -177,9 +176,16 @@ interface Props {
   loading?: boolean;
 }
 
+interface OrderInfo {
+  codeUrl: string;
+  outTradeNo: string;
+  subscriptionId: number;
+  expiresAt: string;
+}
+
 interface Emits {
   (e: 'update:open', value: boolean): void;
-  (e: 'success', orderInfo: CreateMembershipPaymentOrderResponse): void;
+  (e: 'success', orderInfo: OrderInfo): void;
   (e: 'cancel'): void;
   (e: 'retry'): void;
 }
@@ -195,7 +201,7 @@ const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
-const orderInfo = ref<CreateMembershipPaymentOrderResponse | null>(null);
+const orderInfo = ref<OrderInfo | null>(null);
 const paymentStatus = ref<'creating' | 'pending' | 'success' | 'failed' | 'timeout'>('creating');
 const paymentCheckInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
@@ -326,7 +332,7 @@ const createPaymentOrder = async () => {
     paymentStatus.value = 'creating';
     errorMessage.value = '';
 
-    const response = await createMembershipWechatPayOrder({
+    const response = await purchaseOneTimeSubscription({
       planCode: props.membershipPlan.code,
       totalAmount: props.membershipPlan.priceYuan,
       workspaceId: workspaceStore.currentWorkspaceId,
@@ -362,9 +368,9 @@ const handleCancel = async () => {
 
   if (orderInfo.value?.outTradeNo && workspaceStore.currentWorkspaceId) {
     try {
-      await closeMembershipOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId);
+      await closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId);
     } catch (error) {
-      console.warn('关闭会员订单失败:', error);
+      console.warn('关闭订单失败:', error);
     }
   }
 

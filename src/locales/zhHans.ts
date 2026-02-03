@@ -141,7 +141,8 @@ export default {
       cycles: {
         yearly: '连续包年',
         monthly: '连续包月',
-        one_time: '单次',
+        one_time_month: '单月购买',
+        one_time_year: '包年购买',
       },
       priceList: {
         title: '价目表',
@@ -150,7 +151,7 @@ export default {
           tier: '会员等级',
           oneTime: '单月购买',
           autoMonthly: '连续包月',
-          autoYearly: '连续包年',
+          oneTimeYear: '包年购买',
           benefits: '权益',
         },
         formats: {

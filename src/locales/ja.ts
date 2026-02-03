@@ -149,7 +149,8 @@ export default {
       cycles: {
         yearly: '年払い',
         monthly: '月払い',
-        one_time: '単発',
+        one_time_month: '単発（1ヶ月）',
+        one_time_year: '単発（1年）',
       },
       priceList: {
         title: '料金表',

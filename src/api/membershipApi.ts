@@ -7,7 +7,7 @@ export interface MembershipPlanDto {
   code: string;
   name: string;
   tier: 'basic' | 'standard' | 'premium';
-  purchaseMode: 'one_time_month' | 'auto_monthly' | 'auto_yearly';
+  purchaseMode: 'auto_monthly' | 'auto_yearly' | 'one_time_month' | 'one_time_year';
   priceCents: number;
   priceYuan: number;
   currency: string;
@@ -73,7 +73,7 @@ export interface SubscriptionDetails {
   subscriptionId: number;
   planCode: string;
   tier: 'basic' | 'standard' | 'premium';
-  purchaseMode: 'one_time_month' | 'auto_monthly' | 'auto_yearly';
+  purchaseMode: 'one_time_month' | 'auto_monthly' | 'auto_yearly' | 'one_time_year';
   status: SubscriptionStatus;
   autoRenew: boolean;
   termStartAt: string | null;
@@ -96,16 +96,30 @@ export async function getMembershipPlans(activeOnly = true) {
   return response.data;
 }
 
-export async function createMembershipWechatPayOrder(params: CreateMembershipPaymentOrderParams) {
-  const response = await client.post<CreateMembershipPaymentOrderResponse>(
-    '/wechat-pay-native/create-membership-order',
-    params
-  );
+/**
+ * Purchase one-time subscription (monthly or yearly)
+ * Uses new unified endpoint that supports both purchase modes
+ */
+export async function purchaseOneTimeSubscription(params: {
+  planCode: string;
+  totalAmount: number;
+  workspaceId: string;
+}) {
+  const response = await client.post<{
+    codeUrl: string;
+    outTradeNo: string;
+    subscriptionId: number;
+    expiresAt: string;
+  }>('/subscriptions/purchase', params);
   return response.data;
 }
 
-export async function closeMembershipOrder(outTradeNo: string, workspaceId: string) {
-  await client.post('/wechat-pay-native/close-membership-order', { outTradeNo, workspaceId });
+/**
+ * Close one-time subscription order
+ * Used when user closes payment dialog or QR expires
+ */
+export async function closeOneTimeOrder(outTradeNo: string, workspaceId: string) {
+  await client.post('/subscriptions/close-order', { outTradeNo, workspaceId });
 }
 
 export async function createSigningSession(params: CreateSigningSessionParams) {

@@ -142,7 +142,8 @@ export default {
       cycles: {
         yearly: 'Yearly',
         monthly: 'Monthly',
-        one_time: 'One-time',
+        one_time_month: 'One-time (1 month)',
+        one_time_year: 'One-time (1 year)',
       },
       priceList: {
         title: 'Price List',
