@@ -334,6 +334,7 @@ export default {
         bot: 'Bot Recharge',
         gift: 'Credits Gift',
         bagelpay: 'BagelPay',
+        subscription: 'Subscription',
         other: 'Other',
       },
       expired: 'Expired',

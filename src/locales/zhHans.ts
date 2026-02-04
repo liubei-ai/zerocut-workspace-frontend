@@ -329,6 +329,7 @@ export default {
         bot: '机器人充值',
         gift: '积分赠送',
         bagelpay: 'BagelPay',
+        subscription: '会员订阅',
         other: '其他',
       },
       expired: '已过期',

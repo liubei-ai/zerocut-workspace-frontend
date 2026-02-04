@@ -338,6 +338,7 @@ export default {
         bot: 'ボットチャージ',
         gift: 'ポイント付与',
         bagelpay: 'BagelPay',
+        subscription: 'サブスクリプション',
         other: 'その他',
       },
       expired: '失効',
