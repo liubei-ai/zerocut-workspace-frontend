@@ -62,9 +62,9 @@ function onSubscribe(plan: SubscriptionPlan) {
         <v-item-group mandatory selected-class="active-card">
           <v-row align="stretch">
             <v-col cols="12" md="4" v-for="plan in props.plans" :key="plan.productId">
-              <v-item v-slot="{ isSelected, selectedClass, toggle }">
+              <v-item v-slot="{ selectedClass, toggle }">
                 <v-card
-                  :theme="isSelected ? 'dark' : 'light'"
+                  theme="light"
                   elevation="0"
                   height="100%"
                   class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
@@ -116,9 +116,9 @@ function onSubscribe(plan: SubscriptionPlan) {
       <v-item-group mandatory selected-class="active-card">
         <v-row align="stretch">
           <v-col cols="12" md="4" v-for="plan in props.plans" :key="plan.productId">
-            <v-item v-slot="{ isSelected, selectedClass, toggle }">
+            <v-item v-slot="{ selectedClass, toggle }">
               <v-card
-                :theme="isSelected ? 'dark' : 'light'"
+                theme="light"
                 elevation="0"
                 height="100%"
                 class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
@@ -173,14 +173,17 @@ function onSubscribe(plan: SubscriptionPlan) {
 }
 
 .base-card {
-  transition: 0.3s ease-out;
+  transition: all 0.3s ease-out;
   border: 1px solid rgba(var(--v-theme-on-surface), 0.14);
   background: rgb(var(--v-theme-surface));
 }
 
 .active-card {
-  border: 1px solid rgba(var(--v-theme-on-surface), 0.22);
-  box-shadow: 0px 10px 24px rgba(0, 0, 0, 0.08);
+  border: 2px solid rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.04);
+  box-shadow:
+    0px 12px 28px rgba(112, 92, 246, 0.15),
+    0px 4px 12px rgba(0, 0, 0, 0.08);
   transform: scale(1.05);
   transition: 0.3s ease-out;
 }

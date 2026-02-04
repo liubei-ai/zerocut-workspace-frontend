@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" max-width="560" persistent>
-    <v-card class="text-center pa-6">
+    <v-card class="pa-6">
       <!-- 加载状态 -->
       <div v-if="loading" class="py-8">
         <v-progress-circular indeterminate color="primary" size="64" />
@@ -25,74 +25,69 @@
 
       <!-- 成功状态 -->
       <div v-else-if="subscription" class="py-4">
-        <!-- Celebration Icon -->
-        <v-icon color="success" size="80" class="celebration-icon mb-4"> mdi-party-popper </v-icon>
+        <!-- 庆祝图标、标题、副标题居中 -->
+        <div class="text-center">
+          <!-- Celebration Icon -->
+          <v-icon color="success" size="80" class="celebration-icon mb-4">
+            mdi-party-popper
+          </v-icon>
 
-        <!-- Title + Subtitle -->
-        <v-card-title class="text-h5 font-weight-bold mb-2">
-          {{ t('zerocut.subscriptionSuccess.title') }}
-        </v-card-title>
-        <v-card-subtitle class="text-body-1 mb-4">
-          {{ t('zerocut.subscriptionSuccess.subtitle') }}
-        </v-card-subtitle>
+          <!-- Title + Subtitle -->
+          <v-card-title class="text-h5 font-weight-bold mb-2">
+            {{ t('zerocut.subscriptionSuccess.title') }}
+          </v-card-title>
+          <v-card-subtitle class="text-body-1 mb-4">
+            {{ t('zerocut.subscriptionSuccess.subtitle') }}
+          </v-card-subtitle>
+        </div>
 
         <!-- 信息卡片 -->
         <v-card variant="tonal" color="primary" class="mx-4 mb-6">
           <v-list density="compact" bg-color="transparent">
-            <v-list-item>
-              <template #prepend>
-                <v-icon>mdi-crown</v-icon>
-              </template>
-              <v-list-item-title class="text-body-2 text-medium-emphasis">
-                {{ t('zerocut.subscriptionSuccess.labels.plan') }}
+            <!-- 订阅计划 -->
+            <v-list-item class="px-4">
+              <v-list-item-title class="text-body-2">
+                <v-icon size="small" class="mr-2">mdi-crown</v-icon>
+                {{ t('zerocut.subscriptionSuccess.labels.plan') }}：
+                <span class="font-weight-medium">{{ planName }}</span>
               </v-list-item-title>
-              <v-list-item-subtitle class="text-body-1 font-weight-medium">
-                {{ planName }}
-              </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <template #prepend>
-                <v-icon>mdi-wallet-giftcard</v-icon>
-              </template>
-              <v-list-item-title class="text-body-2 text-medium-emphasis">
-                {{ t('zerocut.subscriptionSuccess.labels.monthlyCredits') }}
+            <!-- 每月积分配额 -->
+            <v-list-item class="px-4">
+              <v-list-item-title class="text-body-2">
+                <v-icon size="small" class="mr-2">mdi-wallet-giftcard</v-icon>
+                {{ t('zerocut.subscriptionSuccess.labels.monthlyCredits') }}：
+                <span class="font-weight-medium">{{ monthlyCreditsText }}</span>
               </v-list-item-title>
-              <v-list-item-subtitle class="text-body-1 font-weight-medium">
-                {{ monthlyCreditsText }}
-              </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <template #prepend>
-                <v-icon>mdi-refresh</v-icon>
-              </template>
-              <v-list-item-title class="text-body-2 text-medium-emphasis">
-                {{ t('zerocut.subscriptionSuccess.labels.subscriptionType') }}
+            <!-- 订阅类型 -->
+            <v-list-item class="px-4">
+              <v-list-item-title class="text-body-2">
+                <v-icon size="small" class="mr-2">mdi-refresh</v-icon>
+                {{ t('zerocut.subscriptionSuccess.labels.subscriptionType') }}：
+                <span class="font-weight-medium">{{ subscriptionTypeText }}</span>
               </v-list-item-title>
-              <v-list-item-subtitle class="text-body-1 font-weight-medium">
-                {{ subscriptionTypeText }}
-              </v-list-item-subtitle>
             </v-list-item>
 
-            <v-list-item>
-              <template #prepend>
-                <v-icon>mdi-calendar-range</v-icon>
-              </template>
-              <v-list-item-title class="text-body-2 text-medium-emphasis">
-                {{ t('zerocut.subscriptionSuccess.labels.currentPeriod') }}
+            <!-- 当前周期 -->
+            <v-list-item class="px-4">
+              <v-list-item-title class="text-body-2">
+                <v-icon size="small" class="mr-2">mdi-calendar-range</v-icon>
+                {{ t('zerocut.subscriptionSuccess.labels.currentPeriod') }}：
+                <span class="font-weight-medium">{{ periodText }}</span>
               </v-list-item-title>
-              <v-list-item-subtitle class="text-body-1 font-weight-medium">
-                {{ periodText }}
-              </v-list-item-subtitle>
             </v-list-item>
           </v-list>
         </v-card>
 
-        <!-- 主按钮 -->
-        <v-btn color="primary" size="large" variant="flat" @click="handleViewDetails">
-          {{ t('zerocut.subscriptionSuccess.viewDetailsButton') }}
-        </v-btn>
+        <!-- 主按钮居中 -->
+        <div class="text-center mt-4">
+          <v-btn color="primary" size="large" variant="flat" @click="handleViewDetails">
+            {{ t('zerocut.subscriptionSuccess.viewDetailsButton') }}
+          </v-btn>
+        </div>
       </div>
     </v-card>
   </v-dialog>
@@ -141,7 +136,19 @@ const planName = computed(() =>
 // 计算属性：订阅类型 + 续费方式
 const subscriptionTypeText = computed(() => {
   if (!subscription.value) return '';
-  const cycleLabel = t(`zerocut.membership.cycles.${subscription.value.purchaseMode}`);
+
+  // 使用显式映射而非动态键拼接
+  let cycleLabel = '';
+  if (subscription.value.purchaseMode === 'auto_monthly') {
+    cycleLabel = t('zerocut.membership.cycles.monthly');
+  } else if (subscription.value.purchaseMode === 'auto_yearly') {
+    cycleLabel = t('zerocut.membership.cycles.yearly');
+  } else if (subscription.value.purchaseMode === 'one_time_month') {
+    cycleLabel = t('zerocut.membership.cycles.one_time_month');
+  } else if (subscription.value.purchaseMode === 'one_time_year') {
+    cycleLabel = t('zerocut.membership.cycles.one_time_year');
+  }
+
   const renewLabel = subscription.value.autoRenew
     ? t('zerocut.subscriptionSuccess.autoRenew')
     : t('zerocut.subscriptionSuccess.oneTime');
