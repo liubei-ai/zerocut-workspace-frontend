@@ -180,8 +180,10 @@ watch(
       error.value = null;
       try {
         subscription.value = await getCurrentSubscription(props.workspaceId);
-      } catch (err: any) {
-        error.value = err.message || t('zerocut.subscriptionSuccess.errorLoading');
+      } catch (err) {
+        console.error('Failed to load subscription:', err);
+        error.value =
+          err instanceof Error ? err.message : t('zerocut.subscriptionSuccess.errorLoading');
       } finally {
         loading.value = false;
       }
