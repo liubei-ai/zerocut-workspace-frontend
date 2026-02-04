@@ -369,9 +369,9 @@ function getTierColor(tier: MembershipTier): string {
   switch (tier) {
     case 'basic':
       return 'grey';
-    case 'pro':
+    case 'standard':
       return 'primary';
-    case 'enterprise':
+    case 'premium':
       return 'purple';
     default:
       return 'primary';
@@ -381,8 +381,8 @@ function getTierColor(tier: MembershipTier): string {
 function getTierLabel(tier: MembershipTier): string {
   const labels: Record<MembershipTier, string> = {
     basic: '基础版',
-    pro: '专业版',
-    enterprise: '企业版',
+    standard: '标准版',
+    premium: '高级版',
   };
   return labels[tier] || tier;
 }

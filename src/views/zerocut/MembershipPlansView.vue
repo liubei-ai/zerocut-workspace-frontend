@@ -9,12 +9,21 @@ import SubscribePricing, {
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
 import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
 import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
+import SubscriptionSuccessDialog from '@/components/zerocut/SubscriptionSuccessDialog.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
+
+interface OrderInfo {
+  codeUrl: string;
+  outTradeNo: string;
+  subscriptionId: number;
+  expiresAt: string;
+}
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
@@ -26,8 +35,11 @@ const selectedPlanTitle = ref<string>('');
 const membershipSigningOpen = ref(false);
 const selectedPlanForSigning = ref<MembershipPlanDto | null>(null);
 const selectedSigningTitle = ref<string>('');
+const subscriptionSuccessOpen = ref(false);
+const successSubscriptionId = ref<number | null>(null);
 
 const snackbarStore = useSnackbarStore();
+const workspaceStore = useWorkspaceStore();
 const { t, locale } = useI18n();
 const router = useRouter();
 
@@ -267,7 +279,7 @@ function handleSubscribe(productId: string, planName: string) {
   );
 }
 
-function handleMembershipPaymentSuccess() {
+function handleMembershipPaymentSuccess(orderInfo: OrderInfo) {
   membershipPaymentOpen.value = false;
   if (selectedPlanForPayment.value) {
     snackbarStore.showSuccessMessage(
@@ -280,7 +292,15 @@ function handleMembershipPaymentSuccess() {
   }
   selectedPlanForPayment.value = null;
   selectedPlanTitle.value = '';
-  router.push('/plans-and-billing');
+
+  // 显示订阅成功弹窗
+  if (orderInfo.subscriptionId) {
+    successSubscriptionId.value = orderInfo.subscriptionId;
+    subscriptionSuccessOpen.value = true;
+  } else {
+    // 如果没有订阅ID，直接跳转到计划页面
+    router.push('/plans-and-billing');
+  }
 }
 
 function handleMembershipPaymentCancel() {
@@ -296,13 +316,34 @@ function handleMembershipSigningSuccess(status: SigningSessionStatus) {
   snackbarStore.showSuccessMessage(`签约成功：${planLabel}${suffix}`);
   selectedPlanForSigning.value = null;
   selectedSigningTitle.value = '';
-  router.push('/plans-and-billing');
+
+  // 显示订阅成功弹窗
+  if (status.subscriptionId) {
+    successSubscriptionId.value = status.subscriptionId;
+    subscriptionSuccessOpen.value = true;
+  } else {
+    // 如果没有订阅ID，直接跳转到计划页面
+    router.push('/plans-and-billing');
+  }
 }
 
 function handleMembershipSigningCancel() {
   membershipSigningOpen.value = false;
   selectedPlanForSigning.value = null;
   selectedSigningTitle.value = '';
+}
+
+// 处理查看订阅详情
+function handleSubscriptionSuccessViewDetails() {
+  subscriptionSuccessOpen.value = false;
+  successSubscriptionId.value = null;
+  router.push('/plans-and-billing');
+}
+
+// 处理关闭订阅成功弹窗
+function handleSubscriptionSuccessClose() {
+  subscriptionSuccessOpen.value = false;
+  successSubscriptionId.value = null;
 }
 
 onMounted(fetchMembershipPlans);
@@ -449,6 +490,15 @@ onMounted(fetchMembershipPlans);
       :title="selectedSigningTitle"
       @success="handleMembershipSigningSuccess"
       @cancel="handleMembershipSigningCancel"
+    />
+
+    <!-- 订阅成功弹窗 -->
+    <SubscriptionSuccessDialog
+      v-model="subscriptionSuccessOpen"
+      :subscription-id="successSubscriptionId"
+      :workspace-id="workspaceStore.currentWorkspaceId"
+      @view-details="handleSubscriptionSuccessViewDetails"
+      @close="handleSubscriptionSuccessClose"
     />
   </v-container>
 </template>

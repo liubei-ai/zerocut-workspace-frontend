@@ -10,7 +10,7 @@ export type SubscriptionStatus =
   | 'canceled'
   | 'expired';
 export type PurchaseMode = 'one_time_month' | 'one_time_year' | 'auto_monthly' | 'auto_yearly';
-export type MembershipTier = 'basic' | 'pro' | 'enterprise';
+export type MembershipTier = 'basic' | 'standard' | 'premium';
 export type OrderPurpose = 'initial' | 'renewal';
 export type OrderStatus = 'created' | 'processing' | 'success' | 'failed';
 export type PeriodStatus = 'pending' | 'granted';
