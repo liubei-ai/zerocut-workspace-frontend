@@ -19,7 +19,7 @@ type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
 const error = ref<string | null>(null);
-const selectedCycle = ref<Cycle>('monthly');
+const selectedCycle = ref<Cycle>('one_time_month');
 const membershipPaymentOpen = ref(false);
 const selectedPlanForPayment = ref<MembershipPlanDto | null>(null);
 const selectedPlanTitle = ref<string>('');
@@ -313,16 +313,16 @@ onMounted(fetchMembershipPlans);
     <v-card class="section-card mb-6">
       <v-card-text class="d-flex justify-center py-4">
         <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" color="primary">
-          <v-btn v-if="hasYearly" value="yearly">{{ t('zerocut.membership.cycles.yearly') }}</v-btn>
-          <v-btn v-if="hasMonthly" value="monthly">{{
-            t('zerocut.membership.cycles.monthly')
-          }}</v-btn>
           <v-btn v-if="hasOneTimeMonth" value="one_time_month">{{
             t('zerocut.membership.cycles.one_time_month')
+          }}</v-btn>
+          <v-btn v-if="hasMonthly" value="monthly">{{
+            t('zerocut.membership.cycles.monthly')
           }}</v-btn>
           <v-btn v-if="hasOneTimeYear" value="one_time_year">{{
             t('zerocut.membership.cycles.one_time_year')
           }}</v-btn>
+          <v-btn v-if="hasYearly" value="yearly">{{ t('zerocut.membership.cycles.yearly') }}</v-btn>
         </v-btn-toggle>
       </v-card-text>
       <v-card-text class="pa-0">

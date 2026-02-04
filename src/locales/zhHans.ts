@@ -141,17 +141,17 @@ export default {
       cycles: {
         yearly: '连续包年',
         monthly: '连续包月',
-        one_time_month: '单月购买',
-        one_time_year: '包年购买',
+        one_time_month: '按月支付',
+        one_time_year: '按年支付',
       },
       priceList: {
         title: '价目表',
         subtitle: '查看不同套餐之间权益差异',
         headers: {
           tier: '会员等级',
-          oneTime: '单月购买',
+          oneTime: '按月支付',
           autoMonthly: '连续包月',
-          oneTimeYear: '包年购买',
+          oneTimeYear: '按年支付',
           benefits: '权益',
         },
         formats: {

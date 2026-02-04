@@ -57,25 +57,25 @@ const cards = computed(() => {
       subtitle: '活跃/待付/已取消',
     },
     {
-      title: '按月续费',
+      title: '连续包月',
       value: props.summary.autoMonthlyMembers.toLocaleString(),
       color: 'success',
       icon: 'mdi-calendar-month',
-      subtitle: '自动月度订阅',
+      subtitle: '',
     },
     {
-      title: '包月会员',
+      title: '按月支付',
       value: props.summary.oneTimeMembers.toLocaleString(),
       color: 'warning',
       icon: 'mdi-account',
-      subtitle: '一次性购买',
+      subtitle: '',
     },
     {
-      title: '包年会员',
+      title: '按年支付',
       value: props.summary.oneTimeYearMembers.toLocaleString(),
       color: 'warning',
       icon: 'mdi-calendar',
-      subtitle: '一次性购买',
+      subtitle: '',
     },
   ];
 });
