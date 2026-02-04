@@ -1,125 +1,187 @@
-<br><br>
-
-<p align='center' >
-  <img  src='/src/assets/logo.png' alt='Vuetify3' width='300'/>
-</p>
-<br><br>
+# ZeroCut WorkSpace Frontend
 
 <p align="center">
   <a href="https://vuejs.org/">
-    <img src="https://img.shields.io/badge/vue-v3.2.47-brightgreen.svg" alt="vue">
+    <img src="https://img.shields.io/badge/vue-v3.4.36-brightgreen.svg" alt="vue">
   </a>
   <a href="https://vuetifyjs.com/">
-    <img src="https://img.shields.io/badge/vuetify-v3.1.13-blue.svg" alt="element-ui">
+    <img src="https://img.shields.io/badge/vuetify-v3.6.14-blue.svg" alt="vuetify">
   </a>
-    <a href="https://vitejs.dev/">
-    <img src="https://img.shields.io/badge/vite-v4.2.1-blueviolet.svg" alt="element-ui">
+  <a href="https://vitejs.dev/">
+    <img src="https://img.shields.io/badge/vite-v7.1.12-blueviolet.svg" alt="vite">
   </a>
-  
-  <a href="https://github.com/yangjiakai/lux-admin-vuetify3/blob/main/LICENSE">
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://img.shields.io/badge/typescript-latest-blue.svg" alt="typescript">
+  </a>
+  <a href="https://github.com/liubei-ai/zerocut-workspace-frontend/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="license">
   </a>
 </p>
 
-<h4 align='center'>
-<a href="https://lux.vuetify3.com/">在线 Demo</a>
-</h4>
+## 📖 简介
 
-<br>
+ZeroCut WorkSpace 是一个现代化的工作空间管理平台前端应用，基于 Vue 3 和 Vuetify 3 构建。项目采用最新的前端技术栈，提供优雅的用户界面和强大的功能支持。
 
-<p align='center'>
-<a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.md">English</a> | <b>简体中文</b>| <a href="https://github.com/yangjiakai/jk-vuetify3-lux-admin/blob/main/README.jp.md">日本語</a>
-</p>
+## 📚 技术栈
 
-## 📖 序文
+- ⚡️ [Vue 3.4](https://github.com/vuejs/core) - 渐进式 JavaScript 框架
+- 🚀 [Vite 7.x](https://github.com/vitejs/vite) - 下一代前端构建工具
+- 🎨 [Vuetify 3](https://vuetifyjs.com/) - Material Design 组件框架
+- 📘 [TypeScript](https://www.typescriptlang.org/) - 类型安全的 JavaScript 超集
+- 📦 组件自动导入 - 提升开发效率
+- 🍍 [Pinia](https://pinia.vuejs.org/) - 新一代状态管理
+- 🎯 使用新的 `<script setup>` 语法
+- 🎭 [Iconify](https://icon-sets.iconify.design/) - 丰富的图标库支持
+- 🔐 [Auth0](https://auth0.com/) / [Authing](https://www.authing.cn/) - 身份认证支持
+- 📊 数据可视化：Echarts、ApexChart
+- 🌍 [vue-i18n](https://vue-i18n.intlify.dev/) - 国际化支持
+- 📝 富文本编辑器：Tiptap、Quill、MD Editor
+- 📱 响应式设计 - 多平台自适应
+- 🐳 Docker 支持 - 容器化部署
 
-> 目标创造最优秀的 vuetify3 的 Admin 开源模板
+## 🔧 主要依赖
 
-在 Vuetify 精美的主题基础上，我们构建了一个清晰且高效的项目逻辑架构，整合了最新的技术框架。本项目旨在实现各种常见的技术需求和功能，同时融合了 AI 助手，以提供更智能化的体验。此外，我们确保所有页面在多种设备上均能自适应展示，实现优雅的跨平台兼容性。
+### UI 框架
+- [Vuetify 3](https://vuetifyjs.com/) - Material Design 组件库
 
-## 📖 其他版本
+### 工具库
+- [@vueuse/core](https://vueuse.org/) - Vue Composition API 实用工具集
+- [Axios](https://axios-http.com/) - HTTP 客户端
+- [Lodash](https://lodash.com/) - JavaScript 实用工具库
+- [Moment.js](https://momentjs.com/) - 日期时间处理
 
-### SPA Version
+### 开发工具
+- [ESLint](https://eslint.org/) - 代码检查
+- [Prettier](https://prettier.io/) - 代码格式化
+- [Husky](https://typicode.github.io/husky/) - Git hooks
+- [Commitlint](https://commitlint.js.org/) - 提交信息规范
+- [Vitest](https://vitest.dev/) - 单元测试框架
 
-SPA 完整版: [lux-vuetify3](https://github.com/yangjiakai/lux-nuxt3)
+## 🚀 快速开始
 
-SPA 简化国际化模板 [lux-vuetify3-i18n](https://github.com/yangjiakai/vuetify3-lux-admin-template-i18n)
+### 环境要求
 
-SPA 简化中文模板 [lux-vuetify3-zh](https://github.com/yangjiakai/vuetify3-lux-admin-template-zh)
+- Node.js >= 18
+- pnpm >= 10
 
-### Nuxt3 Version
+### 安装依赖
 
-Nuxt3 完整版 [lux-nuxt3](https://github.com/yangjiakai/lux-nuxt3)
+```bash
+git clone https://github.com/liubei-ai/zerocut-workspace-frontend.git
 
-Nuxt3 简化版 [lux-nuxt3-template](https://github.com/yangjiakai/lux-nuxt3-template)
+cd zerocut-workspace-frontend
 
-## 文档
-
-- 📖 [中文版文档 1.0 ](https://www.craft.me/s/tAMVv4hUxZIH6G)
-
-## 📚 特性
-
-- 📖 [Vue 3.2](https://github.com/vuejs/core)
-- 📖 [Vite 4.x](https://github.com/vitejs/vite)
-- 📖 UI Framework [Vuetify 3](https://next.vuetifyjs.com/en/)
-- 📖 TypeScript
-- 📦 组件自动导入
-- 🍍 通过 [Pinia](https://pinia.vuejs.org/)进行状态管理
-- 📔 使用新的 `<script setup>` 语法
-- 📚 使用任意的图标集 [Iconify](https://icon-sets.iconify.design/)
-- ☁️ 零配置部署在 Netlify
-- 🔑 Firebase 授权
-- 📈 Echarts, ApexChart
-- 🧭 Openai, Chatgpt 支持
-- 🌍 vue-i18n 多语言支持
-- 📚 virtual-scroller , vuedraggable , perfect-scrollbar
-- 📝 富文本编辑器
-- 📇 响应式多平台自适应
-
-## 📦Pre-packed
-
-### 🏷️UI 框架
-
-- [Vuetify3](https://next.vuetifyjs.com/en/) - Vuetify 是一个不要求设计能力的 Vue 界面组件框架，自带了许多自行设计实现的 Vue 组件。
-
-### 🏷️Icons
-
-- [Iconify](https://iconify.design) - 使用任意的图标集 [🔍Icônes](https://icones.netlify.app/)
-- [Pure CSS Icons via UnoCSS](https://github.com/antfu/unocss/tree/main/packages/preset-icons)
-
-## 👻 现在可以试试!
-
-```
-git clone https://github.com/yangjiakai/lux-admin-vuetify3.git
-
-cd lux-admin-vuetify3
-
-yarn install
-
-yarn dev
+pnpm install
 ```
 
-## 👻Docker it!
+### 开发环境运行
 
-1. 开发环境构建镜像：
+```bash
+pnpm dev
+```
 
-   ```
-   docker-compose build dev
-   ```
+### 构建生产版本
 
-2. 启动开发环境：
+```bash
+pnpm build
+```
 
-   ```
-   docker-compose up dev
-   ```
+### 预览生产版本
 
-3. 生产环境构建镜像：
+```bash
+pnpm preview
+```
 
-   ```
-   docker-compose build app
-   ```
+### 代码规范
 
-4. 启动生产环境：
-   ```
-   docker-compose up app
-   ```
+```bash
+# 代码检查
+pnpm lint
+
+# 代码格式化
+pnpm format
+
+# 仅检查格式（不修改）
+pnpm format:check
+```
+
+### 测试
+
+```bash
+# 运行测试
+pnpm test
+
+# 测试 UI 界面
+pnpm test:ui
+
+# 生成测试覆盖率
+pnpm coverage
+```
+
+## 🐳 Docker 部署
+
+本项目支持 Docker 部署，包含开发和生产两种环境配置。
+
+### 开发环境
+
+构建并启动开发环境：
+
+```bash
+docker-compose build dev
+docker-compose up dev
+```
+
+### 生产环境
+
+构建并启动生产环境：
+
+```bash
+docker-compose build app
+docker-compose up app
+```
+
+## 📁 项目结构
+
+```
+zerocut-workspace-frontend/
+├── public/              # 静态资源
+├── src/
+│   ├── api/            # API 接口
+│   ├── assets/         # 资源文件
+│   ├── components/     # 通用组件
+│   ├── configs/        # 配置文件
+│   ├── layouts/        # 布局组件
+│   ├── locales/        # 国际化语言文件
+│   ├── plugins/        # 插件
+│   ├── router/         # 路由配置
+│   ├── stores/         # Pinia 状态管理
+│   ├── styles/         # 样式文件
+│   ├── types/          # TypeScript 类型定义
+│   ├── utils/          # 工具函数
+│   ├── views/          # 页面组件
+│   │   ├── admin/      # 管理页面
+│   │   ├── auth/       # 认证相关页面
+│   │   ├── errors/     # 错误页面
+│   │   └── zerocut/    # ZeroCut 功能页面
+│   ├── App.vue         # 根组件
+│   └── main.ts         # 入口文件
+├── .env.template       # 环境变量模板
+├── docker-compose.yml  # Docker Compose 配置
+├── Dockerfile          # 生产环境 Dockerfile
+├── Dockerfile.dev      # 开发环境 Dockerfile
+├── vite.config.ts      # Vite 配置
+├── tsconfig.json       # TypeScript 配置
+└── package.json        # 项目依赖
+```
+
+## 📝 License
+
+[MIT License](./LICENSE)
+
+## 🙏 致谢
+
+本项目基于以下优秀开源项目：
+
+- [Vue.js](https://vuejs.org/)
+- [Vuetify](https://vuetifyjs.com/)
+- [Vite](https://vitejs.dev/)
