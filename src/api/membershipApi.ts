@@ -122,6 +122,14 @@ export async function closeOneTimeOrder(outTradeNo: string, workspaceId: string)
   await client.post('/subscriptions/close-order', { outTradeNo, workspaceId });
 }
 
+/**
+ * Close signing session
+ * Called when user closes signing dialog without completing contract
+ */
+export async function closeSigningSession(signingSessionId: string, workspaceId: string) {
+  await client.post('/subscriptions/close-signing-session', { signingSessionId, workspaceId });
+}
+
 export async function createSigningSession(params: CreateSigningSessionParams) {
   const response = await client.post<SigningSessionResponse>(
     '/subscriptions/signing-sessions',

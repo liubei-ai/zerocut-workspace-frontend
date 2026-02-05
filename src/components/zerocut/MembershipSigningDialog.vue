@@ -158,6 +158,7 @@
 
 <script setup lang="ts">
 import {
+  closeSigningSession,
   createSigningSession,
   getSigningSessionStatus,
   type MembershipPlanDto,
@@ -360,16 +361,45 @@ const createSession = async () => {
   }
 };
 
-const handleCancel = () => {
+const handleCancel = async () => {
   stopPolling();
   stopCountdown();
+
+  // 调用清理API
+  if (signingSession.value?.signingSessionId && uiStatus.value === 'pending') {
+    try {
+      await closeSigningSession(
+        signingSession.value.signingSessionId,
+        workspaceStore.currentWorkspaceId!
+      );
+    } catch (error) {
+      console.warn('关闭签约会话失败:', error);
+    }
+  }
+
   emit('cancel');
   emit('update:open', false);
 };
 
-const handleClose = () => {
+const handleClose = async () => {
   stopPolling();
   stopCountdown();
+
+  // 超时或待签约状态也清理
+  if (
+    signingSession.value?.signingSessionId &&
+    (uiStatus.value === 'pending' || uiStatus.value === 'timeout')
+  ) {
+    try {
+      await closeSigningSession(
+        signingSession.value.signingSessionId,
+        workspaceStore.currentWorkspaceId!
+      );
+    } catch (error) {
+      console.warn('关闭签约会话失败:', error);
+    }
+  }
+
   emit('update:open', false);
 };
 
