@@ -269,9 +269,8 @@ function onSubscribe(plan: SubscriptionPlan) {
 }
 
 .price-monthly {
-  color: rgb(var(--v-theme-on-surface-variant));
-  font-weight: 400;
-  opacity: 0.9;
+  color: rgba(var(--v-theme-on-surface), 0.72);
+  font-weight: 500;
 }
 
 .price-discount {
