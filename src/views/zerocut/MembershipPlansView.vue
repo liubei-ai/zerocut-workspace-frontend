@@ -119,7 +119,8 @@ function formatPrice(
   if (plan.purchaseMode === 'auto_monthly') {
     return t('zerocut.membership.prices.monthly', { price: plan.priceYuan });
   } else if (plan.purchaseMode === 'one_time_month') {
-    return t('zerocut.membership.prices.oneTime', { price: plan.priceYuan });
+    // One-time monthly: display as "¥XX/月"
+    return t('zerocut.membership.prices.monthly', { price: plan.priceYuan });
   } else if (plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year') {
     // Yearly plans: return structured price object
     const monthlyPrice = (plan.priceYuan / 12).toFixed(2);
@@ -139,10 +140,7 @@ function formatPrice(
     }
 
     return {
-      main:
-        plan.purchaseMode === 'auto_yearly'
-          ? t('zerocut.membership.prices.yearlyMain', { price: plan.priceYuan })
-          : t('zerocut.membership.prices.oneTimeMain', { price: plan.priceYuan }),
+      main: t('zerocut.membership.prices.yearly', { price: plan.priceYuan }),
       monthlyEquivalent: t('zerocut.membership.prices.monthlyEquivalent', { price: monthlyPrice }),
       discount,
     };
