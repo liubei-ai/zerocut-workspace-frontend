@@ -208,7 +208,11 @@ export default {
       prices: {
         monthly: '¥{price}/mo',
         yearly: '¥{price}/yr',
+        yearlyMain: '¥{price}/yr',
+        oneTimeMain: '¥{price} one-time',
         oneTime: '¥{price} one-time',
+        monthlyEquivalent: '≈¥{price}/mo',
+        discount: 'Save {percent}%',
       },
       credits: {
         monthly: '{credits} credits/mo',

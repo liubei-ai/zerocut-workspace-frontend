@@ -9,9 +9,18 @@
  */
 import { useI18n } from 'vue-i18n';
 
+/**
+ * Structured price display for yearly plans
+ */
+export interface PriceDisplay {
+  main: string; // Main price "¥699/年"
+  monthlyEquivalent?: string; // Monthly equivalent "相当于¥58.25/月"
+  discount?: string; // Discount label "省41%"
+}
+
 export interface SubscriptionPlan {
   planName: string; // Plan name (e.g., "基础会员")
-  price: string; // Display price (e.g., "¥99/月")
+  price: string | PriceDisplay; // Display price (string for monthly, PriceDisplay for yearly)
   credits: string; // Credit amount (e.g., "2,500 积分/月")
   features: string[]; // Feature list
   productId: string; // SKU code (for subscription)
@@ -75,9 +84,35 @@ function onSubscribe(plan: SubscriptionPlan) {
                     <h3 class="font-weight-bold text-h5 mt-5 mb-10">
                       {{ plan.planName }}
                     </h3>
-                    <h1 class="font-weight-black text-h3 mt-5 mb-10">
-                      <span class="text-primary">{{ plan.price }}</span>
-                    </h1>
+                    <div class="price-container mt-5 mb-10">
+                      <template v-if="typeof plan.price === 'string'">
+                        <h1 class="font-weight-black text-h3">
+                          <span class="text-primary">{{ plan.price }}</span>
+                        </h1>
+                      </template>
+                      <template v-else>
+                        <h1 class="font-weight-black text-h3 price-main">
+                          <span class="text-primary">{{ plan.price.main }}</span>
+                        </h1>
+                        <div
+                          v-if="plan.price.monthlyEquivalent"
+                          class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                        >
+                          <span class="price-monthly text-body-2">
+                            {{ plan.price.monthlyEquivalent }}
+                          </span>
+                          <v-chip
+                            v-if="plan.price.discount"
+                            size="small"
+                            color="error"
+                            variant="flat"
+                            class="price-discount"
+                          >
+                            {{ plan.price.discount }}
+                          </v-chip>
+                        </div>
+                      </template>
+                    </div>
 
                     <div class="text-h6 font-weight-bold mb-10">
                       {{ plan.credits }}
@@ -129,9 +164,35 @@ function onSubscribe(plan: SubscriptionPlan) {
                   <h3 class="font-weight-bold text-h5 mt-5 mb-10">
                     {{ plan.planName }}
                   </h3>
-                  <h1 class="font-weight-black text-h3 mt-5 mb-10">
-                    <span class="text-primary">{{ plan.price }}</span>
-                  </h1>
+                  <div class="price-container mt-5 mb-10">
+                    <template v-if="typeof plan.price === 'string'">
+                      <h1 class="font-weight-black text-h3">
+                        <span class="text-primary">{{ plan.price }}</span>
+                      </h1>
+                    </template>
+                    <template v-else>
+                      <h1 class="font-weight-black text-h3 price-main">
+                        <span class="text-primary">{{ plan.price.main }}</span>
+                      </h1>
+                      <div
+                        v-if="plan.price.monthlyEquivalent"
+                        class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                      >
+                        <span class="price-monthly text-body-2">
+                          {{ plan.price.monthlyEquivalent }}
+                        </span>
+                        <v-chip
+                          v-if="plan.price.discount"
+                          size="small"
+                          color="error"
+                          variant="flat"
+                          class="price-discount"
+                        >
+                          {{ plan.price.discount }}
+                        </v-chip>
+                      </div>
+                    </template>
+                  </div>
 
                   <div class="text-h6 font-weight-bold mb-10">
                     {{ plan.credits }}
@@ -190,5 +251,38 @@ function onSubscribe(plan: SubscriptionPlan) {
 
 .subscribe-feature {
   color: rgba(var(--v-theme-on-surface), 0.78);
+}
+
+/* Price display styles */
+.price-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.price-main {
+  line-height: 1.2;
+}
+
+.price-details {
+  gap: 8px;
+}
+
+.price-monthly {
+  color: rgb(var(--v-theme-on-surface-variant));
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.price-discount {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive: small screens stack vertically */
+@media (max-width: 600px) {
+  .price-details {
+    flex-direction: column !important;
+  }
 }
 </style>
