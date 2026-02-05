@@ -6,6 +6,7 @@ import {
 } from '@/api/membershipApi';
 import SubscribePricing, {
   type SubscriptionPlan,
+  type PriceDisplay,
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
 import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
 import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
@@ -111,11 +112,40 @@ function formatPlanFeatures(plan: MembershipPlanDto): string[] {
     .filter(Boolean);
 }
 
-function formatPrice(plan: MembershipPlanDto): string {
+function formatPrice(
+  plan: MembershipPlanDto,
+  allPlans: MembershipPlanDto[]
+): string | PriceDisplay {
   if (plan.purchaseMode === 'auto_monthly') {
     return t('zerocut.membership.prices.monthly', { price: plan.priceYuan });
-  } else if (plan.purchaseMode === 'auto_yearly') {
-    return t('zerocut.membership.prices.yearly', { price: plan.priceYuan });
+  } else if (plan.purchaseMode === 'one_time_month') {
+    return t('zerocut.membership.prices.oneTime', { price: plan.priceYuan });
+  } else if (plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year') {
+    // Yearly plans: return structured price object
+    const monthlyPrice = (plan.priceYuan / 12).toFixed(2);
+
+    // Calculate discount percentage based on one_time_month price
+    const oneTimeMonthlyPlan = allPlans.find(
+      p => p.tier === plan.tier && p.purchaseMode === 'one_time_month'
+    );
+
+    let discount: string | undefined;
+    if (oneTimeMonthlyPlan && oneTimeMonthlyPlan.priceYuan > 0) {
+      const basePrice = oneTimeMonthlyPlan.priceYuan * 12;
+      const percent = Math.round((1 - plan.priceYuan / basePrice) * 100);
+      if (Number.isFinite(percent) && percent > 0) {
+        discount = t('zerocut.membership.prices.discount', { percent });
+      }
+    }
+
+    return {
+      main:
+        plan.purchaseMode === 'auto_yearly'
+          ? t('zerocut.membership.prices.yearlyMain', { price: plan.priceYuan })
+          : t('zerocut.membership.prices.oneTimeMain', { price: plan.priceYuan }),
+      monthlyEquivalent: t('zerocut.membership.prices.monthlyEquivalent', { price: monthlyPrice }),
+      discount,
+    };
   } else {
     return t('zerocut.membership.prices.oneTime', { price: plan.priceYuan });
   }
@@ -212,7 +242,7 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
     planName: t(TIER_NAME_KEYS[plan.tier] ?? 'zerocut.membership.tiers.unknown', {
       tier: plan.tier,
     }),
-    price: formatPrice(plan),
+    price: formatPrice(plan, rawPlans.value),
     credits: formatCredits(plan.monthlyCredits),
     features: formatPlanFeatures(plan),
     productId: plan.code,

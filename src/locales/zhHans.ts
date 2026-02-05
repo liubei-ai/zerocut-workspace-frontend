@@ -206,7 +206,11 @@ export default {
       prices: {
         monthly: '¥{price}/月',
         yearly: '¥{price}/年',
+        yearlyMain: '¥{price}/年',
+        oneTimeMain: '¥{price} 单次',
         oneTime: '¥{price} 单次',
+        monthlyEquivalent: '相当于¥{price}/月',
+        discount: '省{percent}%',
       },
       credits: {
         monthly: '{credits} 积分/月',
