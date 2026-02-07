@@ -24,7 +24,7 @@ export interface TransactionItem {
   thirdPartyOrderNo?: string;
   paidAt?: string;
   creditsValidityDays?: number;
-  remainingCredits?: number; // 剩余积分数量（统一为数值类型，前端显示规则在视图中处理）
+  remainingCredits?: number | string; // 剩余积分数量（前端显示规则在视图中处理）
 }
 /**
  * 获取钱包信息

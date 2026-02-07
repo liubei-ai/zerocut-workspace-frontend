@@ -69,6 +69,8 @@ const getPaymentMethodIcon = (paymentMethod: string) => {
       return 'mdi-gift';
     case 'bagelpay':
       return 'mdi-account-group';
+    case 'subscription':
+      return 'mdi-crown';
     default:
       return 'mdi-cash';
   }
@@ -93,6 +95,8 @@ const getPaymentMethodText = (paymentMethod: string) => {
       return t('zerocut.wallet.payment.gift');
     case 'bagelpay':
       return t('zerocut.wallet.payment.bagelpay');
+    case 'subscription':
+      return t('zerocut.wallet.payment.subscription');
     default:
       return t('zerocut.wallet.payment.other');
   }
@@ -113,6 +117,8 @@ const getPaymentMethodColor = (paymentMethod: string) => {
       return 'grey';
     case 'bot':
       return 'primary';
+    case 'subscription':
+      return 'amber';
     default:
       return 'grey';
   }

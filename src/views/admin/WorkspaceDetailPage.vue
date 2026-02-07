@@ -66,6 +66,8 @@ function getPaymentMethodIcon(paymentMethod: string) {
       return 'mdi-robot';
     case 'give':
       return 'mdi-gift';
+    case 'subscription':
+      return 'mdi-crown';
     default:
       return 'mdi-cash';
   }
@@ -89,6 +91,8 @@ function getPaymentMethodText(paymentMethod: string) {
       return '积分赠送';
     case 'bagelpay':
       return 'BagelPay';
+    case 'subscription':
+      return '会员订阅';
     default:
       return '其他';
   }
@@ -108,6 +112,8 @@ function getPaymentMethodColor(paymentMethod: string) {
       return 'grey';
     case 'bot':
       return 'primary';
+    case 'subscription':
+      return 'amber';
     default:
       return 'grey';
   }

@@ -55,12 +55,15 @@ export default {
     usage: '使用日志',
     wallet: '钱包管理',
     packages: '积分充值',
+    membership: '开通会员',
+    plansAndBilling: '套餐与账单',
     pricing: '定价',
     workflows: '工作流',
     guide: '专业版',
 
     // 管理员子菜单
     adminWorkspaceList: '工作区',
+    adminMembers: '会员管理',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',
@@ -129,6 +132,136 @@ export default {
       viewProduct: '查看商品',
       noProducts: '暂无商品',
     },
+    membership: {
+      title: '会员计划',
+      subtitle: '选择适合您的订阅计划，解锁更多功能和积分额度',
+      loading: '加载中...',
+      actions: {
+        subscribe: '订阅',
+      },
+      labels: {
+        currentSubscription: '当前订阅',
+      },
+      cycles: {
+        yearly: '连续包年',
+        monthly: '连续包月',
+        one_time_month: '按月支付',
+        one_time_year: '按年支付',
+      },
+      priceList: {
+        title: '价目表',
+        subtitle: '查看不同套餐之间权益差异',
+        headers: {
+          tier: '会员等级',
+          oneTime: '按月支付',
+          autoMonthly: '连续包月',
+          oneTimeYear: '按年支付',
+          benefits: '权益',
+        },
+        formats: {
+          priceYuan: '¥{price}',
+          priceYearly: '¥{price}/年',
+          unitPrice: '{price}元/积分',
+          savePercent: '省{percent}%',
+        },
+        discounts: {
+          basic: {
+            oneTimeMonth: '8折',
+            autoMonthly: '7折',
+            autoYearly: '6折',
+          },
+          standard: {
+            oneTimeMonth: '7.4折',
+            autoMonthly: '6.6折',
+            autoYearly: '5.6折',
+          },
+          premium: {
+            oneTimeMonth: '6.4折',
+            autoMonthly: '5.6折',
+            autoYearly: '4.6折',
+          },
+        },
+        benefits: {
+          monthlyCredits: '每月 {credits} 积分',
+          quotas: {
+            basic: '最多可生成 310 张图片或最多生成 250 秒视频（以默认模型计算）',
+            standard: '最多可生成 1000 张图片或生成 800 秒视频（以默认模型计算）',
+            premium: '最多可生成 3125 张图片或生成 2500 秒视频（以默认模型计算）',
+          },
+          universal: {
+            allModels: '所有模型均可使用',
+            hdVideo: '生成高清视频',
+            noWatermark: '没有水印',
+          },
+        },
+        notes: {
+          title: '积分规则说明',
+          monthlyReset: '每个计费周期仅发放当期积分',
+          noRollover: '当期未用完的积分到期清零，不结转',
+          yearlyMonthlyQuota: '年付方案一年扣费一次，但积分按月发放（每月额度到期清零）',
+        },
+      },
+      tiers: {
+        basic: '基础会员',
+        standard: '标准会员',
+        premium: '高级会员',
+        unknown: '{tier}',
+      },
+      prices: {
+        monthly: '¥{price}/月',
+        yearly: '¥{price}/年',
+        yearlyMain: '¥{price}/年',
+        oneTimeMain: '¥{price} 单次',
+        oneTime: '¥{price} 单次',
+        monthlyEquivalent: '相当于¥{price}/月',
+        discount: '省{percent}%',
+      },
+      credits: {
+        monthly: '{credits} 积分/月',
+      },
+      errors: {
+        fetchPlansFailed: '加载会员计划失败',
+      },
+      empty: {
+        title: '暂无可用会员计划',
+        subtitle: '请稍后再试或联系客服',
+      },
+      messages: {
+        selectedPlan: '已选择 {planName} - {cycle} ({productId})',
+      },
+    },
+    plansAndBilling: {
+      title: '套餐与账单',
+      subtitle: '管理订阅、账单与取消自动续费',
+      sections: {
+        current: '当前订阅',
+        cancel: '取消自动续费',
+      },
+      fields: {
+        plan: '会员类型',
+        billingMode: '购买方式',
+        price: '支付金额',
+        nextBillingAt: '下次扣费时间',
+        currentPeriodEndAt: '当前周期结束时间',
+      },
+      status: {
+        active: '生效中',
+        canceled: '已取消自动续费',
+      },
+      cancel: {
+        description: '取消后本期仍可使用，到期后不再自动续费与扣费。',
+        pathTitle: '路径指引',
+        path: '头像菜单 → 套餐与账单 → 取消自动续费',
+        button: '取消自动续费',
+        viewPlans: '查看会员计划',
+        dialogTitle: '确认取消自动续费？',
+        dialogDesc: '确认后将停止自动续费，本期结束前仍可继续使用会员权益。',
+        confirm: '确认取消',
+      },
+      messages: {
+        cancelSuccess: '已取消自动续费',
+      },
+    },
     usage: {
       title: '使用日志',
       subtitle: '查看详细的积分使用记录',
@@ -175,6 +308,24 @@ export default {
       validityNotice: '积分有效期为 90 天，请尽快体验 ZeroCut。',
       startButton: '开始体验',
     },
+    subscriptionSuccess: {
+      loading: '加载订阅信息...',
+      title: '订阅成功！',
+      subtitle: '您的订阅已生效',
+      errorLoading: '加载订阅信息失败',
+      viewDetailsAnyway: '查看订阅详情',
+      viewDetailsButton: '查看订阅详情',
+      autoRenew: '自动续费',
+      oneTime: '单次',
+      separator: '・',
+      creditsUnit: '积分',
+      labels: {
+        plan: '订阅计划',
+        monthlyCredits: '每月积分配额',
+        subscriptionType: '订阅类型',
+        currentPeriod: '当前周期',
+      },
+    },
     wallet: {
       subtitle: '管理您的账户余额和充值明细',
       recharge: '充值',
@@ -204,6 +355,7 @@ export default {
         bot: '机器人充值',
         gift: '积分赠送',
         bagelpay: 'BagelPay',
+        subscription: '会员订阅',
         other: '其他',
       },
       expired: '已过期',

@@ -6,7 +6,7 @@ import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { type Product as BagelPayProduct } from 'bagelpay';
 import { onMounted, ref } from 'vue';
 
-type Cycle = 'monthly' | 'yearly' | 'one_time';
+type Cycle = 'monthly' | 'yearly' | 'one_time_month';
 type PricingOption = {
   type: Cycle;
   price: number;
@@ -68,7 +68,7 @@ function toOption(p: BagelPayProduct): PricingOption | null {
   // }
   if (p.billingType === 'single_payment') {
     return {
-      type: 'one_time',
+      type: 'one_time_month',
       price: p.price!,
       currency: p.currency!,
       productUrl: p.productUrl!,

@@ -40,6 +40,12 @@ if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
   });
 }
 
+zerocutMenu.push({
+  key: 'menu.membership',
+  link: '/membership',
+  icon: 'mdi-account-check-outline',
+});
+
 if (import.meta.env.VITE_PRO_GUIDE_ENABLE === 'true') {
   zerocutMenu.push({
     key: 'menu.guide',

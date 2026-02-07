@@ -64,19 +64,43 @@ const zerocutRoutes = [
       ),
   },
   {
-    path: '/bagelpay/products',
-    name: 'BagelPayProducts',
+    path: '/plans-and-billing',
+    name: 'PlansAndBilling',
     meta: {
       requiresAuth: true,
       layout: 'landing',
-      title: '会员',
+      title: '套餐与账单',
       category: 'ZeroCut',
     },
     component: () =>
-      import(
-        /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
-      ),
+      import(/* webpackChunkName: "plans-and-billing" */ '@/views/zerocut/PlansAndBillingView.vue'),
   },
+  {
+    path: '/membership',
+    name: 'Membership',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '会员计划',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
+  },
+  // {
+  //   path: '/bagelpay/products',
+  //   name: 'BagelPayProducts',
+  //   meta: {
+  //     requiresAuth: true,
+  //     layout: 'landing',
+  //     title: '会员',
+  //     category: 'ZeroCut',
+  //   },
+  //   component: () =>
+  //     import(
+  //       /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
+  //     ),
+  // },
 ];
 
 if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {

@@ -1,29 +1,5 @@
 import menuAdmin from './menus/admin.menu';
-import menuCharts from './menus/charts.menu';
-import menuLanding from './menus/landing.menu';
-import menuPages from './menus/pages.menu';
-import menuUI from './menus/ui.menu';
 import menuZeroCut from './menus/zerocut.menu';
-
-// 开发环境模版菜单
-const developmentMenus = [
-  {
-    key: 'menu.landing',
-    items: menuLanding,
-  },
-  {
-    key: 'menu.uiPreview',
-    items: menuUI,
-  },
-  {
-    key: 'menu.pages',
-    items: menuPages,
-  },
-  {
-    key: 'menu.charts',
-    items: menuCharts,
-  },
-];
 
 // 生产环境菜单（只包含zerocut）
 const productionMenus = [
@@ -35,11 +11,7 @@ const productionMenus = [
 
 // 生成动态菜单的函数
 export function generateNavigation(isSuperAdmin = false) {
-  const baseMenus = [
-    ...productionMenus,
-    // 开发环境下显示模版菜单
-    ...(import.meta.env.DEV ? developmentMenus : []),
-  ];
+  const baseMenus = [...productionMenus];
 
   // 如果用户是超级管理员，在 zerocut 菜单后面添加管理员菜单
   if (isSuperAdmin) {
@@ -66,9 +38,5 @@ export function generateNavigation(isSuperAdmin = false) {
 
 // 默认导出（向后兼容）
 export default {
-  menu: [
-    ...productionMenus,
-    // 开发环境下显示模版菜单
-    ...(import.meta.env.DEV ? developmentMenus : []),
-  ],
+  menu: productionMenus,
 };

@@ -55,12 +55,15 @@ export default {
     usage: 'Usage Logs',
     wallet: 'Wallet',
     packages: 'Credit Packages',
+    membership: 'Membership',
+    plansAndBilling: 'Plans & Billing',
     pricing: 'Pricing',
     workflows: 'Workflows',
     guide: 'Pro Guide',
 
     // Admin submenu
     adminWorkspaceList: 'Workspaces',
+    adminMembers: 'Members',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Personas',
@@ -130,6 +133,139 @@ export default {
       viewProduct: 'View Product',
       noProducts: 'No products available',
     },
+    membership: {
+      title: 'Membership Plans',
+      subtitle: 'Choose a plan to unlock more features and credits',
+      loading: 'Loading...',
+      actions: {
+        subscribe: 'Subscribe',
+      },
+      labels: {
+        currentSubscription: 'Current Plan',
+      },
+      cycles: {
+        yearly: 'Yearly',
+        monthly: 'Monthly',
+        one_time_month: 'One-time (1 month)',
+        one_time_year: 'One-time (1 year)',
+      },
+      priceList: {
+        title: 'Price List',
+        subtitle: 'Compare benefits across plans',
+        headers: {
+          tier: 'Tier',
+          oneTime: 'One-time (1 month)',
+          autoMonthly: 'Auto-renew (Monthly)',
+          autoYearly: 'Auto-renew (Yearly)',
+          benefits: 'Benefits',
+        },
+        formats: {
+          priceYuan: '¥{price}',
+          priceYearly: '¥{price}/yr',
+          unitPrice: '{price} CNY/credit',
+          savePercent: 'Save {percent}%',
+        },
+        discounts: {
+          basic: {
+            oneTimeMonth: '20% off',
+            autoMonthly: '30% off',
+            autoYearly: '40% off',
+          },
+          standard: {
+            oneTimeMonth: '26% off',
+            autoMonthly: '34% off',
+            autoYearly: '44% off',
+          },
+          premium: {
+            oneTimeMonth: '36% off',
+            autoMonthly: '44% off',
+            autoYearly: '54% off',
+          },
+        },
+        benefits: {
+          monthlyCredits: '{credits} credits / month',
+          quotas: {
+            basic: 'Up to 310 images or 250s video (default model)',
+            standard: 'Up to 1000 images or 800s video (default model)',
+            premium: 'Up to 3125 images or 2500s video (default model)',
+          },
+          universal: {
+            allModels: 'Access to all models',
+            hdVideo: 'HD video generation',
+            noWatermark: 'Watermark-free output',
+          },
+        },
+        notes: {
+          title: 'Credit Rules',
+          monthlyReset: 'Credits are issued per billing period only',
+          noRollover: 'Unused credits expire at period end (no rollover)',
+          yearlyMonthlyQuota:
+            'Yearly plan bills once per year, but credits are issued monthly (each month expires)',
+        },
+      },
+      tiers: {
+        basic: 'Basic',
+        standard: 'Standard',
+        premium: 'Premium',
+        unknown: '{tier}',
+      },
+      prices: {
+        monthly: '¥{price}/mo',
+        yearly: '¥{price}/yr',
+        yearlyMain: '¥{price}/yr',
+        oneTimeMain: '¥{price} one-time',
+        oneTime: '¥{price} one-time',
+        monthlyEquivalent: '≈¥{price}/mo',
+        discount: 'Save {percent}%',
+      },
+      credits: {
+        monthly: '{credits} credits/mo',
+      },
+      errors: {
+        fetchPlansFailed: 'Failed to load membership plans',
+      },
+      empty: {
+        title: 'No membership plans available',
+        subtitle: 'Please try again later or contact support',
+      },
+      messages: {
+        selectedPlan: 'Selected {planName} - {cycle} ({productId})',
+      },
+    },
+    plansAndBilling: {
+      title: 'Plans & Billing',
+      subtitle: 'Manage subscription, billing and cancel auto-renew',
+      sections: {
+        current: 'Current Subscription',
+        cancel: 'Cancel Auto-Renew',
+      },
+      fields: {
+        plan: 'Plan',
+        billingMode: 'Billing Mode',
+        price: 'Amount',
+        nextBillingAt: 'Next Billing At',
+        currentPeriodEndAt: 'Current Period Ends At',
+      },
+      status: {
+        active: 'Active',
+        canceled: 'Auto-renew canceled',
+      },
+      cancel: {
+        description:
+          'After cancellation, your current period remains active. Auto-renewal will stop at period end.',
+        pathTitle: 'Navigation Path',
+        path: 'Avatar menu → Plans & Billing → Cancel Auto-Renew',
+        button: 'Cancel Auto-Renew',
+        viewPlans: 'View Plans',
+        dialogTitle: 'Confirm cancellation?',
+        dialogDesc:
+          'Auto-renewal will stop after confirmation. You can continue using benefits until the current period ends.',
+        confirm: 'Confirm',
+      },
+      messages: {
+        cancelSuccess: 'Auto-renew canceled',
+      },
+    },
     usage: {
       title: 'Usage Logs',
       subtitle: 'View detailed credits consumption records',
@@ -177,6 +313,24 @@ export default {
         'Credits are valid for 90 days. Please experience ZeroCut as soon as possible.',
       startButton: 'Get Started',
     },
+    subscriptionSuccess: {
+      loading: 'Loading subscription info...',
+      title: 'Subscription Successful!',
+      subtitle: 'Your subscription is now active',
+      errorLoading: 'Failed to load subscription details',
+      viewDetailsAnyway: 'View Subscription Details',
+      viewDetailsButton: 'View Subscription Details',
+      autoRenew: 'Auto-Renew',
+      oneTime: 'One-Time',
+      separator: ' · ',
+      creditsUnit: 'credits',
+      labels: {
+        plan: 'Subscription Plan',
+        monthlyCredits: 'Monthly Credits Quota',
+        subscriptionType: 'Subscription Type',
+        currentPeriod: 'Current Period',
+      },
+    },
     wallet: {
       subtitle: 'Manage your account balance and recharge history',
       recharge: 'Recharge',
@@ -206,6 +360,7 @@ export default {
         bot: 'Bot Recharge',
         gift: 'Credits Gift',
         bagelpay: 'BagelPay',
+        subscription: 'Subscription',
         other: 'Other',
       },
       expired: 'Expired',

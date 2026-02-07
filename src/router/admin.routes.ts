@@ -25,6 +25,30 @@ const AdminRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'members',
+        name: 'admin-members',
+        component: () => import('@/views/admin/MemberManagementPage.vue'),
+        meta: {
+          title: '会员管理',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
+        path: 'members/:id',
+        name: 'admin-member-detail',
+        component: () => import('@/views/admin/MemberDetailPage.vue'),
+        meta: {
+          title: '会员详情',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
         path: 'workspaces/:workspaceId/detail',
         name: 'admin-workspace-detail',
         component: () => import('@/views/admin/WorkspaceDetailPage.vue'),

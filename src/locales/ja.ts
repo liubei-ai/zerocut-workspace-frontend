@@ -55,11 +55,14 @@ export default {
     usage: '利用ログ',
     wallet: 'ウォレット管理',
     packages: 'ポイントパッケージ',
+    membership: '会員',
+    plansAndBilling: 'プランと請求',
     pricing: '価格',
     guide: 'プロ版',
 
     // 管理者サブメニュー
     adminWorkspaceList: 'ワークスペース一覧',
+    adminMembers: 'メンバー管理',
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'ロール管理',
@@ -137,6 +140,130 @@ export default {
 
   // Zerocut ビュー
   zerocut: {
+    membership: {
+      title: '会員プラン',
+      subtitle: '最適なプランを選んで、より多くの機能とポイント枠を解放',
+      loading: '読み込み中…',
+      actions: {
+        subscribe: '購読',
+      },
+      cycles: {
+        yearly: '年払い',
+        monthly: '月払い',
+        one_time_month: '単発（1ヶ月）',
+        one_time_year: '単発（1年）',
+      },
+      priceList: {
+        title: '料金表',
+        subtitle: 'プラン間の特典差を確認',
+        headers: {
+          tier: '会員タイプ',
+          oneTime: '単月購入',
+          autoMonthly: '継続（月額）',
+          autoYearly: '継続（年額）',
+          benefits: '特典',
+        },
+        formats: {
+          priceYuan: '¥{price}',
+          priceYearly: '¥{price}/年',
+          unitPrice: '{price}元/ポイント',
+          savePercent: '{percent}%お得',
+        },
+        discounts: {
+          basic: {
+            oneTimeMonth: '8割',
+            autoMonthly: '7割',
+            autoYearly: '6割',
+          },
+          standard: {
+            oneTimeMonth: '7.4割',
+            autoMonthly: '6.6割',
+            autoYearly: '5.6割',
+          },
+          premium: {
+            oneTimeMonth: '6.4割',
+            autoMonthly: '5.6割',
+            autoYearly: '4.6割',
+          },
+        },
+        benefits: {
+          monthlyCredits: '毎月 {credits} ポイント',
+          quotas: {
+            basic: '最大 310 枚の画像、または 250 秒の動画（デフォルトモデル）',
+            standard: '最大 1000 枚の画像、または 800 秒の動画（デフォルトモデル）',
+            premium: '最大 3125 枚の画像、または 2500 秒の動画（デフォルトモデル）',
+          },
+          universal: {
+            allModels: 'すべてのモデルを利用可能',
+            hdVideo: '高画質動画の生成',
+            noWatermark: '透かしなし',
+          },
+        },
+        notes: {
+          title: 'ポイントルール',
+          monthlyReset: '各請求期間ごとに当月分のみ付与',
+          noRollover: '未使用分は期限到来で失効（繰り越しなし）',
+          yearlyMonthlyQuota: '年払いは年1回請求ですが、ポイントは毎月付与（各月の枠は月末で失効）',
+        },
+      },
+      tiers: {
+        basic: 'ベーシック',
+        standard: 'スタンダード',
+        premium: 'プレミアム',
+        unknown: '{tier}',
+      },
+      prices: {
+        monthly: '¥{price}/月',
+        yearly: '¥{price}/年',
+        oneTime: '¥{price} 単発',
+      },
+      credits: {
+        monthly: '{credits} ポイント/月',
+      },
+      errors: {
+        fetchPlansFailed: '会員プランの読み込みに失敗しました',
+      },
+      empty: {
+        title: '利用可能な会員プランはありません',
+        subtitle: 'しばらくしてから再度お試しいただくか、サポートにお問い合わせください',
+      },
+      messages: {
+        selectedPlan: '{planName} - {cycle} を選択しました（{productId}）',
+      },
+    },
+    plansAndBilling: {
+      title: 'プランと請求',
+      subtitle: '購読、請求、継続課金の解約を管理',
+      sections: {
+        current: '現在の購読',
+        cancel: '自動更新の解約',
+      },
+      fields: {
+        plan: '会員タイプ',
+        billingMode: '購入方式',
+        price: '支払金額',
+        nextBillingAt: '次回請求日時',
+        currentPeriodEndAt: '現在の期間終了日時',
+      },
+      status: {
+        active: '有効',
+        canceled: '自動更新を解約済み',
+      },
+      cancel: {
+        description: '解約後も当月分は利用可能で、期間終了後に自動更新と請求が停止します。',
+        pathTitle: '手順',
+        path: 'アバターメニュー → プランと請求 → 自動更新の解約',
+        button: '自動更新を解約',
+        viewPlans: '会員プランを見る',
+        dialogTitle: '自動更新を解約しますか？',
+        dialogDesc:
+          '確認後は自動更新が停止します。現在の期間が終了するまで特典は引き続き利用できます。',
+        confirm: '解約する',
+      },
+      messages: {
+        cancelSuccess: '自動更新を解約しました',
+      },
+    },
     usage: {
       title: '利用ログ',
       subtitle: '詳細なポイント使用記録を表示',
@@ -183,6 +310,24 @@ export default {
       validityNotice: 'ポイントの有効期限は90日です。できるだけ早く ZeroCut をお試しください。',
       startButton: '始める',
     },
+    subscriptionSuccess: {
+      loading: 'サブスクリプション情報を読み込んでいます...',
+      title: 'サブスクリプション成功！',
+      subtitle: 'サブスクリプションが有効になりました',
+      errorLoading: 'サブスクリプション詳細の読み込みに失敗しました',
+      viewDetailsAnyway: 'サブスクリプション詳細を表示',
+      viewDetailsButton: 'サブスクリプション詳細を表示',
+      autoRenew: '自動更新',
+      oneTime: '一回のみ',
+      separator: '・',
+      creditsUnit: 'ポイント',
+      labels: {
+        plan: 'サブスクリプションプラン',
+        monthlyCredits: '月間ポイント割当',
+        subscriptionType: 'サブスクリプションタイプ',
+        currentPeriod: '現在の期間',
+      },
+    },
     wallet: {
       subtitle: 'アカウント残高とチャージ履歴を管理する',
       recharge: 'チャージ',
@@ -212,6 +357,7 @@ export default {
         bot: 'ボットチャージ',
         gift: 'ポイント付与',
         bagelpay: 'BagelPay',
+        subscription: 'サブスクリプション',
         other: 'その他',
       },
       expired: '失効',

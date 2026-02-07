@@ -55,12 +55,12 @@ const navs: Array<{
   //   link: '/profile',
   //   icon: 'mdi-account-box-outline',
   // },
-  // {
-  //   title: 'Plans and Billing',
-  //   key: 'menu.plansAndBilling',
-  //   link: '/plans-and-billing',
-  //   icon: 'mdi-credit-card-outline',
-  // },
+  {
+    title: t('menu.plansAndBilling'),
+    key: 'menu.plansAndBilling',
+    link: '/plans-and-billing',
+    icon: 'mdi-credit-card-outline',
+  },
   // {
   //   title: 'Team',
   //   key: 'menu.team',
