@@ -152,12 +152,11 @@ export const useResourceStore = defineStore('resource', {
   },
 
   actions: {
-    // ==================== Library Management ====================
-
     /**
-     * Fetch all libraries for current workspace
+     * Get current workspace ID with validation
+     * @throws Error if no workspace is selected
      */
-    async fetchLibraries(page = 1, limit = 20) {
+    getWorkspaceId(): string {
       const workspaceStore = useWorkspaceStore();
       const workspaceId = workspaceStore.currentWorkspaceId;
 
@@ -166,6 +165,17 @@ export const useResourceStore = defineStore('resource', {
         throw new Error('No workspace selected');
       }
 
+      return workspaceId;
+    },
+
+    // ==================== Library Management ====================
+
+    /**
+     * Fetch all libraries for current workspace
+     */
+    async fetchLibraries(page = 1, limit = 20) {
+      const workspaceId = this.getWorkspaceId();
+
       this.librariesLoading = true;
       this.error = null;
 
@@ -173,8 +183,9 @@ export const useResourceStore = defineStore('resource', {
         const response = await resourceApi.getLibraries(page, limit, workspaceId);
         this.libraries = response.data.data.items;
         this.librariesTotal = response.data.data.total;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to fetch libraries';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to fetch libraries';
         throw error;
       } finally {
         this.librariesLoading = false;
@@ -185,13 +196,7 @@ export const useResourceStore = defineStore('resource', {
      * Fetch a single library and set as current
      */
     async fetchLibrary(id: string) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.librariesLoading = true;
       this.error = null;
@@ -199,8 +204,9 @@ export const useResourceStore = defineStore('resource', {
       try {
         const response = await resourceApi.getLibrary(id, workspaceId);
         this.currentLibrary = response.data.data;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to fetch library';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to fetch library';
         throw error;
       } finally {
         this.librariesLoading = false;
@@ -211,13 +217,7 @@ export const useResourceStore = defineStore('resource', {
      * Create a new library
      */
     async createLibrary(data: CreateLibraryDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.librariesLoading = true;
       this.error = null;
@@ -228,8 +228,9 @@ export const useResourceStore = defineStore('resource', {
         this.libraries.unshift(newLibrary);
         this.librariesTotal += 1;
         return newLibrary;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to create library';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to create library';
         throw error;
       } finally {
         this.librariesLoading = false;
@@ -240,13 +241,7 @@ export const useResourceStore = defineStore('resource', {
      * Update an existing library
      */
     async updateLibrary(id: string, data: UpdateLibraryDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.librariesLoading = true;
       this.error = null;
@@ -267,8 +262,9 @@ export const useResourceStore = defineStore('resource', {
         }
 
         return updatedLibrary;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to update library';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to update library';
         throw error;
       } finally {
         this.librariesLoading = false;
@@ -295,13 +291,7 @@ export const useResourceStore = defineStore('resource', {
      * Fetch subjects for current library
      */
     async fetchSubjects(libraryId: string, page = 1, limit = 50) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.subjectsLoading = true;
       this.error = null;
@@ -316,8 +306,9 @@ export const useResourceStore = defineStore('resource', {
           data: response.data.data.items,
           total: response.data.data.total,
         };
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to fetch subjects';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to fetch subjects';
         throw error;
       } finally {
         this.subjectsLoading = false;
@@ -328,13 +319,7 @@ export const useResourceStore = defineStore('resource', {
      * Create a new subject
      */
     async createSubject(libraryId: string, data: CreateSubjectDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.subjectsLoading = true;
       this.error = null;
@@ -345,8 +330,9 @@ export const useResourceStore = defineStore('resource', {
         this.subjects.unshift(newSubject);
         this.subjectsTotal += 1;
         return newSubject;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to create subject';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to create subject';
         throw error;
       } finally {
         this.subjectsLoading = false;
@@ -357,13 +343,7 @@ export const useResourceStore = defineStore('resource', {
      * Update a subject
      */
     async updateSubject(id: string, data: UpdateSubjectDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.subjectsLoading = true;
       this.error = null;
@@ -379,8 +359,9 @@ export const useResourceStore = defineStore('resource', {
         }
 
         return updatedSubject;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to update subject';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to update subject';
         throw error;
       } finally {
         this.subjectsLoading = false;
@@ -391,13 +372,7 @@ export const useResourceStore = defineStore('resource', {
      * Delete a subject
      */
     async deleteSubject(id: string) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.subjectsLoading = true;
       this.error = null;
@@ -408,8 +383,9 @@ export const useResourceStore = defineStore('resource', {
         // Remove from list
         this.subjects = this.subjects.filter(subj => subj.id !== id);
         this.subjectsTotal -= 1;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to delete subject';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to delete subject';
         throw error;
       } finally {
         this.subjectsLoading = false;
@@ -422,13 +398,7 @@ export const useResourceStore = defineStore('resource', {
      * Fetch scenes for current library
      */
     async fetchScenes(libraryId: string, page = 1, limit = 50) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.scenesLoading = true;
       this.error = null;
@@ -443,8 +413,9 @@ export const useResourceStore = defineStore('resource', {
           data: response.data.data.items,
           total: response.data.data.total,
         };
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to fetch scenes';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to fetch scenes';
         throw error;
       } finally {
         this.scenesLoading = false;
@@ -455,13 +426,7 @@ export const useResourceStore = defineStore('resource', {
      * Create a new scene
      */
     async createScene(libraryId: string, data: CreateSceneDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.scenesLoading = true;
       this.error = null;
@@ -472,8 +437,9 @@ export const useResourceStore = defineStore('resource', {
         this.scenes.unshift(newScene);
         this.scenesTotal += 1;
         return newScene;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to create scene';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to create scene';
         throw error;
       } finally {
         this.scenesLoading = false;
@@ -484,13 +450,7 @@ export const useResourceStore = defineStore('resource', {
      * Update a scene
      */
     async updateScene(id: string, data: UpdateSceneDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.scenesLoading = true;
       this.error = null;
@@ -506,8 +466,9 @@ export const useResourceStore = defineStore('resource', {
         }
 
         return updatedScene;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to update scene';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to update scene';
         throw error;
       } finally {
         this.scenesLoading = false;
@@ -518,13 +479,7 @@ export const useResourceStore = defineStore('resource', {
      * Delete a scene
      */
     async deleteScene(id: string) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.scenesLoading = true;
       this.error = null;
@@ -535,8 +490,9 @@ export const useResourceStore = defineStore('resource', {
         // Remove from list
         this.scenes = this.scenes.filter(scene => scene.id !== id);
         this.scenesTotal -= 1;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to delete scene';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to delete scene';
         throw error;
       } finally {
         this.scenesLoading = false;
@@ -554,13 +510,7 @@ export const useResourceStore = defineStore('resource', {
       page = 1,
       limit = 50
     ) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.materialsLoading = true;
       this.error = null;
@@ -575,8 +525,9 @@ export const useResourceStore = defineStore('resource', {
           data: response.data.data.items,
           total: response.data.data.total,
         };
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to fetch materials';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to fetch materials';
         throw error;
       } finally {
         this.materialsLoading = false;
@@ -587,13 +538,7 @@ export const useResourceStore = defineStore('resource', {
      * Create a new material
      */
     async createMaterial(libraryId: string, data: CreateMaterialDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.materialsLoading = true;
       this.error = null;
@@ -604,8 +549,9 @@ export const useResourceStore = defineStore('resource', {
         this.materials.unshift(newMaterial);
         this.materialsTotal += 1;
         return newMaterial;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to create material';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to create material';
         throw error;
       } finally {
         this.materialsLoading = false;
@@ -616,13 +562,7 @@ export const useResourceStore = defineStore('resource', {
      * Delete a material
      */
     async deleteMaterial(id: string) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       this.materialsLoading = true;
       this.error = null;
@@ -633,8 +573,9 @@ export const useResourceStore = defineStore('resource', {
         // Remove from list
         this.materials = this.materials.filter(mat => mat.id !== id);
         this.materialsTotal -= 1;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to delete material';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to delete material';
         throw error;
       } finally {
         this.materialsLoading = false;
@@ -647,19 +588,14 @@ export const useResourceStore = defineStore('resource', {
      * Get presigned upload URL
      */
     async getUploadUrl(data: UploadUrlRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.getUploadUrl(data, workspaceId);
         return response.data;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to get upload URL';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to get upload URL';
         throw error;
       }
     },
@@ -668,19 +604,14 @@ export const useResourceStore = defineStore('resource', {
      * Verify file upload
      */
     async verifyUpload(key: string) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.verifyUpload(key, workspaceId);
         return response.data.data;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to verify upload';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to verify upload';
         throw error;
       }
     },
@@ -708,19 +639,14 @@ export const useResourceStore = defineStore('resource', {
      * Generate voice for subject
      */
     async generateVoice(data: GenerateRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.generateVoice(data, workspaceId);
         return response.data.data.voice;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to generate voice';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to generate voice';
         throw error;
       }
     },
@@ -736,19 +662,14 @@ export const useResourceStore = defineStore('resource', {
      * Generate styles for subject
      */
     async generateSubjectStyles(data: GenerateRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.generateSubjectStyles(data, workspaceId);
         return response.data.data.styles;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to generate styles';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to generate styles';
         throw error;
       }
     },
@@ -757,19 +678,14 @@ export const useResourceStore = defineStore('resource', {
      * Generate description for subject
      */
     async generateSubjectDescription(data: GenerateRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.generateSubjectDescription(data, workspaceId);
         return response.data.data.description;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to generate description';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to generate description';
         throw error;
       }
     },
@@ -778,19 +694,14 @@ export const useResourceStore = defineStore('resource', {
      * Generate styles for scene
      */
     async generateSceneStyles(data: GenerateRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.generateSceneStyles(data, workspaceId);
         return response.data.data.styles;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to generate styles';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to generate styles';
         throw error;
       }
     },
@@ -799,19 +710,14 @@ export const useResourceStore = defineStore('resource', {
      * Generate description for scene
      */
     async generateSceneDescription(data: GenerateRequestDto) {
-      const workspaceStore = useWorkspaceStore();
-      const workspaceId = workspaceStore.currentWorkspaceId;
-
-      if (!workspaceId) {
-        this.error = 'No workspace selected';
-        throw new Error('No workspace selected');
-      }
+      const workspaceId = this.getWorkspaceId();
 
       try {
         const response = await resourceApi.generateSceneDescription(data, workspaceId);
         return response.data.data.description;
-      } catch (error: any) {
-        this.error = error.response?.data?.message || 'Failed to generate description';
+      } catch (error: unknown) {
+        const apiError = error as { response?: { data?: { message?: string } } };
+        this.error = apiError.response?.data?.message || 'Failed to generate description';
         throw error;
       }
     },
