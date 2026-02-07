@@ -139,6 +139,9 @@ export default {
       actions: {
         subscribe: 'Subscribe',
       },
+      labels: {
+        currentSubscription: 'Current Plan',
+      },
       cycles: {
         yearly: 'Yearly',
         monthly: 'Monthly',

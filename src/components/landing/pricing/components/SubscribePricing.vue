@@ -24,6 +24,7 @@ export interface SubscriptionPlan {
   credits: string; // Credit amount (e.g., "2,500 积分/月")
   features: string[]; // Feature list
   productId: string; // SKU code (for subscription)
+  isCurrentSubscription?: boolean; // Flag to indicate if this is the current active subscription
 }
 
 const { t } = useI18n();
@@ -77,9 +78,20 @@ function onSubscribe(plan: SubscriptionPlan) {
                   elevation="0"
                   height="100%"
                   class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
-                  :class="selectedClass"
+                  :class="[selectedClass, { 'has-subscription-badge': plan.isCurrentSubscription }]"
                   @click="toggle"
                 >
+                  <!-- Current subscription badge -->
+                  <v-chip
+                    v-if="plan.isCurrentSubscription"
+                    size="small"
+                    color="success"
+                    variant="flat"
+                    class="current-subscription-badge"
+                  >
+                    {{ t('zerocut.membership.labels.currentSubscription') }}
+                  </v-chip>
+
                   <div>
                     <h3 class="font-weight-bold text-h5 mt-5 mb-10">
                       {{ plan.planName }}
@@ -157,9 +169,20 @@ function onSubscribe(plan: SubscriptionPlan) {
                 elevation="0"
                 height="100%"
                 class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
-                :class="selectedClass"
+                :class="[selectedClass, { 'has-subscription-badge': plan.isCurrentSubscription }]"
                 @click="toggle"
               >
+                <!-- Current subscription badge -->
+                <v-chip
+                  v-if="plan.isCurrentSubscription"
+                  size="small"
+                  color="success"
+                  variant="flat"
+                  class="current-subscription-badge"
+                >
+                  {{ t('zerocut.membership.labels.currentSubscription') }}
+                </v-chip>
+
                 <div>
                   <h3 class="font-weight-bold text-h5 mt-5 mb-10">
                     {{ plan.planName }}
@@ -283,5 +306,25 @@ function onSubscribe(plan: SubscriptionPlan) {
   .price-details {
     flex-direction: column !important;
   }
+}
+
+/* Current subscription badge positioning */
+.current-subscription-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Cards with subscription badge need relative positioning */
+.has-subscription-badge {
+  position: relative;
+}
+
+/* Ensure badge is visible on active cards */
+.active-card .current-subscription-badge {
+  z-index: 3;
 }
 </style>

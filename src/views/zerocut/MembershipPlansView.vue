@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {
+  getCurrentSubscription,
   getMembershipPlans,
   type MembershipPlanDto,
   type SigningSessionStatus,
+  type SubscriptionDetails,
 } from '@/api/membershipApi';
 import SubscribePricing, {
-  type SubscriptionPlan,
   type PriceDisplay,
+  type SubscriptionPlan,
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
 import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
 import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
@@ -28,6 +30,7 @@ interface OrderInfo {
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
+const subscription = ref<SubscriptionDetails | null>(null);
 const error = ref<string | null>(null);
 const selectedCycle = ref<Cycle>('one_time_month');
 const membershipPaymentOpen = ref(false);
@@ -244,6 +247,11 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
     credits: formatCredits(plan.monthlyCredits),
     features: formatPlanFeatures(plan),
     productId: plan.code,
+    // Mark as current subscription if matches planCode and status is active
+    isCurrentSubscription:
+      subscription.value !== null &&
+      subscription.value.planCode === plan.code &&
+      subscription.value.status === 'active',
   }));
 });
 
@@ -258,7 +266,15 @@ async function fetchMembershipPlans() {
   try {
     loading.value = true;
     error.value = null;
-    rawPlans.value = await getMembershipPlans(true);
+
+    const workspaceId = workspaceStore.currentWorkspace?.workspaceId;
+    const [plans, currentSubscription] = await Promise.all([
+      getMembershipPlans(true),
+      workspaceId ? getCurrentSubscription(workspaceId) : Promise.resolve(null),
+    ]);
+
+    rawPlans.value = plans ?? [];
+    subscription.value = currentSubscription;
   } catch (e: unknown) {
     let message: string | null = null;
     if (e instanceof Error) {

@@ -138,6 +138,9 @@ export default {
       actions: {
         subscribe: '订阅',
       },
+      labels: {
+        currentSubscription: '当前订阅',
+      },
       cycles: {
         yearly: '连续包年',
         monthly: '连续包月',
