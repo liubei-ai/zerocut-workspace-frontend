@@ -23,7 +23,8 @@ const zerocutRoutes = [
       title: '资产管理',
       category: 'ZeroCut',
     },
-    component: () => import(/* webpackChunkName: "resource-admin" */ '@/pages/ResourceAdmin.vue'),
+    component: () =>
+      import(/* webpackChunkName: "resource-admin" */ '@/views/zerocut/ResourceAdmin.vue'),
   },
   {
     path: '/apikey',
