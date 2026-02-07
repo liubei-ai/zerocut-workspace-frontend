@@ -1,15 +1,6 @@
 <template>
   <div class="subject-list">
     <div class="subject-list__header">
-      <v-text-field
-        v-model="searchQuery"
-        :label="$t('common.search')"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        density="compact"
-        class="mb-4"
-        @update:model-value="handleSearch"
-      />
       <v-btn color="primary" prepend-icon="mdi-plus" @click="showCreateDialog = true" class="mb-4">
         {{ $t('resource.createSubject') }}
       </v-btn>
@@ -18,7 +9,7 @@
     <v-progress-linear v-if="loading" indeterminate class="mb-4" />
 
     <v-empty-state
-      v-if="!loading && subjects.length === 0"
+      v-if="!loading && subjects && subjects.length === 0"
       :icon="'mdi-account'"
       :headline="$t('resource.subjectsPlaceholder')"
       :title="$t('resource.subjectsDescription')"
@@ -51,10 +42,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import SubjectCard from './SubjectCard.vue';
+import { computed, onMounted, ref } from 'vue';
 import CreateSubjectDialog from './CreateSubjectDialog.vue';
+import SubjectCard from './SubjectCard.vue';
 
 interface Subject {
   id: string;
@@ -78,33 +69,25 @@ const emit = defineEmits<{
 const resourceStore = useResourceStore();
 
 const loading = ref(false);
-const searchQuery = ref('');
 const showCreateDialog = ref(false);
 const editingSubject = ref<Subject | null>(null);
 const currentPage = ref(1);
 const limit = ref(12);
-const subjects = ref<Subject[]>([]);
-const totalSubjects = ref(0);
 
+// Use store data directly to avoid duplicate loading
+const subjects = computed(() => resourceStore.subjects as Subject[]);
+const totalSubjects = computed(() => resourceStore.subjectsTotal);
 const totalPages = computed(() => Math.ceil(totalSubjects.value / limit.value));
 
-const fetchSubjects = async (page: number = 1) => {
+const fetchSubjects = async (page = 1) => {
   loading.value = true;
   try {
-    const response = await resourceStore.fetchSubjects(props.libraryId, page, limit.value);
-    subjects.value = response.data;
-    totalSubjects.value = response.total;
+    await resourceStore.fetchSubjects(props.libraryId, page, limit.value);
   } catch (error) {
     console.error('Failed to fetch subjects:', error);
   } finally {
     loading.value = false;
   }
-};
-
-const handleSearch = async () => {
-  currentPage.value = 1;
-  // TODO: Implement search filtering
-  await fetchSubjects(1);
 };
 
 const handlePageChange = (page: number) => {
@@ -141,7 +124,11 @@ const handleDialogClose = () => {
 };
 
 onMounted(() => {
-  fetchSubjects();
+  // Only fetch if subjects are not already loaded by parent component
+  // Parent (ResourceAdmin) pre-loads subjects when selecting a library
+  if (subjects.value.length === 0) {
+    fetchSubjects();
+  }
 });
 </script>
 

@@ -41,13 +41,21 @@ const openCreateDialog = () => {
 };
 
 const handleSelectLibrary = async (library: ResourceLibrary) => {
-  resourceStore.setCurrentLibrary(library);
-  // Load assets for the selected library
-  await Promise.all([
-    resourceStore.fetchSubjects(library.id),
-    resourceStore.fetchScenes(library.id),
-    resourceStore.fetchMaterials(library.id),
-  ]);
+  try {
+    resourceStore.setCurrentLibrary(library);
+
+    // Load assets for the selected library in parallel
+    await Promise.all([
+      resourceStore.fetchSubjects(library.id),
+      resourceStore.fetchScenes(library.id),
+      resourceStore.fetchMaterials(library.id),
+    ]);
+  } catch (error) {
+    console.error('Failed to load library assets:', error);
+    // Reset current library on error to show library list again
+    resourceStore.setCurrentLibrary(null);
+    // TODO: Show error toast notification
+  }
 };
 
 const handleEditLibrary = (library: ResourceLibrary) => {

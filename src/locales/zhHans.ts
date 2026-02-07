@@ -799,6 +799,7 @@ export default {
 
     // Reference Images
     referenceImages: '参考图片',
+    referenceImagesRequired: '请上传至少一张参考图片',
     uploadReferenceImages: '上传参考图片',
     maxImages: '最多上传 {max} 张图片',
 

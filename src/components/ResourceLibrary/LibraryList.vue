@@ -96,12 +96,10 @@ const totalPages = computed(() => Math.ceil(resourceStore.librariesTotal / pageS
 const isSelected = (id: string) => resourceStore.currentLibrary?.id === id;
 
 const selectLibrary = (library: ResourceLibrary) => {
-  resourceStore.setCurrentLibrary(library);
   emit('select-library', library);
 };
 
 const editLibrary = (library: ResourceLibrary) => {
-  resourceStore.setCurrentLibrary(library);
   emit('edit-library', library);
 };
 

@@ -92,8 +92,10 @@ const selectedType = ref<'all' | 'audio' | 'video' | 'image'>('all');
 const showCreateDialog = ref(false);
 const currentPage = ref(1);
 const limit = ref(12);
-const materials = ref<Material[]>([]);
-const totalMaterials = ref(0);
+
+// Use store data directly to avoid duplicate loading
+const materials = computed(() => resourceStore.materials as Material[]);
+const totalMaterials = computed(() => resourceStore.materialsTotal);
 
 const materialTypes = computed(() => [
   { value: 'all', title: t('resource.allMaterials') },
@@ -108,9 +110,7 @@ const fetchMaterials = async (page: number = 1) => {
   loading.value = true;
   try {
     const type = selectedType.value === 'all' ? undefined : selectedType.value;
-    const response = await resourceStore.fetchMaterials(props.libraryId, type, page, limit.value);
-    materials.value = response.data;
-    totalMaterials.value = response.total;
+    await resourceStore.fetchMaterials(props.libraryId, type, page, limit.value);
   } catch (error) {
     console.error('Failed to fetch materials:', error);
   } finally {
@@ -156,7 +156,11 @@ const handleDialogClose = () => {
 };
 
 onMounted(() => {
-  fetchMaterials();
+  // Only fetch if materials are not already loaded by parent component
+  // Parent (ResourceAdmin) pre-loads materials when selecting a library
+  if (materials.value.length === 0) {
+    fetchMaterials();
+  }
 });
 </script>
 

@@ -82,17 +82,17 @@ const showCreateDialog = ref(false);
 const editingScene = ref<Scene | null>(null);
 const currentPage = ref(1);
 const limit = ref(12);
-const scenes = ref<Scene[]>([]);
-const totalScenes = ref(0);
+
+// Use store data directly to avoid duplicate loading
+const scenes = computed(() => resourceStore.scenes as Scene[]);
+const totalScenes = computed(() => resourceStore.scenesTotal);
 
 const totalPages = computed(() => Math.ceil(totalScenes.value / limit.value));
 
 const fetchScenes = async (page: number = 1) => {
   loading.value = true;
   try {
-    const response = await resourceStore.fetchScenes(props.libraryId, page, limit.value);
-    scenes.value = response.data;
-    totalScenes.value = response.total;
+    await resourceStore.fetchScenes(props.libraryId, page, limit.value);
   } catch (error) {
     console.error('Failed to fetch scenes:', error);
   } finally {
@@ -140,7 +140,11 @@ const handleDialogClose = () => {
 };
 
 onMounted(() => {
-  fetchScenes();
+  // Only fetch if scenes are not already loaded by parent component
+  // Parent (ResourceAdmin) pre-loads scenes when selecting a library
+  if (scenes.value.length === 0) {
+    fetchScenes();
+  }
 });
 </script>
 

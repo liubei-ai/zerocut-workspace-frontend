@@ -806,6 +806,7 @@ export default {
 
     // 参考画像
     referenceImages: '参考画像',
+    referenceImagesRequired: '少なくとも1枚の参考画像をアップロードしてください',
     uploadReferenceImages: '参考画像アップロード',
     maxImages: '最大 {max} 枚の画像',
 

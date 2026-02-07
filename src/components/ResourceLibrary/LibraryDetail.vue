@@ -69,21 +69,6 @@ defineEmits<{
 const resourceStore = useResourceStore();
 const activeTab = ref('subjects');
 
-const createSubject = () => {
-  // TODO: Implement create subject dialog
-  console.log('Create subject');
-};
-
-const createScene = () => {
-  // TODO: Implement create scene dialog
-  console.log('Create scene');
-};
-
-const createMaterial = () => {
-  // TODO: Implement create material dialog
-  console.log('Create material');
-};
-
 const handleSubjectsUpdate = () => {
   // Refresh library counts when subjects are updated
   if (resourceStore.currentLibrary?.id) {
@@ -110,6 +95,20 @@ const handleMaterialsUpdate = () => {
 .library-detail {
   .tabs {
     border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 48px 24px;
+
+    p {
+      color: rgba(var(--v-theme-on-surface), 0.6);
+      font-size: 14px;
+    }
   }
 
   .placeholder {

@@ -807,6 +807,7 @@ export default {
 
     // Reference Images
     referenceImages: 'Reference Images',
+    referenceImagesRequired: 'Please upload at least one reference image',
     uploadReferenceImages: 'Upload Reference Images',
     maxImages: 'Upload up to {max} images',
 

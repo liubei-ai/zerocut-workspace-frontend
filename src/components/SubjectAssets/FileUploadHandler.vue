@@ -70,8 +70,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import { computed, ref } from 'vue';
 
 interface PreviewImage {
   file: File;
@@ -192,7 +192,8 @@ const uploadFile = async (file: File, index: number) => {
       }
     });
 
-    xhr.addEventListener('error', () => {
+    xhr.addEventListener('error', err => {
+      console.error(err);
       error.value = 'Upload error occurred';
       removeImage(index);
     });
@@ -231,10 +232,6 @@ const removeImage = (index: number) => {
     &--dragging {
       border-color: rgb(var(--v-theme-primary));
       background-color: rgba(var(--v-theme-primary), 0.1);
-    }
-
-    &__content {
-      pointer-events: none;
     }
   }
 

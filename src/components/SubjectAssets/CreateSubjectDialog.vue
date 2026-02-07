@@ -31,6 +31,14 @@
               category="reference-image"
               @update:urls="formData.referenceImages = $event"
             />
+            <v-alert
+              v-if="formData.referenceImages.length === 0 && showImageWarning"
+              type="warning"
+              density="compact"
+              class="mt-2"
+            >
+              {{ $t('resource.referenceImagesRequired') }}
+            </v-alert>
           </div>
 
           <!-- Voice Field with AI Generation -->
@@ -116,8 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import { reactive, ref, watch } from 'vue';
 import FileUploadHandler from './FileUploadHandler.vue';
 
 interface Subject {
@@ -145,6 +153,7 @@ const resourceStore = useResourceStore();
 const formRef = ref();
 const saving = ref(false);
 const error = ref('');
+const showImageWarning = ref(false);
 
 const formData = reactive({
   name: '',
@@ -165,6 +174,15 @@ const rules = {
   maxLength: (max: number) => (v: string) => !v || v.length <= max || `Max ${max} characters`,
 };
 
+const resetForm = () => {
+  formData.name = '';
+  formData.voice = '';
+  formData.styles = [];
+  formData.description = '';
+  formData.referenceImages = [];
+  error.value = '';
+};
+
 // Initialize form when editing
 watch(
   () => props.editSubject,
@@ -181,15 +199,6 @@ watch(
   },
   { immediate: true }
 );
-
-const resetForm = () => {
-  formData.name = '';
-  formData.voice = '';
-  formData.styles = [];
-  formData.description = '';
-  formData.referenceImages = [];
-  error.value = '';
-};
 
 const handleGenerateVoice = async () => {
   if (formData.referenceImages.length === 0) return;
@@ -240,14 +249,29 @@ const handleGenerateDescription = async () => {
 };
 
 const handleSubmit = async () => {
-  const { valid } = await formRef.value.validate();
-  if (!valid) return;
+  console.log('=== handleSubmit called ===');
+  console.log('formData.name:', formData.name);
+  console.log('formData.referenceImages.length:', formData.referenceImages.length);
+  console.log('formData.referenceImages:', formData.referenceImages);
 
+  console.log('Checking reference images...');
   if (formData.referenceImages.length === 0) {
+    console.log('No reference images, blocking save');
+    showImageWarning.value = true;
     error.value = 'Please upload at least one reference image';
     return;
   }
+  showImageWarning.value = false;
 
+  console.log('Validating form...');
+  const { valid } = await formRef.value.validate();
+  console.log('Form validation result:', valid);
+  if (!valid) {
+    console.log('Form validation failed, returning early');
+    return;
+  }
+
+  console.log('All validations passed, calling API...');
   saving.value = true;
   error.value = '';
 
@@ -260,15 +284,21 @@ const handleSubmit = async () => {
       referenceImages: formData.referenceImages,
     };
 
+    console.log('Payload:', payload);
+
     if (props.editSubject?.id) {
+      console.log('Updating existing subject:', props.editSubject.id);
       await resourceStore.updateSubject(props.editSubject.id, payload);
     } else {
+      console.log('Creating new subject for library:', props.libraryId);
       await resourceStore.createSubject(props.libraryId, payload);
     }
 
+    console.log('API call successful');
     emit('save');
     handleClose();
   } catch (err) {
+    console.error('API call failed:', err);
     error.value = `Failed to save subject: ${String(err)}`;
   } finally {
     saving.value = false;
