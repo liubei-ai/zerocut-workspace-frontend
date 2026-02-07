@@ -1,16 +1,17 @@
-import { defineStore } from 'pinia';
-import * as resourceApi from '@/api/resourceApi';
 import type {
   CreateLibraryDto,
-  UpdateLibraryDto,
-  CreateSubjectDto,
-  UpdateSubjectDto,
-  CreateSceneDto,
-  UpdateSceneDto,
   CreateMaterialDto,
-  UploadUrlRequestDto,
+  CreateSceneDto,
+  CreateSubjectDto,
   GenerateRequestDto,
+  UpdateLibraryDto,
+  UpdateSceneDto,
+  UpdateSubjectDto,
+  UploadUrlRequestDto,
 } from '@/api/resourceApi';
+import * as resourceApi from '@/api/resourceApi';
+import { defineStore } from 'pinia';
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 // State types
 export interface ResourceLibrary {
@@ -156,12 +157,20 @@ export const useResourceStore = defineStore('resource', {
     /**
      * Fetch all libraries for current workspace
      */
-    async fetchLibraries(page: number = 1, limit: number = 20) {
+    async fetchLibraries(page = 1, limit = 20) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.librariesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.getLibraries(page, limit);
+        const response = await resourceApi.getLibraries(page, limit, workspaceId);
         this.libraries = response.data.data.items;
         this.librariesTotal = response.data.data.total;
       } catch (error: any) {
@@ -176,11 +185,19 @@ export const useResourceStore = defineStore('resource', {
      * Fetch a single library and set as current
      */
     async fetchLibrary(id: string) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.librariesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.getLibrary(id);
+        const response = await resourceApi.getLibrary(id, workspaceId);
         this.currentLibrary = response.data.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to fetch library';
@@ -194,11 +211,19 @@ export const useResourceStore = defineStore('resource', {
      * Create a new library
      */
     async createLibrary(data: CreateLibraryDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.librariesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.createLibrary(data);
+        const response = await resourceApi.createLibrary(data, workspaceId);
         const newLibrary = response.data.data;
         this.libraries.unshift(newLibrary);
         this.librariesTotal += 1;
@@ -215,11 +240,19 @@ export const useResourceStore = defineStore('resource', {
      * Update an existing library
      */
     async updateLibrary(id: string, data: UpdateLibraryDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.librariesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.updateLibrary(id, data);
+        const response = await resourceApi.updateLibrary(id, data, workspaceId);
         const updatedLibrary = response.data.data;
 
         // Update in list
@@ -261,12 +294,20 @@ export const useResourceStore = defineStore('resource', {
     /**
      * Fetch subjects for current library
      */
-    async fetchSubjects(libraryId: string, page: number = 1, limit: number = 50) {
+    async fetchSubjects(libraryId: string, page = 1, limit = 50) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.subjectsLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.getSubjects(libraryId, page, limit);
+        const response = await resourceApi.getSubjects(libraryId, page, limit, workspaceId);
         this.subjects = response.data.data.items;
         this.subjectsTotal = response.data.data.total;
 
@@ -287,11 +328,19 @@ export const useResourceStore = defineStore('resource', {
      * Create a new subject
      */
     async createSubject(libraryId: string, data: CreateSubjectDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.subjectsLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.createSubject(libraryId, data);
+        const response = await resourceApi.createSubject(libraryId, data, workspaceId);
         const newSubject = response.data.data;
         this.subjects.unshift(newSubject);
         this.subjectsTotal += 1;
@@ -308,11 +357,19 @@ export const useResourceStore = defineStore('resource', {
      * Update a subject
      */
     async updateSubject(id: string, data: UpdateSubjectDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.subjectsLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.updateSubject(id, data);
+        const response = await resourceApi.updateSubject(id, data, workspaceId);
         const updatedSubject = response.data.data;
 
         // Update in list
@@ -334,11 +391,19 @@ export const useResourceStore = defineStore('resource', {
      * Delete a subject
      */
     async deleteSubject(id: string) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.subjectsLoading = true;
       this.error = null;
 
       try {
-        await resourceApi.deleteSubject(id);
+        await resourceApi.deleteSubject(id, workspaceId);
 
         // Remove from list
         this.subjects = this.subjects.filter(subj => subj.id !== id);
@@ -356,12 +421,20 @@ export const useResourceStore = defineStore('resource', {
     /**
      * Fetch scenes for current library
      */
-    async fetchScenes(libraryId: string, page: number = 1, limit: number = 50) {
+    async fetchScenes(libraryId: string, page = 1, limit = 50) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.scenesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.getScenes(libraryId, page, limit);
+        const response = await resourceApi.getScenes(libraryId, page, limit, workspaceId);
         this.scenes = response.data.data.items;
         this.scenesTotal = response.data.data.total;
 
@@ -382,11 +455,19 @@ export const useResourceStore = defineStore('resource', {
      * Create a new scene
      */
     async createScene(libraryId: string, data: CreateSceneDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.scenesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.createScene(libraryId, data);
+        const response = await resourceApi.createScene(libraryId, data, workspaceId);
         const newScene = response.data.data;
         this.scenes.unshift(newScene);
         this.scenesTotal += 1;
@@ -403,11 +484,19 @@ export const useResourceStore = defineStore('resource', {
      * Update a scene
      */
     async updateScene(id: string, data: UpdateSceneDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.scenesLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.updateScene(id, data);
+        const response = await resourceApi.updateScene(id, data, workspaceId);
         const updatedScene = response.data.data;
 
         // Update in list
@@ -429,11 +518,19 @@ export const useResourceStore = defineStore('resource', {
      * Delete a scene
      */
     async deleteScene(id: string) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.scenesLoading = true;
       this.error = null;
 
       try {
-        await resourceApi.deleteScene(id);
+        await resourceApi.deleteScene(id, workspaceId);
 
         // Remove from list
         this.scenes = this.scenes.filter(scene => scene.id !== id);
@@ -454,14 +551,22 @@ export const useResourceStore = defineStore('resource', {
     async fetchMaterials(
       libraryId: string,
       type?: 'audio' | 'video' | 'image',
-      page: number = 1,
-      limit: number = 50
+      page = 1,
+      limit = 50
     ) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.materialsLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.getMaterials(libraryId, type, page, limit);
+        const response = await resourceApi.getMaterials(libraryId, workspaceId, type, page, limit);
         this.materials = response.data.data.items;
         this.materialsTotal = response.data.data.total;
 
@@ -482,11 +587,19 @@ export const useResourceStore = defineStore('resource', {
      * Create a new material
      */
     async createMaterial(libraryId: string, data: CreateMaterialDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.materialsLoading = true;
       this.error = null;
 
       try {
-        const response = await resourceApi.createMaterial(libraryId, data);
+        const response = await resourceApi.createMaterial(libraryId, data, workspaceId);
         const newMaterial = response.data.data;
         this.materials.unshift(newMaterial);
         this.materialsTotal += 1;
@@ -503,11 +616,19 @@ export const useResourceStore = defineStore('resource', {
      * Delete a material
      */
     async deleteMaterial(id: string) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       this.materialsLoading = true;
       this.error = null;
 
       try {
-        await resourceApi.deleteMaterial(id);
+        await resourceApi.deleteMaterial(id, workspaceId);
 
         // Remove from list
         this.materials = this.materials.filter(mat => mat.id !== id);
@@ -526,9 +647,17 @@ export const useResourceStore = defineStore('resource', {
      * Get presigned upload URL
      */
     async getUploadUrl(data: UploadUrlRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.getUploadUrl(data);
-        return response.data.data;
+        const response = await resourceApi.getUploadUrl(data, workspaceId);
+        return response.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to get upload URL';
         throw error;
@@ -539,8 +668,16 @@ export const useResourceStore = defineStore('resource', {
      * Verify file upload
      */
     async verifyUpload(key: string) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.verifyUpload(key);
+        const response = await resourceApi.verifyUpload(key, workspaceId);
         return response.data.data;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to verify upload';
@@ -571,8 +708,16 @@ export const useResourceStore = defineStore('resource', {
      * Generate voice for subject
      */
     async generateVoice(data: GenerateRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.generateVoice(data);
+        const response = await resourceApi.generateVoice(data, workspaceId);
         return response.data.data.voice;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate voice';
@@ -591,8 +736,16 @@ export const useResourceStore = defineStore('resource', {
      * Generate styles for subject
      */
     async generateSubjectStyles(data: GenerateRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.generateSubjectStyles(data);
+        const response = await resourceApi.generateSubjectStyles(data, workspaceId);
         return response.data.data.styles;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate styles';
@@ -604,8 +757,16 @@ export const useResourceStore = defineStore('resource', {
      * Generate description for subject
      */
     async generateSubjectDescription(data: GenerateRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.generateSubjectDescription(data);
+        const response = await resourceApi.generateSubjectDescription(data, workspaceId);
         return response.data.data.description;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate description';
@@ -617,8 +778,16 @@ export const useResourceStore = defineStore('resource', {
      * Generate styles for scene
      */
     async generateSceneStyles(data: GenerateRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.generateSceneStyles(data);
+        const response = await resourceApi.generateSceneStyles(data, workspaceId);
         return response.data.data.styles;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate styles';
@@ -630,8 +799,16 @@ export const useResourceStore = defineStore('resource', {
      * Generate description for scene
      */
     async generateSceneDescription(data: GenerateRequestDto) {
+      const workspaceStore = useWorkspaceStore();
+      const workspaceId = workspaceStore.currentWorkspaceId;
+
+      if (!workspaceId) {
+        this.error = 'No workspace selected';
+        throw new Error('No workspace selected');
+      }
+
       try {
-        const response = await resourceApi.generateSceneDescription(data);
+        const response = await resourceApi.generateSceneDescription(data, workspaceId);
         return response.data.data.description;
       } catch (error: any) {
         this.error = error.response?.data?.message || 'Failed to generate description';
