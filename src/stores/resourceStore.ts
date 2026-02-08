@@ -502,13 +502,14 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.getMaterials(libraryId, workspaceId, type, page, limit);
-      materials.value = response.data.data.items;
-      materialsTotal.value = response.data.data.total;
+      const { list, total } = response.data;
+      materials.value = list;
+      materialsTotal.value = total;
 
       // Return data for component use
       return {
-        data: response.data.data.items,
-        total: response.data.data.total,
+        data: list,
+        total,
       };
     } catch (err: unknown) {
       const apiError = err as { response?: { data?: { message?: string } } };

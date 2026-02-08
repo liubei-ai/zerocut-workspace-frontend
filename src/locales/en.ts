@@ -810,6 +810,7 @@ export default {
     referenceImagesRequired: 'Please upload at least one reference image',
     uploadReferenceImages: 'Upload Reference Images',
     maxImages: 'Upload up to {max} images',
+    maxFiles: 'Upload up to {max} files',
 
     // Scene Background
     sceneBackground: 'Scene Background',

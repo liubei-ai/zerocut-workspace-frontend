@@ -11,7 +11,7 @@
       <input
         ref="fileInput"
         type="file"
-        multiple
+        :multiple="maxImages > 1"
         :accept="acceptFileTypes"
         style="display: none"
         @change="handleFileSelect"
@@ -19,9 +19,9 @@
 
       <div class="upload-area__content">
         <v-icon icon="mdi-cloud-upload" size="64" color="primary" />
-        <h3 class="mt-2">{{ $t('resource.uploadReferenceImages') }}</h3>
+        <h3 class="mt-2">{{ $t(uploadTitleKey) }}</h3>
         <p class="text-body-2 text-medium-emphasis">
-          {{ $t('resource.maxImages', { max: maxImages }) }}
+          {{ $t(uploadHintKey, { max: maxImages }) }}
         </p>
         <v-btn variant="outlined" color="primary" @click="fileInput?.click()" class="mt-2">
           {{ $t('common.search') }}
@@ -31,11 +31,18 @@
 
     <!-- Preview Images -->
     <div v-if="previewImages.length > 0" class="mt-4">
-      <h4 class="mb-2">{{ $t('resource.referenceImages') }}</h4>
+      <h4 class="mb-2">{{ $t(previewTitleKey) }}</h4>
       <v-row>
         <v-col v-for="(image, index) in previewImages" :key="index" cols="12" sm="6" md="4">
           <v-card class="preview-card">
-            <v-img :src="image.preview" :aspect-ratio="1" cover />
+            <v-img v-if="isImageCategory" :src="image.preview" :aspect-ratio="1" cover />
+            <video
+              v-else-if="isVideoCategory"
+              :src="image.preview"
+              controls
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <audio v-else-if="isAudioCategory" :src="image.preview" controls style="width: 100%" />
             <v-card-text class="pa-2">
               <div class="text-caption text-truncate">{{ image.file.name }}</div>
               <v-progress-linear
@@ -58,7 +65,7 @@
         class="mt-4"
         :icon="'mdi-check-circle'"
       >
-        {{ uploadedUrls.length }} {{ $t('resource.referenceImages') }} {{ $t('common.save') }}
+        {{ uploadedUrls.length }} {{ $t(previewTitleKey) }} {{ $t('common.save') }}
       </v-alert>
     </div>
 
@@ -71,7 +78,7 @@
 
 <script setup lang="ts">
 import { useResourceStore } from '@/stores/resourceStore';
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 
 interface PreviewImage {
   file: File;
@@ -95,16 +102,44 @@ const uploadedUrls = ref<string[]>([]);
 const uploadProgress = ref<Record<number, number>>({});
 const error = ref('');
 
+const category = computed(() => props.category ?? 'reference-image');
 const maxImages = computed(() => props.maxImages ?? 4);
+const isImageCategory = computed(
+  () => category.value === 'reference-image' || category.value === 'image'
+);
+const isVideoCategory = computed(() => category.value === 'video');
+const isAudioCategory = computed(() => category.value === 'audio');
+
+const uploadTitleKey = computed(() => {
+  switch (category.value) {
+    case 'audio':
+      return 'resource.uploadAudio';
+    case 'video':
+      return 'resource.uploadVideo';
+    case 'image':
+      return 'resource.uploadImage';
+    case 'reference-image':
+      return 'resource.uploadReferenceImages';
+    default:
+      return 'resource.uploadFile';
+  }
+});
+
+const uploadHintKey = computed(() =>
+  isImageCategory.value ? 'resource.maxImages' : 'resource.maxFiles'
+);
+const previewTitleKey = computed(() =>
+  isImageCategory.value ? 'resource.referenceImages' : 'resource.materials'
+);
+
 const acceptFileTypes = computed(() => {
-  const category = props.category ?? 'reference-image';
   const types: Record<string, string> = {
     'reference-image': 'image/jpeg,image/png,image/webp',
     audio: 'audio/mpeg,audio/wav',
     video: 'video/mp4,video/quicktime',
     image: 'image/jpeg,image/png,image/webp',
   };
-  return types[category] || 'image/*';
+  return types[category.value] || 'image/*';
 });
 
 const handleDrop = (event: DragEvent) => {
@@ -136,21 +171,22 @@ const processFiles = async (files: File[]) => {
       continue;
     }
 
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = async e => {
-      const preview = e.target?.result as string;
-      const index = previewImages.value.length;
-
-      previewImages.value.push({
-        file,
-        preview,
-      });
-
-      // Upload file
+    const index = previewImages.value.length;
+    const pushAndUpload = async (preview: string) => {
+      previewImages.value.push({ file, preview });
       await uploadFile(file, index);
     };
-    reader.readAsDataURL(file);
+
+    if (isImageCategory.value) {
+      const reader = new FileReader();
+      reader.onload = async e => {
+        const preview = e.target?.result as string;
+        await pushAndUpload(preview);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await pushAndUpload(URL.createObjectURL(file));
+    }
   }
 };
 
@@ -161,7 +197,7 @@ const uploadFile = async (file: File, index: number) => {
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,
-      category: props.category ?? 'reference-image',
+      category: category.value,
     });
 
     const xhr = new window.XMLHttpRequest();
@@ -207,10 +243,22 @@ const uploadFile = async (file: File, index: number) => {
 };
 
 const removeImage = (index: number) => {
+  const previewUrl = previewImages.value[index]?.preview;
+  if (previewUrl?.startsWith('blob:')) {
+    URL.revokeObjectURL(previewUrl);
+  }
   previewImages.value.splice(index, 1);
   uploadedUrls.value.splice(index, 1);
   delete uploadProgress.value[index];
 };
+
+onBeforeUnmount(() => {
+  for (const item of previewImages.value) {
+    if (item.preview.startsWith('blob:')) {
+      URL.revokeObjectURL(item.preview);
+    }
+  }
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,24 +1,6 @@
 <template>
   <div class="material-list">
     <div class="material-list__header">
-      <v-text-field
-        v-model="searchQuery"
-        :label="$t('common.search')"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        density="compact"
-        class="mb-4"
-        @update:model-value="handleSearch"
-      />
-      <v-select
-        v-model="selectedType"
-        :label="$t('resource.materialType')"
-        :items="materialTypes"
-        variant="outlined"
-        density="compact"
-        class="mb-4"
-        @update:model-value="handleTypeChange"
-      />
       <v-btn color="primary" prepend-icon="mdi-plus" @click="showCreateDialog = true" class="mb-4">
         {{ $t('resource.createMaterial') }}
       </v-btn>
@@ -59,11 +41,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MaterialCard from './MaterialCard.vue';
 import CreateMaterialDialog from './CreateMaterialDialog.vue';
+import MaterialCard from './MaterialCard.vue';
 
 interface Material {
   id: string;
@@ -87,7 +69,6 @@ const resourceStore = useResourceStore();
 const { t } = useI18n();
 
 const loading = ref(false);
-const searchQuery = ref('');
 const selectedType = ref<'all' | 'audio' | 'video' | 'image'>('all');
 const showCreateDialog = ref(false);
 const currentPage = ref(1);
@@ -97,16 +78,16 @@ const limit = ref(12);
 const materials = computed(() => resourceStore.materials as Material[]);
 const totalMaterials = computed(() => resourceStore.materialsTotal);
 
-const materialTypes = computed(() => [
-  { value: 'all', title: t('resource.allMaterials') },
-  { value: 'audio', title: t('resource.audioMaterials') },
-  { value: 'video', title: t('resource.videoMaterials') },
-  { value: 'image', title: t('resource.imageMaterials') },
-]);
+// const materialTypes = computed(() => [
+//   { value: 'all', title: t('resource.allMaterials') },
+//   { value: 'audio', title: t('resource.audioMaterials') },
+//   { value: 'video', title: t('resource.videoMaterials') },
+//   { value: 'image', title: t('resource.imageMaterials') },
+// ]);
 
 const totalPages = computed(() => Math.ceil(totalMaterials.value / limit.value));
 
-const fetchMaterials = async (page: number = 1) => {
+const fetchMaterials = async (page = 1) => {
   loading.value = true;
   try {
     const type = selectedType.value === 'all' ? undefined : selectedType.value;
@@ -118,16 +99,10 @@ const fetchMaterials = async (page: number = 1) => {
   }
 };
 
-const handleSearch = async () => {
-  currentPage.value = 1;
-  // TODO: Implement search filtering
-  await fetchMaterials(1);
-};
-
-const handleTypeChange = async () => {
-  currentPage.value = 1;
-  await fetchMaterials(1);
-};
+// const handleTypeChange = async () => {
+//   currentPage.value = 1;
+//   await fetchMaterials(1);
+// };
 
 const handlePageChange = (page: number) => {
   currentPage.value = page;
@@ -135,7 +110,7 @@ const handlePageChange = (page: number) => {
 };
 
 const handleDeleteMaterial = async (materialId: string) => {
-  if (confirm('Are you sure you want to delete this material?')) {
+  if (window.confirm('Are you sure you want to delete this material?')) {
     try {
       await resourceStore.deleteMaterial(materialId);
       emit('update');

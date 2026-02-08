@@ -809,6 +809,7 @@ export default {
     referenceImagesRequired: '少なくとも1枚の参考画像をアップロードしてください',
     uploadReferenceImages: '参考画像アップロード',
     maxImages: '最大 {max} 枚の画像',
+    maxFiles: '最大 {max} 個のファイル',
 
     // シーン背景
     sceneBackground: 'シーン背景',
