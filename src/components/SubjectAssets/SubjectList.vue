@@ -32,6 +32,7 @@
 
     <!-- Create/Edit Dialog -->
     <CreateSubjectDialog
+      key="createSubjectDialog"
       v-model="showCreateDialog"
       :edit-subject="editingSubject"
       :library-id="libraryId"

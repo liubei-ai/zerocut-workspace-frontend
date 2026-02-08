@@ -1,10 +1,5 @@
 <template>
-  <v-dialog
-    :model-value="modelValue"
-    max-width="800"
-    persistent
-    @update:model-value="$emit('update:modelValue', $event)"
-  >
+  <v-dialog v-model="dialogModel" max-width="800" persistent>
     <v-card>
       <v-card-title class="text-h5">
         {{ editScene ? $t('resource.editScene') : $t('resource.createScene') }}
@@ -101,7 +96,7 @@
 
 <script setup lang="ts">
 import { useResourceStore } from '@/stores/resourceStore';
-import { onBeforeUnmount, reactive, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
 
@@ -132,6 +127,11 @@ const saving = ref(false);
 const error = ref('');
 const isMounted = ref(true);
 
+const dialogModel = computed({
+  get: () => props.modelValue,
+  set: (value: boolean) => emit('update:modelValue', value),
+});
+
 const formData = reactive({
   name: '',
   styles: [] as string[],
@@ -148,6 +148,14 @@ const rules = {
   required: (v: string) => !!v || 'This field is required',
   maxLength: (max: number) => (v: string) => !v || v.length <= max || `Max ${max} characters`,
 };
+
+function resetForm() {
+  formData.name = '';
+  formData.styles = [];
+  formData.description = '';
+  formData.referenceImages = [];
+  error.value = '';
+}
 
 // Cleanup on unmount
 onBeforeUnmount(() => {
@@ -169,14 +177,6 @@ watch(
   },
   { immediate: true }
 );
-
-const resetForm = () => {
-  formData.name = '';
-  formData.styles = [];
-  formData.description = '';
-  formData.referenceImages = [];
-  error.value = '';
-};
 
 const handleGenerateStyles = async () => {
   if (formData.referenceImages.length === 0) return;
@@ -251,8 +251,8 @@ const handleSubmit = async () => {
     }
 
     if (isMounted.value) {
-      emit('save');
       handleClose();
+      emit('save');
     }
   } catch (err) {
     if (isMounted.value) {
@@ -268,7 +268,7 @@ const handleSubmit = async () => {
 const handleClose = () => {
   resetForm();
   emit('close');
-  emit('update:modelValue', false);
+  dialogModel.value = false;
 };
 </script>
 

@@ -164,8 +164,7 @@ const uploadFile = async (file: File, index: number) => {
       category: props.category ?? 'reference-image',
     });
 
-    // Upload to TOS
-    const xhr = new XMLHttpRequest();
+    const xhr = new window.XMLHttpRequest();
 
     xhr.upload.addEventListener('progress', event => {
       if (event.lengthComputable) {

@@ -1,7 +1,7 @@
 <template>
   <div class="scene-list">
     <div class="scene-list__header">
-      <v-btn color="primary" prepend-icon="mdi-plus" @click="showCreateDialog = true" class="mb-4">
+      <v-btn color="primary" prepend-icon="mdi-plus" @click="handleDialogOpen" class="mb-4">
         {{ $t('resource.createScene') }}
       </v-btn>
     </div>
@@ -32,7 +32,7 @@
 
     <!-- Create/Edit Dialog -->
     <CreateSceneDialog
-      v-if="showCreateDialog"
+      key="createSceneDialog"
       v-model="showCreateDialog"
       :edit-scene="editingScene"
       :library-id="libraryId"
@@ -116,6 +116,12 @@ const handleSaveScene = async () => {
   editingScene.value = null;
   await fetchScenes(currentPage.value);
   emit('update');
+};
+
+const handleDialogOpen = async () => {
+  editingScene.value = null;
+  await nextTick();
+  showCreateDialog.value = true;
 };
 
 const handleDialogClose = () => {
