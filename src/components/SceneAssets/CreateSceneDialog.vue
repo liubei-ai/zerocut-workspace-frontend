@@ -41,14 +41,6 @@
               multiple
               :loading="aiLoading.styles"
             >
-              <template #append>
-                <v-btn
-                  icon="mdi-robot"
-                  variant="text"
-                  :disabled="formData.referenceImages.length === 0 || aiLoading.styles"
-                  @click="handleGenerateStyles"
-                />
-              </template>
             </v-combobox>
           </div>
 
@@ -61,14 +53,6 @@
               rows="3"
               :loading="aiLoading.description"
             >
-              <template #append>
-                <v-btn
-                  icon="mdi-robot"
-                  variant="text"
-                  :disabled="formData.referenceImages.length === 0 || aiLoading.description"
-                  @click="handleGenerateDescription"
-                />
-              </template>
             </v-textarea>
           </div>
 
@@ -178,49 +162,49 @@ watch(
   { immediate: true }
 );
 
-const handleGenerateStyles = async () => {
-  if (formData.referenceImages.length === 0) return;
+// const handleGenerateStyles = async () => {
+//   if (formData.referenceImages.length === 0) return;
 
-  aiLoading.styles = true;
-  error.value = '';
+//   aiLoading.styles = true;
+//   error.value = '';
 
-  try {
-    // const styles = await resourceStore.generateSceneStyles(formData.referenceImages);
-    // if (isMounted.value) {
-    //   formData.styles = styles;
-    // }
-  } catch (err) {
-    if (isMounted.value) {
-      error.value = `Failed to generate styles: ${String(err)}`;
-    }
-  } finally {
-    if (isMounted.value) {
-      aiLoading.styles = false;
-    }
-  }
-};
+//   try {
+//     const styles = await resourceStore.generateSceneStyles(formData.referenceImages);
+//     if (isMounted.value) {
+//       formData.styles = styles;
+//     }
+//   } catch (err) {
+//     if (isMounted.value) {
+//       error.value = `Failed to generate styles: ${String(err)}`;
+//     }
+//   } finally {
+//     if (isMounted.value) {
+//       aiLoading.styles = false;
+//     }
+//   }
+// };
 
-const handleGenerateDescription = async () => {
-  if (formData.referenceImages.length === 0) return;
+// const handleGenerateDescription = async () => {
+//   if (formData.referenceImages.length === 0) return;
 
-  aiLoading.description = true;
-  error.value = '';
+//   aiLoading.description = true;
+//   error.value = '';
 
-  try {
-    // const description = await resourceStore.generateSceneDescription(formData.referenceImages);
-    // if (isMounted.value) {
-    //   formData.description = description;
-    // }
-  } catch (err) {
-    if (isMounted.value) {
-      error.value = `Failed to generate description: ${String(err)}`;
-    }
-  } finally {
-    if (isMounted.value) {
-      aiLoading.description = false;
-    }
-  }
-};
+//   try {
+//     // const description = await resourceStore.generateSceneDescription(formData.referenceImages);
+//     // if (isMounted.value) {
+//     //   formData.description = description;
+//     // }
+//   } catch (err) {
+//     if (isMounted.value) {
+//       error.value = `Failed to generate description: ${String(err)}`;
+//     }
+//   } finally {
+//     if (isMounted.value) {
+//       aiLoading.description = false;
+//     }
+//   }
+// };
 
 const handleSubmit = async () => {
   if (!formRef.value || !isMounted.value) return;

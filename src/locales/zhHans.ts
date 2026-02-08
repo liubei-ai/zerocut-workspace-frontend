@@ -4,6 +4,7 @@ export default {
     cancel: '取消',
     description: '描述',
     delete: '删除',
+    update: '更新',
     title: '标题',
     save: '保存',
     refresh: '刷新',
@@ -818,6 +819,14 @@ export default {
 
     // Common
     loading: '加载中...',
+
+    // Library Management
+    editLibrary: '编辑资产库',
+    deleteLibrary: '删除资产库',
+    deleteWarning: '警告',
+    deleteConfirmMessage: '您即将删除此资产库及其所有内容。此操作不可撤销。',
+    willDelete: '将删除以下内容',
+    cannotUndo: '此操作无法撤销！',
   },
   // Vuetify 组件内部翻译
   $vuetify: {

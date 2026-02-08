@@ -49,14 +49,6 @@
               variant="outlined"
               :loading="aiLoading.voice"
             >
-              <template #append>
-                <v-btn
-                  icon="mdi-robot"
-                  variant="text"
-                  :disabled="formData.referenceImages.length === 0 || aiLoading.voice"
-                  @click="handleGenerateVoice"
-                />
-              </template>
             </v-text-field>
           </div>
 
@@ -70,14 +62,6 @@
               multiple
               :loading="aiLoading.styles"
             >
-              <template #append>
-                <v-btn
-                  icon="mdi-robot"
-                  variant="text"
-                  :disabled="formData.referenceImages.length === 0 || aiLoading.styles"
-                  @click="handleGenerateStyles"
-                />
-              </template>
             </v-combobox>
           </div>
 
@@ -90,14 +74,6 @@
               rows="3"
               :loading="aiLoading.description"
             >
-              <template #append>
-                <v-btn
-                  icon="mdi-robot"
-                  variant="text"
-                  :disabled="formData.referenceImages.length === 0 || aiLoading.description"
-                  @click="handleGenerateDescription"
-                />
-              </template>
             </v-textarea>
           </div>
 
@@ -200,53 +176,53 @@ watch(
   { immediate: true }
 );
 
-const handleGenerateVoice = async () => {
-  if (formData.referenceImages.length === 0) return;
+// const handleGenerateVoice = async () => {
+//   if (formData.referenceImages.length === 0) return;
 
-  aiLoading.voice = true;
-  error.value = '';
+//   aiLoading.voice = true;
+//   error.value = '';
 
-  try {
-    const voice = await resourceStore.generateSubjectVoice(formData.referenceImages);
-    formData.voice = voice;
-  } catch (err) {
-    error.value = `Failed to generate voice: ${String(err)}`;
-  } finally {
-    aiLoading.voice = false;
-  }
-};
+//   try {
+//     const voice = await resourceStore.generateSubjectVoice(formData.referenceImages);
+//     formData.voice = voice;
+//   } catch (err) {
+//     error.value = `Failed to generate voice: ${String(err)}`;
+//   } finally {
+//     aiLoading.voice = false;
+//   }
+// };
 
-const handleGenerateStyles = async () => {
-  if (formData.referenceImages.length === 0) return;
+// const handleGenerateStyles = async () => {
+//   if (formData.referenceImages.length === 0) return;
 
-  aiLoading.styles = true;
-  error.value = '';
+//   aiLoading.styles = true;
+//   error.value = '';
 
-  try {
-    // const styles = await resourceStore.generateSubjectStyles(formData.referenceImages);
-    // formData.styles = styles;
-  } catch (err) {
-    error.value = `Failed to generate styles: ${String(err)}`;
-  } finally {
-    aiLoading.styles = false;
-  }
-};
+//   try {
+//     // const styles = await resourceStore.generateSubjectStyles(formData.referenceImages);
+//     // formData.styles = styles;
+//   } catch (err) {
+//     error.value = `Failed to generate styles: ${String(err)}`;
+//   } finally {
+//     aiLoading.styles = false;
+//   }
+// };
 
-const handleGenerateDescription = async () => {
-  if (formData.referenceImages.length === 0) return;
+// const handleGenerateDescription = async () => {
+//   if (formData.referenceImages.length === 0) return;
 
-  aiLoading.description = true;
-  error.value = '';
+//   aiLoading.description = true;
+//   error.value = '';
 
-  try {
-    // const description = await resourceStore.generateSubjectDescription(formData.referenceImages);
-    // formData.description = description;
-  } catch (err) {
-    error.value = `Failed to generate description: ${String(err)}`;
-  } finally {
-    aiLoading.description = false;
-  }
-};
+//   try {
+//     // const description = await resourceStore.generateSubjectDescription(formData.referenceImages);
+//     // formData.description = description;
+//   } catch (err) {
+//     error.value = `Failed to generate description: ${String(err)}`;
+//   } finally {
+//     aiLoading.description = false;
+//   }
+// };
 
 const handleSubmit = async () => {
   console.log('=== handleSubmit called ===');

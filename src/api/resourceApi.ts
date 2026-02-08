@@ -100,6 +100,24 @@ export async function updateLibrary(id: string, data: UpdateLibraryDto, workspac
   return client.put(`/resource/libraries/${id}`, { ...data, workspaceId });
 }
 
+/**
+ * Delete a library and all its related assets
+ */
+export async function deleteLibrary(id: string, workspaceId: string) {
+  return client.delete(`/resource/libraries/${id}`, {
+    params: { workspaceId },
+  });
+}
+
+/**
+ * Get statistics for a library (asset counts)
+ */
+export async function getLibraryStatistics(id: string, workspaceId: string) {
+  return client.get(`/resource/libraries/${id}/statistics`, {
+    params: { workspaceId },
+  });
+}
+
 // ==================== Subject Asset Management ====================
 
 /**

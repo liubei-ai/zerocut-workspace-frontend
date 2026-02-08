@@ -19,22 +19,39 @@
         v-model:open="isCreateDialogOpen"
         @library-created="handleLibraryCreated"
       />
+
+      <EditLibraryDialog
+        v-model:open="isEditDialogOpen"
+        :library="selectedLibrary"
+        @library-updated="handleLibraryUpdated"
+      />
+
+      <DeleteLibraryDialog
+        v-model:open="isDeleteDialogOpen"
+        :library="selectedLibrary"
+        @library-deleted="handleLibraryDeleted"
+      />
     </v-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
 import type { ResourceLibrary } from '@/stores/resourceStore';
 import LibraryHeader from '@/components/ResourceLibrary/LibraryHeader.vue';
 import LibraryList from '@/components/ResourceLibrary/LibraryList.vue';
 import LibraryDetail from '@/components/ResourceLibrary/LibraryDetail.vue';
 import CreateLibraryDialog from '@/components/ResourceLibrary/CreateLibraryDialog.vue';
+import EditLibraryDialog from '@/components/ResourceLibrary/EditLibraryDialog.vue';
+import DeleteLibraryDialog from '@/components/ResourceLibrary/DeleteLibraryDialog.vue';
 
 const resourceStore = useResourceStore();
 
 const isCreateDialogOpen = ref(false);
+const isEditDialogOpen = ref(false);
+const isDeleteDialogOpen = ref(false);
+const selectedLibrary = ref<ResourceLibrary | null>(null);
 
 const openCreateDialog = () => {
   isCreateDialogOpen.value = true;
@@ -59,17 +76,13 @@ const handleSelectLibrary = async (library: ResourceLibrary) => {
 };
 
 const handleEditLibrary = (library: ResourceLibrary) => {
-  // TODO: Implement edit library dialog
-  console.log('Edit library:', library);
+  selectedLibrary.value = library;
+  isEditDialogOpen.value = true;
 };
 
-const handleDeleteLibrary = async (library: ResourceLibrary) => {
-  try {
-    // TODO: Implement delete library functionality
-    console.log('Delete library:', library);
-  } catch (error) {
-    console.error('Failed to delete library:', error);
-  }
+const handleDeleteLibrary = (library: ResourceLibrary) => {
+  selectedLibrary.value = library;
+  isDeleteDialogOpen.value = true;
 };
 
 const handleLibraryCreated = async () => {
@@ -77,9 +90,31 @@ const handleLibraryCreated = async () => {
   await resourceStore.fetchLibraries();
 };
 
+const handleLibraryUpdated = async () => {
+  // Refresh library list after update
+  await resourceStore.fetchLibraries();
+  selectedLibrary.value = null;
+};
+
+const handleLibraryDeleted = async () => {
+  // Refresh library list after deletion
+  await resourceStore.fetchLibraries();
+  selectedLibrary.value = null;
+};
+
 const handleBack = () => {
   resourceStore.setCurrentLibrary(null);
 };
+
+// Load libraries on page mount
+onMounted(async () => {
+  try {
+    await resourceStore.fetchLibraries();
+  } catch (error) {
+    console.error('Failed to load libraries on mount:', error);
+    // TODO: Show error toast notification
+  }
+});
 </script>
 
 <style scoped lang="scss">

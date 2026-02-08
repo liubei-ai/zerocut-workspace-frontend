@@ -16,9 +16,11 @@ export const useAuthStore = defineStore('auth', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const newbieCreditsRecord = ref<RechargeRecord | null>(null);
-  const userStore = useUserStore();
   const authType = import.meta.env.VITE_AUTH_MODE;
   const authRouteName = authType === 'auth0' ? 'auth-auth0' : 'auth-authing';
+
+  const userStore = useUserStore();
+  const workspaceStore = useWorkspaceStore();
 
   /**
    * Handle Authing login success
@@ -69,6 +71,9 @@ export const useAuthStore = defineStore('auth', () => {
           name: authRouteName,
           query: { redirect: router.currentRoute.value.fullPath },
         });
+
+        // 刷新一次清空内存状态
+        window.location.reload();
       }
     }
   };
@@ -77,10 +82,9 @@ export const useAuthStore = defineStore('auth', () => {
    * Clear authentication state
    */
   const clearAuthState = () => {
-    userStore.reset();
-    localStorage.removeItem('auth');
-    localStorage.removeItem('user');
-    localStorage.removeItem('workspace');
+    userStore.$reset();
+    workspaceStore.$reset();
+    localStorage.clear();
     error.value = null;
   };
 

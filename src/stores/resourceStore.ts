@@ -256,6 +256,61 @@ export const useResourceStore = defineStore('resource', () => {
   }
 
   /**
+   * Delete a library and all its related assets
+   */
+  async function deleteLibrary(id: string) {
+    const workspaceId = getWorkspaceId();
+
+    librariesLoading.value = true;
+    error.value = null;
+
+    try {
+      await resourceApi.deleteLibrary(id, workspaceId);
+
+      // Remove from list
+      const index = libraries.value.findIndex(lib => lib.id === id);
+      if (index !== -1) {
+        libraries.value.splice(index, 1);
+        librariesTotal.value -= 1;
+      }
+
+      // Clear current library if it's the one being deleted
+      if (currentLibrary.value?.id === id) {
+        currentLibrary.value = null;
+        subjects.value = [];
+        scenes.value = [];
+        materials.value = [];
+      }
+    } catch (err: unknown) {
+      const apiError = err as { response?: { data?: { message?: string } } };
+      error.value = apiError.response?.data?.message || 'Failed to delete library';
+      throw err;
+    } finally {
+      librariesLoading.value = false;
+    }
+  }
+
+  /**
+   * Get statistics for a library (asset counts)
+   */
+  async function getLibraryStatistics(id: string): Promise<{
+    subjectsCount: number;
+    scenesCount: number;
+    materialsCount: number;
+  }> {
+    const workspaceId = getWorkspaceId();
+
+    try {
+      const response = await resourceApi.getLibraryStatistics(id, workspaceId);
+      return response.data.data;
+    } catch (err: unknown) {
+      const apiError = err as { response?: { data?: { message?: string } } };
+      error.value = apiError.response?.data?.message || 'Failed to fetch library statistics';
+      throw err;
+    }
+  }
+
+  /**
    * Set the current library
    */
   function setCurrentLibrary(library: ResourceLibrary | null) {
@@ -773,6 +828,8 @@ export const useResourceStore = defineStore('resource', () => {
     fetchLibrary,
     createLibrary,
     updateLibrary,
+    deleteLibrary,
+    getLibraryStatistics,
     setCurrentLibrary,
 
     // Subject Asset Management

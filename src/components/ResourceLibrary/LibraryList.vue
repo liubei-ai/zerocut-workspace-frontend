@@ -77,9 +77,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useResourceStore } from '@/stores/resourceStore';
 import type { ResourceLibrary } from '@/stores/resourceStore';
+import { useResourceStore } from '@/stores/resourceStore';
+import { computed, ref } from 'vue';
 
 const emit = defineEmits<{
   'select-library': [library: ResourceLibrary];
@@ -104,18 +104,12 @@ const editLibrary = (library: ResourceLibrary) => {
 };
 
 const confirmDelete = (library: ResourceLibrary) => {
-  if (confirm(`Are you sure you want to delete "${library.name}"?`)) {
-    emit('delete-library', library);
-  }
+  emit('delete-library', library);
 };
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString();
 };
-
-onMounted(async () => {
-  await resourceStore.fetchLibraries(currentPage.value, pageSize);
-});
 </script>
 
 <style scoped lang="scss">

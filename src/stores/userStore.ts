@@ -82,11 +82,10 @@ export const useUserStore = defineStore('user', {
     },
 
     // 重置状态
-    reset() {
+    $reset() {
       this.userInfo = null;
       this.loading = false;
       this.error = null;
-      // 保留偏好设置，因为这些是用户的个人配置
     },
   },
 
