@@ -47,14 +47,15 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore, type OtherMaterial } from '@/stores/resourceStore';
+import { useResourceStore } from '@/stores/resourceStore';
+import type { OtherMaterial } from '@/types/resource';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CreateMaterialDialog from './CreateMaterialDialog.vue';
 import MaterialCard from './MaterialCard.vue';
 
 interface Material {
-  id: string;
+  id: number;
   name: string;
   type: 'audio' | 'video' | 'image';
   fileUrl: string;
@@ -64,7 +65,7 @@ interface Material {
 }
 
 const props = defineProps<{
-  libraryId: string;
+  libraryId: number;
 }>();
 
 const emit = defineEmits<{
@@ -121,7 +122,7 @@ const handleEditMaterial = (material: OtherMaterial) => {
   showCreateDialog.value = true;
 };
 
-const handleDeleteMaterial = async (materialId: string) => {
+const handleDeleteMaterial = async (materialId: number) => {
   if (window.confirm('Are you sure you want to delete this material?')) {
     try {
       await resourceStore.deleteMaterial(materialId);

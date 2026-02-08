@@ -15,6 +15,8 @@ export default {
     contact: 'Contact Us',
     tos: 'Terms of Service',
     policy: 'Privacy Policy',
+    new: 'New',
+    error: 'Error',
   },
   login: {
     title: 'Sign In',

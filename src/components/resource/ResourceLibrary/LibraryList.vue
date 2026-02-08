@@ -77,8 +77,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ResourceLibrary } from '@/stores/resourceStore';
 import { useResourceStore } from '@/stores/resourceStore';
+import type { ResourceLibrary } from '@/types/resource';
 import { computed, ref } from 'vue';
 
 const emit = defineEmits<{
@@ -93,7 +93,7 @@ const pageSize = 12;
 
 const totalPages = computed(() => Math.ceil(resourceStore.librariesTotal / pageSize));
 
-const isSelected = (id: string) => resourceStore.currentLibrary?.id === id;
+const isSelected = (id: number) => resourceStore.currentLibrary?.id === id;
 
 const selectLibrary = (library: ResourceLibrary) => {
   emit('select-library', library);

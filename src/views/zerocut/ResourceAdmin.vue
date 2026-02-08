@@ -36,15 +36,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import CreateLibraryDialog from '@/components/resource/ResourceLibrary/CreateLibraryDialog.vue';
+import DeleteLibraryDialog from '@/components/resource/ResourceLibrary/DeleteLibraryDialog.vue';
+import EditLibraryDialog from '@/components/resource/ResourceLibrary/EditLibraryDialog.vue';
+import LibraryDetail from '@/components/resource/ResourceLibrary/LibraryDetail.vue';
+import LibraryHeader from '@/components/resource/ResourceLibrary/LibraryHeader.vue';
+import LibraryList from '@/components/resource/ResourceLibrary/LibraryList.vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import type { ResourceLibrary } from '@/stores/resourceStore';
-import LibraryHeader from '@/components/ResourceLibrary/LibraryHeader.vue';
-import LibraryList from '@/components/ResourceLibrary/LibraryList.vue';
-import LibraryDetail from '@/components/ResourceLibrary/LibraryDetail.vue';
-import CreateLibraryDialog from '@/components/ResourceLibrary/CreateLibraryDialog.vue';
-import EditLibraryDialog from '@/components/ResourceLibrary/EditLibraryDialog.vue';
-import DeleteLibraryDialog from '@/components/ResourceLibrary/DeleteLibraryDialog.vue';
+import type { ResourceLibrary } from '@/types/resource';
+import { onMounted, ref } from 'vue';
 
 const resourceStore = useResourceStore();
 

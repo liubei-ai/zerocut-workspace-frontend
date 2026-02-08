@@ -18,42 +18,49 @@
             class="mb-4"
           />
 
-          <!-- Scene Background Upload -->
+          <!-- Scene Background Images -->
           <div class="mb-4">
             <h4 class="mb-2">{{ $t('resource.sceneBackground') }} *</h4>
             <p class="text-caption text-medium-emphasis mb-2">
               {{ $t('resource.sceneBackgroundHint') }}
             </p>
 
-            <!-- 现有上传的图片 -->
-            <div v-if="editScene && existingImages.length > 0" class="mb-4">
-              <div class="text-subtitle-2 mb-2">{{ $t('resource.existingImages') }}</div>
-              <ImageGallery :images="existingImages" @delete="handleDeleteExistingImage" />
-            </div>
+            <!-- 统一图片展示 -->
+            <ImageGallery
+              v-if="images.length > 0"
+              :images="images"
+              :show-new-badge="!!editScene"
+              class="mb-4"
+              @delete="handleDeleteImage"
+            />
 
-            <!-- 新上传的图片 -->
-            <div v-if="formData.referenceImages.length > 0" class="mb-4">
-              <div class="text-subtitle-2 mb-2">
-                {{ editScene ? $t('resource.newImages') : $t('resource.sceneBackground') }}
-              </div>
-              <ImageGallery :images="formData.referenceImages" @delete="handleDeleteNewImage" />
-            </div>
+            <!-- 上传区域 -->
+            <FileUploadHandler
+              :max-images="4 - images.length"
+              :disabled="images.length >= 4"
+              category="reference-image"
+              @upload-start="handleUploadStart"
+              @upload-progress="handleUploadProgress"
+              @upload-complete="handleUploadComplete"
+              @upload-error="handleUploadError"
+            />
 
-            <!-- 上传按钮 -->
-            <div v-if="canUploadMore" class="mb-4">
-              <FileUploadHandler
-                :max-images="remainingSlots"
-                category="reference-image"
-                @update:urls="formData.referenceImages = [...formData.referenceImages, ...$event]"
-              />
-            </div>
-
-            <v-alert v-if="totalImages >= 4" type="info" density="compact">
+            <!-- 提示信息 -->
+            <v-alert v-if="images.length >= 4" type="info" density="compact" class="mt-2">
               {{ $t('resource.maxImagesReached') }}
+            </v-alert>
+
+            <v-alert
+              v-if="images.length === 0 && showImageWarning"
+              type="warning"
+              density="compact"
+              class="mt-2"
+            >
+              {{ $t('resource.sceneBackgroundRequired') }}
             </v-alert>
           </div>
 
-          <!-- Styles Field with AI Generation -->
+          <!-- Styles Field -->
           <div class="mb-4">
             <v-combobox
               v-model="formData.styles"
@@ -62,11 +69,10 @@
               chips
               multiple
               :loading="aiLoading.styles"
-            >
-            </v-combobox>
+            />
           </div>
 
-          <!-- Description Field with AI Generation -->
+          <!-- Description Field -->
           <div class="mb-4">
             <v-textarea
               v-model="formData.description"
@@ -74,8 +80,7 @@
               variant="outlined"
               rows="3"
               :loading="aiLoading.description"
-            >
-            </v-textarea>
+            />
           </div>
 
           <!-- Error Alert -->
@@ -101,24 +106,19 @@
 </template>
 
 <script setup lang="ts">
+import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import type { GalleryImage } from '@/types/image';
+import type { Scene } from '@/types/resource';
+import { nanoid } from 'nanoid';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ImageGallery from '@/components/ResourceLibrary/ImageGallery.vue';
-import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
-
-interface Scene {
-  id?: string;
-  name: string;
-  styles: string[];
-  description?: string;
-  referenceImages: any[];
-}
+import FileUploadHandler from '../FileUploadHandler.vue';
 
 const props = defineProps<{
   modelValue: boolean;
   editScene?: Scene | null;
-  libraryId: string;
+  libraryId: number;
 }>();
 
 const emit = defineEmits<{
@@ -132,8 +132,11 @@ const { t } = useI18n();
 const formRef = ref();
 const saving = ref(false);
 const error = ref('');
+const showImageWarning = ref(false);
 const isMounted = ref(true);
-const existingImages = ref<string[]>([]);
+
+// 单一图片数组
+const images = ref<GalleryImage[]>([]);
 
 const dialogModel = computed({
   get: () => props.modelValue,
@@ -144,17 +147,12 @@ const formData = reactive({
   name: '',
   styles: [] as string[],
   description: '',
-  referenceImages: [] as string[],
 });
 
 const aiLoading = reactive({
   styles: false,
   description: false,
 });
-
-const totalImages = computed(() => existingImages.value.length + formData.referenceImages.length);
-const remainingSlots = computed(() => Math.max(0, 4 - totalImages.value));
-const canUploadMore = computed(() => totalImages.value < 4);
 
 const rules = {
   required: (v: string) => !!v || 'This field is required',
@@ -165,9 +163,9 @@ function resetForm() {
   formData.name = '';
   formData.styles = [];
   formData.description = '';
-  formData.referenceImages = [];
-  existingImages.value = [];
+  images.value = [];
   error.value = '';
+  showImageWarning.value = false;
 }
 
 // Cleanup on unmount
@@ -175,90 +173,104 @@ onBeforeUnmount(() => {
   isMounted.value = false;
 });
 
-// Initialize form when editing
+// 初始化表单（编辑模式）
 watch(
   () => props.editScene,
   scene => {
     if (scene) {
-      // 编辑模式：分离现有图片和新图片
-      existingImages.value = scene.referenceImages?.map((img: any) => img.fileUrl) || [];
+      // 加载现有图片，标记为existing状态
+      images.value =
+        scene.referenceImages?.map(img => ({
+          id: nanoid(),
+          url: img.fileUrl,
+          status: 'existing' as const,
+        })) || [];
+
       formData.name = scene.name;
       formData.styles = scene.styles || [];
       formData.description = scene.description || '';
-      formData.referenceImages = []; // 新上传的图片
     } else {
-      // 创建模式
       resetForm();
     }
   },
   { immediate: true }
 );
 
-// const handleGenerateStyles = async () => {
-//   if (formData.referenceImages.length === 0) return;
-
-//   aiLoading.styles = true;
-//   error.value = '';
-
-//   try {
-//     const styles = await resourceStore.generateSceneStyles(formData.referenceImages);
-//     if (isMounted.value) {
-//       formData.styles = styles;
-//     }
-//   } catch (err) {
-//     if (isMounted.value) {
-//       error.value = `Failed to generate styles: ${String(err)}`;
-//     }
-//   } finally {
-//     if (isMounted.value) {
-//       aiLoading.styles = false;
-//     }
-//   }
-// };
-
-// const handleGenerateDescription = async () => {
-//   if (formData.referenceImages.length === 0) return;
-
-//   aiLoading.description = true;
-//   error.value = '';
-
-//   try {
-//     // const description = await resourceStore.generateSceneDescription(formData.referenceImages);
-//     // if (isMounted.value) {
-//     //   formData.description = description;
-//     // }
-//   } catch (err) {
-//     if (isMounted.value) {
-//       error.value = `Failed to generate description: ${String(err)}`;
-//     }
-//   } finally {
-//     if (isMounted.value) {
-//       aiLoading.description = false;
-//     }
-//   }
-// };
-
-const handleDeleteExistingImage = (index: number) => {
-  existingImages.value.splice(index, 1);
+// 上传开始：添加到images数组
+const handleUploadStart = (image: GalleryImage) => {
+  images.value.push(image);
 };
 
-const handleDeleteNewImage = (index: number) => {
-  formData.referenceImages.splice(index, 1);
+// 上传进度：更新进度值
+const handleUploadProgress = (imageId: string, progress: number) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    img.uploadProgress = progress;
+  }
 };
 
+// 上传完成：切换状态为new
+const handleUploadComplete = (imageId: string, url: string) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    // 清理预览URL
+    if (img.url.startsWith('blob:') || img.url.startsWith('data:')) {
+      if (img.url.startsWith('blob:')) {
+        URL.revokeObjectURL(img.url);
+      }
+    }
+
+    // 更新状态
+    img.status = 'new';
+    img.url = url;
+    img.uploadProgress = 100;
+    delete img.file;
+  }
+};
+
+// 上传失败：切换状态为error
+const handleUploadError = (imageId: string, errorMsg: string) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    img.status = 'error';
+    img.errorMessage = errorMsg;
+  }
+};
+
+// 删除图片
+const handleDeleteImage = (imageId: string) => {
+  const index = images.value.findIndex(i => i.id === imageId);
+  if (index === -1) return;
+
+  const img = images.value[index];
+
+  // 清理blob URL
+  if (img.url.startsWith('blob:')) {
+    URL.revokeObjectURL(img.url);
+  }
+
+  // 从数组中移除
+  images.value.splice(index, 1);
+};
+
+// 提交表单
 const handleSubmit = async () => {
   if (!formRef.value || !isMounted.value) return;
 
   const { valid } = await formRef.value.validate();
   if (!valid) return;
 
-  // 合并现有和新图片
-  const allImages = [...existingImages.value, ...formData.referenceImages];
+  // 过滤有效图片（排除uploading和error状态）
+  const validImages = images.value
+    .filter(img => ['existing', 'new'].includes(img.status))
+    .map(img => img.url);
 
-  if (allImages.length === 0) {
+  if (validImages.length === 0) {
+    showImageWarning.value = true;
     error.value = t('resource.sceneBackgroundRequired');
     return;
   }
+  showImageWarning.value = false;
 
   saving.value = true;
   error.value = '';
@@ -268,7 +280,7 @@ const handleSubmit = async () => {
       name: formData.name,
       styles: formData.styles,
       description: formData.description || undefined,
-      referenceImages: allImages,
+      referenceImages: validImages,
     };
 
     if (props.editScene?.id) {
@@ -293,6 +305,13 @@ const handleSubmit = async () => {
 };
 
 const handleClose = () => {
+  // 清理所有blob URL
+  images.value.forEach(img => {
+    if (img.url.startsWith('blob:')) {
+      URL.revokeObjectURL(img.url);
+    }
+  });
+
   resetForm();
   emit('close');
   dialogModel.value = false;

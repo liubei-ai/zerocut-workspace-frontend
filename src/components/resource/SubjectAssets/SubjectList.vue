@@ -44,23 +44,13 @@
 
 <script setup lang="ts">
 import { useResourceStore } from '@/stores/resourceStore';
+import type { Subject } from '@/types/resource';
 import { computed, onMounted, ref } from 'vue';
 import CreateSubjectDialog from './CreateSubjectDialog.vue';
 import SubjectCard from './SubjectCard.vue';
 
-interface Subject {
-  id: string;
-  name: string;
-  voice?: string;
-  styles: string[];
-  description?: string;
-  referenceImages: any[];
-  createdAt: string;
-  updatedAt: string;
-}
-
 const props = defineProps<{
-  libraryId: string;
+  libraryId: number;
 }>();
 
 const emit = defineEmits<{
@@ -101,7 +91,7 @@ const handleEditSubject = (subject: Subject) => {
   showCreateDialog.value = true;
 };
 
-const handleDeleteSubject = async (subjectId: string) => {
+const handleDeleteSubject = async (subjectId: number) => {
   if (window.confirm('Are you sure you want to delete this subject?')) {
     try {
       await resourceStore.deleteSubject(subjectId);

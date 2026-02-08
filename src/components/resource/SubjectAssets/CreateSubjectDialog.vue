@@ -23,39 +23,37 @@
             class="mb-4"
           />
 
-          <!-- File Upload -->
+          <!-- Reference Images -->
           <div class="mb-4">
             <h4 class="mb-2">{{ $t('resource.referenceImages') }} *</h4>
 
-            <!-- 现有上传的图片 -->
-            <div v-if="editSubject && existingImages.length > 0" class="mb-4">
-              <div class="text-subtitle-2 mb-2">{{ $t('resource.existingImages') }}</div>
-              <ImageGallery :images="existingImages" @delete="handleDeleteExistingImage" />
-            </div>
+            <!-- 统一图片展示 -->
+            <ImageGallery
+              v-if="images.length > 0"
+              :images="images"
+              :show-new-badge="!!editSubject"
+              class="mb-4"
+              @delete="handleDeleteImage"
+            />
 
-            <!-- 新上传的图片 -->
-            <div v-if="formData.referenceImages.length > 0" class="mb-4">
-              <div class="text-subtitle-2 mb-2">
-                {{ editSubject ? $t('resource.newImages') : $t('resource.referenceImages') }}
-              </div>
-              <ImageGallery :images="formData.referenceImages" @delete="handleDeleteNewImage" />
-            </div>
+            <!-- 上传区域 -->
+            <FileUploadHandler
+              :max-images="4 - images.length"
+              :disabled="images.length >= 4"
+              category="reference-image"
+              @upload-start="handleUploadStart"
+              @upload-progress="handleUploadProgress"
+              @upload-complete="handleUploadComplete"
+              @upload-error="handleUploadError"
+            />
 
-            <!-- 上传按钮 -->
-            <div v-if="canUploadMore" class="mb-4">
-              <FileUploadHandler
-                :max-images="remainingSlots"
-                category="reference-image"
-                @update:urls="formData.referenceImages = [...formData.referenceImages, ...$event]"
-              />
-            </div>
-
-            <v-alert v-if="totalImages >= 4" type="info" density="compact">
+            <!-- 提示信息 -->
+            <v-alert v-if="images.length >= 4" type="info" density="compact" class="mt-2">
               {{ $t('resource.maxImagesReached') }}
             </v-alert>
 
             <v-alert
-              v-if="totalImages === 0 && showImageWarning"
+              v-if="images.length === 0 && showImageWarning"
               type="warning"
               density="compact"
               class="mt-2"
@@ -64,18 +62,17 @@
             </v-alert>
           </div>
 
-          <!-- Voice Field with AI Generation -->
+          <!-- Voice Field -->
           <div class="mb-4">
             <v-text-field
               v-model="formData.voice"
               :label="$t('resource.voice')"
               variant="outlined"
               :loading="aiLoading.voice"
-            >
-            </v-text-field>
+            />
           </div>
 
-          <!-- Styles Field with AI Generation -->
+          <!-- Styles Field -->
           <div class="mb-4">
             <v-combobox
               v-model="formData.styles"
@@ -84,11 +81,10 @@
               chips
               multiple
               :loading="aiLoading.styles"
-            >
-            </v-combobox>
+            />
           </div>
 
-          <!-- Description Field with AI Generation -->
+          <!-- Description Field -->
           <div class="mb-4">
             <v-textarea
               v-model="formData.description"
@@ -96,8 +92,7 @@
               variant="outlined"
               rows="3"
               :loading="aiLoading.description"
-            >
-            </v-textarea>
+            />
           </div>
 
           <!-- Error Alert -->
@@ -123,24 +118,18 @@
 </template>
 
 <script setup lang="ts">
+import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import { computed, reactive, ref, watch } from 'vue';
-import ImageGallery from '@/components/ResourceLibrary/ImageGallery.vue';
-import FileUploadHandler from './FileUploadHandler.vue';
-
-interface Subject {
-  id?: string;
-  name: string;
-  voice?: string;
-  styles: string[];
-  description?: string;
-  referenceImages: any[];
-}
+import type { GalleryImage } from '@/types/image';
+import type { Subject } from '@/types/resource';
+import { nanoid } from 'nanoid';
+import { reactive, ref, watch } from 'vue';
+import FileUploadHandler from '../FileUploadHandler.vue';
 
 const props = defineProps<{
   modelValue: boolean;
   editSubject?: Subject | null;
-  libraryId: string;
+  libraryId: number;
 }>();
 
 const emit = defineEmits<{
@@ -154,14 +143,15 @@ const formRef = ref();
 const saving = ref(false);
 const error = ref('');
 const showImageWarning = ref(false);
-const existingImages = ref<string[]>([]);
+
+// 单一图片数组
+const images = ref<GalleryImage[]>([]);
 
 const formData = reactive({
   name: '',
   voice: '',
   styles: [] as string[],
   description: '',
-  referenceImages: [] as string[],
 });
 
 const aiLoading = reactive({
@@ -169,10 +159,6 @@ const aiLoading = reactive({
   styles: false,
   description: false,
 });
-
-const totalImages = computed(() => existingImages.value.length + formData.referenceImages.length);
-const remainingSlots = computed(() => Math.max(0, 4 - totalImages.value));
-const canUploadMore = computed(() => totalImages.value < 4);
 
 const rules = {
   required: (v: string) => !!v || 'This field is required',
@@ -184,99 +170,106 @@ const resetForm = () => {
   formData.voice = '';
   formData.styles = [];
   formData.description = '';
-  formData.referenceImages = [];
-  existingImages.value = [];
+  images.value = [];
   error.value = '';
+  showImageWarning.value = false;
 };
 
-// Initialize form when editing
+// 初始化表单（编辑模式）
 watch(
   () => props.editSubject,
   subject => {
     if (subject) {
-      // 编辑模式：分离现有图片和新图片
-      existingImages.value = subject.referenceImages?.map((img: any) => img.fileUrl) || [];
+      // 加载现有图片，标记为existing状态
+      images.value =
+        subject.referenceImages?.map(img => ({
+          id: nanoid(),
+          url: img.fileUrl,
+          status: 'existing' as const,
+        })) || [];
+
       formData.name = subject.name;
       formData.voice = subject.voice || '';
       formData.styles = subject.styles || [];
       formData.description = subject.description || '';
-      formData.referenceImages = []; // 新上传的图片
     } else {
-      // 创建模式
       resetForm();
     }
   },
   { immediate: true }
 );
 
-// const handleGenerateVoice = async () => {
-//   if (formData.referenceImages.length === 0) return;
-
-//   aiLoading.voice = true;
-//   error.value = '';
-
-//   try {
-//     const voice = await resourceStore.generateSubjectVoice(formData.referenceImages);
-//     formData.voice = voice;
-//   } catch (err) {
-//     error.value = `Failed to generate voice: ${String(err)}`;
-//   } finally {
-//     aiLoading.voice = false;
-//   }
-// };
-
-// const handleGenerateStyles = async () => {
-//   if (formData.referenceImages.length === 0) return;
-
-//   aiLoading.styles = true;
-//   error.value = '';
-
-//   try {
-//     // const styles = await resourceStore.generateSubjectStyles(formData.referenceImages);
-//     // formData.styles = styles;
-//   } catch (err) {
-//     error.value = `Failed to generate styles: ${String(err)}`;
-//   } finally {
-//     aiLoading.styles = false;
-//   }
-// };
-
-// const handleGenerateDescription = async () => {
-//   if (formData.referenceImages.length === 0) return;
-
-//   aiLoading.description = true;
-//   error.value = '';
-
-//   try {
-//     // const description = await resourceStore.generateSubjectDescription(formData.referenceImages);
-//     // formData.description = description;
-//   } catch (err) {
-//     error.value = `Failed to generate description: ${String(err)}`;
-//   } finally {
-//     aiLoading.description = false;
-//   }
-// };
-
-const handleDeleteExistingImage = (index: number) => {
-  existingImages.value.splice(index, 1);
+// 上传开始：添加到images数组
+const handleUploadStart = (image: GalleryImage) => {
+  images.value.push(image);
 };
 
-const handleDeleteNewImage = (index: number) => {
-  formData.referenceImages.splice(index, 1);
+// 上传进度：更新进度值
+const handleUploadProgress = (imageId: string, progress: number) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    img.uploadProgress = progress;
+  }
 };
 
+// 上传完成：切换状态为new
+const handleUploadComplete = (imageId: string, url: string) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    // 清理预览URL
+    if (img.url.startsWith('blob:') || img.url.startsWith('data:')) {
+      if (img.url.startsWith('blob:')) {
+        URL.revokeObjectURL(img.url);
+      }
+    }
+
+    // 更新状态
+    img.status = 'new';
+    img.url = url;
+    img.uploadProgress = 100;
+    delete img.file;
+  }
+};
+
+// 上传失败：切换状态为error
+const handleUploadError = (imageId: string, errorMsg: string) => {
+  const img = images.value.find(i => i.id === imageId);
+  if (img) {
+    img.status = 'error';
+    img.errorMessage = errorMsg;
+  }
+};
+
+// 删除图片
+const handleDeleteImage = (imageId: string) => {
+  const index = images.value.findIndex(i => i.id === imageId);
+  if (index === -1) return;
+
+  const img = images.value[index];
+
+  // 清理blob URL
+  if (img.url.startsWith('blob:')) {
+    URL.revokeObjectURL(img.url);
+  }
+
+  // 从数组中移除
+  images.value.splice(index, 1);
+};
+
+// 提交表单
 const handleSubmit = async () => {
   console.log('=== handleSubmit called ===');
-  console.log('formData.name:', formData.name);
 
-  // 合并现有和新图片
-  const allImages = [...existingImages.value, ...formData.referenceImages];
-  console.log('allImages.length:', allImages.length);
-  console.log('allImages:', allImages);
+  // 过滤有效图片（排除uploading和error状态）
+  const validImages = images.value
+    .filter(img => ['existing', 'new'].includes(img.status))
+    .map(img => img.url);
 
-  console.log('Checking reference images...');
-  if (allImages.length === 0) {
-    console.log('No reference images, blocking save');
+  console.log('validImages.length:', validImages.length);
+  console.log('validImages:', validImages);
+
+  if (validImages.length === 0) {
+    console.log('No valid reference images, blocking save');
     showImageWarning.value = true;
     error.value = 'Please upload at least one reference image';
     return;
@@ -301,7 +294,7 @@ const handleSubmit = async () => {
       voice: formData.voice || undefined,
       styles: formData.styles,
       description: formData.description || undefined,
-      referenceImages: allImages,
+      referenceImages: validImages,
     };
 
     console.log('Payload:', payload);
@@ -326,6 +319,13 @@ const handleSubmit = async () => {
 };
 
 const handleClose = () => {
+  // 清理所有blob URL
+  images.value.forEach(img => {
+    if (img.url.startsWith('blob:')) {
+      URL.revokeObjectURL(img.url);
+    }
+  });
+
   resetForm();
   emit('close');
   emit('update:modelValue', false);

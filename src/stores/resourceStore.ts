@@ -12,63 +12,9 @@ import type {
 } from '@/api/resourceApi';
 import * as resourceApi from '@/api/resourceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import type { OtherMaterial, ResourceLibrary, Scene, Subject } from '@/types/resource';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-
-// State types
-export interface ResourceLibrary {
-  id: string;
-  uuid: string;
-  name: string;
-  description?: string;
-  workspaceId: string;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface SubjectAsset {
-  id: string;
-  libraryId: string;
-  name: string;
-  voice?: string;
-  styles: string[];
-  description?: string;
-  referenceImages?: ReferenceImage[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface SceneAsset {
-  id: string;
-  libraryId: string;
-  name: string;
-  styles: string[];
-  description?: string;
-  referenceImages?: ReferenceImage[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface OtherMaterial {
-  id: string;
-  libraryId: string;
-  name: string;
-  type: 'audio' | 'video' | 'image';
-  fileUrl: string;
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ReferenceImage {
-  id: string;
-  assetId: string;
-  assetType: 'subject' | 'scene';
-  fileUrl: string;
-  displayOrder: number;
-  uploadTimestamp: string;
-}
 
 export const useResourceStore = defineStore('resource', () => {
   // ==================== State ====================
@@ -80,12 +26,12 @@ export const useResourceStore = defineStore('resource', () => {
   const librariesLoading = ref(false);
 
   // Subject assets
-  const subjects = ref<SubjectAsset[]>([]);
+  const subjects = ref<Subject[]>([]);
   const subjectsTotal = ref(0);
   const subjectsLoading = ref(false);
 
   // Scene assets
-  const scenes = ref<SceneAsset[]>([]);
+  const scenes = ref<Scene[]>([]);
   const scenesTotal = ref(0);
   const scenesLoading = ref(false);
 
@@ -180,7 +126,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Fetch a single library and set as current
    */
-  async function fetchLibrary(id: string) {
+  async function fetchLibrary(id: number) {
     const workspaceId = getWorkspaceId();
 
     librariesLoading.value = true;
@@ -225,7 +171,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Update an existing library
    */
-  async function updateLibrary(id: string, data: UpdateLibraryDto) {
+  async function updateLibrary(id: number, data: UpdateLibraryDto) {
     const workspaceId = getWorkspaceId();
 
     librariesLoading.value = true;
@@ -259,7 +205,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Delete a library and all its related assets
    */
-  async function deleteLibrary(id: string) {
+  async function deleteLibrary(id: number) {
     const workspaceId = getWorkspaceId();
 
     librariesLoading.value = true;
@@ -294,7 +240,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Get statistics for a library (asset counts)
    */
-  async function getLibraryStatistics(id: string): Promise<{
+  async function getLibraryStatistics(id: number): Promise<{
     subjectsCount: number;
     scenesCount: number;
     materialsCount: number;
@@ -330,7 +276,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Fetch subjects for current library
    */
-  async function fetchSubjects(libraryId: string, page = 1, limit = 50) {
+  async function fetchSubjects(libraryId: number, page = 1, limit = 50) {
     const workspaceId = getWorkspaceId();
 
     subjectsLoading.value = true;
@@ -358,7 +304,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Create a new subject
    */
-  async function createSubject(libraryId: string, data: CreateSubjectDto) {
+  async function createSubject(libraryId: number, data: CreateSubjectDto) {
     const workspaceId = getWorkspaceId();
 
     subjectsLoading.value = true;
@@ -382,7 +328,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Update a subject
    */
-  async function updateSubject(id: string, data: UpdateSubjectDto) {
+  async function updateSubject(id: number, data: UpdateSubjectDto) {
     const workspaceId = getWorkspaceId();
 
     subjectsLoading.value = true;
@@ -411,7 +357,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Delete a subject
    */
-  async function deleteSubject(id: string) {
+  async function deleteSubject(id: number) {
     const workspaceId = getWorkspaceId();
 
     subjectsLoading.value = true;
@@ -437,7 +383,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Fetch scenes for current library
    */
-  async function fetchScenes(libraryId: string, page = 1, limit = 50) {
+  async function fetchScenes(libraryId: number, page = 1, limit = 50) {
     const workspaceId = getWorkspaceId();
 
     scenesLoading.value = true;
@@ -466,7 +412,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Create a new scene
    */
-  async function createScene(libraryId: string, data: CreateSceneDto) {
+  async function createScene(libraryId: number, data: CreateSceneDto) {
     const workspaceId = getWorkspaceId();
 
     scenesLoading.value = true;
@@ -490,7 +436,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Update a scene
    */
-  async function updateScene(id: string, data: UpdateSceneDto) {
+  async function updateScene(id: number, data: UpdateSceneDto) {
     const workspaceId = getWorkspaceId();
 
     scenesLoading.value = true;
@@ -519,7 +465,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Delete a scene
    */
-  async function deleteScene(id: string) {
+  async function deleteScene(id: number) {
     const workspaceId = getWorkspaceId();
 
     scenesLoading.value = true;
@@ -546,7 +492,7 @@ export const useResourceStore = defineStore('resource', () => {
    * Fetch materials for current library
    */
   async function fetchMaterials(
-    libraryId: string,
+    libraryId: number,
     type?: 'audio' | 'video' | 'image',
     page = 1,
     limit = 50
@@ -579,7 +525,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Create a new material
    */
-  async function createMaterial(libraryId: string, data: CreateMaterialDto) {
+  async function createMaterial(libraryId: number, data: CreateMaterialDto) {
     const workspaceId = getWorkspaceId();
 
     materialsLoading.value = true;
@@ -603,7 +549,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Update an existing material
    */
-  async function updateMaterial(id: string, data: UpdateMaterialDto) {
+  async function updateMaterial(id: number, data: UpdateMaterialDto) {
     const workspaceId = getWorkspaceId();
 
     materialsLoading.value = true;
@@ -632,7 +578,7 @@ export const useResourceStore = defineStore('resource', () => {
   /**
    * Delete a material
    */
-  async function deleteMaterial(id: string) {
+  async function deleteMaterial(id: number) {
     const workspaceId = getWorkspaceId();
 
     materialsLoading.value = true;

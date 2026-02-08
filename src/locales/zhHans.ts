@@ -16,6 +16,8 @@ export default {
     contact: '联系我们',
     tos: '服务条款',
     policy: '隐私政策',
+    new: '新',
+    error: '错误',
   },
   login: {
     title: '登录',

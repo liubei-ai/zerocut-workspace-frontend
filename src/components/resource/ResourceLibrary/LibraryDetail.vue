@@ -56,9 +56,9 @@
 </template>
 
 <script setup lang="ts">
-import MaterialList from '@/components/OtherMaterials/MaterialList.vue';
-import SceneList from '@/components/SceneAssets/SceneList.vue';
-import SubjectList from '@/components/SubjectAssets/SubjectList.vue';
+import MaterialList from '@/components/resource/OtherMaterials/MaterialList.vue';
+import SceneList from '@/components/resource/SceneAssets/SceneList.vue';
+import SubjectList from '@/components/resource/SubjectAssets/SubjectList.vue';
 import { useResourceStore } from '@/stores/resourceStore';
 import { ref } from 'vue';
 

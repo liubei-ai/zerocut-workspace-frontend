@@ -44,22 +44,13 @@
 
 <script setup lang="ts">
 import { useResourceStore } from '@/stores/resourceStore';
+import type { Scene } from '@/types/resource';
 import { computed, nextTick, onMounted, ref } from 'vue';
 import CreateSceneDialog from './CreateSceneDialog.vue';
 import SceneCard from './SceneCard.vue';
 
-interface Scene {
-  id: string;
-  name: string;
-  styles: string[];
-  description?: string;
-  referenceImages: any[];
-  createdAt: string;
-  updatedAt: string;
-}
-
 const props = defineProps<{
-  libraryId: string;
+  libraryId: number;
 }>();
 
 const emit = defineEmits<{
@@ -100,7 +91,7 @@ const handleEditScene = (scene: Scene) => {
   showCreateDialog.value = true;
 };
 
-const handleDeleteScene = async (sceneId: string) => {
+const handleDeleteScene = async (sceneId: number) => {
   if (window.confirm('Are you sure you want to delete this scene?')) {
     try {
       await resourceStore.deleteScene(sceneId);

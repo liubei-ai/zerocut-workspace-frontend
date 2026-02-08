@@ -47,12 +47,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import ImageMaterialViewer from './ImageMaterialViewer.vue';
 import AudioMaterialPlayer from './AudioMaterialPlayer.vue';
+import ImageMaterialViewer from './ImageMaterialViewer.vue';
 import VideoMaterialPlayer from './VideoMaterialPlayer.vue';
 
 interface Material {
-  id: string;
+  id: number;
   name: string;
   type: 'audio' | 'video' | 'image';
   fileUrl: string;
@@ -67,7 +67,7 @@ const props = defineProps<{
 
 defineEmits<{
   edit: [material: Material];
-  delete: [id: string];
+  delete: [id: number];
 }>();
 
 const { t } = useI18n();

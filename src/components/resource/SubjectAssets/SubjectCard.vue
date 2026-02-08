@@ -83,24 +83,8 @@
 </template>
 
 <script setup lang="ts">
+import type { Subject } from '@/types/resource';
 import { computed } from 'vue';
-
-interface ReferenceImage {
-  id: string;
-  fileUrl: string;
-  displayOrder: number;
-}
-
-interface Subject {
-  id: string;
-  name: string;
-  voice?: string;
-  styles: string[];
-  description?: string;
-  referenceImages: ReferenceImage[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 const props = defineProps<{
   subject: Subject;
@@ -108,7 +92,7 @@ const props = defineProps<{
 
 defineEmits<{
   edit: [subject: Subject];
-  delete: [id: string];
+  delete: [id: number];
 }>();
 
 const maxDisplayStyles = 5;

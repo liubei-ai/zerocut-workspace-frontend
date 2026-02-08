@@ -87,7 +87,7 @@ export async function getLibraries(page = 1, limit = 20, workspaceId: string) {
 /**
  * Get a single library by ID
  */
-export async function getLibrary(id: string, workspaceId: string) {
+export async function getLibrary(id: number, workspaceId: string) {
   return client.get(`/resource/libraries/${id}`, {
     params: { workspaceId },
   });
@@ -103,14 +103,14 @@ export async function createLibrary(data: CreateLibraryDto, workspaceId: string)
 /**
  * Update an existing library
  */
-export async function updateLibrary(id: string, data: UpdateLibraryDto, workspaceId: string) {
+export async function updateLibrary(id: number, data: UpdateLibraryDto, workspaceId: string) {
   return client.put(`/resource/libraries/${id}`, { ...data, workspaceId });
 }
 
 /**
  * Delete a library and all its related assets
  */
-export async function deleteLibrary(id: string, workspaceId: string) {
+export async function deleteLibrary(id: number, workspaceId: string) {
   return client.delete(`/resource/libraries/${id}`, {
     params: { workspaceId },
   });
@@ -119,7 +119,7 @@ export async function deleteLibrary(id: string, workspaceId: string) {
 /**
  * Get statistics for a library (asset counts)
  */
-export async function getLibraryStatistics(id: string, workspaceId: string) {
+export async function getLibraryStatistics(id: number, workspaceId: string) {
   return client.get(`/resource/libraries/${id}/statistics`, {
     params: { workspaceId },
   });
@@ -130,7 +130,7 @@ export async function getLibraryStatistics(id: string, workspaceId: string) {
 /**
  * Get all subjects in a library
  */
-export async function getSubjects(libraryId: string, page = 1, limit = 50, workspaceId: string) {
+export async function getSubjects(libraryId: number, page = 1, limit = 50, workspaceId: string) {
   return client.get(`/resource/libraries/${libraryId}/subjects`, {
     params: { page, limit, workspaceId },
   });
@@ -149,7 +149,7 @@ export async function getSubject(id: string, workspaceId: string) {
  * Create a new subject asset
  */
 export async function createSubject(
-  libraryId: string,
+  libraryId: number,
   data: CreateSubjectDto,
   workspaceId: string
 ) {
@@ -159,14 +159,14 @@ export async function createSubject(
 /**
  * Update an existing subject
  */
-export async function updateSubject(id: string, data: UpdateSubjectDto, workspaceId: string) {
+export async function updateSubject(id: number, data: UpdateSubjectDto, workspaceId: string) {
   return client.put(`/resource/subjects/${id}`, { ...data, workspaceId });
 }
 
 /**
  * Delete a subject
  */
-export async function deleteSubject(id: string, workspaceId: string) {
+export async function deleteSubject(id: number, workspaceId: string) {
   return client.delete(`/resource/subjects/${id}`, { data: { workspaceId } });
 }
 
@@ -175,7 +175,7 @@ export async function deleteSubject(id: string, workspaceId: string) {
 /**
  * Get all scenes in a library
  */
-export async function getScenes(libraryId: string, page = 1, limit = 50, workspaceId: string) {
+export async function getScenes(libraryId: number, page = 1, limit = 50, workspaceId: string) {
   return client.get(`/resource/libraries/${libraryId}/scenes`, {
     params: { page, limit, workspaceId },
   });
@@ -184,7 +184,7 @@ export async function getScenes(libraryId: string, page = 1, limit = 50, workspa
 /**
  * Get a single scene by ID
  */
-export async function getScene(id: string, workspaceId: string) {
+export async function getScene(id: number, workspaceId: string) {
   return client.get(`/resource/scenes/${id}`, {
     params: { workspaceId },
   });
@@ -193,21 +193,21 @@ export async function getScene(id: string, workspaceId: string) {
 /**
  * Create a new scene asset
  */
-export async function createScene(libraryId: string, data: CreateSceneDto, workspaceId: string) {
+export async function createScene(libraryId: number, data: CreateSceneDto, workspaceId: string) {
   return client.post(`/resource/libraries/${libraryId}/scenes`, { ...data, workspaceId });
 }
 
 /**
  * Update an existing scene
  */
-export async function updateScene(id: string, data: UpdateSceneDto, workspaceId: string) {
+export async function updateScene(id: number, data: UpdateSceneDto, workspaceId: string) {
   return client.put(`/resource/scenes/${id}`, { ...data, workspaceId });
 }
 
 /**
  * Delete a scene
  */
-export async function deleteScene(id: string, workspaceId: string) {
+export async function deleteScene(id: number, workspaceId: string) {
   return client.delete(`/resource/scenes/${id}`, { data: { workspaceId } });
 }
 
@@ -217,7 +217,7 @@ export async function deleteScene(id: string, workspaceId: string) {
  * Get all materials in a library
  */
 export async function getMaterials(
-  libraryId: string,
+  libraryId: number,
   workspaceId: string,
   type?: 'audio' | 'video' | 'image',
   page = 1,
@@ -231,7 +231,7 @@ export async function getMaterials(
 /**
  * Get a single material by ID
  */
-export async function getMaterial(id: string, workspaceId: string) {
+export async function getMaterial(id: number, workspaceId: string) {
   return client.get(`/resource/materials/${id}`, {
     params: { workspaceId },
   });
@@ -241,7 +241,7 @@ export async function getMaterial(id: string, workspaceId: string) {
  * Create a new material
  */
 export async function createMaterial(
-  libraryId: string,
+  libraryId: number,
   data: CreateMaterialDto,
   workspaceId: string
 ) {
@@ -251,14 +251,14 @@ export async function createMaterial(
 /**
  * Update an existing material
  */
-export async function updateMaterial(id: string, data: UpdateMaterialDto, workspaceId: string) {
+export async function updateMaterial(id: number, data: UpdateMaterialDto, workspaceId: string) {
   return client.put(`/resource/materials/${id}`, { ...data, workspaceId });
 }
 
 /**
  * Delete a material
  */
-export async function deleteMaterial(id: string, workspaceId: string) {
+export async function deleteMaterial(id: number, workspaceId: string) {
   return client.delete(`/resource/materials/${id}`, { data: { workspaceId } });
 }
 

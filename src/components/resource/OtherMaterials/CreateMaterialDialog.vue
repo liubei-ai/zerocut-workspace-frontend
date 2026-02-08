@@ -76,14 +76,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
-import { useResourceStore, type OtherMaterial } from '@/stores/resourceStore';
+import { useResourceStore } from '@/stores/resourceStore';
+import type { OtherMaterial } from '@/types/resource';
+import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
+import FileUploadHandler from '../FileUploadHandler.vue';
 
 const props = defineProps<{
   modelValue: boolean;
-  libraryId: string;
+  libraryId: number;
   editMaterial?: OtherMaterial | null;
 }>();
 

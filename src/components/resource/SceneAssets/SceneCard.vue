@@ -76,23 +76,8 @@
 </template>
 
 <script setup lang="ts">
+import { Scene } from '@/types/resource';
 import { computed } from 'vue';
-
-interface ReferenceImage {
-  id: string;
-  fileUrl: string;
-  displayOrder: number;
-}
-
-interface Scene {
-  id: string;
-  name: string;
-  styles: string[];
-  description?: string;
-  referenceImages: ReferenceImage[];
-  createdAt: string;
-  updatedAt: string;
-}
 
 const props = defineProps<{
   scene: Scene;
@@ -100,7 +85,7 @@ const props = defineProps<{
 
 defineEmits<{
   edit: [scene: Scene];
-  delete: [id: string];
+  delete: [id: number];
 }>();
 
 const maxDisplayStyles = 5;

@@ -15,6 +15,8 @@ export default {
     contact: 'お問い合わせ',
     tos: '利用規約',
     policy: '個人情報保護方針',
+    new: '新規',
+    error: 'エラー',
   },
   login: {
     title: 'サインイン',
