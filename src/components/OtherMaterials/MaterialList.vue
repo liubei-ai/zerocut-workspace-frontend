@@ -17,7 +17,11 @@
 
     <v-row v-else>
       <v-col v-for="material in materials" :key="material.id" cols="12" sm="6" md="4">
-        <MaterialCard :material="material" @delete="handleDeleteMaterial" />
+        <MaterialCard
+          :material="material"
+          @edit="handleEditMaterial"
+          @delete="handleDeleteMaterial"
+        />
       </v-col>
     </v-row>
 
@@ -30,19 +34,21 @@
       />
     </div>
 
-    <!-- Create Dialog -->
+    <!-- Create/Edit Dialog -->
     <CreateMaterialDialog
       v-model="showCreateDialog"
       :library-id="libraryId"
+      :edit-material="editingMaterial"
       @save="handleSaveMaterial"
+      @material-updated="handleMaterialUpdated"
       @close="handleDialogClose"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import { computed, onMounted, ref } from 'vue';
+import { useResourceStore, type OtherMaterial } from '@/stores/resourceStore';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CreateMaterialDialog from './CreateMaterialDialog.vue';
 import MaterialCard from './MaterialCard.vue';
@@ -71,6 +77,7 @@ const { t } = useI18n();
 const loading = ref(false);
 const selectedType = ref<'all' | 'audio' | 'video' | 'image'>('all');
 const showCreateDialog = ref(false);
+const editingMaterial = ref<OtherMaterial | null>(null);
 const currentPage = ref(1);
 const limit = ref(12);
 
@@ -109,6 +116,11 @@ const handlePageChange = (page: number) => {
   fetchMaterials(page);
 };
 
+const handleEditMaterial = (material: OtherMaterial) => {
+  editingMaterial.value = material;
+  showCreateDialog.value = true;
+};
+
 const handleDeleteMaterial = async (materialId: string) => {
   if (window.confirm('Are you sure you want to delete this material?')) {
     try {
@@ -126,9 +138,25 @@ const handleSaveMaterial = async () => {
   emit('update');
 };
 
+const handleMaterialUpdated = async () => {
+  await fetchMaterials(currentPage.value);
+  emit('update');
+  editingMaterial.value = null;
+};
+
 const handleDialogClose = () => {
   showCreateDialog.value = false;
 };
+
+// Clean up editing material when dialog closes
+watch(
+  () => showCreateDialog.value,
+  newVal => {
+    if (!newVal) {
+      editingMaterial.value = null;
+    }
+  }
+);
 
 onMounted(() => {
   // Only fetch if materials are not already loaded by parent component

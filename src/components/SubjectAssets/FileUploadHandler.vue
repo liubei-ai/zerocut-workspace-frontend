@@ -4,6 +4,7 @@
     <div
       class="upload-area"
       :class="{ 'upload-area--dragging': isDragging }"
+      @click="fileInput?.click()"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
       @drop.prevent="handleDrop"
@@ -23,9 +24,6 @@
         <p class="text-body-2 text-medium-emphasis">
           {{ $t(uploadHintKey, { max: maxImages }) }}
         </p>
-        <v-btn variant="outlined" color="primary" @click="fileInput?.click()" class="mt-2">
-          {{ $t('common.search') }}
-        </v-btn>
       </div>
     </div>
 

@@ -784,6 +784,7 @@ export default {
     materialsPlaceholder: '暂无其他素材',
     materialsDescription: '上传音频、视频或图片等补充素材',
     createMaterial: '上传素材',
+    editMaterial: '编辑素材',
     materialName: '素材名称',
     materialType: '素材类型',
     allMaterials: '全部素材',
@@ -802,6 +803,10 @@ export default {
     referenceImages: '参考图片',
     referenceImagesRequired: '请上传至少一张参考图片',
     uploadReferenceImages: '上传参考图片',
+    existingImages: '已上传的图片',
+    newImages: '新上传的图片',
+    noImages: '暂无图片',
+    maxImagesReached: '已达到最大图片数量（4张）',
     maxImages: '最多上传 {max} 张图片',
     maxFiles: '最多上传 {max} 个文件',
 

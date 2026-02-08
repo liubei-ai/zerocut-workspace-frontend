@@ -48,6 +48,13 @@ export interface CreateMaterialDto {
   description?: string;
 }
 
+export interface UpdateMaterialDto {
+  name?: string;
+  type?: 'audio' | 'video' | 'image';
+  fileUrl?: string;
+  description?: string;
+}
+
 export interface UploadUrlRequestDto {
   fileName: string;
   fileType: string;
@@ -239,6 +246,13 @@ export async function createMaterial(
   workspaceId: string
 ) {
   return client.post(`/resource/libraries/${libraryId}/materials`, { ...data, workspaceId });
+}
+
+/**
+ * Update an existing material
+ */
+export async function updateMaterial(id: string, data: UpdateMaterialDto, workspaceId: string) {
+  return client.put(`/resource/materials/${id}`, { ...data, workspaceId });
 }
 
 /**

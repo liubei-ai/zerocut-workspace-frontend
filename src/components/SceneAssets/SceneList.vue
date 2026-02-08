@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { useResourceStore } from '@/stores/resourceStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import CreateSceneDialog from './CreateSceneDialog.vue';
 import SceneCard from './SceneCard.vue';
 

@@ -24,6 +24,7 @@
     </v-card-text>
 
     <v-card-actions>
+      <v-btn icon="mdi-pencil" variant="text" size="small" @click.stop="$emit('edit', material)" />
       <v-spacer />
       <v-btn
         icon="mdi-delete"
@@ -65,6 +66,7 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
+  edit: [material: Material];
   delete: [id: string];
 }>();
 

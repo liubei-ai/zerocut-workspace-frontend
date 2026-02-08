@@ -24,11 +24,33 @@
             <p class="text-caption text-medium-emphasis mb-2">
               {{ $t('resource.sceneBackgroundHint') }}
             </p>
-            <FileUploadHandler
-              :max-images="4"
-              category="reference-image"
-              @update:urls="formData.referenceImages = $event"
-            />
+
+            <!-- 现有上传的图片 -->
+            <div v-if="editScene && existingImages.length > 0" class="mb-4">
+              <div class="text-subtitle-2 mb-2">{{ $t('resource.existingImages') }}</div>
+              <ImageGallery :images="existingImages" @delete="handleDeleteExistingImage" />
+            </div>
+
+            <!-- 新上传的图片 -->
+            <div v-if="formData.referenceImages.length > 0" class="mb-4">
+              <div class="text-subtitle-2 mb-2">
+                {{ editScene ? $t('resource.newImages') : $t('resource.sceneBackground') }}
+              </div>
+              <ImageGallery :images="formData.referenceImages" @delete="handleDeleteNewImage" />
+            </div>
+
+            <!-- 上传按钮 -->
+            <div v-if="canUploadMore" class="mb-4">
+              <FileUploadHandler
+                :max-images="remainingSlots"
+                category="reference-image"
+                @update:urls="formData.referenceImages = [...formData.referenceImages, ...$event]"
+              />
+            </div>
+
+            <v-alert v-if="totalImages >= 4" type="info" density="compact">
+              {{ $t('resource.maxImagesReached') }}
+            </v-alert>
           </div>
 
           <!-- Styles Field with AI Generation -->
@@ -82,6 +104,7 @@
 import { useResourceStore } from '@/stores/resourceStore';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ImageGallery from '@/components/ResourceLibrary/ImageGallery.vue';
 import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
 
 interface Scene {
@@ -110,6 +133,7 @@ const formRef = ref();
 const saving = ref(false);
 const error = ref('');
 const isMounted = ref(true);
+const existingImages = ref<string[]>([]);
 
 const dialogModel = computed({
   get: () => props.modelValue,
@@ -128,6 +152,10 @@ const aiLoading = reactive({
   description: false,
 });
 
+const totalImages = computed(() => existingImages.value.length + formData.referenceImages.length);
+const remainingSlots = computed(() => Math.max(0, 4 - totalImages.value));
+const canUploadMore = computed(() => totalImages.value < 4);
+
 const rules = {
   required: (v: string) => !!v || 'This field is required',
   maxLength: (max: number) => (v: string) => !v || v.length <= max || `Max ${max} characters`,
@@ -138,6 +166,7 @@ function resetForm() {
   formData.styles = [];
   formData.description = '';
   formData.referenceImages = [];
+  existingImages.value = [];
   error.value = '';
 }
 
@@ -151,11 +180,14 @@ watch(
   () => props.editScene,
   scene => {
     if (scene) {
+      // 编辑模式：分离现有图片和新图片
+      existingImages.value = scene.referenceImages?.map((img: any) => img.fileUrl) || [];
       formData.name = scene.name;
       formData.styles = scene.styles || [];
       formData.description = scene.description || '';
-      formData.referenceImages = scene.referenceImages?.map((img: any) => img.fileUrl) || [];
+      formData.referenceImages = []; // 新上传的图片
     } else {
+      // 创建模式
       resetForm();
     }
   },
@@ -206,13 +238,24 @@ watch(
 //   }
 // };
 
+const handleDeleteExistingImage = (index: number) => {
+  existingImages.value.splice(index, 1);
+};
+
+const handleDeleteNewImage = (index: number) => {
+  formData.referenceImages.splice(index, 1);
+};
+
 const handleSubmit = async () => {
   if (!formRef.value || !isMounted.value) return;
 
   const { valid } = await formRef.value.validate();
   if (!valid) return;
 
-  if (formData.referenceImages.length === 0) {
+  // 合并现有和新图片
+  const allImages = [...existingImages.value, ...formData.referenceImages];
+
+  if (allImages.length === 0) {
     error.value = t('resource.sceneBackgroundRequired');
     return;
   }
@@ -225,7 +268,7 @@ const handleSubmit = async () => {
       name: formData.name,
       styles: formData.styles,
       description: formData.description || undefined,
-      referenceImages: formData.referenceImages,
+      referenceImages: allImages,
     };
 
     if (props.editScene?.id) {

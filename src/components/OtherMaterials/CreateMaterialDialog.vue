@@ -7,7 +7,7 @@
   >
     <v-card>
       <v-card-title class="text-h5">
-        {{ $t('resource.createMaterial') }}
+        {{ editMaterial ? $t('resource.editMaterial') : $t('resource.createMaterial') }}
       </v-card-title>
 
       <v-divider />
@@ -68,7 +68,7 @@
           {{ $t('common.cancel') }}
         </v-btn>
         <v-btn color="primary" :loading="saving" @click="handleSubmit">
-          {{ $t('common.save') }}
+          {{ editMaterial ? $t('common.update') : $t('common.save') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -76,20 +76,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue';
-import { useResourceStore } from '@/stores/resourceStore';
+import { ref, reactive, computed, watch } from 'vue';
+import { useResourceStore, type OtherMaterial } from '@/stores/resourceStore';
 import { useI18n } from 'vue-i18n';
 import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
 
 const props = defineProps<{
   modelValue: boolean;
   libraryId: string;
+  editMaterial?: OtherMaterial | null;
 }>();
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean];
   save: [];
   close: [];
+  'material-updated': [];
 }>();
 
 const resourceStore = useResourceStore();
@@ -142,6 +144,25 @@ const resetForm = () => {
   error.value = '';
 };
 
+// Pre-fill form when editing
+watch(
+  () => props.modelValue,
+  newOpen => {
+    if (newOpen && props.editMaterial) {
+      formData.name = props.editMaterial.name;
+      formData.type = props.editMaterial.type;
+      formData.fileUrl = props.editMaterial.fileUrl;
+      formData.description = props.editMaterial.description || '';
+      error.value = '';
+      formRef.value?.resetValidation();
+    } else if (newOpen) {
+      // Reset for create mode
+      resetForm();
+      formRef.value?.resetValidation();
+    }
+  }
+);
+
 const handleSubmit = async () => {
   const { valid } = await formRef.value.validate();
   if (!valid) return;
@@ -162,7 +183,14 @@ const handleSubmit = async () => {
       description: formData.description || undefined,
     };
 
-    await resourceStore.createMaterial(props.libraryId, payload);
+    if (props.editMaterial) {
+      // Edit mode
+      await resourceStore.updateMaterial(props.editMaterial.id, payload);
+      emit('material-updated');
+    } else {
+      // Create mode
+      await resourceStore.createMaterial(props.libraryId, payload);
+    }
 
     emit('save');
     handleClose();

@@ -5,6 +5,7 @@ import type {
   CreateSubjectDto,
   GenerateRequestDto,
   UpdateLibraryDto,
+  UpdateMaterialDto,
   UpdateSceneDto,
   UpdateSubjectDto,
   UploadUrlRequestDto,
@@ -600,6 +601,35 @@ export const useResourceStore = defineStore('resource', () => {
   }
 
   /**
+   * Update an existing material
+   */
+  async function updateMaterial(id: string, data: UpdateMaterialDto) {
+    const workspaceId = getWorkspaceId();
+
+    materialsLoading.value = true;
+    error.value = null;
+
+    try {
+      const response = await resourceApi.updateMaterial(id, data, workspaceId);
+      const updatedMaterial = response.data.data;
+
+      // Update in list
+      const index = materials.value.findIndex(mat => mat.id === id);
+      if (index !== -1) {
+        materials.value[index] = updatedMaterial;
+      }
+
+      return updatedMaterial;
+    } catch (err: unknown) {
+      const apiError = err as { response?: { data?: { message?: string } } };
+      error.value = apiError.response?.data?.message || 'Failed to update material';
+      throw err;
+    } finally {
+      materialsLoading.value = false;
+    }
+  }
+
+  /**
    * Delete a material
    */
   async function deleteMaterial(id: string) {
@@ -847,6 +877,7 @@ export const useResourceStore = defineStore('resource', () => {
     // Other Material Management
     fetchMaterials,
     createMaterial,
+    updateMaterial,
     deleteMaterial,
 
     // File Upload Operations
