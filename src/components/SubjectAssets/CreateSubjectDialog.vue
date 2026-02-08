@@ -223,8 +223,8 @@ const handleGenerateStyles = async () => {
   error.value = '';
 
   try {
-    const styles = await resourceStore.generateSubjectStyles(formData.referenceImages);
-    formData.styles = styles;
+    // const styles = await resourceStore.generateSubjectStyles(formData.referenceImages);
+    // formData.styles = styles;
   } catch (err) {
     error.value = `Failed to generate styles: ${String(err)}`;
   } finally {
@@ -239,8 +239,8 @@ const handleGenerateDescription = async () => {
   error.value = '';
 
   try {
-    const description = await resourceStore.generateSubjectDescription(formData.referenceImages);
-    formData.description = description;
+    // const description = await resourceStore.generateSubjectDescription(formData.referenceImages);
+    // formData.description = description;
   } catch (err) {
     error.value = `Failed to generate description: ${String(err)}`;
   } finally {

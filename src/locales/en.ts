@@ -811,6 +811,12 @@ export default {
     uploadReferenceImages: 'Upload Reference Images',
     maxImages: 'Upload up to {max} images',
 
+    // Scene Background
+    sceneBackground: 'Scene Background',
+    uploadSceneBackground: 'Upload Scene Background',
+    sceneBackgroundRequired: 'Please upload at least one scene background image',
+    sceneBackgroundHint: 'Upload 1-4 scene background images. Supports JPEG, PNG, WebP formats',
+
     // AI Generation
     generateVoice: 'Generate Voice',
     generateStyles: 'Generate Styles',

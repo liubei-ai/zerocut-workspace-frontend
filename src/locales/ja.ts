@@ -810,6 +810,12 @@ export default {
     uploadReferenceImages: '参考画像アップロード',
     maxImages: '最大 {max} 枚の画像',
 
+    // シーン背景
+    sceneBackground: 'シーン背景',
+    uploadSceneBackground: 'シーン背景アップロード',
+    sceneBackgroundRequired: '少なくとも1枚のシーン背景画像をアップロードしてください',
+    sceneBackgroundHint: '1〜4枚のシーン背景画像をアップロード。JPEG、PNG、WebP形式対応',
+
     // AI生成
     generateVoice: '音声生成',
     generateStyles: 'スタイル生成',

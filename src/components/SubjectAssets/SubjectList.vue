@@ -101,7 +101,7 @@ const handleEditSubject = (subject: Subject) => {
 };
 
 const handleDeleteSubject = async (subjectId: string) => {
-  if (confirm('Are you sure you want to delete this subject?')) {
+  if (window.confirm('Are you sure you want to delete this subject?')) {
     try {
       await resourceStore.deleteSubject(subjectId);
       emit('update');

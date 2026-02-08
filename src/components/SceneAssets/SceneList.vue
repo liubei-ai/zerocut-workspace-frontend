@@ -1,15 +1,6 @@
 <template>
   <div class="scene-list">
     <div class="scene-list__header">
-      <v-text-field
-        v-model="searchQuery"
-        :label="$t('common.search')"
-        prepend-inner-icon="mdi-magnify"
-        variant="outlined"
-        density="compact"
-        class="mb-4"
-        @update:model-value="handleSearch"
-      />
       <v-btn color="primary" prepend-icon="mdi-plus" @click="showCreateDialog = true" class="mb-4">
         {{ $t('resource.createScene') }}
       </v-btn>
@@ -41,6 +32,7 @@
 
     <!-- Create/Edit Dialog -->
     <CreateSceneDialog
+      v-if="showCreateDialog"
       v-model="showCreateDialog"
       :edit-scene="editingScene"
       :library-id="libraryId"
@@ -51,10 +43,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import SceneCard from './SceneCard.vue';
+import { computed, onMounted, ref } from 'vue';
 import CreateSceneDialog from './CreateSceneDialog.vue';
+import SceneCard from './SceneCard.vue';
 
 interface Scene {
   id: string;
@@ -77,7 +69,6 @@ const emit = defineEmits<{
 const resourceStore = useResourceStore();
 
 const loading = ref(false);
-const searchQuery = ref('');
 const showCreateDialog = ref(false);
 const editingScene = ref<Scene | null>(null);
 const currentPage = ref(1);
@@ -86,10 +77,9 @@ const limit = ref(12);
 // Use store data directly to avoid duplicate loading
 const scenes = computed(() => resourceStore.scenes as Scene[]);
 const totalScenes = computed(() => resourceStore.scenesTotal);
-
 const totalPages = computed(() => Math.ceil(totalScenes.value / limit.value));
 
-const fetchScenes = async (page: number = 1) => {
+const fetchScenes = async (page = 1) => {
   loading.value = true;
   try {
     await resourceStore.fetchScenes(props.libraryId, page, limit.value);
@@ -98,12 +88,6 @@ const fetchScenes = async (page: number = 1) => {
   } finally {
     loading.value = false;
   }
-};
-
-const handleSearch = async () => {
-  currentPage.value = 1;
-  // TODO: Implement search filtering
-  await fetchScenes(1);
 };
 
 const handlePageChange = (page: number) => {
@@ -117,7 +101,7 @@ const handleEditScene = (scene: Scene) => {
 };
 
 const handleDeleteScene = async (sceneId: string) => {
-  if (confirm('Are you sure you want to delete this scene?')) {
+  if (window.confirm('Are you sure you want to delete this scene?')) {
     try {
       await resourceStore.deleteScene(sceneId);
       emit('update');

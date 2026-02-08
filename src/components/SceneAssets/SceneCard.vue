@@ -1,6 +1,6 @@
 <template>
   <v-card class="scene-card" elevation="2" hover>
-    <!-- Reference Images Carousel -->
+    <!-- Scene Background Images Carousel -->
     <v-carousel
       v-if="scene.referenceImages && scene.referenceImages.length > 0"
       :height="200"

@@ -803,6 +803,12 @@ export default {
     uploadReferenceImages: '上传参考图片',
     maxImages: '最多上传 {max} 张图片',
 
+    // Scene Background
+    sceneBackground: '场景背景',
+    uploadSceneBackground: '上传场景背景',
+    sceneBackgroundRequired: '请上传至少一张场景背景图片',
+    sceneBackgroundHint: '上传 1-4 张场景背景图片，支持 JPEG、PNG、WebP 格式',
+
     // AI Generation
     generateVoice: '生成声音',
     generateStyles: '生成风格',

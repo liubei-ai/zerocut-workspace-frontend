@@ -23,9 +23,12 @@
             class="mb-4"
           />
 
-          <!-- File Upload -->
+          <!-- Scene Background Upload -->
           <div class="mb-4">
-            <h4 class="mb-2">{{ $t('resource.referenceImages') }} *</h4>
+            <h4 class="mb-2">{{ $t('resource.sceneBackground') }} *</h4>
+            <p class="text-caption text-medium-emphasis mb-2">
+              {{ $t('resource.sceneBackgroundHint') }}
+            </p>
             <FileUploadHandler
               :max-images="4"
               category="reference-image"
@@ -97,8 +100,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue';
 import { useResourceStore } from '@/stores/resourceStore';
+import { onBeforeUnmount, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FileUploadHandler from '../SubjectAssets/FileUploadHandler.vue';
 
 interface Scene {
@@ -122,9 +126,11 @@ const emit = defineEmits<{
 }>();
 
 const resourceStore = useResourceStore();
+const { t } = useI18n();
 const formRef = ref();
 const saving = ref(false);
 const error = ref('');
+const isMounted = ref(true);
 
 const formData = reactive({
   name: '',
@@ -143,6 +149,11 @@ const rules = {
   maxLength: (max: number) => (v: string) => !v || v.length <= max || `Max ${max} characters`,
 };
 
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  isMounted.value = false;
+});
+
 // Initialize form when editing
 watch(
   () => props.editScene,
@@ -151,7 +162,7 @@ watch(
       formData.name = scene.name;
       formData.styles = scene.styles || [];
       formData.description = scene.description || '';
-      formData.referenceImages = scene.referenceImages.map((img: any) => img.fileUrl);
+      formData.referenceImages = scene.referenceImages?.map((img: any) => img.fileUrl) || [];
     } else {
       resetForm();
     }
@@ -174,12 +185,18 @@ const handleGenerateStyles = async () => {
   error.value = '';
 
   try {
-    const styles = await resourceStore.generateSceneStyles(formData.referenceImages);
-    formData.styles = styles;
+    // const styles = await resourceStore.generateSceneStyles(formData.referenceImages);
+    // if (isMounted.value) {
+    //   formData.styles = styles;
+    // }
   } catch (err) {
-    error.value = `Failed to generate styles: ${String(err)}`;
+    if (isMounted.value) {
+      error.value = `Failed to generate styles: ${String(err)}`;
+    }
   } finally {
-    aiLoading.styles = false;
+    if (isMounted.value) {
+      aiLoading.styles = false;
+    }
   }
 };
 
@@ -190,21 +207,29 @@ const handleGenerateDescription = async () => {
   error.value = '';
 
   try {
-    const description = await resourceStore.generateSceneDescription(formData.referenceImages);
-    formData.description = description;
+    // const description = await resourceStore.generateSceneDescription(formData.referenceImages);
+    // if (isMounted.value) {
+    //   formData.description = description;
+    // }
   } catch (err) {
-    error.value = `Failed to generate description: ${String(err)}`;
+    if (isMounted.value) {
+      error.value = `Failed to generate description: ${String(err)}`;
+    }
   } finally {
-    aiLoading.description = false;
+    if (isMounted.value) {
+      aiLoading.description = false;
+    }
   }
 };
 
 const handleSubmit = async () => {
+  if (!formRef.value || !isMounted.value) return;
+
   const { valid } = await formRef.value.validate();
   if (!valid) return;
 
   if (formData.referenceImages.length === 0) {
-    error.value = 'Please upload at least one reference image';
+    error.value = t('resource.sceneBackgroundRequired');
     return;
   }
 
@@ -225,12 +250,18 @@ const handleSubmit = async () => {
       await resourceStore.createScene(props.libraryId, payload);
     }
 
-    emit('save');
-    handleClose();
+    if (isMounted.value) {
+      emit('save');
+      handleClose();
+    }
   } catch (err) {
-    error.value = `Failed to save scene: ${String(err)}`;
+    if (isMounted.value) {
+      error.value = `Failed to save scene: ${String(err)}`;
+    }
   } finally {
-    saving.value = false;
+    if (isMounted.value) {
+      saving.value = false;
+    }
   }
 };
 
