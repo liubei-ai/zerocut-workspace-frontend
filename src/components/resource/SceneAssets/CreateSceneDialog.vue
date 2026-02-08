@@ -203,9 +203,13 @@ const handleUploadStart = (image: GalleryImage) => {
 
 // 上传进度：更新进度值
 const handleUploadProgress = (imageId: string, progress: number) => {
+  console.log('[CreateSceneDialog] Upload progress:', { imageId, progress });
   const img = images.value.find(i => i.id === imageId);
   if (img) {
     img.uploadProgress = progress;
+    console.log('[CreateSceneDialog] Progress updated for image:', img);
+  } else {
+    console.warn('[CreateSceneDialog] Image not found for progress update:', imageId);
   }
 };
 

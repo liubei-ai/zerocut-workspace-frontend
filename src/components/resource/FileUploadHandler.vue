@@ -185,24 +185,48 @@ const uploadFile = async (file: File, imageId: string) => {
       category: category.value,
     });
 
+    console.log('[Upload] Starting upload:', {
+      fileName: file.name,
+      fileSize: file.size,
+      imageId,
+      uploadUrl: response.uploadUrl,
+    });
+
     const xhr = new XMLHttpRequest();
+
+    // IMPORTANT: 必须在xhr.open()之前添加所有事件监听器
 
     // 上传进度
     xhr.upload.addEventListener('progress', event => {
+      console.log('[Upload] Progress event:', {
+        imageId,
+        lengthComputable: event.lengthComputable,
+        loaded: event.loaded,
+        total: event.total,
+      });
+
       if (event.lengthComputable) {
         const progress = (event.loaded / event.total) * 100;
+        console.log('[Upload] Emitting progress:', imageId, progress);
         emit('upload-progress', imageId, progress);
       }
     });
 
     // 上传完成
     xhr.addEventListener('load', async () => {
+      console.log('[Upload] Load event:', {
+        imageId,
+        status: xhr.status,
+        statusText: xhr.statusText,
+      });
+
       if (xhr.status >= 200 && xhr.status < 300) {
         emit('upload-progress', imageId, 100);
 
         // 验证文件存在
         try {
           await resourceStore.verifyFileExists(response.fileUrl);
+          console.log('[Upload] Upload complete:', imageId, response.fileUrl);
           emit('upload-complete', imageId, response.fileUrl);
         } catch (err) {
           console.warn('File verification failed:', err);
@@ -213,22 +237,38 @@ const uploadFile = async (file: File, imageId: string) => {
       }
     });
 
+    // 上传开始
+    xhr.upload.addEventListener('loadstart', () => {
+      console.log('[Upload] Load start:', imageId);
+    });
+
     // 上传错误
     xhr.addEventListener('error', () => {
+      console.error('[Upload] Error event:', imageId);
       emit('upload-error', imageId, 'Network error occurred');
     });
 
     // 上传超时
     xhr.addEventListener('timeout', () => {
+      console.error('[Upload] Timeout event:', imageId);
       emit('upload-error', imageId, 'Upload timeout');
     });
 
+    // 上传中止
+    xhr.addEventListener('abort', () => {
+      console.warn('[Upload] Abort event:', imageId);
+      emit('upload-error', imageId, 'Upload aborted');
+    });
+
+    // 必须在添加完所有事件监听器后再open和send
     xhr.open('PUT', response.uploadUrl);
     xhr.setRequestHeader('Content-Type', file.type);
     xhr.timeout = 60000; // 60秒超时
+
+    console.log('[Upload] Sending request:', imageId);
     xhr.send(file);
   } catch (err) {
-    console.error('Upload error:', err);
+    console.error('[Upload] Exception:', err);
     emit('upload-error', imageId, String(err));
   }
 };

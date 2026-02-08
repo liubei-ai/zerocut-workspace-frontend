@@ -83,7 +83,11 @@ const currentPage = ref(1);
 const limit = ref(12);
 
 // Use store data directly to avoid duplicate loading
-const materials = computed(() => resourceStore.materials as Material[]);
+// Filter out any null/undefined values for safety
+const materials = computed(() => {
+  const rawMaterials = resourceStore.materials || [];
+  return rawMaterials.filter(m => m != null) as Material[];
+});
 const totalMaterials = computed(() => resourceStore.materialsTotal);
 
 // const materialTypes = computed(() => [
