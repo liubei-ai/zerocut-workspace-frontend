@@ -52,7 +52,7 @@ export const useWorkspaceStore = defineStore('workspace', {
     },
 
     // 重置状态
-    reset() {
+    $reset() {
       this.currentWorkspace = null;
       this.workspaces = [];
       this.loading = false;
