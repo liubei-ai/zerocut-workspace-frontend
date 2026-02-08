@@ -112,8 +112,8 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.getLibraries(page, limit, workspaceId);
-      libraries.value = response.data.data.items;
-      librariesTotal.value = response.data.data.total;
+      libraries.value = response.data.list;
+      librariesTotal.value = response.data.total;
     } catch (err: unknown) {
       const apiError = err as { response?: { data?: { message?: string } } };
       error.value = apiError.response?.data?.message || 'Failed to fetch libraries';
@@ -134,7 +134,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.getLibrary(id, workspaceId);
-      currentLibrary.value = response.data.data;
+      currentLibrary.value = response.data;
     } catch (err: unknown) {
       const apiError = err as { response?: { data?: { message?: string } } };
       error.value = apiError.response?.data?.message || 'Failed to fetch library';
@@ -155,7 +155,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.createLibrary(data, workspaceId);
-      const newLibrary = response.data.data;
+      const newLibrary = response.data;
       libraries.value.unshift(newLibrary);
       librariesTotal.value += 1;
       return newLibrary;
@@ -179,7 +179,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.updateLibrary(id, data, workspaceId);
-      const updatedLibrary = response.data.data;
+      const updatedLibrary = response.data;
 
       // Update in list
       const index = libraries.value.findIndex(lib => lib.id === id);
@@ -249,7 +249,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.getLibraryStatistics(id, workspaceId);
-      return response.data.data;
+      return response.data;
     } catch (err: unknown) {
       const apiError = err as { response?: { data?: { message?: string } } };
       error.value = apiError.response?.data?.message || 'Failed to fetch library statistics';
@@ -336,7 +336,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.updateSubject(id, data, workspaceId);
-      const updatedSubject = response.data.data;
+      const updatedSubject = response.data;
 
       // Update in list
       const index = subjects.value.findIndex(subj => subj.id === id);
@@ -420,7 +420,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.createScene(libraryId, data, workspaceId);
-      const newScene = response.data.data;
+      const newScene = response.data;
       scenes.value.unshift(newScene);
       scenesTotal.value += 1;
       return newScene;
@@ -557,7 +557,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.updateMaterial(id, data, workspaceId);
-      const updatedMaterial = response.data.data;
+      const updatedMaterial = response.data;
 
       // Update in list
       const index = materials.value.findIndex(mat => mat.id === id);
@@ -625,7 +625,7 @@ export const useResourceStore = defineStore('resource', () => {
 
     try {
       const response = await resourceApi.verifyUpload(key, workspaceId);
-      return response.data.data;
+      return response.data;
     } catch (err: unknown) {
       const apiError = err as { response?: { data?: { message?: string } } };
       error.value = apiError.response?.data?.message || 'Failed to verify upload';
