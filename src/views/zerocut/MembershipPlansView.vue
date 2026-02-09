@@ -269,7 +269,7 @@ async function fetchMembershipPlans() {
 
     const workspaceId = workspaceStore.currentWorkspace?.workspaceId;
     const [plans, currentSubscription] = await Promise.all([
-      getMembershipPlans(true),
+      getMembershipPlans(),
       workspaceId ? getCurrentSubscription(workspaceId) : Promise.resolve(null),
     ]);
 

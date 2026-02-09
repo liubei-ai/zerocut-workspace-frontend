@@ -89,10 +89,8 @@ export interface SubscriptionDetails {
  * Get all membership plans
  * @param activeOnly - Only return active plans (default true)
  */
-export async function getMembershipPlans(activeOnly = true) {
-  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans', {
-    params: { activeOnly },
-  });
+export async function getMembershipPlans() {
+  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans');
   return response.data;
 }
 

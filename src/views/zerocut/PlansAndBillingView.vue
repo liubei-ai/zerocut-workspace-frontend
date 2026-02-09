@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import {
   cancelSubscription,
   getCurrentSubscription,
@@ -7,6 +6,7 @@ import {
   type MembershipPlanDto,
   type SubscriptionDetails,
 } from '@/api/membershipApi';
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiError } from '@/types/api';
@@ -110,16 +110,8 @@ async function loadData() {
 
   try {
     const [plansResult, subscriptionResult] = await Promise.all([
-      getMembershipPlans(false),
-      (async () => {
-        try {
-          return await getCurrentSubscription(workspaceId.value!);
-        } catch (e) {
-          const err = e as ApiError;
-          if (err?.code === 404) return null;
-          throw e;
-        }
-      })(),
+      getMembershipPlans(),
+      workspaceId.value ? getCurrentSubscription(workspaceId.value) : Promise.resolve(null),
     ]);
 
     membershipPlans.value = plansResult ?? [];
