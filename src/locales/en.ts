@@ -1,6 +1,7 @@
 export default {
   common: {
     add: 'Add',
+    back: 'Back',
     cancel: 'Cancel',
     save: 'Save',
     refresh: 'Refresh',

@@ -1,10 +1,15 @@
 import menuAdmin from './menus/admin.menu';
+import menuStudio from './menus/studio.menu';
 import menuZeroCut from './menus/zerocut.menu';
 
 // 生产环境菜单（只包含zerocut）
 const productionMenus = [
   {
     key: 'menu.zerocut',
+    items: menuStudio,
+  },
+  {
+    key: 'menu.plansAndBilling',
     items: menuZeroCut,
   },
 ];
@@ -16,9 +21,12 @@ export function generateNavigation(isSuperAdmin = false) {
   // 如果用户是超级管理员，在 zerocut 菜单后面添加管理员菜单
   if (isSuperAdmin) {
     // 找到 zerocut 菜单的位置，在其后插入管理员菜单
+    const plansAndBillingIndex = baseMenus.findIndex(menu => menu.key === 'menu.plansAndBilling');
     const zerocutIndex = baseMenus.findIndex(menu => menu.key === 'menu.zerocut');
-    if (zerocutIndex !== -1) {
-      baseMenus.splice(zerocutIndex + 1, 0, {
+    const insertIndex = plansAndBillingIndex !== -1 ? plansAndBillingIndex : zerocutIndex;
+
+    if (insertIndex !== -1) {
+      baseMenus.splice(insertIndex + 1, 0, {
         key: 'menu.admin',
         items: menuAdmin,
       });

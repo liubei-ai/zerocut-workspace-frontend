@@ -1,6 +1,7 @@
 export default {
   common: {
     add: '新增',
+    back: '返回',
     cancel: '取消',
     description: '描述',
     delete: '删除',
@@ -45,7 +46,7 @@ export default {
     // 顶部与分组（保留仍被使用的键）
     landing: '模版演示',
     uiPreview: 'UI主题预览',
-    zerocut: 'Zerocut',
+    zerocut: 'Zerocut 创作',
     admin: '管理员',
     pages: '页面',
     charts: '图表',

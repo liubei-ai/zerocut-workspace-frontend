@@ -1,6 +1,7 @@
 export default {
   common: {
     add: '追加',
+    back: '戻る',
     cancel: 'キャンセル',
     description: '説明',
     delete: '削除',
@@ -44,7 +45,7 @@ export default {
     // トップレベル（現行ナビで使用）
     landing: 'ランディング',
     uiPreview: 'UIテーマプレビュー',
-    zerocut: 'Zerocut',
+    zerocut: '動画作成',
     admin: '管理者',
     pages: 'ページ',
     charts: 'チャート ',

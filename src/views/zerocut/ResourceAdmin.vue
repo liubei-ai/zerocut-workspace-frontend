@@ -1,57 +1,92 @@
 <template>
   <div class="resource-admin">
-    <v-container fluid class="pa-6">
-      <LibraryHeader @create-library="openCreateDialog" />
+    <ResponsivePageHeader
+      :title="t('menu.resourceAdmin')"
+      :primary-actions="headerPrimaryActions"
+      :secondary-actions="headerSecondaryActions"
+    >
+      <template #description>
+        <p class="text-medium-emphasis text-sm sm:text-base">
+          {{ t('resource.managementSubtitle') }}
+        </p>
+      </template>
+    </ResponsivePageHeader>
 
-      <div v-if="!resourceStore.currentLibrary">
-        <LibraryList
-          @select-library="handleSelectLibrary"
-          @edit-library="handleEditLibrary"
-          @delete-library="handleDeleteLibrary"
-        />
-      </div>
-
-      <div v-else>
-        <LibraryDetail @back="handleBack" />
-      </div>
-
-      <CreateLibraryDialog
-        v-model:open="isCreateDialogOpen"
-        @library-created="handleLibraryCreated"
+    <div v-if="!resourceStore.currentLibrary">
+      <LibraryList
+        @select-library="handleSelectLibrary"
+        @edit-library="handleEditLibrary"
+        @delete-library="handleDeleteLibrary"
       />
+    </div>
 
-      <EditLibraryDialog
-        v-model:open="isEditDialogOpen"
-        :library="selectedLibrary"
-        @library-updated="handleLibraryUpdated"
-      />
+    <div v-else>
+      <LibraryDetail @back="handleBack" />
+    </div>
 
-      <DeleteLibraryDialog
-        v-model:open="isDeleteDialogOpen"
-        :library="selectedLibrary"
-        @library-deleted="handleLibraryDeleted"
-      />
-    </v-container>
+    <CreateLibraryDialog
+      v-model:open="isCreateDialogOpen"
+      @library-created="handleLibraryCreated"
+    />
+
+    <EditLibraryDialog
+      v-model:open="isEditDialogOpen"
+      :library="selectedLibrary"
+      @library-updated="handleLibraryUpdated"
+    />
+
+    <DeleteLibraryDialog
+      v-model:open="isDeleteDialogOpen"
+      :library="selectedLibrary"
+      @library-deleted="handleLibraryDeleted"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import CreateLibraryDialog from '@/components/resource/ResourceLibrary/CreateLibraryDialog.vue';
 import DeleteLibraryDialog from '@/components/resource/ResourceLibrary/DeleteLibraryDialog.vue';
 import EditLibraryDialog from '@/components/resource/ResourceLibrary/EditLibraryDialog.vue';
 import LibraryDetail from '@/components/resource/ResourceLibrary/LibraryDetail.vue';
-import LibraryHeader from '@/components/resource/ResourceLibrary/LibraryHeader.vue';
 import LibraryList from '@/components/resource/ResourceLibrary/LibraryList.vue';
 import { useResourceStore } from '@/stores/resourceStore';
 import type { ResourceLibrary } from '@/types/resource';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 const resourceStore = useResourceStore();
+const { t } = useI18n();
 
 const isCreateDialogOpen = ref(false);
 const isEditDialogOpen = ref(false);
 const isDeleteDialogOpen = ref(false);
 const selectedLibrary = ref<ResourceLibrary | null>(null);
+
+const headerPrimaryActions = computed(() => [
+  {
+    key: 'create',
+    label: t('resource.createLibrary'),
+    icon: 'mdi-plus',
+    color: 'primary',
+    variant: 'flat' as const,
+    onClick: () => openCreateDialog(),
+  },
+]);
+
+const headerSecondaryActions = computed(() =>
+  resourceStore.currentLibrary
+    ? [
+        {
+          key: 'back',
+          label: t('common.back'),
+          icon: 'mdi-arrow-left',
+          variant: 'outlined' as const,
+          onClick: () => handleBack(),
+        },
+      ]
+    : []
+);
 
 const openCreateDialog = () => {
   isCreateDialogOpen.value = true;

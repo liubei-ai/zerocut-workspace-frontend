@@ -1,21 +1,5 @@
 const zerocutMenu = [
   {
-    key: 'menu.studio',
-    link: import.meta.env.VITE_ZEROCUT_STUDIO_PROJECT,
-    icon: 'mdi-video-plus',
-    external: true,
-  },
-  {
-    key: 'menu.dashboard',
-    link: '/dashboard',
-    icon: 'mdi-view-dashboard-outline',
-  },
-  {
-    key: 'menu.resourceAdmin',
-    link: '/resource-admin',
-    icon: 'mdi-folder-multiple-outline',
-  },
-  {
     key: 'menu.apikeys',
     link: '/apikey',
     icon: 'mdi-key-variant',
@@ -45,15 +29,6 @@ zerocutMenu.push({
   link: '/membership',
   icon: 'mdi-account-check-outline',
 });
-
-if (import.meta.env.VITE_PRO_GUIDE_ENABLE === 'true') {
-  zerocutMenu.push({
-    key: 'menu.guide',
-    link: 'https://liubeiai.feishu.cn/wiki/AuUnwr7beigRy1klOXDcnuu0nAg?from=zerocut_workspace',
-    icon: 'mdi-open-in-new',
-    external: true,
-  });
-}
 
 if (import.meta.env.VITE_MEMBER_PRICE_ENABLE === 'true') {
   zerocutMenu.push({
