@@ -146,8 +146,8 @@ const openRechargeDialog = (workspace: WorkspaceListItem) => {
 const handleRecharge = async (data: {
   amount: number;
   creditsAmount?: number;
+  creditsValidityDays?: number;
   paymentMethod: 'manual' | 'give';
-  thirdPartyOrderNo?: string;
 }) => {
   if (!selectedWorkspace.value) return;
 
@@ -158,12 +158,15 @@ const handleRecharge = async (data: {
       workspaceId: selectedWorkspace.value.workspaceId,
       amount: data.amount,
       paymentMethod: data.paymentMethod,
-      thirdPartyOrderNo: data.thirdPartyOrderNo,
     };
 
     // 添加积分数量参数（如果有）
     if (data.creditsAmount !== undefined) {
       rechargeData.creditsAmount = data.creditsAmount;
+    }
+
+    if (data.creditsValidityDays !== undefined) {
+      rechargeData.creditsValidityDays = data.creditsValidityDays;
     }
 
     const result = await createRecharge(rechargeData);

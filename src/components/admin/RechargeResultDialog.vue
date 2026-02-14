@@ -99,21 +99,6 @@
             </v-row>
           </v-card-text>
         </v-card>
-
-        <!-- 支付详情（如果有） -->
-        <v-card
-          v-if="result?.paymentDetails && Object.keys(result.paymentDetails).length > 0"
-          variant="outlined"
-        >
-          <v-card-title class="d-flex align-center pa-4">
-            <v-icon class="mr-2" color="primary">mdi-information</v-icon>
-            支付详情
-          </v-card-title>
-          <v-divider />
-          <v-card-text class="pa-4">
-            <pre class="text-body-2">{{ JSON.stringify(result?.paymentDetails, null, 2) }}</pre>
-          </v-card-text>
-        </v-card>
       </v-card-text>
 
       <v-divider />

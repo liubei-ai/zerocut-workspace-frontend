@@ -32,9 +32,9 @@ export interface QueryWorkspacesParams {
 export interface CreateRechargeParams {
   workspaceId?: string;
   amount: number;
-  thirdPartyOrderNo?: string;
+  creditsAmount?: number;
+  creditsValidityDays?: number;
   paymentMethod?: 'manual' | 'give';
-  paymentDetails?: Record<string, any>;
 }
 
 // 充值响应接口
@@ -46,8 +46,6 @@ export interface RechargeResponse {
   creditsAmount: number;
   status: string;
   paymentMethod: string;
-  thirdPartyOrderNo?: string;
-  paymentDetails?: Record<string, any>;
   createdAt: string;
   updatedAt: string;
 }

@@ -66,6 +66,22 @@
               class="mb-2"
             />
 
+            <v-text-field
+              v-model="creditsValidityDays"
+              label="积分有效期 (天)"
+              type="number"
+              min="1"
+              max="1000"
+              step="1"
+              placeholder="默认 365 天"
+              :disabled="loading"
+              :rules="validityDaysRules"
+              required
+              variant="outlined"
+              density="comfortable"
+              class="mb-2"
+            />
+
             <!-- 积分输入说明 -->
             <div class="text-caption text-medium-emphasis mb-3 px-2">
               <v-icon size="14" class="mr-1">mdi-information-outline</v-icon>
@@ -158,6 +174,22 @@
               class="mb-2"
             />
 
+            <v-text-field
+              v-model="creditsValidityDays"
+              label="积分有效期 (天)"
+              type="number"
+              min="1"
+              max="1000"
+              step="1"
+              placeholder="默认 30 天"
+              :disabled="loading"
+              :rules="validityDaysRules"
+              required
+              variant="outlined"
+              density="comfortable"
+              class="mb-2"
+            />
+
             <!-- 积分赠送说明 -->
             <div class="text-caption text-medium-emphasis mb-3 px-2">
               <v-icon size="14" class="mr-1">mdi-gift-outline</v-icon>
@@ -233,8 +265,8 @@ interface Emits {
     data: {
       amount: number;
       creditsAmount?: number;
+      creditsValidityDays?: number;
       paymentMethod: 'manual' | 'give';
-      thirdPartyOrderNo?: string;
     }
   ): void;
 }
@@ -249,6 +281,7 @@ const form = ref();
 const formValid = ref(false);
 const amount = ref<string>('');
 const creditsAmount = ref<string>('');
+const creditsValidityDays = ref<string>('365');
 const rechargeType = ref<'manual' | 'give'>('manual');
 
 // 系统默认兑换比例
@@ -269,6 +302,17 @@ const creditsRules = [
     if (!v) return true; // 可选字段
     const num = parseInt(v);
     return (!isNaN(num) && num >= 1 && Number.isInteger(parseFloat(v))) || '积分数量必须是正整数';
+  },
+];
+
+const validityDaysRules = [
+  (v: string) => !!v || '请输入积分有效期',
+  (v: string) => {
+    const num = parseInt(v);
+    return (
+      (!isNaN(num) && num >= 1 && num <= 1000 && Number.isInteger(parseFloat(v))) ||
+      '积分有效期必须是1-1000的正整数'
+    );
   },
 ];
 
@@ -386,6 +430,13 @@ const isOpen = computed({
 });
 
 const isValid = computed(() => {
+  const validityNum = parseInt(creditsValidityDays.value);
+  const validityValid =
+    !isNaN(validityNum) &&
+    validityNum >= 1 &&
+    validityNum <= 1000 &&
+    Number.isInteger(parseFloat(creditsValidityDays.value));
+
   if (rechargeType.value === 'manual') {
     const amountNum = parseFloat(amount.value);
     const amountValid = !isNaN(amountNum) && amountNum >= 0.1;
@@ -393,10 +444,10 @@ const isValid = computed(() => {
     const creditsNum = parseInt(creditsAmount.value);
     const creditsValid = !creditsAmount.value || (!isNaN(creditsNum) && creditsNum >= 1);
 
-    return amountValid && creditsValid && formValid.value;
+    return amountValid && creditsValid && validityValid && formValid.value;
   } else {
     const creditsNum = parseInt(creditsAmount.value);
-    return !isNaN(creditsNum) && creditsNum >= 1 && formValid.value;
+    return !isNaN(creditsNum) && creditsNum >= 1 && validityValid && formValid.value;
   }
 });
 
@@ -410,11 +461,12 @@ const handleConfirm = () => {
   const data: {
     amount: number;
     creditsAmount?: number;
+    creditsValidityDays?: number;
     paymentMethod: 'manual' | 'give';
-    thirdPartyOrderNo?: string;
   } = {
     amount: rechargeType.value === 'give' ? 0 : parseFloat(amount.value),
     paymentMethod: rechargeType.value,
+    creditsValidityDays: parseInt(creditsValidityDays.value),
   };
 
   // 添加积分数量
@@ -427,6 +479,17 @@ const handleConfirm = () => {
   emit('confirm', data);
 };
 
+watch(
+  () => rechargeType.value,
+  newType => {
+    creditsValidityDays.value = newType === 'give' ? '30' : '365';
+    formValid.value = false;
+    if (form.value) {
+      form.value.resetValidation();
+    }
+  }
+);
+
 // 重置表单
 watch(
   () => props.open,
@@ -435,6 +498,7 @@ watch(
       amount.value = '';
       creditsAmount.value = '';
       rechargeType.value = 'manual';
+      creditsValidityDays.value = '365';
       formValid.value = false;
       if (form.value) {
         form.value.resetValidation();
