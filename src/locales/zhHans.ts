@@ -458,6 +458,17 @@ export default {
         copySuccess: '密钥已复制到剪贴板',
         copyMcpSuccess: 'MCP 配置已复制到剪贴板',
       },
+      ott: {
+        generateOtt: '生成临时令牌',
+        ottTitle: '临时访问令牌（OTT）',
+        ottWarning: '此令牌仅显示一次，关闭后无法再查看。有效期 3 分钟，仅可使用一次。',
+        ottToken: '临时令牌',
+        ottUsageExample: '使用示例',
+        ottDescription: '将上述命令发送给您的 AI Agent，它将自动获取真实的 API Key。',
+        ottGenerating: '生成中...',
+        ottCopied: '已复制到剪贴板',
+        ottExpired: '令牌已过期',
+      },
     },
     members: {
       title: '成员管理',
