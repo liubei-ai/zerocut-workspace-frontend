@@ -461,6 +461,19 @@ export default {
         copySuccess: 'Key copied to clipboard',
         copyMcpSuccess: 'MCP config copied to clipboard',
       },
+      ott: {
+        generateOtt: 'Generate Temporary Token',
+        ottTitle: 'One-Time Token (OTT)',
+        ottWarning:
+          'This token is shown only once and cannot be viewed again after closing. Valid for 3 minutes and can only be used once.',
+        ottToken: 'Temporary Token',
+        ottUsageExample: 'Usage Example',
+        ottDescription:
+          'Send the above command to your AI Agent, and it will automatically obtain the real API Key.',
+        ottGenerating: 'Generating...',
+        ottCopied: 'Copied to clipboard',
+        ottExpired: 'Token expired',
+      },
     },
     members: {
       title: 'Member Management',
