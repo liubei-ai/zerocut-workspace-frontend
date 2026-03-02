@@ -457,6 +457,19 @@ export default {
         copySuccess: 'キーをクリップボードにコピーしました',
         copyMcpSuccess: 'MCP設定をクリップボードにコピーしました',
       },
+      ott: {
+        generateOtt: '一時トークンを生成',
+        ottTitle: 'ワンタイムトークン（OTT）',
+        ottWarning:
+          'このトークンは一度だけ表示され、閉じた後は再表示できません。有効期限は3分で、1回のみ使用可能です。',
+        ottToken: '一時トークン',
+        ottUsageExample: '使用例',
+        ottDescription:
+          '上記のコマンドをAIエージェントに送信すると、実際のAPIキーが自動的に取得されます。',
+        ottGenerating: '生成中...',
+        ottCopied: 'クリップボードにコピーしました',
+        ottExpired: 'トークンの有効期限が切れました',
+      },
     },
     members: {
       title: 'メンバー管理',
