@@ -303,7 +303,12 @@ const copyOtt = async () => {
  */
 const usageExample = computed(() => {
   if (!ottData.value) return '';
-  const apiUrl = import.meta.env.VITE_API2_BASE_URL || window.location.origin;
+  // 获取 API Base URL
+  let apiUrl = import.meta.env.VITE_API2_BASE_URL || window.location.origin;
+  // 如果是相对路径（开发环境），使用 localhost:9527
+  if (apiUrl.startsWith('/')) {
+    apiUrl = `http://localhost:9527${apiUrl}`;
+  }
   return `curl -X POST ${apiUrl}/open/ott/exchange \\
   -H "Content-Type: application/json" \\
   -d '{"ott":"${ottData.value.ott}"}'`;
@@ -641,7 +646,6 @@ const getStatusColor = (status: string) => {
 
         <v-card-text>
           <v-alert type="warning" variant="tonal" class="mb-4">
-            <v-icon class="mr-2">mdi-alert</v-icon>
             {{ t('zerocut.apikeys.ott.ottWarning') }}
           </v-alert>
 
@@ -683,7 +687,6 @@ const getStatusColor = (status: string) => {
           </v-card>
 
           <v-alert type="info" variant="tonal" density="compact">
-            <v-icon class="mr-2" size="20">mdi-information</v-icon>
             {{ t('zerocut.apikeys.ott.ottDescription') }}
           </v-alert>
         </v-card-text>

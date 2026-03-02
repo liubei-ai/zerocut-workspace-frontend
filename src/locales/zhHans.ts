@@ -3,6 +3,8 @@ export default {
     add: '新增',
     back: '返回',
     cancel: '取消',
+    close: '关闭',
+    copy: '复制',
     description: '描述',
     delete: '删除',
     update: '更新',

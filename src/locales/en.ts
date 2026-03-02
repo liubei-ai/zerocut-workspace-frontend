@@ -3,6 +3,8 @@ export default {
     add: 'Add',
     back: 'Back',
     cancel: 'Cancel',
+    close: 'Close',
+    copy: 'Copy',
     save: 'Save',
     refresh: 'Refresh',
     delete: 'Delete',

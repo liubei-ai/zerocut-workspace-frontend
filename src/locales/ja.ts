@@ -3,6 +3,8 @@ export default {
     add: '追加',
     back: '戻る',
     cancel: 'キャンセル',
+    close: '閉じる',
+    copy: 'コピー',
     description: '説明',
     delete: '削除',
     title: 'タイトル',
