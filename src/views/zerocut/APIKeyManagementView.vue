@@ -436,8 +436,7 @@ const getStatusColor = (status: string) => {
           { title: t('zerocut.apikeys.table.columns.createdAt'), key: 'createdAt', sortable: true },
           { title: t('zerocut.apikeys.table.columns.expiresAt'), key: 'expiresAt', sortable: true },
           { title: t('zerocut.apikeys.table.columns.status'), key: 'status', sortable: true },
-          // { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
-          // { title: t('zerocut.apikeys.table.columns.lastUsedAt'), key: 'lastUsedAt', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
         ]"
         :items="tokens"
         item-value="id"
@@ -496,6 +495,22 @@ const getStatusColor = (status: string) => {
                   : t('zerocut.apikeys.status.disabled')
             }}
           </v-chip>
+        </template>
+
+        <template #item.actions="{ item }">
+          <v-btn
+            icon="mdi-clock-fast"
+            size="small"
+            variant="text"
+            :loading="ottGenerating === item.id"
+            :disabled="item.status !== 'active' || ottGenerating === item.id"
+            @click="handleGenerateOtt(item.id)"
+          >
+            <v-icon>mdi-clock-fast</v-icon>
+            <v-tooltip activator="parent" location="top">
+              {{ t('zerocut.apikeys.ott.generateOtt') }}
+            </v-tooltip>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -607,6 +622,76 @@ const getStatusColor = (status: string) => {
           </v-btn>
           <v-btn color="error" variant="flat" @click="deleteToken" :loading="deleting">
             {{ t('common.delete') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- OTT Dialog -->
+    <v-dialog v-model="ottDialog" max-width="700" persistent>
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon class="mr-2" color="primary">mdi-clock-fast</v-icon>
+          {{ t('zerocut.apikeys.ott.ottTitle') }}
+          <v-spacer></v-spacer>
+          <v-chip color="warning" size="small" variant="tonal">
+            {{ Math.floor(countdown / 60) }}:{{ String(countdown % 60).padStart(2, '0') }}
+          </v-chip>
+        </v-card-title>
+
+        <v-card-text>
+          <v-alert type="warning" variant="tonal" class="mb-4">
+            <v-icon class="mr-2">mdi-alert</v-icon>
+            {{ t('zerocut.apikeys.ott.ottWarning') }}
+          </v-alert>
+
+          <v-text-field
+            :model-value="ottData?.ott"
+            :label="t('zerocut.apikeys.ott.ottToken')"
+            readonly
+            variant="outlined"
+            class="mb-4"
+          >
+            <template #append-inner>
+              <v-btn icon="mdi-content-copy" size="small" variant="text" @click="copyOtt"></v-btn>
+            </template>
+          </v-text-field>
+
+          <v-card variant="outlined" class="pa-3 mb-3">
+            <div class="text-subtitle-2 mb-2 d-flex align-center">
+              <v-icon class="mr-2" size="20">mdi-code-braces</v-icon>
+              {{ t('zerocut.apikeys.ott.ottUsageExample') }}
+            </div>
+            <pre
+              class="text-caption pa-2 rounded"
+              style="
+                background-color: rgba(0, 0, 0, 0.05);
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+              "
+            ><code>{{ usageExample }}</code></pre>
+            <v-btn
+              variant="outlined"
+              size="small"
+              prepend-icon="mdi-content-copy"
+              class="mt-2"
+              @click="copyExample"
+            >
+              {{ t('common.copy') }}
+            </v-btn>
+          </v-card>
+
+          <v-alert type="info" variant="tonal" density="compact">
+            <v-icon class="mr-2" size="20">mdi-information</v-icon>
+            {{ t('zerocut.apikeys.ott.ottDescription') }}
+          </v-alert>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn variant="text" @click="closeOttDialog">
+            {{ t('common.close') }}
           </v-btn>
         </v-card-actions>
       </v-card>
