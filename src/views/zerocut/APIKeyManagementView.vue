@@ -441,7 +441,7 @@ const getStatusColor = (status: string) => {
           { title: t('zerocut.apikeys.table.columns.createdAt'), key: 'createdAt', sortable: true },
           { title: t('zerocut.apikeys.table.columns.expiresAt'), key: 'expiresAt', sortable: true },
           { title: t('zerocut.apikeys.table.columns.status'), key: 'status', sortable: true },
-          { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
+          // { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
         ]"
         :items="tokens"
         item-value="id"
@@ -462,6 +462,19 @@ const getStatusColor = (status: string) => {
               @click="copyMCPConfig(item)"
               >MCP</v-btn
             >
+            <v-btn
+              icon="mdi-clock-fast"
+              size="x-small"
+              variant="text"
+              :loading="ottGenerating === item.id"
+              :disabled="item.status !== 'active' || ottGenerating === item.id"
+              @click="handleGenerateOtt(item.id)"
+            >
+              <v-icon>mdi-clock-fast</v-icon>
+              <v-tooltip activator="parent" location="top">
+                {{ t('zerocut.apikeys.ott.generateOtt') }}
+              </v-tooltip>
+            </v-btn>
           </div>
         </template>
 
@@ -500,22 +513,6 @@ const getStatusColor = (status: string) => {
                   : t('zerocut.apikeys.status.disabled')
             }}
           </v-chip>
-        </template>
-
-        <template #item.actions="{ item }">
-          <v-btn
-            icon="mdi-clock-fast"
-            size="small"
-            variant="text"
-            :loading="ottGenerating === item.id"
-            :disabled="item.status !== 'active' || ottGenerating === item.id"
-            @click="handleGenerateOtt(item.id)"
-          >
-            <v-icon>mdi-clock-fast</v-icon>
-            <v-tooltip activator="parent" location="top">
-              {{ t('zerocut.apikeys.ott.generateOtt') }}
-            </v-tooltip>
-          </v-btn>
         </template>
       </v-data-table>
     </v-card>
