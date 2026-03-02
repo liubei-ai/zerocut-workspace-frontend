@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { createApiKey, deleteApiKey, getApiKeys } from '@/api/workspaceApi';
+import { createApiKey, deleteApiKey, generateOtt, getApiKeys } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { formatDate } from '@/utils/date';
 import { maskApiKey } from '@/utils/stringUtils';
-import { computed, onMounted, ref } from 'vue';
+import { debounce } from 'lodash';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -21,6 +22,17 @@ const createTokenDialog = ref(false);
 const deleteTokenDialog = ref(false);
 const selectedToken = ref<ApiKey | null>(null);
 const createdTokenKey = ref<string>('');
+
+// OTT state
+const ottDialog = ref(false);
+const ottGenerating = ref<number | null>(null);
+const ottData = ref<{
+  ott: string;
+  expiresAt: string;
+  expiresIn: number;
+} | null>(null);
+const countdown = ref(180);
+let countdownTimer: NodeJS.Timeout | null = null;
 
 // 新密钥表单
 const newToken = ref({
@@ -218,6 +230,97 @@ const copyMCPConfig = async (token: ApiKey) => {
   }
 };
 
+/**
+ * 生成 OTT
+ */
+const handleGenerateOtt = debounce(async (apiKeyId: number) => {
+  if (ottGenerating.value) return;
+
+  ottGenerating.value = apiKeyId;
+
+  try {
+    const workspaceId = workspaceStore.currentWorkspaceId;
+    if (!workspaceId) {
+      showError(t('zerocut.apikeys.errors.noWorkspace'));
+      return;
+    }
+
+    const result = await generateOtt(workspaceId, apiKeyId);
+    ottData.value = result;
+    ottDialog.value = true;
+    startCountdown();
+  } catch (error: any) {
+    console.error('Failed to generate OTT:', error);
+    showError(error.message || '生成临时令牌失败');
+  } finally {
+    ottGenerating.value = null;
+  }
+}, 300);
+
+/**
+ * 启动倒计时
+ */
+const startCountdown = () => {
+  countdown.value = 180;
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+  }
+  countdownTimer = setInterval(() => {
+    countdown.value--;
+    if (countdown.value <= 0) {
+      clearInterval(countdownTimer!);
+      countdownTimer = null;
+    }
+  }, 1000);
+};
+
+/**
+ * 关闭 OTT 弹窗
+ */
+const closeOttDialog = () => {
+  ottDialog.value = false;
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+};
+
+/**
+ * 复制 OTT
+ */
+const copyOtt = async () => {
+  if (!ottData.value) return;
+  try {
+    await navigator.clipboard.writeText(ottData.value.ott);
+    showSuccess(t('zerocut.apikeys.ott.ottCopied'));
+  } catch (error) {
+    console.error('Failed to copy OTT:', error);
+  }
+};
+
+/**
+ * 使用示例
+ */
+const usageExample = computed(() => {
+  if (!ottData.value) return '';
+  const apiUrl = import.meta.env.VITE_API2_BASE_URL || window.location.origin;
+  return `curl -X POST ${apiUrl}/open/ott/exchange \\
+  -H "Content-Type: application/json" \\
+  -d '{"ott":"${ottData.value.ott}"}'`;
+});
+
+/**
+ * 复制使用示例
+ */
+const copyExample = async () => {
+  try {
+    await navigator.clipboard.writeText(usageExample.value);
+    showSuccess(t('zerocut.apikeys.ott.ottCopied'));
+  } catch (error) {
+    console.error('Failed to copy example:', error);
+  }
+};
+
 // 显示错误提示
 const showError = (message: string) => {
   snackbarStore.showErrorMessage(message);
@@ -231,6 +334,15 @@ const showSuccess = (message: string) => {
 // 组件挂载时加载数据
 onMounted(() => {
   loadTokens();
+});
+
+/**
+ * 清理定时器（组件卸载时）
+ */
+onBeforeUnmount(() => {
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+  }
 });
 
 // 获取状态颜色
