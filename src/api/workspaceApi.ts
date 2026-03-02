@@ -184,3 +184,34 @@ export async function updateWorkspace(
   const response = await client.patch(`/workspaces/${workspaceId}`, updateData);
   return response.data;
 }
+
+/**
+ * 为 API Key 生成一次性临时令牌（OTT）
+ * @param workspaceId 工作空间ID
+ * @param apiKeyId API Key ID
+ * @returns OTT 令牌和过期信息
+ */
+export async function generateOtt(
+  workspaceId: string,
+  apiKeyId: number
+): Promise<{
+  ott: string;
+  expiresAt: string;
+  expiresIn: number;
+}> {
+  const response = await client.post(`/workspaces/${workspaceId}/api-keys/${apiKeyId}/ott`);
+  return response.data;
+}
+
+/**
+ * 用 OTT 换取 API Key（公开接口，仅供测试）
+ * @param ott 一次性临时令牌
+ * @returns API Key 和过期时间
+ */
+export async function exchangeOtt(ott: string): Promise<{
+  apiKey: string;
+  expiresAt: string | null;
+}> {
+  const response = await client.post('/open/ott/exchange', { ott });
+  return response.data;
+}
