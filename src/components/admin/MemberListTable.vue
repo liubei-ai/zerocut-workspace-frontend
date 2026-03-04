@@ -208,15 +208,14 @@ const pagination = ref({
 });
 
 const filters = ref({
-  status: 'active' as SubscriptionStatus | undefined,
-  purchaseMode: undefined as PurchaseMode | undefined,
+  status: 'all' as SubscriptionStatus | 'all',
   ownerName: '',
   ownerEmail: '',
   ownerPhone: '',
 });
 
-const statusOptions: Array<{ value: SubscriptionStatus | undefined; label: string }> = [
-  { value: undefined, label: '全部状态' },
+const statusOptions: Array<{ value: SubscriptionStatus | 'all'; label: string }> = [
+  { value: 'all', label: '全部' },
   { value: 'draft', label: '草稿' },
   { value: 'signing', label: '签约中' },
   { value: 'active', label: '活跃' },
@@ -252,8 +251,8 @@ async function loadMembers() {
     };
 
     // Add filters only if they have values
-    if (filters.value.status) params.status = filters.value.status;
-    if (filters.value.purchaseMode) params.purchaseMode = filters.value.purchaseMode;
+    if (filters.value.status && filters.value.status !== 'all')
+      params.status = filters.value.status;
     if (filters.value.ownerName?.trim()) params.ownerName = filters.value.ownerName.trim();
     if (filters.value.ownerEmail?.trim()) params.ownerEmail = filters.value.ownerEmail.trim();
     if (filters.value.ownerPhone?.trim()) params.ownerPhone = filters.value.ownerPhone.trim();
@@ -290,8 +289,7 @@ function handleSearch() {
 
 function handleReset() {
   filters.value = {
-    status: 'active',
-    purchaseMode: undefined,
+    status: 'all',
     ownerName: '',
     ownerEmail: '',
     ownerPhone: '',
