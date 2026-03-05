@@ -23,4 +23,4 @@ VITE_MEMBER_PRICE_ENABLE=false
 
 # Zerocut Studio
 VITE_ZEROCUT_PRO_URL=https://pro.zerocut.cn
-VITE_ZEROCUT_STUDIO_PROJECT=https://studio.zerocut.cn/auth/authing?redirect=/projects
+VITE_ZEROCUT_STUDIO_PROJECT=https://www.zerocut.cn/
