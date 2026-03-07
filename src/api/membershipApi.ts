@@ -56,7 +56,7 @@ export interface SigningSessionResponse {
 }
 
 export interface SigningSessionStatus {
-  status: 'signing' | 'signed' | 'expired';
+  status: 'signing' | 'paid' | 'signed' | 'expired';
   contractId: string | null;
   subscriptionId: number | null;
 }

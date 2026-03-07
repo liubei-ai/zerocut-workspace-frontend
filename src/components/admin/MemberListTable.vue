@@ -102,6 +102,12 @@
           </v-chip>
         </template>
 
+        <template #item.contractStatus="{ item }">
+          <v-chip :color="getContractStatusColor(item.contractStatus)" variant="tonal" size="small">
+            {{ getContractStatusLabel(item.contractStatus) }}
+          </v-chip>
+        </template>
+
         <!-- Tier Column -->
         <template #item.tier="{ item }">
           <v-chip :color="getTierColor(item.tier)" variant="outlined" size="small">
@@ -184,6 +190,7 @@
 <script setup lang="ts">
 import {
   getMemberList,
+  type MemberContractStatus,
   type MemberListItem,
   type MembershipTier,
   type MemberSummary,
@@ -229,7 +236,8 @@ const headers = [
   { title: '所有者信息', key: 'ownerInfo', sortable: false, width: '200px' },
   { title: '等级', key: 'tier', sortable: false },
   { title: '购买模式', key: 'purchaseMode', sortable: false },
-  { title: '状态', key: 'status', sortable: false },
+  { title: '订阅状态', key: 'status', sortable: false },
+  { title: '签约状态', key: 'contractStatus', sortable: false },
   { title: '自动续费', key: 'autoRenew', sortable: false },
   { title: '当前周期', key: 'currentPeriod', sortable: false, width: '180px' },
   { title: '签约时间', key: 'contractTerm', sortable: false, width: '180px' },
@@ -361,6 +369,32 @@ function getPurchaseModeLabel(mode: PurchaseMode): string {
     auto_yearly: '按年续费',
   };
   return labels[mode] || mode;
+}
+
+function getContractStatusColor(status: MemberContractStatus): string {
+  switch (status) {
+    case 'signed':
+      return 'success';
+    case 'signing':
+      return 'info';
+    case 'paid_not_signed':
+      return 'warning';
+    case 'terminated':
+      return 'error';
+    default:
+      return 'grey';
+  }
+}
+
+function getContractStatusLabel(status: MemberContractStatus): string {
+  const labels: Record<MemberContractStatus, string> = {
+    none: '无',
+    signing: '签约中',
+    signed: '已签约',
+    terminated: '已解约',
+    paid_not_signed: '已支付未签',
+  };
+  return labels[status] || status;
 }
 
 function getTierColor(tier: MembershipTier): string {

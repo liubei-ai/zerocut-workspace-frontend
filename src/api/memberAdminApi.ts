@@ -14,6 +14,7 @@ export type MembershipTier = 'basic' | 'standard' | 'premium';
 export type OrderPurpose = 'initial' | 'renewal';
 export type OrderStatus = 'created' | 'processing' | 'success' | 'failed';
 export type PeriodStatus = 'pending' | 'granted';
+export type MemberContractStatus = 'none' | 'signing' | 'signed' | 'terminated' | 'paid_not_signed';
 
 // Member Summary
 export interface MemberSummary {
@@ -35,6 +36,8 @@ export interface MemberListItem {
   purchaseMode: PurchaseMode;
   status: SubscriptionStatus;
   autoRenew: boolean;
+  contractStatus: MemberContractStatus;
+  contractId: string | null;
   currentPeriodStartAt: string | null;
   currentPeriodEndAt: string | null;
   createdAt: string;

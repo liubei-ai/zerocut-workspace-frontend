@@ -286,11 +286,15 @@ const pollSigningStatusOnce = async () => {
 
   try {
     const status = await getSigningSessionStatus(signingSession.value.signingSessionId);
-    if (status.status === 'signed') {
+    if (status.status === 'signed' || status.status === 'paid') {
       uiStatus.value = 'signed';
       stopPolling();
       stopCountdown();
       emit('success', status);
+      emit('update:open', false);
+      if (status.status === 'paid') {
+        snackbarStore.showSuccessMessage('支付成功');
+      }
     } else if (status.status === 'expired') {
       uiStatus.value = 'timeout';
       stopPolling();
