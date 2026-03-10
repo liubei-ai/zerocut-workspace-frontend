@@ -408,3 +408,93 @@ export async function syncUserFromAuthing(userId: number): Promise<SyncUserRespo
   const response = await apiClient.post<SyncUserResponse>(`/admin/users/${userId}/sync`);
   return response.data;
 }
+
+export type MembershipTier = 'basic' | 'standard' | 'premium';
+
+export type PurchaseMode = 'one_time_month' | 'auto_monthly' | 'one_time_year' | 'auto_yearly';
+
+export interface IMembershipPlanFeature {
+  key: string;
+  i18nKey?: string;
+  i18nParams?: Record<string, any>;
+  label?: string;
+  description?: string;
+  value?: number | string | boolean;
+  unit?: string;
+  icon?: string;
+  group?: string;
+  highlight?: boolean;
+  order?: number;
+}
+
+export interface MembershipPlanItem {
+  id: number;
+  code: string;
+  name: string;
+  tier: MembershipTier;
+  purchaseMode: PurchaseMode;
+  priceCents: number;
+  currency: string;
+  monthlyCredits: number;
+  billingIntervalMonths: number;
+  isActive: boolean;
+  wechatPapayPlanId?: string;
+  features: IMembershipPlanFeature[];
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+
+export interface QueryMembershipPlansParams {
+  purchaseMode?: PurchaseMode;
+  tier?: MembershipTier;
+  isActive?: boolean;
+}
+
+export interface CreateMembershipPlanParams {
+  code: string;
+  name: string;
+  tier: MembershipTier;
+  purchaseMode: PurchaseMode;
+  priceCents: number;
+  currency?: string;
+  monthlyCredits: number;
+  billingIntervalMonths: number;
+  isActive?: boolean;
+  wechatPapayPlanId?: string;
+  features?: IMembershipPlanFeature[];
+}
+
+export interface UpdateMembershipPlanParams {
+  code?: string;
+  name?: string;
+  tier?: MembershipTier;
+  purchaseMode?: PurchaseMode;
+  priceCents?: number;
+  currency?: string;
+  monthlyCredits?: number;
+  billingIntervalMonths?: number;
+  isActive?: boolean;
+  wechatPapayPlanId?: string;
+  features?: IMembershipPlanFeature[];
+}
+
+export async function getMembershipPlans(params: QueryMembershipPlansParams = {}) {
+  const response = await apiClient.get<MembershipPlanItem[]>('/admin/membership-plans', { params });
+  return response.data;
+}
+
+export async function createMembershipPlan(params: CreateMembershipPlanParams) {
+  const response = await apiClient.post<MembershipPlanItem>('/admin/membership-plans', params);
+  return response.data;
+}
+
+export async function updateMembershipPlan(id: number, params: UpdateMembershipPlanParams) {
+  const response = await apiClient.put<MembershipPlanItem>(`/admin/membership-plans/${id}`, params);
+  return response.data;
+}
+
+export async function deleteMembershipPlan(id: number) {
+  const response = await apiClient.delete<{ message: string }>(`/admin/membership-plans/${id}`);
+  return response.data;
+}

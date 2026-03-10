@@ -3,13 +3,24 @@ import MainMenu from '@/components/navigation/MainMenu.vue';
 import WorkspaceSelector from '@/components/toolbar/WorkspaceSelector.vue';
 import { generateNavigation } from '@/configs/navigation';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
+import { useMembershipStore } from '@/stores/membershipStore';
 import { useUserStore } from '@/stores/userStore';
 import { computed, onMounted } from 'vue';
 
 const userStore = useUserStore();
 const customizeTheme = useCustomizeThemeStore();
+const membershipStore = useMembershipStore();
 
-const navigation = computed(() => generateNavigation(userStore.isSuperAdmin));
+const navigation = computed(() => {
+  const nav = generateNavigation(userStore.isSuperAdmin);
+  if (membershipStore.hasActiveSubscription) return nav;
+  return {
+    menu: nav.menu.map(group => ({
+      ...group,
+      items: group.items.filter((item: { key: string }) => item.key !== 'menu.packages'),
+    })),
+  };
+});
 
 onMounted(async () => {
   scrollToBottom();
@@ -17,6 +28,8 @@ onMounted(async () => {
   if (!userStore.isLoggedIn) {
     await userStore.loadUserInfo();
   }
+
+  membershipStore.initialize();
 });
 
 const scrollToBottom = () => {

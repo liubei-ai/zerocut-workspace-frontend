@@ -10,6 +10,11 @@ export default [
     icon: 'mdi-account-group',
   },
   {
+    key: 'menu.adminMembershipPlans',
+    link: '/admin/membership-plans',
+    icon: 'mdi-package-variant',
+  },
+  {
     key: 'menu.adminSystemConfig',
     link: '/admin/system-config',
     icon: 'mdi-cog',

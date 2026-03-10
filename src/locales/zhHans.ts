@@ -70,6 +70,7 @@ export default {
     // 管理员子菜单
     adminWorkspaceList: '工作区',
     adminMembers: '会员管理',
+    adminMembershipPlans: '会员商品',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',
@@ -224,6 +225,15 @@ export default {
       },
       credits: {
         monthly: '{credits} 积分/月',
+      },
+      statusBar: {
+        noMembership: '未开通会员',
+        expired: '会员已过期',
+        expiredAt: '到期时间：{date}',
+        validUntil: '有效期至：{date}',
+        creditsUnit: '积分',
+        buyCredits: '购买积分',
+        manageSubscription: '订阅管理',
       },
       errors: {
         fetchPlansFailed: '加载会员计划失败',

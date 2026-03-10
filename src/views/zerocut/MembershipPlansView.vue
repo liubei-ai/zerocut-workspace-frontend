@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {
-  getCurrentSubscription,
   getMembershipPlans,
   type MembershipPlanDto,
   type SigningSessionStatus,
-  type SubscriptionDetails,
 } from '@/api/membershipApi';
 import SubscribePricing, {
   type PriceDisplay,
@@ -13,6 +11,7 @@ import SubscribePricing, {
 import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
 import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
 import SubscriptionSuccessDialog from '@/components/zerocut/SubscriptionSuccessDialog.vue';
+import { useMembershipStore } from '@/stores/membershipStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { computed, onMounted, ref } from 'vue';
@@ -30,7 +29,6 @@ interface OrderInfo {
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
-const subscription = ref<SubscriptionDetails | null>(null);
 const error = ref<string | null>(null);
 const selectedCycle = ref<Cycle>('one_time_month');
 const membershipPaymentOpen = ref(false);
@@ -43,6 +41,7 @@ const subscriptionSuccessOpen = ref(false);
 const successSubscriptionId = ref<number | null>(null);
 
 const snackbarStore = useSnackbarStore();
+const membershipStore = useMembershipStore();
 const workspaceStore = useWorkspaceStore();
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -249,9 +248,9 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
     productId: plan.code,
     // Mark as current subscription if matches planCode and status is active
     isCurrentSubscription:
-      subscription.value !== null &&
-      subscription.value.planCode === plan.code &&
-      subscription.value.status === 'active',
+      membershipStore.subscription !== null &&
+      membershipStore.subscription.planCode === plan.code &&
+      membershipStore.subscription.status === 'active',
   }));
 });
 
@@ -262,19 +261,50 @@ const hasOneTimeMonth = computed(() =>
 );
 const hasOneTimeYear = computed(() => rawPlans.value.some(p => p.purchaseMode === 'one_time_year'));
 
+const statusBarState = computed<'none' | 'expired' | 'active'>(() => {
+  const sub = membershipStore.subscription;
+  if (!sub) return 'none';
+  if (sub.status === 'expired') return 'expired';
+  if (sub.status === 'active') return 'active';
+  return 'none';
+});
+
+const formattedExpiryDate = computed(() => {
+  const date = membershipStore.expiryDate;
+  if (!date) return '';
+  return new Date(date).toLocaleDateString(locale.value === 'zhHans' ? 'zh-CN' : locale.value, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+});
+
+const statusBarClass = computed(() => ({
+  'status-none': statusBarState.value === 'none',
+  'status-expired': statusBarState.value === 'expired',
+  'status-active': statusBarState.value === 'active',
+}));
+
+const statusBarIcon = computed(() => {
+  if (statusBarState.value === 'expired') return 'mdi-account-clock-outline';
+  if (statusBarState.value === 'active') return 'mdi-account-check-outline';
+  return 'mdi-account-off-outline';
+});
+
+const statusBarIconColor = computed(() => {
+  if (statusBarState.value === 'active') return 'primary';
+  if (statusBarState.value === 'expired') return 'error';
+  return undefined;
+});
+
 async function fetchMembershipPlans() {
   try {
     loading.value = true;
     error.value = null;
 
-    const workspaceId = workspaceStore.currentWorkspace?.workspaceId;
-    const [plans, currentSubscription] = await Promise.all([
-      getMembershipPlans(),
-      workspaceId ? getCurrentSubscription(workspaceId) : Promise.resolve(null),
-    ]);
+    const [plans] = await Promise.all([getMembershipPlans(), membershipStore.refresh()]);
 
     rawPlans.value = plans ?? [];
-    subscription.value = currentSubscription;
   } catch (e: unknown) {
     let message: string | null = null;
     if (e instanceof Error) {
@@ -381,6 +411,7 @@ function handleMembershipSigningCancel() {
 function handleSubscriptionSuccessViewDetails() {
   subscriptionSuccessOpen.value = false;
   successSubscriptionId.value = null;
+  membershipStore.refresh();
   router.push('/plans-and-billing');
 }
 
@@ -388,6 +419,7 @@ function handleSubscriptionSuccessViewDetails() {
 function handleSubscriptionSuccessClose() {
   subscriptionSuccessOpen.value = false;
   successSubscriptionId.value = null;
+  membershipStore.refresh();
 }
 
 onMounted(fetchMembershipPlans);
@@ -395,6 +427,69 @@ onMounted(fetchMembershipPlans);
 
 <template>
   <v-container fluid>
+    <!-- Membership Status Bar -->
+    <v-card class="membership-status-bar mb-4" :class="statusBarClass" variant="flat">
+      <v-card-text class="d-flex align-center justify-space-between py-3 px-5">
+        <!-- Left: icon + info -->
+        <div class="d-flex align-center ga-3">
+          <div class="status-icon-wrap" :class="statusBarClass">
+            <v-icon :color="statusBarIconColor" size="20">{{ statusBarIcon }}</v-icon>
+          </div>
+
+          <div>
+            <template v-if="statusBarState === 'none'">
+              <div class="status-label">{{ t('zerocut.membership.statusBar.noMembership') }}</div>
+            </template>
+            <template v-else-if="statusBarState === 'expired'">
+              <div class="status-label status-label--error">
+                {{ t('zerocut.membership.statusBar.expired') }}
+              </div>
+              <div class="status-sub">
+                {{ t('zerocut.membership.statusBar.expiredAt', { date: formattedExpiryDate }) }}
+              </div>
+            </template>
+            <template v-else>
+              <div class="d-flex align-center ga-2">
+                <span class="status-label">
+                  {{ membershipStore.tierI18nKey ? t(membershipStore.tierI18nKey) : '' }}
+                </span>
+                <v-chip
+                  size="x-small"
+                  color="primary"
+                  variant="tonal"
+                  class="credits-chip"
+                  @click="router.push('/wallet')"
+                >
+                  <v-icon start size="12">mdi-lightning-bolt</v-icon>
+                  {{ membershipStore.availableCredits.toLocaleString() }}
+                  {{ t('zerocut.membership.statusBar.creditsUnit') }}
+                </v-chip>
+              </div>
+              <div class="status-sub">
+                {{ t('zerocut.membership.statusBar.validUntil', { date: formattedExpiryDate }) }}
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Right: actions -->
+        <div class="d-flex align-center ga-2">
+          <v-btn
+            v-if="statusBarState === 'active'"
+            size="small"
+            color="primary"
+            variant="tonal"
+            @click="router.push('/packages')"
+          >
+            {{ t('zerocut.membership.statusBar.buyCredits') }}
+          </v-btn>
+          <v-btn size="small" variant="outlined" @click="router.push('/plans-and-billing')">
+            {{ t('zerocut.membership.statusBar.manageSubscription') }}
+          </v-btn>
+        </div>
+      </v-card-text>
+    </v-card>
+
     <v-card class="section-card mb-6">
       <v-card-text class="d-flex justify-center py-4">
         <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" color="primary">
@@ -550,6 +645,79 @@ onMounted(fetchMembershipPlans);
 <style scoped lang="scss">
 .section-card {
   background: rgb(var(--v-theme-surface));
+}
+
+.membership-status-bar {
+  border-radius: 12px;
+  overflow: hidden;
+
+  &.status-none {
+    background: rgba(var(--v-theme-on-surface), 0.03);
+    border: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+  }
+
+  &.status-expired {
+    background: rgba(var(--v-theme-error), 0.06);
+    border: 1px solid rgba(var(--v-theme-error), 0.2);
+  }
+
+  &.status-active {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--v-theme-primary), 0.07) 0%,
+      rgba(var(--v-theme-primary), 0.03) 100%
+    );
+    border: 1px solid rgba(var(--v-theme-primary), 0.18);
+  }
+}
+
+.status-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.status-none {
+    background: rgba(var(--v-theme-on-surface), 0.06);
+  }
+
+  &.status-expired {
+    background: rgba(var(--v-theme-error), 0.12);
+  }
+
+  &.status-active {
+    background: rgba(var(--v-theme-primary), 0.1);
+  }
+}
+
+.status-label {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: rgba(var(--v-theme-on-surface), 0.9);
+
+  &--error {
+    color: rgb(var(--v-theme-error));
+  }
+}
+
+.status-sub {
+  font-size: 0.75rem;
+  margin-top: 2px;
+  color: rgba(var(--v-theme-on-surface), 0.55);
+}
+
+.credits-chip {
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0;
+
+  &:hover {
+    opacity: 0.85;
+  }
 }
 
 .membership-subtitle {

@@ -68,6 +68,7 @@ export default {
     // 管理者サブメニュー
     adminWorkspaceList: 'ワークスペース一覧',
     adminMembers: 'メンバー管理',
+    adminMembershipPlans: '会員商品',
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'ロール管理',
@@ -224,6 +225,15 @@ export default {
       },
       credits: {
         monthly: '{credits} ポイント/月',
+      },
+      statusBar: {
+        noMembership: '会員未登録',
+        expired: '会員期限切れ',
+        expiredAt: '有効期限：{date}',
+        validUntil: '有効期限：{date}',
+        creditsUnit: 'ポイント',
+        buyCredits: 'ポイント購入',
+        manageSubscription: '購読管理',
       },
       errors: {
         fetchPlansFailed: '会員プランの読み込みに失敗しました',

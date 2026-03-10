@@ -69,6 +69,7 @@ export default {
     // Admin submenu
     adminWorkspaceList: 'Workspaces',
     adminMembers: 'Members',
+    adminMembershipPlans: 'Membership Plans',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Personas',
@@ -225,6 +226,15 @@ export default {
       },
       credits: {
         monthly: '{credits} credits/mo',
+      },
+      statusBar: {
+        noMembership: 'No Membership',
+        expired: 'Membership Expired',
+        expiredAt: 'Expired on: {date}',
+        validUntil: 'Valid until: {date}',
+        creditsUnit: 'credits',
+        buyCredits: 'Buy Credits',
+        manageSubscription: 'Manage Subscription',
       },
       errors: {
         fetchPlansFailed: 'Failed to load membership plans',
