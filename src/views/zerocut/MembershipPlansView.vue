@@ -50,8 +50,8 @@ type PriceListTier = 'basic' | 'standard' | 'premium';
 
 type ModeCell = {
   priceYuan: number;
-  unitPriceYuanPerCredit: number;
-  discountText?: string;
+  unitPriceYuanPer100: number;
+  discountZhe: number;
 };
 
 type TierComparisonRow = {
@@ -64,6 +64,7 @@ type TierComparisonRow = {
 };
 
 const PRICE_LIST_TIER_ORDER: PriceListTier[] = ['basic', 'standard', 'premium'];
+const BASE_UNIT_PRICE_YUAN_PER_100_CREDITS = 5;
 
 function buildModeCell(params: {
   plan: MembershipPlanDto;
@@ -74,22 +75,17 @@ function buildModeCell(params: {
     params.plan.purchaseMode === 'auto_yearly' || params.plan.purchaseMode === 'one_time_year';
   const intervalMonths = isYearly ? params.plan.billingIntervalMonths : 1;
   const totalCredits = params.monthlyCredits * intervalMonths;
-  const unitPriceYuanPerCredit =
-    totalCredits > 0 ? params.plan.priceYuan / totalCredits : params.plan.priceYuan;
-
-  let discountText: string | undefined;
-  if (params.oneTimeMonthlyPlan && params.oneTimeMonthlyPlan.priceYuan > 0) {
-    const basePrice = params.oneTimeMonthlyPlan.priceYuan * intervalMonths;
-    const percent = Math.round((1 - params.plan.priceYuan / basePrice) * 100);
-    if (Number.isFinite(percent) && percent > 0) {
-      discountText = t('zerocut.membership.priceList.formats.savePercent', { percent });
-    }
-  }
+  const unitPriceYuanPer100 =
+    totalCredits > 0 ? (params.plan.priceYuan * 100) / totalCredits : params.plan.priceYuan;
+  const discountZhe =
+    BASE_UNIT_PRICE_YUAN_PER_100_CREDITS > 0
+      ? (unitPriceYuanPer100 / BASE_UNIT_PRICE_YUAN_PER_100_CREDITS) * 10
+      : 0;
 
   return {
     priceYuan: params.plan.priceYuan,
-    unitPriceYuanPerCredit,
-    discountText,
+    unitPriceYuanPer100,
+    discountZhe,
   };
 }
 
@@ -165,10 +161,34 @@ function formatYuanYearly(priceYuan: number): string {
   return t('zerocut.membership.priceList.formats.priceYearly', { price: priceYuan });
 }
 
-function formatUnitPrice(unitPriceYuanPerCredit: number): string {
-  return t('zerocut.membership.priceList.formats.unitPrice', {
-    price: unitPriceYuanPerCredit.toFixed(3),
+function formatUnitPricePer100(unitPriceYuanPer100: number): string {
+  return t('zerocut.membership.priceList.formats.unitPricePer100', {
+    price: unitPriceYuanPer100.toFixed(2),
   });
+}
+
+function formatDiscountPer100(discountZhe: number): string {
+  return t('zerocut.membership.priceList.formats.discountPer100', {
+    discount: discountZhe.toFixed(1),
+  });
+}
+
+function getDiscountLabelByUnitPricePer100(plan: MembershipPlanDto): string | undefined {
+  const isYearly = plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year';
+  const intervalMonths = isYearly ? plan.billingIntervalMonths : 1;
+  const totalCredits = plan.monthlyCredits * intervalMonths;
+  if (totalCredits <= 0) return undefined;
+
+  const unitPriceYuanPer100 = (plan.priceYuan * 100) / totalCredits;
+  if (!Number.isFinite(unitPriceYuanPer100) || unitPriceYuanPer100 <= 0) return undefined;
+
+  const discountZhe =
+    BASE_UNIT_PRICE_YUAN_PER_100_CREDITS > 0
+      ? (unitPriceYuanPer100 / BASE_UNIT_PRICE_YUAN_PER_100_CREDITS) * 10
+      : 0;
+  if (!Number.isFinite(discountZhe) || discountZhe <= 0 || discountZhe >= 10) return undefined;
+
+  return formatDiscountPer100(discountZhe);
 }
 
 const priceComparisonRows = computed<TierComparisonRow[]>(() => {
@@ -238,20 +258,31 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
   const allowedModes = cycleFilterMap[selectedCycle.value];
   const filtered = rawPlans.value.filter(p => allowedModes.includes(p.purchaseMode));
 
-  return filtered.map(plan => ({
-    planName: t(TIER_NAME_KEYS[plan.tier] ?? 'zerocut.membership.tiers.unknown', {
-      tier: plan.tier,
-    }),
-    price: formatPrice(plan, rawPlans.value),
-    credits: formatCredits(plan.monthlyCredits),
-    features: formatPlanFeatures(plan),
-    productId: plan.code,
-    // Mark as current subscription if matches planCode and status is active
-    isCurrentSubscription:
-      membershipStore.subscription !== null &&
-      membershipStore.subscription.planCode === plan.code &&
-      membershipStore.subscription.status === 'active',
-  }));
+  return filtered.map(plan => {
+    const basePrice = formatPrice(plan, rawPlans.value);
+    const discountLabel = getDiscountLabelByUnitPricePer100(plan);
+
+    const price: string | PriceDisplay = discountLabel
+      ? typeof basePrice === 'string'
+        ? { main: basePrice, discount: discountLabel }
+        : { ...basePrice, discount: discountLabel }
+      : basePrice;
+
+    return {
+      planName: t(TIER_NAME_KEYS[plan.tier] ?? 'zerocut.membership.tiers.unknown', {
+        tier: plan.tier,
+      }),
+      price,
+      credits: formatCredits(plan.monthlyCredits),
+      features: formatPlanFeatures(plan),
+      productId: plan.code,
+      // Mark as current subscription if matches planCode and status is active
+      isCurrentSubscription:
+        membershipStore.subscription !== null &&
+        membershipStore.subscription.planCode === plan.code &&
+        membershipStore.subscription.status === 'active',
+    };
+  });
 });
 
 const hasYearly = computed(() => rawPlans.value.some(p => p.purchaseMode === 'auto_yearly'));
@@ -546,10 +577,10 @@ onMounted(fetchMembershipPlans);
                 <template v-if="row.oneTime">
                   <div class="price-main">{{ formatYuanPrice(row.oneTime.priceYuan) }}</div>
                   <div class="price-sub">
-                    {{ formatUnitPrice(row.oneTime.unitPriceYuanPerCredit) }}
+                    {{ formatUnitPricePer100(row.oneTime.unitPriceYuanPer100) }}
                   </div>
-                  <div v-if="row.oneTime.discountText" class="price-sub">
-                    {{ row.oneTime.discountText }}
+                  <div class="price-sub">
+                    {{ formatDiscountPer100(row.oneTime.discountZhe) }}
                   </div>
                 </template>
                 <template v-else>-</template>
@@ -558,10 +589,10 @@ onMounted(fetchMembershipPlans);
                 <template v-if="row.autoMonthly">
                   <div class="price-main">{{ formatYuanPrice(row.autoMonthly.priceYuan) }}</div>
                   <div class="price-sub">
-                    {{ formatUnitPrice(row.autoMonthly.unitPriceYuanPerCredit) }}
+                    {{ formatUnitPricePer100(row.autoMonthly.unitPriceYuanPer100) }}
                   </div>
-                  <div v-if="row.autoMonthly.discountText" class="price-sub">
-                    {{ row.autoMonthly.discountText }}
+                  <div class="price-sub">
+                    {{ formatDiscountPer100(row.autoMonthly.discountZhe) }}
                   </div>
                 </template>
                 <template v-else>-</template>
@@ -570,10 +601,10 @@ onMounted(fetchMembershipPlans);
                 <template v-if="row.oneTimeYear">
                   <div class="price-main">{{ formatYuanYearly(row.oneTimeYear.priceYuan) }}</div>
                   <div class="price-sub">
-                    {{ formatUnitPrice(row.oneTimeYear.unitPriceYuanPerCredit) }}
+                    {{ formatUnitPricePer100(row.oneTimeYear.unitPriceYuanPer100) }}
                   </div>
-                  <div v-if="row.oneTimeYear.discountText" class="price-sub">
-                    {{ row.oneTimeYear.discountText }}
+                  <div class="price-sub">
+                    {{ formatDiscountPer100(row.oneTimeYear.discountZhe) }}
                   </div>
                 </template>
                 <template v-else>-</template>

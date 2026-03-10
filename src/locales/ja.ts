@@ -173,6 +173,8 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/年',
           unitPrice: '{price}元/ポイント',
+          unitPricePer100: '100ポイントあたり {price} 元',
+          discountPer100: '{discount}割',
           savePercent: '{percent}%お得',
         },
         discounts: {
@@ -195,7 +197,7 @@ export default {
         benefits: {
           monthlyCredits: '毎月 {credits} ポイント',
           quotas: {
-            basic: '最大 310 枚の画像、または 250 秒の動画（デフォルトモデル）',
+            basic: '最大 250 枚の画像、または 200 秒の動画（デフォルトモデル）',
             standard: '最大 1000 枚の画像、または 800 秒の動画（デフォルトモデル）',
             premium: '最大 3125 枚の画像、または 2500 秒の動画（デフォルトモデル）',
           },

@@ -169,6 +169,8 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/年',
           unitPrice: '{price}元/积分',
+          unitPricePer100: '每100积分 {price} 元',
+          discountPer100: '{discount}折',
           savePercent: '省{percent}%',
         },
         discounts: {
@@ -191,9 +193,9 @@ export default {
         benefits: {
           monthlyCredits: '每月 {credits} 积分',
           quotas: {
-            basic: '最多可生成 310 张图片或最多生成 250 秒视频（以默认模型计算）',
-            standard: '最多可生成 1000 张图片或生成 800 秒视频（以默认模型计算）',
-            premium: '最多可生成 3125 张图片或生成 2500 秒视频（以默认模型计算）',
+            basic: '最多可生成 250 张图片或最多生成 200 秒视频（以默认模型计算）',
+            standard: '最多可生成 1000 张图片或最多生成 800 秒视频（以默认模型计算）',
+            premium: '最多可生成 3125 张图片或最多生成 2500 秒视频（以默认模型计算）',
           },
           universal: {
             allModels: '所有模型均可使用',

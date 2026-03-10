@@ -113,13 +113,12 @@ function onSubscribe(plan: SubscriptionPlan) {
                           <span class="price-monthly text-body-2">
                             {{ plan.price.monthlyEquivalent }}
                           </span>
-                          <v-chip
-                            v-if="plan.price.discount"
-                            size="small"
-                            color="error"
-                            variant="flat"
-                            class="price-discount"
-                          >
+                        </div>
+                        <div
+                          v-if="plan.price.discount"
+                          class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                        >
+                          <v-chip size="small" color="error" variant="flat" class="price-discount">
                             {{ plan.price.discount }}
                           </v-chip>
                         </div>
@@ -204,13 +203,12 @@ function onSubscribe(plan: SubscriptionPlan) {
                         <span class="price-monthly text-body-2">
                           {{ plan.price.monthlyEquivalent }}
                         </span>
-                        <v-chip
-                          v-if="plan.price.discount"
-                          size="small"
-                          color="error"
-                          variant="flat"
-                          class="price-discount"
-                        >
+                      </div>
+                      <div
+                        v-if="plan.price.discount"
+                        class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                      >
+                        <v-chip size="small" color="error" variant="flat" class="price-discount">
                           {{ plan.price.discount }}
                         </v-chip>
                       </div>

@@ -8,6 +8,7 @@ import {
 } from '@/api/membershipApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useMembershipStore } from '@/stores/membershipStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { ApiError } from '@/types/api';
 import { formatDate } from '@/utils/date';
@@ -16,6 +17,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
 const snackbarStore = useSnackbarStore();
+const membershipStore = useMembershipStore();
 const { t } = useI18n();
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
@@ -137,6 +139,7 @@ async function confirmCancel() {
     });
 
     subscription.value = updated;
+    membershipStore.refresh();
     snackbarStore.showSuccessMessage(t('zerocut.plansAndBilling.messages.cancelSuccess'));
     cancelDialogOpen.value = false;
   } catch (e) {

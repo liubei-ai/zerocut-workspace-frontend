@@ -169,6 +169,8 @@ export default {
           priceYuan: '¥{price}',
           priceYearly: '¥{price}/yr',
           unitPrice: '{price} CNY/credit',
+          unitPricePer100: '¥{price} / 100 credits',
+          discountPer100: '≈{discount}/10',
           savePercent: 'Save {percent}%',
         },
         discounts: {
@@ -191,7 +193,7 @@ export default {
         benefits: {
           monthlyCredits: '{credits} credits / month',
           quotas: {
-            basic: 'Up to 310 images or 250s video (default model)',
+            basic: 'Up to 250 images or 200s video (default model)',
             standard: 'Up to 1000 images or 800s video (default model)',
             premium: 'Up to 3125 images or 2500s video (default model)',
           },
