@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type {
   CreateMembershipPlanParams,
+  IMembershipPlanFeature,
   MembershipPlanItem,
   MembershipTier,
   PurchaseMode,
   UpdateMembershipPlanParams,
 } from '@/api/adminApi';
+import MembershipPlanFeaturesEditor from '@/components/admin/MembershipPlanFeaturesEditor.vue';
 import { computed, ref, watch } from 'vue';
 
 interface Props {
@@ -49,7 +51,7 @@ const formData = ref({
   billingIntervalMonths: '',
   isActive: true,
   wechatPapayPlanId: '',
-  featuresJson: '[]',
+  features: [] as IMembershipPlanFeature[],
 });
 
 const isEdit = computed(() => !!props.plan);
@@ -91,17 +93,6 @@ const rules = {
       return Number.isInteger(n) && n > 0 ? true : '计费周期（月）必须是大于 0 的整数';
     },
   ],
-  featuresJson: [
-    (v: string) => {
-      if (!v?.trim()) return true;
-      try {
-        const parsed = JSON.parse(v);
-        return Array.isArray(parsed) ? true : 'features 必须是 JSON 数组';
-      } catch {
-        return 'features 不是合法 JSON';
-      }
-    },
-  ],
 };
 
 watch(
@@ -120,7 +111,7 @@ watch(
       billingIntervalMonths: '',
       isActive: true,
       wechatPapayPlanId: '',
-      featuresJson: '[]',
+      features: [],
     };
     form.value?.resetValidation();
 
@@ -136,12 +127,7 @@ watch(
     formData.value.billingIntervalMonths = String(props.plan.billingIntervalMonths);
     formData.value.isActive = props.plan.isActive;
     formData.value.wechatPapayPlanId = props.plan.wechatPapayPlanId || '';
-
-    try {
-      formData.value.featuresJson = JSON.stringify(props.plan.features || [], null, 2);
-    } catch {
-      formData.value.featuresJson = '[]';
-    }
+    formData.value.features = [...(props.plan.features || [])];
   }
 );
 
@@ -160,10 +146,6 @@ const save = async () => {
     const monthlyCredits = Number(formData.value.monthlyCredits);
     const billingIntervalMonths = Number(formData.value.billingIntervalMonths);
 
-    const features = formData.value.featuresJson?.trim()
-      ? (JSON.parse(formData.value.featuresJson) as any[])
-      : [];
-
     const basePayload = {
       code: formData.value.code.trim(),
       name: formData.value.name.trim(),
@@ -175,7 +157,7 @@ const save = async () => {
       billingIntervalMonths,
       isActive: formData.value.isActive,
       wechatPapayPlanId: formData.value.wechatPapayPlanId.trim() || undefined,
-      features,
+      features: formData.value.features,
     };
 
     if (isEdit.value) {
@@ -302,16 +284,7 @@ const save = async () => {
             </v-col>
 
             <v-col cols="12">
-              <v-textarea
-                v-model="formData.featuresJson"
-                label="features（JSON 数组，可选）"
-                variant="outlined"
-                density="comfortable"
-                auto-grow
-                rows="6"
-                max-rows="16"
-                :rules="rules.featuresJson"
-              />
+              <MembershipPlanFeaturesEditor v-model="formData.features" />
             </v-col>
           </v-row>
         </v-form>

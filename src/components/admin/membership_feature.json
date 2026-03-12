@@ -1,0 +1,27 @@
+[
+  {
+    "key": "quotas",
+    "order": 10,
+    "i18nKey": "zerocut.membership.priceList.benefits.quotas.basic"
+  },
+  {
+    "key": "allModels",
+    "order": 20,
+    "i18nKey": "zerocut.membership.priceList.benefits.universal.allModels"
+  },
+  {
+    "key": "hdVideo",
+    "order": 30,
+    "i18nKey": "zerocut.membership.priceList.benefits.universal.hdVideo"
+  },
+  {
+    "key": "noWatermark",
+    "order": 40,
+    "i18nKey": "zerocut.membership.priceList.benefits.universal.noWatermark"
+  },
+  {
+    "key": "specialServices",
+    "label": "专属服务权益",
+    "order": 50
+  }
+]
