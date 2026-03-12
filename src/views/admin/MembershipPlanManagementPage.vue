@@ -69,8 +69,6 @@ const purchaseModeRank: Record<string, number> = {
   auto_yearly: 3,
 };
 
-const baseUnitPriceYuanPer100 = 5;
-
 const headers = [
   { title: 'Code', key: 'code', width: '220px' },
   { title: '名称', key: 'name', width: '220px' },
@@ -92,18 +90,19 @@ const customKeySort = {
 
 const rows = computed(() => {
   return plans.value.map(p => {
-    const priceYuan = p.priceCents / 100;
+    const priceYuan = p.priceYuan ?? p.priceCents / 100;
     const creditsPerPeriod = p.monthlyCredits * p.billingIntervalMonths;
-    const unitPriceYuanPer100 = creditsPerPeriod > 0 ? (priceYuan * 100) / creditsPerPeriod : 0;
-    const discount =
-      baseUnitPriceYuanPer100 > 0 ? (unitPriceYuanPer100 / baseUnitPriceYuanPer100) * 10 : 0;
+    const unitPriceYuanPer100 =
+      p.unitPriceYuanPer100 ??
+      (creditsPerPeriod > 0 ? (priceYuan * 100) / creditsPerPeriod : priceYuan);
+    const discount = p.discountZhe ?? 0;
 
     return {
       ...p,
       priceYuan,
       creditsPerPeriod,
       unitPriceYuanPer100,
-      discountText: `${discount.toFixed(1)}折`,
+      discountText: discount > 0 ? `${discount.toFixed(1)}折` : '-',
     };
   });
 });

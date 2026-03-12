@@ -443,6 +443,10 @@ export interface MembershipPlanItem {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
+  priceYuan?: number;
+  baseUnitPriceYuanPer100?: number;
+  unitPriceYuanPer100?: number;
+  discountZhe?: number;
 }
 
 export interface QueryMembershipPlansParams {

@@ -64,28 +64,16 @@ type TierComparisonRow = {
 };
 
 const PRICE_LIST_TIER_ORDER: PriceListTier[] = ['basic', 'standard', 'premium'];
-const BASE_UNIT_PRICE_YUAN_PER_100_CREDITS = 5;
 
 function buildModeCell(params: {
   plan: MembershipPlanDto;
   monthlyCredits: number;
   oneTimeMonthlyPlan?: MembershipPlanDto;
 }): ModeCell {
-  const isYearly =
-    params.plan.purchaseMode === 'auto_yearly' || params.plan.purchaseMode === 'one_time_year';
-  const intervalMonths = isYearly ? params.plan.billingIntervalMonths : 1;
-  const totalCredits = params.monthlyCredits * intervalMonths;
-  const unitPriceYuanPer100 =
-    totalCredits > 0 ? (params.plan.priceYuan * 100) / totalCredits : params.plan.priceYuan;
-  const discountZhe =
-    BASE_UNIT_PRICE_YUAN_PER_100_CREDITS > 0
-      ? (unitPriceYuanPer100 / BASE_UNIT_PRICE_YUAN_PER_100_CREDITS) * 10
-      : 0;
-
   return {
     priceYuan: params.plan.priceYuan,
-    unitPriceYuanPer100,
-    discountZhe,
+    discountZhe: params.plan.discountZhe,
+    unitPriceYuanPer100: params.plan.unitPriceYuanPer100,
   };
 }
 
@@ -174,20 +162,8 @@ function formatDiscountPer100(discountZhe: number): string {
 }
 
 function getDiscountLabelByUnitPricePer100(plan: MembershipPlanDto): string | undefined {
-  const isYearly = plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year';
-  const intervalMonths = isYearly ? plan.billingIntervalMonths : 1;
-  const totalCredits = plan.monthlyCredits * intervalMonths;
-  if (totalCredits <= 0) return undefined;
-
-  const unitPriceYuanPer100 = (plan.priceYuan * 100) / totalCredits;
-  if (!Number.isFinite(unitPriceYuanPer100) || unitPriceYuanPer100 <= 0) return undefined;
-
-  const discountZhe =
-    BASE_UNIT_PRICE_YUAN_PER_100_CREDITS > 0
-      ? (unitPriceYuanPer100 / BASE_UNIT_PRICE_YUAN_PER_100_CREDITS) * 10
-      : 0;
+  const discountZhe = plan.discountZhe;
   if (!Number.isFinite(discountZhe) || discountZhe <= 0 || discountZhe >= 10) return undefined;
-
   return formatDiscountPer100(discountZhe);
 }
 
