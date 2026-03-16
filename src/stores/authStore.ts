@@ -1,5 +1,6 @@
 import router from '@/router';
 import type { RechargeRecord } from '@/types/api';
+import { isWeiXin } from '@/utils/wechat';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
@@ -7,6 +8,7 @@ import {
   requestAuthingLogout,
   syncAuth0Token,
   syncAuthingToken,
+  wechatOAuthAuthorize,
 } from '../api/authApi';
 import { useUserStore } from './userStore';
 import { useWorkspaceStore } from './workspaceStore';
@@ -45,6 +47,10 @@ export const useAuthStore = defineStore('auth', () => {
     if (record) {
       newbieCreditsRecord.value = record;
       console.log('新用户获得积分奖励:', record);
+    }
+
+    if (authType === 'authing' && isWeiXin()) {
+      await wechatOAuthAuthorize(import.meta.env.VITE_ZEROCUT_STUDIO_PROJECT);
     }
   };
 

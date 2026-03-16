@@ -28,3 +28,11 @@ export async function requestAuth0Logout() {
 export async function validateToken() {
   return apiClient.get<User>('/auth/me');
 }
+
+export async function wechatOAuthAuthorize(returnUrl: string) {
+  return apiClient.get('/wechat/oauth/authorize', {
+    params: {
+      returnUrl,
+    },
+  });
+}
