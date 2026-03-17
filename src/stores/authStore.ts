@@ -25,11 +25,13 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Handle Authing login success
    */
-  const setAuthToken = async (token: string) => {
-    // 调用 API 同步用户信息
+  const setAuthToken = async (
+    token: string,
+    wechatIdentities?: { openid?: string; unionid?: string }
+  ) => {
     let response;
     if (authType === 'authing') {
-      response = await syncAuthingToken(token);
+      response = await syncAuthingToken(token, wechatIdentities);
     } else if (authType === 'auth0') {
       response = await syncAuth0Token(token);
     }

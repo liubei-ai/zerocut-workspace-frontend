@@ -8,16 +8,35 @@ const authStore = useAuthStore();
 const authingWx = new AuthingWxmp({
   host: import.meta.env.VITE_AUTHING_HOST,
   appId: import.meta.env.VITE_AUTHING_APP_ID,
-  identifier: import.meta.env.VITE_AUTHING_IDENTIFIER,
   redirectUrl: import.meta.env.VITE_AUTHING_REDIRECT,
+  identifier: import.meta.env.VITE_AUTHING_IDENTIFIER,
 });
+
+interface AuthingUserInfo {
+  token: string;
+  identities: {
+    provider: string;
+    type: string;
+    token: string;
+    userIdInIdp: string;
+  }[];
+}
 
 onMounted(async () => {
   try {
     const response = authingWx.getUserInfo();
     if (response.ok && response.userInfo) {
-      console.log('authing callback', response.userInfo);
-      await authStore.setAuthToken((response.userInfo as unknown as { token: string }).token);
+      const userInfo = response.userInfo as unknown as AuthingUserInfo;
+      const wechatOpenId = userInfo.identities.find(
+        identity => identity.provider === 'wechat' && identity.type === 'openid'
+      );
+      const wechatUnionId = userInfo.identities.find(
+        identity => identity.provider === 'wechat' && identity.type === 'unionid'
+      );
+      await authStore.setAuthToken(userInfo.token, {
+        openid: wechatOpenId?.userIdInIdp,
+        unionid: wechatUnionId?.userIdInIdp,
+      });
       await router.push('/');
     }
   } catch (error) {

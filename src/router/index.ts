@@ -63,10 +63,10 @@ router.beforeEach(async to => {
     const userInfo = await checkAuthorization();
     if (!userInfo) {
       const authingWx = new AuthingWxmp({
-        identifier: import.meta.env.VITE_AUTHING_IDENTIFIER,
-        appId: import.meta.env.VITE_AUTHING_APP_ID,
         host: import.meta.env.VITE_AUTHING_HOST,
+        appId: import.meta.env.VITE_AUTHING_APP_ID,
         redirectUrl: import.meta.env.VITE_AUTHING_REDIRECT,
+        identifier: import.meta.env.VITE_AUTHING_IDENTIFIER,
       });
       if (authingWx.checkWechatUA()) {
         window.location.assign(authingWx.getAuthorizationUrl());
