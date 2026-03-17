@@ -14,6 +14,9 @@ importers:
       '@authing/guard-vue3':
         specifier: ^5.3.9
         version: 5.3.9(authing-js-sdk@4.23.50)(typescript@5.8.3)
+      '@authing/weixin-official-account':
+        specifier: ^5.1.21
+        version: 5.1.21
       '@formkit/auto-animate':
         specifier: ^0.8.2
         version: 0.8.2
@@ -260,6 +263,9 @@ packages:
 
   '@authing/react-ui-components@4.5.42':
     resolution: {integrity: sha512-aPZ81mnT/NhoT8kieGZQIHz5DCDC0ltwQeHNVsZyXixDHRZk6vksf0mhMK7XINzdLaNXShnWQPQ5/cdVpojDow==}
+
+  '@authing/weixin-official-account@5.1.21':
+    resolution: {integrity: sha512-s1iSbhEody82PjNOcsQw8Y+/hLR3lF2fMHjnPFsXHSRE+kf3P+VdFXD+MW8YHRyWaeukdTfiwru3uz3T66K0Qg==}
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -4112,6 +4118,8 @@ snapshots:
       react-dom: 16.14.0(react@16.14.0)
     transitivePeerDependencies:
       - authing-js-sdk
+
+  '@authing/weixin-official-account@5.1.21': {}
 
   '@babel/code-frame@7.27.1':
     dependencies:

@@ -8,7 +8,10 @@ VITE_API2_BASE_URL=https://api2.zerocut.cn/api
 VITE_AUTH_MODE=authing
 
 # Authing 配置
+VITE_AUTHING_IDENTIFIER=liubei-tech
 VITE_AUTHING_APP_ID=68c17ad8ebc4ccdf6ce71b5f
+VITE_AUTHING_HOST=https://zerocut.authing.cn
+VITE_AUTHING_REDIRECT=https://workspace.zerocut.cn/auth/authing/callback
 
 # Auth0 配置
 VITE_AUTH0_DOMAIN=zerocut.us.auth0.com

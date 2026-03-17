@@ -13,6 +13,10 @@ declare interface ImportMeta {
 
     readonly VITE_AUTH_MODE: 'auth0' | 'authing';
     readonly VITE_AUTHING_APP_ID: string;
+    readonly VITE_AUTHING_IDENTIFIER: string;
+    readonly VITE_AUTHING_HOST: string;
+    readonly VITE_AUTHING_REDIRECT: string;
+
     readonly VITE_AUTH0_DOMAIN: string;
     readonly VITE_AUTH0_CLIENT_ID: string;
     readonly VITE_AUTH0_CALLBACK_URL: string;

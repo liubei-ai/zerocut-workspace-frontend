@@ -1,3 +1,4 @@
+import { AuthingWxmp } from '@authing/weixin-official-account';
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
@@ -61,7 +62,18 @@ router.beforeEach(async to => {
   if (requiresAuth && !userStore.isLoggedIn) {
     const userInfo = await checkAuthorization();
     if (!userInfo) {
-      return { name: authRouteName, query: { redirect: to.fullPath } };
+      const authingWx = new AuthingWxmp({
+        identifier: import.meta.env.VITE_AUTHING_IDENTIFIER,
+        appId: import.meta.env.VITE_AUTHING_APP_ID,
+        host: import.meta.env.VITE_AUTHING_HOST,
+        redirectUrl: import.meta.env.VITE_AUTHING_REDIRECT,
+      });
+      if (authingWx.checkWechatUA()) {
+        window.location.assign(authingWx.getAuthorizationUrl());
+        return false;
+      } else {
+        return { name: authRouteName, query: { redirect: to.fullPath } };
+      }
     } else {
       userStore.updateUserInfo(userInfo);
     }
