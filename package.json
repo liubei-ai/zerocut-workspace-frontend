@@ -19,7 +19,6 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.5.0",
     "@authing/guard-vue3": "^5.3.9",
-    "@authing/weixin-official-account": "^5.1.21",
     "@formkit/auto-animate": "^0.8.2",
     "@mdi/font": "7.4.47",
     "@tiptap/pm": "^2.5.9",

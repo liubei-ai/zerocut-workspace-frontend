@@ -1,5 +1,6 @@
 import router from '@/router';
 import type { RechargeRecord } from '@/types/api';
+import { sleep } from '@/utils/common';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
@@ -40,6 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
     const { newbieCreditsRecord: record, ...rest } = response.data;
     userStore.updateUserInfo(rest);
 
+    await sleep(100);
     const workspaceStore = useWorkspaceStore();
     workspaceStore.loadWorkspaces();
 

@@ -4,15 +4,19 @@ import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
+import { useUserStore } from '@/stores/userStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { MetricCardData } from '@/types/stats';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();
+const userStore = useUserStore();
 const workspaceStore = useWorkspaceStore();
 const { t } = useI18n();
+const route = useRoute();
 
 // 加载状态
 const loading = ref(true);
@@ -37,6 +41,22 @@ const statisticsChartData = computed(() => statsStore.statisticsChartData);
 // 生命周期
 onMounted(async () => {
   try {
+    const isWechatUA = /MicroMessenger/i.test(navigator.userAgent);
+    const hasWechatBindResult = typeof route.query.wechatBind === 'string';
+    const hasWechatIdentity = !!userStore.userInfo?.openid || !!userStore.userInfo?.unionid;
+
+    if (isWechatUA && !hasWechatBindResult && !hasWechatIdentity) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('wechatBind');
+      const base = String(import.meta.env.VITE_API2_BASE_URL).replace(/\/$/, '');
+      const authorizeUrl =
+        `${base}/wechat/oauth/authorize` +
+        `?returnUrl=${encodeURIComponent(url.toString())}` +
+        `&scope=snsapi_userinfo`;
+      window.location.assign(authorizeUrl);
+      return;
+    }
+
     loading.value = true;
 
     // 设置日期范围为最近7天

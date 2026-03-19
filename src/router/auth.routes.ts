@@ -8,16 +8,6 @@ export const authingRoutes = [
       title: 'Authing认证',
     },
   },
-  {
-    path: '/auth/authing/callback',
-    name: 'auth-authing-callback',
-    component: () =>
-      import(/* webpackChunkName: "auth-authing-callback" */ '@/views/auth/AuthingCallback.vue'),
-    meta: {
-      layout: 'auth',
-      title: 'Authing回调',
-    },
-  },
 ];
 
 export const auth0Routes = [
