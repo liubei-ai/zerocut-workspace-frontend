@@ -45,6 +45,7 @@ onMounted(async () => {
     const hasWechatBindResult = typeof route.query.wechatBind === 'string';
     const hasWechatIdentity = !!userStore.userInfo?.openid || !!userStore.userInfo?.unionid;
 
+    // 如果是微信UA且没有绑定微信账号且没有微信身份
     if (isWechatUA && !hasWechatBindResult && !hasWechatIdentity) {
       const url = new URL(window.location.href);
       url.searchParams.delete('wechatBind');
@@ -57,15 +58,19 @@ onMounted(async () => {
       return;
     }
 
-    loading.value = true;
+    // 如果是微信绑定成功，刷新用户信息
+    if (isWechatUA && route.query.wechatBind === 'success') {
+      await userStore.loadUserInfo();
+    }
 
     // 设置日期范围为最近7天
+    loading.value = true;
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     statsStore.setDateRange({ start: startDate, end: endDate });
-    // if (!workspaceStore.currentWorkspaceId) {
-    //   await workspaceStore.loadWorkspaces();
-    // }
+    if (!workspaceStore.currentWorkspaceId) {
+      await workspaceStore.loadWorkspaces();
+    }
     await statsStore.refreshData(workspaceStore.currentWorkspaceId!);
   } catch (error) {
     console.error('Failed to load dashboard data:', error);
