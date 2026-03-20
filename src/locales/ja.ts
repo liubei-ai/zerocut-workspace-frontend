@@ -224,6 +224,8 @@ export default {
         monthly: '¥{price}/月',
         yearly: '¥{price}/年',
         oneTime: '¥{price} 単発',
+        firstMonth: '¥{price}/初月',
+        autoRenewal: '更新¥{price}/月',
       },
       credits: {
         monthly: '{credits} ポイント/月',
