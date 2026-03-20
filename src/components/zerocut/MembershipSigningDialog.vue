@@ -27,12 +27,28 @@
                     {{ membershipPlan?.monthlyCredits }} 积分/月
                   </v-chip>
                 </div>
-                <div class="d-flex justify-space-between align-center">
-                  <span class="text-body-2 text-medium-emphasis">扣费金额</span>
-                  <span class="text-h6 font-weight-bold text-primary"
-                    >¥{{ membershipPlan?.priceYuan }}</span
-                  >
-                </div>
+                <template v-if="membershipPlan?.firstMonthPriceYuan != null">
+                  <div class="d-flex justify-space-between align-center mb-1">
+                    <span class="text-body-2 text-medium-emphasis">首月</span>
+                    <span class="text-h6 font-weight-bold text-primary"
+                      >¥{{ membershipPlan.firstMonthPriceYuan }}</span
+                    >
+                  </div>
+                  <div class="d-flex justify-space-between align-center">
+                    <span class="text-body-2 text-medium-emphasis">续费</span>
+                    <span class="text-body-1 font-weight-medium text-medium-emphasis"
+                      >¥{{ membershipPlan.priceYuan }}/月</span
+                    >
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="d-flex justify-space-between align-center">
+                    <span class="text-body-2 text-medium-emphasis">扣费金额</span>
+                    <span class="text-h6 font-weight-bold text-primary"
+                      >¥{{ membershipPlan?.priceYuan }}</span
+                    >
+                  </div>
+                </template>
               </v-card-text>
             </v-card>
 

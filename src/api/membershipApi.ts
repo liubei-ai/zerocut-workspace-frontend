@@ -19,6 +19,7 @@ export interface MembershipPlanDto {
   discountZhe: number;
   unitPriceYuanPer100: number;
   baseUnitPriceYuanPer100: number;
+  firstMonthPriceYuan?: number;
 }
 
 export interface IMembershipPlanFeature {
