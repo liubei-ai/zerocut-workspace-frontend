@@ -131,6 +131,48 @@ export async function closeSigningSession(signingSessionId: string, workspaceId:
   await client.post('/subscriptions/close-signing-session', { signingSessionId, workspaceId });
 }
 
+export interface JsapiPayParams {
+  appId: string;
+  timeStamp: string;
+  nonceStr: string;
+  package: string;
+  signType: 'RSA';
+  paySign: string;
+}
+
+export interface SigningSessionJsapiResponse {
+  signingSessionId: string;
+  jsapiParams: JsapiPayParams;
+  expiresAt: string;
+}
+
+export async function createSigningSessionJsapi(params: CreateSigningSessionParams) {
+  const response = await client.post<SigningSessionJsapiResponse>(
+    '/subscriptions/signing-sessions-jsapi',
+    params
+  );
+  return response.data;
+}
+
+export interface PurchaseOneTimeJsapiResponse {
+  jsapiParams: JsapiPayParams;
+  outTradeNo: string;
+  subscriptionId: number;
+  expiresAt: string;
+}
+
+export async function purchaseOneTimeSubscriptionJsapi(params: {
+  planCode: string;
+  totalAmount: number;
+  workspaceId: string;
+}) {
+  const response = await client.post<PurchaseOneTimeJsapiResponse>(
+    '/subscriptions/purchase-jsapi',
+    params
+  );
+  return response.data;
+}
+
 export async function createSigningSession(params: CreateSigningSessionParams) {
   const response = await client.post<SigningSessionResponse>(
     '/subscriptions/signing-sessions',

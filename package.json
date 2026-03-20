@@ -6,7 +6,7 @@
     "build": "vite build --mode pro",
     "build:railway": "vite build --mode railway",
     "preview": "vite preview",
-    "test": "vitest --passWithNoTests",
+    "test": "vitest run --passWithNoTests",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "lint": "eslint \"src/**/*.{js,mjs,cjs,ts,vue}\" --fix",
