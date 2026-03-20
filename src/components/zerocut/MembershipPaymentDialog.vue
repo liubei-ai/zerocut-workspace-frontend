@@ -101,6 +101,15 @@
           </div>
         </div>
 
+        <div v-else-if="paymentStatus === 'confirming'" class="text-center py-8">
+          <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+          <div class="text-h6 mb-2">等待支付确认...</div>
+          <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
+          <div class="text-body-2 mt-2 text-medium-emphasis">
+            剩余时间：{{ formatCountdown(countdown) }}
+          </div>
+        </div>
+
         <div v-else-if="paymentStatus === 'success'" class="text-center py-8">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
           <div class="text-h5 mb-2 text-success">支付成功！</div>
@@ -135,7 +144,7 @@
           <v-btn variant="text" @click="handleCancel" :disabled="loading">取消</v-btn>
         </template>
 
-        <template v-else-if="paymentStatus === 'pending'">
+        <template v-else-if="paymentStatus === 'pending' || paymentStatus === 'confirming'">
           <v-btn variant="text" @click="handleCancel" class="mr-2">取消支付</v-btn>
         </template>
 
@@ -161,11 +170,13 @@
 import {
   closeOneTimeOrder,
   purchaseOneTimeSubscription,
+  purchaseOneTimeSubscriptionJsapi,
   type MembershipPlanDto,
 } from '@/api/membershipApi';
 import { queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { isWeiXin, invokeWeixinBridgePay } from '@/utils/wechat';
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
@@ -202,7 +213,9 @@ const workspaceStore = useWorkspaceStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
 const orderInfo = ref<OrderInfo | null>(null);
-const paymentStatus = ref<'creating' | 'pending' | 'success' | 'failed' | 'timeout'>('creating');
+const paymentStatus = ref<'creating' | 'pending' | 'confirming' | 'success' | 'failed' | 'timeout'>(
+  'creating'
+);
 const paymentCheckInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(300);
@@ -320,22 +333,12 @@ const stopPaymentStatusCheck = () => {
   }
 };
 
-const createPaymentOrder = async () => {
-  if (!props.membershipPlan) return;
-
-  if (!workspaceStore.currentWorkspaceId) {
-    snackbarStore.showErrorMessage('请先选择工作空间');
-    return;
-  }
-
+const createPaymentOrderNative = async () => {
   try {
-    paymentStatus.value = 'creating';
-    errorMessage.value = '';
-
     const response = await purchaseOneTimeSubscription({
-      planCode: props.membershipPlan.code,
-      totalAmount: props.membershipPlan.priceYuan,
-      workspaceId: workspaceStore.currentWorkspaceId,
+      planCode: props.membershipPlan!.code,
+      totalAmount: props.membershipPlan!.priceYuan,
+      workspaceId: workspaceStore.currentWorkspaceId!,
     });
 
     orderInfo.value = response;
@@ -359,6 +362,65 @@ const createPaymentOrder = async () => {
     }
     errorMessage.value = message || '创建支付订单失败';
     snackbarStore.showErrorMessage('创建支付订单失败');
+  }
+};
+
+const createPaymentOrderJsapi = async () => {
+  try {
+    const response = await purchaseOneTimeSubscriptionJsapi({
+      planCode: props.membershipPlan!.code,
+      totalAmount: props.membershipPlan!.priceYuan,
+      workspaceId: workspaceStore.currentWorkspaceId!,
+    });
+
+    orderInfo.value = response;
+    startCountdown();
+
+    invokeWeixinBridgePay(response.jsapiParams, res => {
+      if (res.err_msg === 'get_brand_wcpay_request:ok') {
+        paymentStatus.value = 'confirming';
+        startPaymentStatusCheck();
+      } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+        paymentStatus.value = 'failed';
+        errorMessage.value = '用户已取消支付';
+        stopCountdown();
+      } else {
+        paymentStatus.value = 'failed';
+        errorMessage.value = res.err_msg || '支付调起失败';
+        stopCountdown();
+      }
+    });
+  } catch (error: unknown) {
+    paymentStatus.value = 'failed';
+    let message: string | null = null;
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'object' && error !== null && 'message' in error) {
+      const maybeMessage = (error as { message?: unknown }).message;
+      if (typeof maybeMessage === 'string') {
+        message = maybeMessage;
+      }
+    }
+    errorMessage.value = message || '创建支付订单失败';
+    snackbarStore.showErrorMessage('创建支付订单失败');
+  }
+};
+
+const createPaymentOrder = async () => {
+  if (!props.membershipPlan) return;
+
+  if (!workspaceStore.currentWorkspaceId) {
+    snackbarStore.showErrorMessage('请先选择工作空间');
+    return;
+  }
+
+  paymentStatus.value = 'creating';
+  errorMessage.value = '';
+
+  if (isWeiXin()) {
+    await createPaymentOrderJsapi();
+  } else {
+    await createPaymentOrderNative();
   }
 };
 

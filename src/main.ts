@@ -3,6 +3,8 @@
  *
  */
 
+import 'core-js/features/array/at';
+
 // Components
 import App from './App.vue';
 

@@ -103,6 +103,15 @@
           </div>
         </div>
 
+        <div v-else-if="uiStatus === 'confirming'" class="text-center py-8">
+          <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+          <div class="text-h6 mb-2">等待签约确认...</div>
+          <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
+          <div class="text-body-2 mt-2 text-medium-emphasis">
+            剩余时间：{{ formatCountdown(countdown) }}
+          </div>
+        </div>
+
         <div v-else-if="uiStatus === 'signed'" class="text-center py-8">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
           <div class="text-h5 mb-2 text-success">签约成功！</div>
@@ -134,7 +143,7 @@
           <v-btn variant="text" @click="handleCancel">取消</v-btn>
         </template>
 
-        <template v-else-if="uiStatus === 'pending'">
+        <template v-else-if="uiStatus === 'pending' || uiStatus === 'confirming'">
           <v-btn variant="text" @click="handleCancel" class="mr-2">取消</v-btn>
         </template>
 
@@ -160,13 +169,16 @@
 import {
   closeSigningSession,
   createSigningSession,
+  createSigningSessionJsapi,
   getSigningSessionStatus,
   type MembershipPlanDto,
+  type SigningSessionJsapiResponse,
   type SigningSessionResponse,
   type SigningSessionStatus,
 } from '@/api/membershipApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { isWeiXin, invokeWeixinBridgePay } from '@/utils/wechat';
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
@@ -193,7 +205,10 @@ const workspaceStore = useWorkspaceStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
 const signingSession = ref<SigningSessionResponse | null>(null);
-const uiStatus = ref<'creating' | 'pending' | 'signed' | 'failed' | 'timeout'>('creating');
+const jsapiSession = ref<SigningSessionJsapiResponse | null>(null);
+const uiStatus = ref<'creating' | 'pending' | 'confirming' | 'signed' | 'failed' | 'timeout'>(
+  'creating'
+);
 const pollingInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(600);
@@ -282,10 +297,11 @@ const startCountdown = (expiresAtIso: string) => {
 };
 
 const pollSigningStatusOnce = async () => {
-  if (!signingSession.value?.signingSessionId) return;
+  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
+  if (!sessionId) return;
 
   try {
-    const status = await getSigningSessionStatus(signingSession.value.signingSessionId);
+    const status = await getSigningSessionStatus(sessionId);
     if (status.status === 'signed' || status.status === 'paid') {
       uiStatus.value = 'signed';
       stopPolling();
@@ -314,6 +330,7 @@ const startPolling = () => {
 
 const resetState = () => {
   signingSession.value = null;
+  jsapiSession.value = null;
   uiStatus.value = 'creating';
   errorMessage.value = '';
   countdown.value = 600;
@@ -322,22 +339,11 @@ const resetState = () => {
   stopCountdown();
 };
 
-const createSession = async () => {
-  if (!props.membershipPlan) return;
-  if (!workspaceStore.currentWorkspaceId) {
-    uiStatus.value = 'failed';
-    errorMessage.value = '请先选择工作空间';
-    snackbarStore.showErrorMessage('请先选择工作空间');
-    return;
-  }
-
+const createSessionNative = async () => {
   try {
-    uiStatus.value = 'creating';
-    errorMessage.value = '';
-
     const session = await createSigningSession({
-      workspaceId: workspaceStore.currentWorkspaceId,
-      planCode: props.membershipPlan.code,
+      workspaceId: workspaceStore.currentWorkspaceId!,
+      planCode: props.membershipPlan!.code,
       displayAccountName: workspaceStore.currentWorkspaceName || undefined,
     });
 
@@ -365,17 +371,65 @@ const createSession = async () => {
   }
 };
 
+const createSessionJsapi = async () => {
+  try {
+    const session = await createSigningSessionJsapi({
+      workspaceId: workspaceStore.currentWorkspaceId!,
+      planCode: props.membershipPlan!.code,
+      displayAccountName: workspaceStore.currentWorkspaceName || undefined,
+    });
+    jsapiSession.value = session;
+
+    startCountdown(session.expiresAt);
+
+    invokeWeixinBridgePay(session.jsapiParams, res => {
+      if (res.err_msg === 'get_brand_wcpay_request:ok') {
+        uiStatus.value = 'confirming';
+        startPolling();
+      } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+        uiStatus.value = 'failed';
+        errorMessage.value = '用户已取消支付';
+        stopCountdown();
+      } else {
+        uiStatus.value = 'failed';
+        errorMessage.value = res.err_msg || '支付调起失败';
+        stopCountdown();
+      }
+    });
+  } catch (error) {
+    uiStatus.value = 'failed';
+    errorMessage.value = error instanceof Error ? error.message : '创建签约会话失败';
+  }
+};
+
+const createSession = async () => {
+  if (!props.membershipPlan) return;
+  if (!workspaceStore.currentWorkspaceId) {
+    uiStatus.value = 'failed';
+    errorMessage.value = '请先选择工作空间';
+    snackbarStore.showErrorMessage('请先选择工作空间');
+    return;
+  }
+
+  uiStatus.value = 'creating';
+  errorMessage.value = '';
+
+  if (isWeiXin()) {
+    await createSessionJsapi();
+  } else {
+    await createSessionNative();
+  }
+};
+
 const handleCancel = async () => {
   stopPolling();
   stopCountdown();
 
   // 调用清理API
-  if (signingSession.value?.signingSessionId && uiStatus.value === 'pending') {
+  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
+  if (sessionId && (uiStatus.value === 'pending' || uiStatus.value === 'confirming')) {
     try {
-      await closeSigningSession(
-        signingSession.value.signingSessionId,
-        workspaceStore.currentWorkspaceId!
-      );
+      await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
     } catch (error) {
       console.warn('关闭签约会话失败:', error);
     }
@@ -390,15 +444,15 @@ const handleClose = async () => {
   stopCountdown();
 
   // 超时或待签约状态也清理
+  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
   if (
-    signingSession.value?.signingSessionId &&
-    (uiStatus.value === 'pending' || uiStatus.value === 'timeout')
+    sessionId &&
+    (uiStatus.value === 'pending' ||
+      uiStatus.value === 'confirming' ||
+      uiStatus.value === 'timeout')
   ) {
     try {
-      await closeSigningSession(
-        signingSession.value.signingSessionId,
-        workspaceStore.currentWorkspaceId!
-      );
+      await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
     } catch (error) {
       console.warn('关闭签约会话失败:', error);
     }

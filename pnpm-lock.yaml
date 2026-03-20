@@ -50,6 +50,9 @@ importers:
       clipboard:
         specifier: ^2.0.11
         version: 2.0.11
+      core-js:
+        specifier: ^3.49.0
+        version: 3.49.0
       echarts:
         specifier: ^5.5.1
         version: 5.6.0
@@ -2067,6 +2070,9 @@ packages:
 
   copy-to-clipboard@3.3.3:
     resolution: {integrity: sha512-2KV8NhB5JqC3ky0r9PMCAZKbUHSwtEo4CwCs0KXgruG43gX5PMqDEBbVU4OUzw2MuAWUfsuFmWvEKG5QRfSnJA==}
+
+  core-js@3.49.0:
+    resolution: {integrity: sha512-es1U2+YTtzpwkxVLwAFdSpaIMyQaq0PBgm3YD1W3Qpsn1NAmO3KSgZfu+oGSWVu6NvLHoHCV/aYcsE5wiB7ALg==}
 
   cosmiconfig-typescript-loader@6.1.0:
     resolution: {integrity: sha512-tJ1w35ZRUiM5FeTzT7DtYWAFFv37ZLqSRkGi2oeCK1gPhvaWjkAtfXvLmvE1pRfxxp9aQo6ba/Pvg1dKj05D4g==}
@@ -6013,6 +6019,8 @@ snapshots:
   copy-to-clipboard@3.3.3:
     dependencies:
       toggle-selection: 1.0.6
+
+  core-js@3.49.0: {}
 
   cosmiconfig-typescript-loader@6.1.0(@types/node@22.15.31)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
