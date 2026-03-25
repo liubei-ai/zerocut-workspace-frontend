@@ -64,4 +64,10 @@ app.use(
   ) as any // eslint-disable-line @typescript-eslint/no-explicit-any
 );
 
+const debugParam = new URLSearchParams(window.location.search).get('debug');
+if (debugParam === 'vconsole') {
+  const { default: VConsole } = await import('vconsole');
+  new VConsole();
+}
+
 app.mount('#app');
