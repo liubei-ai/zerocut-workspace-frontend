@@ -178,7 +178,7 @@ import {
 } from '@/api/membershipApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { isWeiXin, invokeWeixinBridgePay } from '@/utils/wechat';
+import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
@@ -379,23 +379,27 @@ const createSessionJsapi = async () => {
       displayAccountName: workspaceStore.currentWorkspaceName || undefined,
     });
     jsapiSession.value = session;
-
     startCountdown(session.expiresAt);
 
-    invokeWeixinBridgePay(session.jsapiParams, res => {
-      if (res.err_msg === 'get_brand_wcpay_request:ok') {
-        uiStatus.value = 'confirming';
-        startPolling();
-      } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-        uiStatus.value = 'failed';
-        errorMessage.value = '用户已取消支付';
-        stopCountdown();
-      } else {
-        uiStatus.value = 'failed';
-        errorMessage.value = res.err_msg || '支付调起失败';
-        stopCountdown();
-      }
-    });
+    const res = await invokeWeixinBridgePay(session.jsapiParams);
+    if (res.err_msg === 'get_brand_wcpay_request:ok') {
+      uiStatus.value = 'confirming';
+      startPolling();
+    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+      uiStatus.value = 'failed';
+      errorMessage.value = '用户已取消支付';
+      stopCountdown();
+      closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!).catch(
+        () => {}
+      );
+    } else {
+      uiStatus.value = 'failed';
+      errorMessage.value = res.err_msg || '支付调起失败';
+      stopCountdown();
+      closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!).catch(
+        () => {}
+      );
+    }
   } catch (error) {
     uiStatus.value = 'failed';
     errorMessage.value = error instanceof Error ? error.message : '创建签约会话失败';
@@ -427,7 +431,12 @@ const handleCancel = async () => {
 
   // 调用清理API
   const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
-  if (sessionId && (uiStatus.value === 'pending' || uiStatus.value === 'confirming')) {
+  if (
+    sessionId &&
+    (uiStatus.value === 'creating' ||
+      uiStatus.value === 'pending' ||
+      uiStatus.value === 'confirming')
+  ) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
     } catch (error) {

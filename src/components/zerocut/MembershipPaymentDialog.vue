@@ -169,6 +169,7 @@
 <script setup lang="ts">
 import {
   closeOneTimeOrder,
+  JsapiPayParams,
   purchaseOneTimeSubscription,
   purchaseOneTimeSubscriptionJsapi,
   type MembershipPlanDto,
@@ -176,7 +177,7 @@ import {
 import { queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { isWeiXin, invokeWeixinBridgePay } from '@/utils/wechat';
+import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
@@ -188,7 +189,8 @@ interface Props {
 }
 
 interface OrderInfo {
-  codeUrl: string;
+  codeUrl?: string;
+  jsapiParams?: JsapiPayParams;
   outTradeNo: string;
   subscriptionId: number;
   expiresAt: string;
@@ -376,22 +378,28 @@ const createPaymentOrderJsapi = async () => {
     orderInfo.value = response;
     startCountdown();
 
-    invokeWeixinBridgePay(response.jsapiParams, res => {
-      if (res.err_msg === 'get_brand_wcpay_request:ok') {
-        paymentStatus.value = 'confirming';
-        startPaymentStatusCheck();
-      } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-        paymentStatus.value = 'failed';
-        errorMessage.value = '用户已取消支付';
-        stopCountdown();
-      } else {
-        paymentStatus.value = 'failed';
-        errorMessage.value = res.err_msg || '支付调起失败';
-        stopCountdown();
+    const res = await invokeWeixinBridgePay(response.jsapiParams);
+    if (res.err_msg === 'get_brand_wcpay_request:ok') {
+      paymentStatus.value = 'confirming';
+      startPaymentStatusCheck();
+    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+      paymentStatus.value = 'failed';
+      errorMessage.value = '用户已取消支付';
+      stopCountdown();
+      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
+        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
       }
-    });
+    } else {
+      paymentStatus.value = 'failed';
+      errorMessage.value = res.err_msg || '支付调起失败';
+      stopCountdown();
+      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
+        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
+      }
+    }
   } catch (error: unknown) {
     paymentStatus.value = 'failed';
+
     let message: string | null = null;
     if (error instanceof Error) {
       message = error.message;
@@ -401,6 +409,7 @@ const createPaymentOrderJsapi = async () => {
         message = maybeMessage;
       }
     }
+
     errorMessage.value = message || '创建支付订单失败';
     snackbarStore.showErrorMessage('创建支付订单失败');
   }
@@ -443,6 +452,11 @@ const handleCancel = async () => {
 const handleClose = () => {
   stopPaymentStatusCheck();
   stopCountdown();
+  if (orderInfo.value?.outTradeNo && workspaceStore.currentWorkspaceId) {
+    closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId).catch(
+      () => {}
+    );
+  }
   emit('update:open', false);
 };
 

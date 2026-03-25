@@ -150,7 +150,7 @@ function onSubscribe(plan: SubscriptionPlan) {
       </v-card>
     </div>
   </v-card>
-  <div v-else class="subscribe-pricing-embedded pa-5">
+  <div v-else class="subscribe-pricing-embedded pa-4">
     <!-- Loading state -->
     <div v-if="props.loading" class="text-center py-10">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>

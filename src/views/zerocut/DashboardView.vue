@@ -7,6 +7,7 @@ import { useStatsStore } from '@/stores/statsStore';
 import { useUserStore } from '@/stores/userStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import type { MetricCardData } from '@/types/stats';
+import { isWeiXin } from '@/utils/wechat';
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -41,12 +42,11 @@ const statisticsChartData = computed(() => statsStore.statisticsChartData);
 // 生命周期
 onMounted(async () => {
   try {
-    const isWechatUA = /MicroMessenger/i.test(navigator.userAgent);
     const hasWechatBindResult = typeof route.query.wechatBind === 'string';
     const hasWechatIdentity = !!userStore.userInfo?.openid || !!userStore.userInfo?.unionid;
 
     // 如果是微信UA且没有绑定微信账号且没有微信身份
-    if (isWechatUA && !hasWechatBindResult && !hasWechatIdentity) {
+    if (isWeiXin() && !hasWechatBindResult && !hasWechatIdentity) {
       const url = new URL(window.location.href);
       url.searchParams.delete('wechatBind');
       const base = String(import.meta.env.VITE_API2_BASE_URL).replace(/\/$/, '');
@@ -59,7 +59,7 @@ onMounted(async () => {
     }
 
     // 如果是微信绑定成功，刷新用户信息
-    if (isWechatUA && route.query.wechatBind === 'success') {
+    if (isWeiXin() && route.query.wechatBind === 'success') {
       await userStore.loadUserInfo();
     }
 

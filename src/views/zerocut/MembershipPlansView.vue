@@ -433,7 +433,7 @@ onMounted(fetchMembershipPlans);
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container fluid class="pa-0">
     <!-- Membership Status Bar -->
     <v-card class="membership-status-bar mb-4" :class="statusBarClass" variant="flat">
       <v-card-text class="d-flex align-center justify-space-between py-3 px-5">
