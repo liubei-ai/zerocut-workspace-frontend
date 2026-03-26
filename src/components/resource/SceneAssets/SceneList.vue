@@ -43,9 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { Scene } from '@/types/resource';
 import { computed, nextTick, onMounted, ref } from 'vue';
+
+import type { Scene } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import CreateSceneDialog from './CreateSceneDialog.vue';
 import SceneCard from './SceneCard.vue';
 

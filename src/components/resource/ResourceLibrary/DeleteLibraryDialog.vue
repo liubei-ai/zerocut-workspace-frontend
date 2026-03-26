@@ -87,9 +87,11 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { ResourceLibrary } from '@/types/resource';
 import { computed, ref, watch } from 'vue';
+
+import type { ResourceLibrary } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
 
 const props = defineProps<{
   open: boolean;

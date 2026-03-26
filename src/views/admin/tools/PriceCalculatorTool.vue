@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { getSystemConfigByKey } from '@/api/adminApi';
-import type { Category } from '@/types/pricing';
 import { computed, onMounted, ref, watch } from 'vue';
+
+import type { Category } from '@/types/pricing';
+
+import { getSystemConfigByKey } from '@/api/adminApi';
 
 // State
 const loading = ref(false);

@@ -15,6 +15,20 @@
     "preserveDuplicates": false,
     "preserveWhitespace": false
   },
-  "sortPackageJson": false,
+  "sortImports": {
+    "newlinesBetween": true,
+    "groups": [
+      "type-import",
+      ["value-builtin", "value-external"],
+      "type-internal",
+      "value-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "sortPackageJson": {
+    "sortScripts": true
+  },
   "ignorePatterns": ["node_modules", "dist", ".husky", "pnpm-lock.yaml", "auto-imports.d.ts"]
 }

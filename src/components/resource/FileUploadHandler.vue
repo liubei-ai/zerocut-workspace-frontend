@@ -45,10 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import { computed, ref } from 'vue';
 import { nanoid } from 'nanoid';
+import { computed, ref } from 'vue';
+
 import type { GalleryImage } from '@/types/image';
+
+import { useResourceStore } from '@/stores/resourceStore';
 
 interface Props {
   maxImages?: number;

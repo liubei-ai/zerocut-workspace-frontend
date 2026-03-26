@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { computed } from 'vue';
+
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 interface Props {
   variant?: 'elevated' | 'flat' | 'tonal' | 'outlined' | 'text' | 'plain';

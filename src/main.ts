@@ -4,23 +4,23 @@
  */
 
 import 'core-js/features/array/at';
-
-// Components
-import App from './App.vue';
+import { createAuth0 } from '@auth0/auth0-vue';
 
 // Composables
 import '@/styles/main.scss';
-import { createAuth0 } from '@auth0/auth0-vue';
 import { createGuard } from '@authing/guard-vue3';
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue';
 import MasonryWall from '@yeger/vue-masonry-wall';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import { createApp } from 'vue';
 import VueVirtualScroller from 'vue-virtual-scroller';
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import VueApexCharts from 'vue3-apexcharts';
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import Vue3Lottie from 'vue3-lottie';
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
+
+// Components
+import App from './App.vue';
 import 'vue3-perfect-scrollbar/style.css';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';

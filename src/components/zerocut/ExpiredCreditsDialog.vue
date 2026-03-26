@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 import { ExpiredCreditItem, ExpiredCreditsResponse, getExpiredCredits } from '@/api/walletApi';
 import { Pagination } from '@/types/api';
 import { formatDate } from '@/utils/date';
-import { ref, watch } from 'vue';
 
 const props = defineProps<{
   modelValue: boolean;

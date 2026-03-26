@@ -4,10 +4,12 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
-import { useUserStore } from '@/stores/userStore';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
+
 import StatusMenu from './StatusMenu.vue';
 
 const userStore = useUserStore();

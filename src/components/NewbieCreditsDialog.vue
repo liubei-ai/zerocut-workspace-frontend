@@ -36,9 +36,10 @@
 </template>
 
 <script setup lang="ts">
-import type { RechargeRecord } from '@/types/api';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { RechargeRecord } from '@/types/api';
 
 const { t } = useI18n();
 

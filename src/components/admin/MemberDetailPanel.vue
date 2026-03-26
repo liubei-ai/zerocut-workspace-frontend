@@ -285,6 +285,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 import {
   getMemberDetail,
   type MemberDetail,
@@ -293,7 +295,6 @@ import {
   type SubscriptionStatus,
 } from '@/api/memberAdminApi';
 import { formatDate } from '@/utils/date';
-import { ref, watch } from 'vue';
 
 const props = defineProps<{
   subscriptionId: number;

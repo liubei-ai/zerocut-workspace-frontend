@@ -124,7 +124,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import type { CreditPeriodItem, PeriodStatus } from '@/api/memberAdminApi';
+
 import { formatDate } from '@/utils/date';
 
 const props = defineProps<{

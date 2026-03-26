@@ -1,4 +1,6 @@
-import { getUserDailyStats, getUserHourlyStats } from '@/api/statsApi';
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+
 import type {
   ComputedStatsData,
   DailyStatsData,
@@ -12,8 +14,8 @@ import type {
   StatisticsChartData,
   TrendChartData,
 } from '@/types/stats';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+
+import { getUserDailyStats, getUserHourlyStats } from '@/api/statsApi';
 
 export const useStatsStore = defineStore('stats', () => {
   // 状态

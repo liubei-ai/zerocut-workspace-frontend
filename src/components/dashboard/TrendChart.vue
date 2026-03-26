@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { computed, ref, watch, nextTick } from 'vue';
-import { useTheme } from 'vuetify';
-import VChart from 'vue-echarts';
 import type { EChartsOption } from 'echarts';
+
+import { computed, ref, watch, nextTick } from 'vue';
+import VChart from 'vue-echarts';
+import { useTheme } from 'vuetify';
+
 import type { TrendChartData } from '@/types/stats';
 
 interface Props {

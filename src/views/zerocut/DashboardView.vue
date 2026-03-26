@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import type { MetricCardData } from '@/types/stats';
+
 import CreditsSection from '@/components/dashboard/CreditsSection.vue';
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
@@ -6,11 +12,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
 import { useUserStore } from '@/stores/userStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { MetricCardData } from '@/types/stats';
 import { isWeiXin } from '@/utils/wechat';
-import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();

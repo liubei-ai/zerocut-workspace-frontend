@@ -2,19 +2,18 @@
   "name": "vuetify3-design",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vp dev --mode dev",
     "build": "vp build --mode pro",
     "build:railway": "vp build --mode railway",
-    "preview": "vp preview",
-    "test": "vp test run --passWithNoTests",
-    "test:ui": "vp test --ui",
     "coverage": "vp test run --coverage",
+    "dev": "vp dev --mode dev",
+    "fmt": "vp fmt \"src/**/*.{js,ts,vue,scss,css}\"",
+    "fmt:check": "vp fmt --check \"src/**/*.{js,ts,vue,scss,css}\"",
     "lint": "vp lint \"src/**/*.{js,mjs,cjs,ts,vue}\" --fix",
     "lint:check": "vp lint \"src/**/*.{js,mjs,cjs,ts,vue}\"",
-    "format": "vp fmt \"src/**/*.{js,ts,vue,scss,css}\"",
-    "format:check": "vp fmt --check \"src/**/*.{js,ts,vue,scss,css}\"",
     "prepare": "vp config",
-    "commit": "claude -p 'make a commit' --model 'claude-haiku-4-5-20251001' --dangerously-skip-permissions"
+    "preview": "vp preview",
+    "test": "vp test run --passWithNoTests",
+    "test:ui": "vp test --ui"
   },
   "dependencies": {
     "@auth0/auth0-vue": "^2.5.0",

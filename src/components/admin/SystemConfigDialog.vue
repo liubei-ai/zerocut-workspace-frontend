@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+
 import type {
   CreateSystemConfigParams,
   SystemConfigEnumOption,
   SystemConfigItem,
   UpdateSystemConfigParams,
 } from '@/api/adminApi';
+
 import { getSystemConfigEnums } from '@/api/adminApi';
-import { computed, onMounted, ref, watch } from 'vue';
 
 // 值类型枚举
 type ValueType = 'string' | 'number' | 'decimal' | 'boolean' | 'json' | 'array';

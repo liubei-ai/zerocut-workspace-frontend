@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { PackageInfo } from '@/api/packageApi';
 import { computed } from 'vue';
+
+import type { PackageInfo } from '@/api/packageApi';
 
 // Props定义
 interface Props {

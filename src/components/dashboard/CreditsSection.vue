@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import type { WalletInfo } from '@/api/walletApi';
+
 import { getWalletInfo, getWalletRechargeRecords } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();

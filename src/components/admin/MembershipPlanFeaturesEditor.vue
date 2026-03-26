@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import type { IMembershipPlanFeature } from '@/api/adminApi';
-import featureCatalogRaw from './membership_feature.json';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { IMembershipPlanFeature } from '@/api/adminApi';
+
+import featureCatalogRaw from './membership_feature.json';
 
 type CatalogItem = {
   key: string;
@@ -91,7 +93,7 @@ const assembledFeatures = computed<IMembershipPlanFeature[]>(() => {
       const existing = existingFeatureByKey.value[i.key];
       return {
         ...i,
-        ...(existing ?? {}),
+        ...existing,
         key: i.key,
         order: i.order,
       } as IMembershipPlanFeature;
@@ -104,7 +106,7 @@ const assembledFeatures = computed<IMembershipPlanFeature[]>(() => {
       if (!key && !label) return null;
       const existing = existingFeatureByKey.value[key];
       return {
-        ...(existing ?? {}),
+        ...existing,
         key,
         label: label || existing?.label || key,
         order: maxCatalogOrder.value + 10 * (idx + 1),

@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import echarts, { RenderType, ThemeType, useChart } from '@/plugins/echarts';
 import type { EChartsOption } from 'echarts';
+
 import { Ref } from 'vue';
+
+import echarts, { RenderType, ThemeType, useChart } from '@/plugins/echarts';
 
 interface ChartSeries {
   name: string;

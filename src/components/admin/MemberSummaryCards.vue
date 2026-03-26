@@ -24,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import type { MemberSummary } from '@/api/memberAdminApi';
 import { computed } from 'vue';
+
+import type { MemberSummary } from '@/api/memberAdminApi';
 
 const props = defineProps<{
   summary: MemberSummary | null;

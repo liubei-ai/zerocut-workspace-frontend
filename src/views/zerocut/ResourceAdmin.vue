@@ -44,6 +44,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import type { ResourceLibrary } from '@/types/resource';
+
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import CreateLibraryDialog from '@/components/resource/ResourceLibrary/CreateLibraryDialog.vue';
 import DeleteLibraryDialog from '@/components/resource/ResourceLibrary/DeleteLibraryDialog.vue';
@@ -51,9 +56,6 @@ import EditLibraryDialog from '@/components/resource/ResourceLibrary/EditLibrary
 import LibraryDetail from '@/components/resource/ResourceLibrary/LibraryDetail.vue';
 import LibraryList from '@/components/resource/ResourceLibrary/LibraryList.vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import type { ResourceLibrary } from '@/types/resource';
-import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const resourceStore = useResourceStore();
 const { t } = useI18n();

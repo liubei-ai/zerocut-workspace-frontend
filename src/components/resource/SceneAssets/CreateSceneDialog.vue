@@ -106,13 +106,16 @@
 </template>
 
 <script setup lang="ts">
-import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
-import { useResourceStore } from '@/stores/resourceStore';
-import type { GalleryImage } from '@/types/image';
-import type { Scene } from '@/types/resource';
 import { nanoid } from 'nanoid';
 import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { GalleryImage } from '@/types/image';
+import type { Scene } from '@/types/resource';
+
+import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
+import { useResourceStore } from '@/stores/resourceStore';
+
 import FileUploadHandler from '../FileUploadHandler.vue';
 
 const props = defineProps<{

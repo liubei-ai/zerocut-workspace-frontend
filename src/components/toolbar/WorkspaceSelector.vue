@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { UserWorkspaceDto } from '@/types/api';
 import { computed, onMounted, ref } from 'vue';
+
+import type { UserWorkspaceDto } from '@/types/api';
+
+import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 const workspaceStore = useWorkspaceStore();
 const menuOpen = ref(false);

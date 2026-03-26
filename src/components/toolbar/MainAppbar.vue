@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useDisplay } from 'vuetify';
+
 import LanguageSwitcher from '@/components/toolbar/LanguageSwitcher.vue';
 import { useCustomizeThemeStore } from '@/stores/customizeTheme';
-import { useDisplay } from 'vuetify';
+
 import ThemeToggle from './ThemeToggle.vue';
 import ToolbarUser from './ToolbarUser.vue';
 

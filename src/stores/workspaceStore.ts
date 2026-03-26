@@ -1,6 +1,8 @@
-import { getWorkspaces } from '@/api/userApi';
-import type { UserWorkspaceDto } from '@/types/api';
 import { defineStore } from 'pinia';
+
+import type { UserWorkspaceDto } from '@/types/api';
+
+import { getWorkspaces } from '@/api/userApi';
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => ({

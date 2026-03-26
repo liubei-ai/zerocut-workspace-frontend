@@ -1,7 +1,5 @@
-import { Ref } from 'vue';
 import type { EChartsOption } from 'echarts';
-import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
-import * as echarts from 'echarts/core';
+
 import {
   BarChart,
   LineChart,
@@ -11,7 +9,6 @@ import {
   RadarChart,
   ScatterChart,
 } from 'echarts/charts';
-
 import {
   TitleComponent,
   TooltipComponent,
@@ -28,6 +25,9 @@ import {
   CalendarComponent,
   GraphicComponent,
 } from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
+import { Ref } from 'vue';
 
 echarts.use([
   LegendComponent,

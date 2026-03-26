@@ -166,6 +166,9 @@
 </template>
 
 <script setup lang="ts">
+import QRCode from 'qrcode';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+
 import {
   closeSigningSession,
   createSigningSession,
@@ -179,8 +182,6 @@ import {
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
-import QRCode from 'qrcode';
-import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   open: boolean;

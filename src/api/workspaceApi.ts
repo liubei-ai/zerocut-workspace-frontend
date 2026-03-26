@@ -7,6 +7,7 @@ import type {
   WorkspaceDetails,
   WorkspaceMember,
 } from '../types/api';
+
 import client from './api2client';
 
 /**

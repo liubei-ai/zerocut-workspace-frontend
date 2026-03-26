@@ -94,9 +94,10 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 
 const { t } = useI18n();
 

@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { debounce } from 'lodash';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
+
 import { createApiKey, deleteApiKey, generateOtt, getApiKeys } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { formatDate } from '@/utils/date';
 import { maskApiKey } from '@/utils/stringUtils';
-import { debounce } from 'lodash';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 

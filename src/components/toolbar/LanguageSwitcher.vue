@@ -4,10 +4,11 @@
 * @Description: 语言切换组件
 -->
 <script setup lang="ts">
-import config from '@/configs';
-import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 import { Icon } from '@iconify/vue';
 import { useLocale } from 'vuetify';
+
+import config from '@/configs';
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 
 const { current } = useLocale();
 const { availableLocales } = config.locales;

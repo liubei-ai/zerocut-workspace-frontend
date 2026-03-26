@@ -1,5 +1,6 @@
 import { Primitive } from '@tiptap/vue-3';
 import { CheckoutResponse, type Product as BagelPayProduct } from 'bagelpay';
+
 import client from './api2client';
 
 interface BagelPayProducts {

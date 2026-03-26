@@ -128,11 +128,14 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { OtherMaterial } from '@/types/resource';
-import type { GalleryImage } from '@/types/image';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { GalleryImage } from '@/types/image';
+import type { OtherMaterial } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import FileUploadHandler from '../FileUploadHandler.vue';
 
 interface UploadingFile {

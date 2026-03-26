@@ -56,8 +56,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useResourceStore } from '@/stores/resourceStore';
+
 import type { CreateLibraryDto } from '@/services/resourceService';
+
+import { useResourceStore } from '@/stores/resourceStore';
 
 const props = defineProps<{
   open: boolean;

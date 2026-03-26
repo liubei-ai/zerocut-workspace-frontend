@@ -173,12 +173,14 @@
 </template>
 
 <script setup lang="ts">
+import QRCode from 'qrcode';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+
 import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
+
 import { closeOrder, createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import QRCode from 'qrcode';
-import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
 
 interface Props {
   open: boolean;

@@ -83,8 +83,9 @@
 </template>
 
 <script setup lang="ts">
-import type { Subject } from '@/types/resource';
 import { computed } from 'vue';
+
+import type { Subject } from '@/types/resource';
 
 const props = defineProps<{
   subject: Subject;

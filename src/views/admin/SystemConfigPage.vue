@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import type {
   CreateSystemConfigParams,
   QuerySystemConfigParams,
@@ -6,6 +10,7 @@ import type {
   SystemConfigItem,
   UpdateSystemConfigParams,
 } from '@/api/adminApi';
+
 import {
   createSystemConfig,
   deleteSystemConfig,
@@ -15,9 +20,6 @@ import {
 } from '@/api/adminApi';
 import SystemConfigDialog from '@/components/admin/SystemConfigDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { useDebounceFn } from '@vueuse/core';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const router = useRouter();
 

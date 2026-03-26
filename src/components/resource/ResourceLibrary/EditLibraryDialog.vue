@@ -55,10 +55,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+
 import type { UpdateLibraryDto } from '@/api/resourceApi';
+
 import { useResourceStore } from '@/stores/resourceStore';
 import { ResourceLibrary } from '@/types/resource';
-import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
   open: boolean;

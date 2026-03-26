@@ -76,8 +76,9 @@
 </template>
 
 <script setup lang="ts">
-import { Scene } from '@/types/resource';
 import { computed } from 'vue';
+
+import { Scene } from '@/types/resource';
 
 const props = defineProps<{
   scene: Scene;

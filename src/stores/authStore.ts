@@ -1,8 +1,11 @@
-import router from '@/router';
-import type { RechargeRecord } from '@/types/api';
-import { sleep } from '@/utils/common';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+
+import type { RechargeRecord } from '@/types/api';
+
+import router from '@/router';
+import { sleep } from '@/utils/common';
+
 import {
   requestAuth0Logout,
   requestAuthingLogout,

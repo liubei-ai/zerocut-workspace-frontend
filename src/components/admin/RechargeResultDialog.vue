@@ -120,8 +120,9 @@
 </template>
 
 <script setup lang="ts">
-import type { RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
 import { computed } from 'vue';
+
+import type { RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
 
 interface Props {
   open: boolean;

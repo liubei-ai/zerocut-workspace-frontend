@@ -31,11 +31,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { type MemberSummary } from '@/api/memberAdminApi';
 import MemberListTable from '@/components/admin/MemberListTable.vue';
 import MemberSummaryCards from '@/components/admin/MemberSummaryCards.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { ref } from 'vue';
 
 const summary = ref<MemberSummary | null>(null);
 const summaryLoading = ref(false);

@@ -1,8 +1,9 @@
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+
 import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 import { getWalletInfo, type WalletInfo } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
 
 export const useMembershipStore = defineStore('membership', () => {
   const subscription = ref<SubscriptionDetails | null>(null);

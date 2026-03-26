@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { CreatePersonaParams, PersonaItem, UpdatePersonaParams } from '@/api/adminApi';
 import { computed, ref, watch } from 'vue';
+
+import type { CreatePersonaParams, PersonaItem, UpdatePersonaParams } from '@/api/adminApi';
 
 interface Props {
   modelValue: boolean;

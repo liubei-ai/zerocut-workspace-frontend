@@ -249,8 +249,9 @@
 </template>
 
 <script setup lang="ts">
-import type { WorkspaceListItem } from '@/api/adminApi';
 import { computed, ref, watch } from 'vue';
+
+import type { WorkspaceListItem } from '@/api/adminApi';
 
 interface Props {
   open: boolean;

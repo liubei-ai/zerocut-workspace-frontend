@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import {
   getMembershipPlans,
   type MembershipPlanDto,
@@ -14,9 +18,6 @@ import SubscriptionSuccessDialog from '@/components/zerocut/SubscriptionSuccessD
 import { useMembershipStore } from '@/stores/membershipStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 import { useTheme } from 'vuetify';
+
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 interface Color {
   colorId: number;
   colorName: string;

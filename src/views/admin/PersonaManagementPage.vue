@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+
 import type { CreatePersonaParams, PersonaItem, UpdatePersonaParams } from '@/api/adminApi';
+
 import { createPersona, deletePersona, getPersonas, updatePersona } from '@/api/adminApi';
 import PersonaDialog from '@/components/admin/PersonaDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { computed, onMounted, ref } from 'vue';
 
 const loading = ref(false);
 const personas = ref<PersonaItem[]>([]);

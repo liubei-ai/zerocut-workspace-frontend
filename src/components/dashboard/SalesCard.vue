@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import moment from 'moment';
 import { useTheme } from 'vuetify';
-import { formatCurrency } from '@/utils/formatCurrency';
+
 import PercentTrend from '@/components/common/PercentTrend.vue';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 const formatDate = (date: string) => {
   return date ? moment(date).format('D MMM') : '';

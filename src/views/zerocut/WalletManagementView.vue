@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import {
   getWalletInfo,
   getWalletRechargeRecords,
@@ -10,9 +14,6 @@ import ExpiredCreditsDialog from '@/components/zerocut/ExpiredCreditsDialog.vue'
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { Pagination } from '@/types/api';
 import { formatDate } from '@/utils/date';
-import { onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 // 获取当前工作空间ID
 const workspaceStore = useWorkspaceStore();

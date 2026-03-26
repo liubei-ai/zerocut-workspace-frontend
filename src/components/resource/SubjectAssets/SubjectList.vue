@@ -43,9 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { Subject } from '@/types/resource';
 import { computed, onMounted, ref } from 'vue';
+
+import type { Subject } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import CreateSubjectDialog from './CreateSubjectDialog.vue';
 import SubjectCard from './SubjectCard.vue';
 
