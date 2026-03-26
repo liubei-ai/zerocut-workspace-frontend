@@ -29,7 +29,7 @@ const showMobileSearch = ref(false);
         :placeholder="$t('menu.search')"
       ></v-text-field>
     </div>
-    <div v-else class="px-2 d-flex align-center justify-space-between w-100">
+    <div v-else class="d-flex align-center justify-space-between w-100 px-2">
       <!-- ---------------------------------------------- -->
       <!-- NavIcon -->
       <!-- ---------------------------------------------- -->

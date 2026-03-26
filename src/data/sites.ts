@@ -5,8 +5,7 @@ export const sites = [
     category_name: 'topPicks',
     category_name_cn: '热门推荐',
     site_name: 'IconFont',
-    description:
-      '国内最著名的图标搜索及管理平台，300万个图标下载,300万个图标下载,300万个图标下载',
+    description: '国内最著名的图标搜索及管理平台，300万个图标下载,300万个图标下载,300万个图标下载',
     icon: 'https://image.uisdc.com/wp-content/uploads/2022/08/uisdc-nav-iconfont.png',
     href: 'https://www.iconfont.cn/',
   },

@@ -26,7 +26,7 @@
     </v-row>
 
     <!-- Pagination -->
-    <div v-if="!loading && totalMaterials > limit" class="d-flex justify-center mt-6">
+    <div v-if="!loading && totalMaterials > limit" class="d-flex mt-6 justify-center">
       <v-pagination
         v-model="currentPage"
         :length="totalPages"

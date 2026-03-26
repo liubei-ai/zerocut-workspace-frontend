@@ -293,7 +293,7 @@ onMounted(refreshAll);
       ]"
     >
       <template #description>
-        <div class="text-medium-emphasis text-sm sm:text-base break-all">
+        <div class="text-medium-emphasis text-sm break-all sm:text-base">
           {{ currentWorkspace?.name }} (ID: {{ workspaceId }})
         </div>
         <div class="mt-2">
@@ -492,7 +492,7 @@ onMounted(refreshAll);
         <v-window-item value="expired">
           <v-card flat>
             <v-card-text>
-              <div class="d-flex flex-wrap ga-2 mb-4">
+              <div class="d-flex ga-2 mb-4 flex-wrap">
                 <v-chip color="green" variant="flat" size="small"
                   >微信：{{ expiredSummary.byPaymentMethod?.wechat || 0 }}</v-chip
                 >

@@ -1,14 +1,14 @@
 <template>
   <v-dialog v-model="isOpen" max-width="800px" persistent>
     <v-card>
-      <v-card-title class="text-h5 px-6 pt-6 d-flex align-center">
+      <v-card-title class="text-h5 d-flex align-center px-6 pt-6">
         <v-icon class="mr-3" color="primary">mdi-credit-card</v-icon>
         支付订单
       </v-card-title>
 
       <v-card-text class="px-6 pb-6">
         <!-- 支付状态显示 -->
-        <div v-if="paymentStatus === 'creating'" class="text-center py-8">
+        <div v-if="paymentStatus === 'creating'" class="py-8 text-center">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
           <div class="text-h6 mb-2">正在创建支付订单...</div>
           <div class="text-body-2 text-medium-emphasis">请稍候</div>
@@ -34,7 +34,7 @@
                 <div class="d-flex justify-space-between align-center">
                   <span class="text-body-2 text-medium-emphasis">支付金额</span>
                   <span class="text-h6 font-weight-bold text-primary"
-                  >¥{{ packageInfo?.currentPrice }}</span
+                    >¥{{ packageInfo?.currentPrice }}</span
                   >
                 </div>
               </v-card-text>
@@ -96,11 +96,11 @@
             <div class="qr-code-container">
               <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
               <div class="qr-code-overlay">
-                <div class="text-body-2 text-center mt-2 text-medium-emphasis">
+                <div class="text-body-2 text-medium-emphasis mt-2 text-center">
                   请使用微信扫码支付
                 </div>
                 <!-- 倒计时显示 -->
-                <div class="text-center mt-2">
+                <div class="mt-2 text-center">
                   <div class="text-body-2 text-medium-emphasis">
                     剩余时间：{{ formatCountdown(countdown) }}
                   </div>
@@ -111,17 +111,17 @@
         </div>
 
         <!-- 支付成功 -->
-        <div v-else-if="paymentStatus === 'success'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'success'" class="py-8 text-center">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <div class="text-h5 mb-2 text-success">支付成功！</div>
+          <div class="text-h5 text-success mb-2">支付成功！</div>
           <div class="text-body-1 text-medium-emphasis mb-4">积分已到账，您可以开始使用了</div>
           <div class="text-body-2">订单号：{{ orderInfo?.outTradeNo }}</div>
         </div>
 
         <!-- 支付失败 -->
-        <div v-else-if="paymentStatus === 'failed'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'failed'" class="py-8 text-center">
           <v-icon size="80" color="error" class="mb-4">mdi-close-circle</v-icon>
-          <div class="text-h5 mb-2 text-error">支付失败</div>
+          <div class="text-h5 text-error mb-2">支付失败</div>
           <div class="text-body-1 text-medium-emphasis mb-4">
             {{ errorMessage || '支付过程中出现错误，请重试' }}
           </div>
@@ -131,7 +131,7 @@
         </div>
 
         <!-- 支付超时 -->
-        <div v-else-if="paymentStatus === 'timeout'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'timeout'" class="py-8 text-center">
           <v-icon size="80" color="warning" class="mb-4">mdi-clock-alert</v-icon>
           <div class="text-body-1 text-medium-emphasis mb-4">订单已超时，请重新创建订单</div>
           <div v-if="orderInfo?.outTradeNo" class="text-body-2">

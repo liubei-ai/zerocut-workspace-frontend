@@ -83,7 +83,7 @@
         </v-card>
 
         <!-- 主按钮居中 -->
-        <div class="text-center mt-4">
+        <div class="mt-4 text-center">
           <v-btn color="primary" size="large" variant="flat" @click="handleViewDetails">
             {{ t('zerocut.subscriptionSuccess.viewDetailsButton') }}
           </v-btn>

@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="isOpen" max-width="800px" persistent>
     <v-card>
-      <v-card-title class="text-h5 px-6 pt-6 d-flex align-center">
+      <v-card-title class="text-h5 d-flex align-center px-6 pt-6">
         <v-icon class="mr-3" color="primary">mdi-autorenew</v-icon>
         连续订阅签约
       </v-card-title>
 
       <v-card-text class="px-6 pb-6">
-        <div v-if="uiStatus === 'creating'" class="text-center py-8">
+        <div v-if="uiStatus === 'creating'" class="py-8 text-center">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
           <div class="text-h6 mb-2">正在创建签约会话...</div>
           <div class="text-body-2 text-medium-emphasis">请稍候</div>
@@ -90,10 +90,10 @@
             <div class="qr-code-container">
               <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
               <div class="qr-code-overlay">
-                <div class="text-body-2 text-center mt-2 text-medium-emphasis">
+                <div class="text-body-2 text-medium-emphasis mt-2 text-center">
                   请使用微信扫码签约
                 </div>
-                <div class="text-center mt-2">
+                <div class="mt-2 text-center">
                   <div class="text-body-2 text-medium-emphasis">
                     剩余时间：{{ formatCountdown(countdown) }}
                   </div>
@@ -103,23 +103,23 @@
           </div>
         </div>
 
-        <div v-else-if="uiStatus === 'confirming'" class="text-center py-8">
+        <div v-else-if="uiStatus === 'confirming'" class="py-8 text-center">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
           <div class="text-h6 mb-2">等待签约确认...</div>
           <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
-          <div class="text-body-2 mt-2 text-medium-emphasis">
+          <div class="text-body-2 text-medium-emphasis mt-2">
             剩余时间：{{ formatCountdown(countdown) }}
           </div>
         </div>
 
-        <div v-else-if="uiStatus === 'signed'" class="text-center py-8">
+        <div v-else-if="uiStatus === 'signed'" class="py-8 text-center">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <div class="text-h5 mb-2 text-success">签约成功！</div>
+          <div class="text-h5 text-success mb-2">签约成功！</div>
           <div class="text-body-1 text-medium-emphasis mb-4">后续将按周期自动扣费并发放积分</div>
           <div class="text-body-2">会话ID：{{ signingSession?.signingSessionId }}</div>
         </div>
 
-        <div v-else-if="uiStatus === 'timeout'" class="text-center py-8">
+        <div v-else-if="uiStatus === 'timeout'" class="py-8 text-center">
           <v-icon size="80" color="warning" class="mb-4">mdi-clock-alert</v-icon>
           <div class="text-body-1 text-medium-emphasis mb-4">签约会话已超时，请重新发起</div>
           <div v-if="signingSession?.signingSessionId" class="text-body-2">
@@ -127,9 +127,9 @@
           </div>
         </div>
 
-        <div v-else-if="uiStatus === 'failed'" class="text-center py-8">
+        <div v-else-if="uiStatus === 'failed'" class="py-8 text-center">
           <v-icon size="80" color="error" class="mb-4">mdi-close-circle</v-icon>
-          <div class="text-h5 mb-2 text-error">签约失败</div>
+          <div class="text-h5 text-error mb-2">签约失败</div>
           <div class="text-body-1 text-medium-emphasis mb-4">
             {{ errorMessage || '签约过程中出现错误，请重试' }}
           </div>

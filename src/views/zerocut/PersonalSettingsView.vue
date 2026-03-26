@@ -303,7 +303,7 @@ onMounted(() => {
             <v-form v-model="isProfileValid">
               <v-row>
                 <!-- 头像上传 -->
-                <v-col cols="12" class="text-center mb-4">
+                <v-col cols="12" class="mb-4 text-center">
                   <v-avatar size="120" class="mb-4">
                     <v-img v-if="profileForm.avatar" :src="profileForm.avatar" alt="Avatar"></v-img>
                     <v-icon v-else size="60">mdi-account-circle</v-icon>
@@ -563,7 +563,7 @@ onMounted(() => {
                     </span>
                   </div>
                   <div class="text-caption text-medium-emphasis ml-6">
-                    {{ login.location }}<br>
+                    {{ login.location }}<br />
                     {{ login.timestamp }}
                   </div>
                   <v-divider
@@ -899,7 +899,7 @@ onMounted(() => {
               style="display: none"
               ref="fileInput"
               @change="uploadAvatar"
-            >
+            />
             <v-btn
               color="primary"
               variant="outlined"
@@ -962,7 +962,7 @@ onMounted(() => {
         </v-card-title>
 
         <v-card-text>
-          <div class="text-center mb-4">
+          <div class="mb-4 text-center">
             <v-img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
               width="200"

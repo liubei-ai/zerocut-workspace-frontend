@@ -466,7 +466,7 @@ const handleSyncUser = async (workspace: WorkspaceListItem) => {
 
         <!-- 操作按钮 -->
         <template #item.actions="{ item }">
-          <div class="d-flex gap-2 justify-center">
+          <div class="d-flex justify-center gap-2">
             <v-btn
               color="primary"
               variant="flat"

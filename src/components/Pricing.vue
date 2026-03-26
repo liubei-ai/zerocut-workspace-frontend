@@ -86,7 +86,7 @@ function onSubscribe(plan: PricingPlan) {
   <v-card class="my-5" rounded color="grey-50">
     <div class="pa-10">
       <v-card max-width="1600" class="mx-auto" variant="flat" color="transparent">
-        <div class="d-flex justify-center mb-6">
+        <div class="d-flex mb-6 justify-center">
           <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" class="mr-3">
             <v-btn v-if="hasYearly" value="yearly">Yearly</v-btn>
             <v-btn v-if="hasMonthly" value="monthly">Monthly</v-btn>
@@ -105,7 +105,7 @@ function onSubscribe(plan: PricingPlan) {
                 <v-card
                   elevation="0"
                   height="100%"
-                  class="base-card mx-auto pa-5 d-flex flex-column justify-center"
+                  class="base-card pa-5 d-flex flex-column mx-auto justify-center"
                   :class="selectedClass"
                   @click="toggle"
                   color="#F6FAFE"
@@ -115,7 +115,7 @@ function onSubscribe(plan: PricingPlan) {
                       {{ plan.tier }}
                     </h3>
                     <v-card elevation="0" class="text-center">
-                      <h1 class="font-weight-black text-h4 my-10 text-color">
+                      <h1 class="font-weight-black text-h4 text-color my-10">
                         <span>
                           {{ displayOption(plan)?.price ?? '-' }}
                           {{ (displayOption(plan)?.currency || '').toUpperCase() }}
@@ -135,7 +135,7 @@ function onSubscribe(plan: PricingPlan) {
                             displayOption(plan)?.type === 'yearly'
                           "
                           size="x-large"
-                          class="text-white my-5"
+                          class="my-5 text-white"
                           block
                           :color="plan.color"
                           @click="onSubscribe(plan)"
@@ -145,7 +145,7 @@ function onSubscribe(plan: PricingPlan) {
                         <v-btn
                           v-if="displayOption(plan)?.type === 'one_time_month'"
                           size="x-large"
-                          class="text-white my-5"
+                          class="my-5 text-white"
                           block
                           :color="plan.color"
                           @click="onSubscribe(plan)"

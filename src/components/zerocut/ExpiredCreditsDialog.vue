@@ -180,7 +180,7 @@ const close = () => emit('update:modelValue', false);
           </v-col>
         </v-row>
 
-        <div class="d-flex flex-wrap ga-2 mb-4">
+        <div class="d-flex ga-2 mb-4 flex-wrap">
           <v-chip color="green" variant="flat" size="small">
             微信：{{ expiredSummary.byPaymentMethod.wechat || 0 }}
           </v-chip>

@@ -52,7 +52,8 @@ export const read = async (
             if (target.value instanceof Array) {
               // 如果提供了特定的消息索引，则更新该索引的消息
               // 否则使用默认的最后一个消息
-              const indexToUpdate = typeof messageIndex === 'number' ? messageIndex : target.value.length - 1;
+              const indexToUpdate =
+                typeof messageIndex === 'number' ? messageIndex : target.value.length - 1;
               target.value[indexToUpdate].content += deltaContent;
             } else {
               target.value = target.value += deltaContent;

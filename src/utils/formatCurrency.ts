@@ -21,10 +21,7 @@ export const formatCurrency = (
  * @param price
  * @param currency
  */
-export const formatPrice = (
-  price: number,
-  currency: CurrencyConfig.Currency
-) => {
+export const formatPrice = (price: number, currency: CurrencyConfig.Currency) => {
   try {
     const numberFormatted = numberFormat(
       price,
@@ -38,11 +35,7 @@ export const formatPrice = (
         currency.currencySymbolNumberOfSpaces > 0
           ? ' '.repeat(currency.currencySymbolNumberOfSpaces)
           : '';
-      let priceParts = [
-        numberFormatted,
-        priceSeparator,
-        currency.currencySymbol,
-      ];
+      let priceParts = [numberFormatted, priceSeparator, currency.currencySymbol];
 
       if (currency.currencySymbolPosition === 'left') {
         priceParts = priceParts.reverse();

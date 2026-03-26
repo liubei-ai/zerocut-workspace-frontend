@@ -4,7 +4,7 @@
       <!-- 关闭按钮 -->
       <v-btn icon="mdi-close" variant="text" size="small" class="close-btn" @click="handleClose" />
 
-      <v-card-text class="text-center pa-8">
+      <v-card-text class="pa-8 text-center">
         <!-- 成功图标 -->
         <div class="success-icon-container mb-6">
           <v-icon size="80" color="success" class="success-icon"> mdi-check-circle </v-icon>

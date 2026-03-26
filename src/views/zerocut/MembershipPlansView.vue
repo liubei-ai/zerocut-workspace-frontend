@@ -436,7 +436,7 @@ onMounted(fetchMembershipPlans);
   <v-container fluid class="pa-0">
     <!-- Membership Status Bar -->
     <v-card class="membership-status-bar mb-4" :class="statusBarClass" variant="flat">
-      <v-card-text class="d-flex align-center justify-space-between py-3 px-5">
+      <v-card-text class="d-flex align-center justify-space-between px-5 py-3">
         <!-- Left: icon + info -->
         <div class="d-flex align-center ga-3">
           <div class="status-icon-wrap" :class="statusBarClass">
@@ -612,7 +612,7 @@ onMounted(fetchMembershipPlans);
 
     <v-card
       v-if="!loading && displayPlans.length === 0 && !error"
-      class="section-card text-center pa-8"
+      class="section-card pa-8 text-center"
       variant="outlined"
     >
       <v-icon size="64" color="grey">mdi-package-variant</v-icon>

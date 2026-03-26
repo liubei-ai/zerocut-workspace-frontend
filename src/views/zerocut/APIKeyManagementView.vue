@@ -659,7 +659,7 @@ const getStatusColor = (status: string) => {
           </v-text-field>
 
           <v-card variant="outlined" class="pa-3 mb-3">
-            <div class="text-subtitle-2 mb-2 d-flex align-center">
+            <div class="text-subtitle-2 d-flex align-center mb-2">
               <v-icon class="mr-2" size="20">mdi-code-braces</v-icon>
               {{ t('zerocut.apikeys.ott.ottUsageExample') }}
             </div>

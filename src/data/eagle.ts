@@ -12,8 +12,7 @@ export const eagleResourseData = [
     id: 2,
     thumbnail:
       'https://oss-community.eagle.cool/resource/thumb/bf543604-71ef-405f-989d-77b7ba004964.webp?x-oss-process=image/resize,w_664/format,webp/sharpen,100',
-    thumbnail_alt:
-      '超值！Streamline 的 600+ 款免费像素风格图标，展现设计独特性',
+    thumbnail_alt: '超值！Streamline 的 600+ 款免费像素风格图标，展现设计独特性',
     title: '超值！Streamline 的 600+ 款免费像素风格图标，展现设计独特性',
     downloadsAndViews: '22\n150',
     author: '绿茶不加冰',
@@ -139,8 +138,7 @@ export const eagleResourseData = [
     id: 16,
     thumbnail:
       'https://oss-community.eagle.cool/resource/thumb/2eca7fde-8d1c-4927-a782-22b89703f7c2.webp?x-oss-process=image/resize,w_664/format,webp/sharpen,100',
-    thumbnail_alt:
-      '109 款《赛马娘 Pretty Derby》游戏角色设计立绘，让你大开眼界',
+    thumbnail_alt: '109 款《赛马娘 Pretty Derby》游戏角色设计立绘，让你大开眼界',
     title: '109 款《赛马娘 Pretty Derby》游戏角色设计立绘，让你大开眼界',
     downloadsAndViews: '109\n487',
     author: '翻车鱼丸子',
@@ -324,8 +322,7 @@ export const eagleResourseData = [
   {
     id: 38,
     thumbnail: '',
-    thumbnail_alt:
-      '打造响应式设计的最佳伙伴：免费 300+ Pixel Bazaar 响应式图标',
+    thumbnail_alt: '打造响应式设计的最佳伙伴：免费 300+ Pixel Bazaar 响应式图标',
     title: '打造响应式设计的最佳伙伴：免费 300+ Pixel Bazaar 响应式图标',
     downloadsAndViews: '35\n141',
     author: '绿茶不加冰',
@@ -485,8 +482,7 @@ export const eagleResourseData = [
     id: 56,
     thumbnail:
       'https://oss-community.eagle.cool/resource/thumb/71744acc-db54-426d-92ce-c54ad7d689ac.webp?x-oss-process=image/resize,w_664/format,webp/sharpen,100',
-    thumbnail_alt:
-      '21 种免费无衬线字体（Sans-serif）大集合！通用设计、免费商用',
+    thumbnail_alt: '21 种免费无衬线字体（Sans-serif）大集合！通用设计、免费商用',
     title: '21 种免费无衬线字体（Sans-serif）大集合！通用设计、免费商用',
     downloadsAndViews: '348\n1248',
     author: '左手菜刀右手执笔',

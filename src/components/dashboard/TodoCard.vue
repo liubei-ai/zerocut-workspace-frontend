@@ -25,10 +25,7 @@ const getLabelColor = (id: string) => {
 </script>
 <template>
   <!-- loading spinner -->
-  <div
-    v-if="loading"
-    class="h-full d-flex flex-grow-1 align-center justify-center"
-  >
+  <div v-if="loading" class="d-flex align-center h-full flex-grow-1 justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>
@@ -54,10 +51,7 @@ const getLabelColor = (id: string) => {
               ></v-checkbox-btn>
             </div>
             <v-avatar size="40">
-              <v-img
-                src="https://avatars.githubusercontent.com/u/35951244?v=4"
-                alt="alt"
-              />
+              <v-img src="https://avatars.githubusercontent.com/u/35951244?v=4" alt="alt" />
             </v-avatar>
             <div class="flex-fill mx-5">
               <div
@@ -66,16 +60,14 @@ const getLabelColor = (id: string) => {
               >
                 {{ todo.title }}
               </div>
-              <div
-                :class="todo.completed ? 'text-decoration-line-through' : ''"
-              >
+              <div :class="todo.completed ? 'text-decoration-line-through' : ''">
                 {{ todo.detail }}
               </div>
               <div>
                 <v-chip
                   size="x-small"
                   variant="outlined"
-                  class="mr-1 mt-1"
+                  class="mt-1 mr-1"
                   :color="getLabelColor(tag)"
                   v-for="tag in todo.tags"
                 >

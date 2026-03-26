@@ -61,7 +61,7 @@ app.use(
       // 开启此参数后，Auth0Callback.vue 组件会手动处理回调
       skipRedirectCallback: true,
     }
-  ) as any // eslint-disable-line @typescript-eslint/no-explicit-any
+  ) as any // oxlint-disable-line @typescript-eslint/no-explicit-any
 );
 
 const debugParam = new URLSearchParams(window.location.search).get('debug');

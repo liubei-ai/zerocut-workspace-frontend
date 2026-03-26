@@ -101,9 +101,9 @@ const handleMetricAction = (metric: MetricCardData) => {
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="text-center py-8">
+      <div v-if="loading" class="py-8 text-center">
         <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-        <div class="mt-4 text-h6">{{ t('zerocut.dashboard.loading') }}</div>
+        <div class="text-h6 mt-4">{{ t('zerocut.dashboard.loading') }}</div>
       </div>
 
       <div v-else>

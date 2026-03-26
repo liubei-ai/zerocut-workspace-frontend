@@ -11,7 +11,7 @@
         <v-form ref="form" v-model="formValid">
           <!-- 充值类型选择 -->
           <div class="mb-4">
-            <v-label class="text-subtitle-2 mb-2 d-block">充值类型</v-label>
+            <v-label class="text-subtitle-2 d-block mb-2">充值类型</v-label>
             <v-radio-group v-model="rechargeType" :disabled="loading" inline density="comfortable">
               <v-radio label="手动充值" value="manual" color="primary" />
               <v-radio label="积分赠送" value="give" color="primary" />

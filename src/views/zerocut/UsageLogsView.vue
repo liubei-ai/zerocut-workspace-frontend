@@ -272,7 +272,7 @@ onMounted(() => {
 
         <template #item.creditsAmount="{ item }">
           <span class="text-error font-weight-medium"
-          >-{{ formatCredits(item.creditsAmount) }}</span
+            >-{{ formatCredits(item.creditsAmount) }}</span
           >
         </template>
 
@@ -288,7 +288,7 @@ onMounted(() => {
 
         <!-- 空状态 -->
         <template #no-data>
-          <div class="text-center py-8">
+          <div class="py-8 text-center">
             <v-icon size="64" color="grey-lighten-1" class="mb-4">
               mdi-file-document-outline
             </v-icon>

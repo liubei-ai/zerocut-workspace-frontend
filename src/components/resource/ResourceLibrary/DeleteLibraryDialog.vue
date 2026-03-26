@@ -17,7 +17,7 @@
         </div>
 
         <!-- Statistics Loading -->
-        <div v-if="statsLoading" class="text-center py-4">
+        <div v-if="statsLoading" class="py-4 text-center">
           <v-progress-circular indeterminate color="primary" />
         </div>
 
@@ -55,7 +55,7 @@
 
           <v-divider class="my-3" />
 
-          <div class="text-error text-center font-weight-bold">
+          <div class="text-error font-weight-bold text-center">
             {{ $t('resource.cannotUndo') }}
           </div>
         </div>

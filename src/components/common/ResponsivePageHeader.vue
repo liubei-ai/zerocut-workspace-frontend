@@ -47,7 +47,7 @@ const containerBreakClasses = computed(() => {
   <div class="mb-6">
     <div :class="containerBreakClasses">
       <div>
-        <h1 class="font-bold mb-1 text-2xl sm:text-3xl md:text-3xl">{{ title }}</h1>
+        <h1 class="mb-1 text-2xl font-bold sm:text-3xl md:text-3xl">{{ title }}</h1>
         <div v-if="$slots.description">
           <slot name="description" />
         </div>

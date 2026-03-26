@@ -30,10 +30,7 @@ const parseRGB = (rgb: string) => rgb.match(/\((.*?)\)/)?.[1].split(',');
 
 const hexToRGB = (hex: string) =>
   hex
-    .replace(
-      /^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-      (m, r, g, b) => '#' + r + r + g + g + b + b
-    )
+    .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (m, r, g, b) => '#' + r + r + g + g + b + b)
     .substring(1)
     .match(/.{2}/g)
     ?.map(x => parseInt(x, 16));
@@ -43,15 +40,12 @@ const hexToRGB = (hex: string) =>
 // Return: Array
 
 export const setOpacity = (color: string, opacity: number) => {
-  const [r, g, b] = (isHex(color) ? hexToRGB(color) : parseRGB(color)) ?? [
-    0, 0, 0,
-  ];
+  const [r, g, b] = (isHex(color) ? hexToRGB(color) : parseRGB(color)) ?? [0, 0, 0];
 
   return 'rgba' + '(' + r + ',' + g + ',' + b + ',' + opacity + ')';
 };
 
-export const isValidColor = (color: string) =>
-  isHex(color) || isRGB(color) || isRGBA(color);
+export const isValidColor = (color: string) => isHex(color) || isRGB(color) || isRGBA(color);
 
 export const colorShade = (color: string, percentage: number) => {
   // Check if the color is light or dark
@@ -65,9 +59,7 @@ export const colorShade = (color: string, percentage: number) => {
     Math.round((base * Math.floor(Number(p)) ** 2 + shade) ** 0.5);
 
   // Parse the color to rgb
-  const [r, g, b, a] = (isHex(color) ? hexToRGB(color) : parseRGB(color)) ?? [
-    0, 0, 0,
-  ];
+  const [r, g, b, a] = (isHex(color) ? hexToRGB(color) : parseRGB(color)) ?? [0, 0, 0];
   // Calculate the red color
   const red = calcPrimary(r);
   // Calculate the green color
@@ -76,14 +68,5 @@ export const colorShade = (color: string, percentage: number) => {
   const blue = calcPrimary(b);
 
   // Return the color
-  return (
-    'rgb' +
-    (a ? 'a(' : '(') +
-    red +
-    ',' +
-    green +
-    ',' +
-    blue +
-    (a ? ',' + a : ')')
-  );
+  return 'rgb' + (a ? 'a(' : '(') + red + ',' + green + ',' + blue + (a ? ',' + a : ')');
 };

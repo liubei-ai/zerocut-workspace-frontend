@@ -2,7 +2,15 @@ import { Ref } from 'vue';
 import type { EChartsOption } from 'echarts';
 import { SVGRenderer, CanvasRenderer } from 'echarts/renderers';
 import * as echarts from 'echarts/core';
-import { BarChart, LineChart, PieChart, MapChart, PictorialBarChart, RadarChart, ScatterChart } from 'echarts/charts';
+import {
+  BarChart,
+  LineChart,
+  PieChart,
+  MapChart,
+  PictorialBarChart,
+  RadarChart,
+  ScatterChart,
+} from 'echarts/charts';
 
 import {
   TitleComponent,

@@ -1,4 +1,5 @@
-/// <reference types="vitest" />
+/// <reference types="vite-plus/test" />
+
 // Plugins
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import vue from '@vitejs/plugin-vue';
@@ -12,6 +13,10 @@ import { fileURLToPath, URL } from 'node:url';
 
 // https://vitejs.dev/config/
 export default {
+  staged: {
+    '*.{js,mjs,cjs,ts,vue}': ['vp lint --fix --quiet', 'vp fmt'],
+    '*.{scss,css,md,json}': ['vp fmt'],
+  },
   plugins: [
     vue(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin

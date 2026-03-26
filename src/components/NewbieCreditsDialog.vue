@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="dialog" max-width="500" persistent transition="dialog-bottom-transition">
-    <v-card class="text-center pa-6">
+    <v-card class="pa-6 text-center">
       <!-- 庆祝图标 -->
       <div class="mb-4">
         <v-icon color="success" size="80" class="celebration-icon"> mdi-gift </v-icon>
       </div>
 
       <!-- 标题 -->
-      <v-card-title class="text-h4 font-weight-bold text-center mb-2">
+      <v-card-title class="text-h4 font-weight-bold mb-2 text-center">
         {{ t('zerocut.newbieCredits.title') }}
       </v-card-title>
 
@@ -20,7 +20,7 @@
             {{ creditsAmount }} {{ t('zerocut.newbieCredits.creditsUnit') }}
           </v-chip>
         </div>
-        <div class="mt-3 text-body-1 text-medium-emphasis">
+        <div class="text-body-1 text-medium-emphasis mt-3">
           {{ t('zerocut.newbieCredits.validityNotice') }}
         </div>
       </v-card-text>

@@ -23,8 +23,7 @@ export default [
     lastSignIn: '2022-11-20',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/dolorumquisquamsapiente.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/dolorumquisquamsapiente.png?size=100x100&set=set1',
   },
   {
     id: 3,
@@ -50,8 +49,7 @@ export default [
     lastSignIn: '2022-07-04',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/doloremquenamtemporibus.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/doloremquenamtemporibus.png?size=100x100&set=set1',
   },
   {
     id: 5,
@@ -64,8 +62,7 @@ export default [
     lastSignIn: '2023-01-13',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/earumexplicaboconsequatur.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/earumexplicaboconsequatur.png?size=100x100&set=set1',
   },
   {
     id: 6,
@@ -78,8 +75,7 @@ export default [
     lastSignIn: '2022-06-12',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/quiavoluptatemaxime.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/quiavoluptatemaxime.png?size=100x100&set=set1',
   },
   {
     id: 7,
@@ -105,8 +101,7 @@ export default [
     lastSignIn: '2022-11-03',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/explicabonequedolor.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/explicabonequedolor.png?size=100x100&set=set1',
   },
   {
     id: 9,
@@ -119,8 +114,7 @@ export default [
     lastSignIn: '2022-09-01',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/distinctiolaborumsed.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/distinctiolaborumsed.png?size=100x100&set=set1',
   },
   {
     id: 10,
@@ -133,8 +127,7 @@ export default [
     lastSignIn: '2023-02-01',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/velitvoluptatemdolore.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/velitvoluptatemdolore.png?size=100x100&set=set1',
   },
   {
     id: 11,
@@ -212,8 +205,7 @@ export default [
     lastSignIn: '2022-06-11',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/accusamusvoluptasvoluptatem.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/accusamusvoluptasvoluptatem.png?size=100x100&set=set1',
   },
   {
     id: 17,
@@ -265,8 +257,7 @@ export default [
     lastSignIn: '2022-09-08',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/laboriosamdebitistemporibus.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/laboriosamdebitistemporibus.png?size=100x100&set=set1',
   },
   {
     id: 21,
@@ -279,8 +270,7 @@ export default [
     lastSignIn: '2022-11-06',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/accusantiumvoluptatibusarchitecto.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/accusantiumvoluptatibusarchitecto.png?size=100x100&set=set1',
   },
   {
     id: 22,
@@ -358,8 +348,7 @@ export default [
     lastSignIn: '2022-06-27',
     disabled: true,
     role: 'USER',
-    avatar:
-      'https://robohash.org/eumreprehenderitsunt.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/eumreprehenderitsunt.png?size=100x100&set=set1',
   },
   {
     id: 28,
@@ -372,8 +361,7 @@ export default [
     lastSignIn: '2023-02-08',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/quiitaquevoluptatibus.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/quiitaquevoluptatibus.png?size=100x100&set=set1',
   },
   {
     id: 29,
@@ -386,8 +374,7 @@ export default [
     lastSignIn: '2022-03-15',
     disabled: true,
     role: 'USER',
-    avatar:
-      'https://robohash.org/doloresquamcorporis.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/doloresquamcorporis.png?size=100x100&set=set1',
   },
   {
     id: 30,
@@ -439,8 +426,7 @@ export default [
     lastSignIn: '2022-08-08',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/molestiaesuscipitquasi.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/molestiaesuscipitquasi.png?size=100x100&set=set1',
   },
   {
     id: 34,
@@ -479,8 +465,7 @@ export default [
     lastSignIn: '2022-08-12',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/nostrumsitsimilique.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/nostrumsitsimilique.png?size=100x100&set=set1',
   },
   {
     id: 37,
@@ -532,8 +517,7 @@ export default [
     lastSignIn: '2022-04-23',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/commodiassumendaeum.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/commodiassumendaeum.png?size=100x100&set=set1',
   },
   {
     id: 41,
@@ -546,8 +530,7 @@ export default [
     lastSignIn: '2022-05-27',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/liberodolorempraesentium.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/liberodolorempraesentium.png?size=100x100&set=set1',
   },
   {
     id: 42,
@@ -560,8 +543,7 @@ export default [
     lastSignIn: '2022-10-24',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/doloremdoloresaliquid.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/doloremdoloresaliquid.png?size=100x100&set=set1',
   },
   {
     id: 43,
@@ -613,8 +595,7 @@ export default [
     lastSignIn: '2022-07-16',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/possimusmolestiaealiquid.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/possimusmolestiaealiquid.png?size=100x100&set=set1',
   },
   {
     id: 47,
@@ -640,8 +621,7 @@ export default [
     lastSignIn: '2023-01-13',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/consequaturducimusipsa.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/consequaturducimusipsa.png?size=100x100&set=set1',
   },
   {
     id: 49,
@@ -654,8 +634,7 @@ export default [
     lastSignIn: '2022-03-24',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/velitconsecteturcorrupti.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/velitconsecteturcorrupti.png?size=100x100&set=set1',
   },
   {
     id: 50,
@@ -668,8 +647,7 @@ export default [
     lastSignIn: '2022-04-27',
     disabled: false,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/quireprehenderitquasi.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/quireprehenderitquasi.png?size=100x100&set=set1',
   },
   {
     id: 51,
@@ -695,8 +673,7 @@ export default [
     lastSignIn: '2022-11-25',
     disabled: false,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/autempariaturvoluptates.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/autempariaturvoluptates.png?size=100x100&set=set1',
   },
   {
     id: 53,
@@ -709,8 +686,7 @@ export default [
     lastSignIn: '2022-07-17',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/eosvoluptatemtempore.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/eosvoluptatemtempore.png?size=100x100&set=set1',
   },
   {
     id: 54,
@@ -723,8 +699,7 @@ export default [
     lastSignIn: '2022-05-02',
     disabled: true,
     role: 'USER',
-    avatar:
-      'https://robohash.org/officiisdeseruntaut.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/officiisdeseruntaut.png?size=100x100&set=set1',
   },
   {
     id: 55,
@@ -763,8 +738,7 @@ export default [
     lastSignIn: '2022-10-08',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/estaccusantiumvoluptatem.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/estaccusantiumvoluptatem.png?size=100x100&set=set1',
   },
   {
     id: 58,
@@ -790,8 +764,7 @@ export default [
     lastSignIn: '2023-01-27',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/voluptatemliberovel.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/voluptatemliberovel.png?size=100x100&set=set1',
   },
   {
     id: 60,
@@ -817,8 +790,7 @@ export default [
     lastSignIn: '2022-08-08',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/commodiarchitectoqui.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/commodiarchitectoqui.png?size=100x100&set=set1',
   },
   {
     id: 62,
@@ -844,8 +816,7 @@ export default [
     lastSignIn: '2022-10-22',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/mollitiaidblanditiis.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/mollitiaidblanditiis.png?size=100x100&set=set1',
   },
   {
     id: 64,
@@ -871,8 +842,7 @@ export default [
     lastSignIn: '2023-02-22',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/consequaturliberomagni.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/consequaturliberomagni.png?size=100x100&set=set1',
   },
   {
     id: 66,
@@ -898,8 +868,7 @@ export default [
     lastSignIn: '2022-08-29',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/quisevenietvoluptatem.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/quisevenietvoluptatem.png?size=100x100&set=set1',
   },
   {
     id: 68,
@@ -912,8 +881,7 @@ export default [
     lastSignIn: '2022-05-21',
     disabled: false,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/praesentiumodioiusto.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/praesentiumodioiusto.png?size=100x100&set=set1',
   },
   {
     id: 69,
@@ -965,8 +933,7 @@ export default [
     lastSignIn: '2022-06-30',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/fugitdelenitirepellat.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/fugitdelenitirepellat.png?size=100x100&set=set1',
   },
   {
     id: 73,
@@ -992,8 +959,7 @@ export default [
     lastSignIn: '2022-09-17',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/inciduntsitvoluptatem.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/inciduntsitvoluptatem.png?size=100x100&set=set1',
   },
   {
     id: 75,
@@ -1006,8 +972,7 @@ export default [
     lastSignIn: '2022-09-20',
     disabled: false,
     role: 'USER',
-    avatar:
-      'https://robohash.org/optioexcepturiiusto.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/optioexcepturiiusto.png?size=100x100&set=set1',
   },
   {
     id: 76,
@@ -1020,8 +985,7 @@ export default [
     lastSignIn: '2022-05-05',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/molestiaenisiitaque.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/molestiaenisiitaque.png?size=100x100&set=set1',
   },
   {
     id: 77,
@@ -1060,8 +1024,7 @@ export default [
     lastSignIn: '2022-03-07',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/sapientetemporaofficia.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/sapientetemporaofficia.png?size=100x100&set=set1',
   },
   {
     id: 80,
@@ -1100,8 +1063,7 @@ export default [
     lastSignIn: '2022-07-13',
     disabled: true,
     role: 'EDITOR',
-    avatar:
-      'https://robohash.org/inaliasvoluptatibus.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/inaliasvoluptatibus.png?size=100x100&set=set1',
   },
   {
     id: 83,
@@ -1114,8 +1076,7 @@ export default [
     lastSignIn: '2022-04-01',
     disabled: false,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/officiisdebitisaliquam.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/officiisdebitisaliquam.png?size=100x100&set=set1',
   },
   {
     id: 84,
@@ -1141,8 +1102,7 @@ export default [
     lastSignIn: '2022-11-03',
     disabled: true,
     role: 'USER',
-    avatar:
-      'https://robohash.org/quirecusandaelabore.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/quirecusandaelabore.png?size=100x100&set=set1',
   },
   {
     id: 86,
@@ -1168,8 +1128,7 @@ export default [
     lastSignIn: '2022-10-07',
     disabled: true,
     role: 'USER',
-    avatar:
-      'https://robohash.org/molestiaeanimiaspernatur.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/molestiaeanimiaspernatur.png?size=100x100&set=set1',
   },
   {
     id: 88,
@@ -1208,8 +1167,7 @@ export default [
     lastSignIn: '2022-07-09',
     disabled: true,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/moditemporibustotam.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/moditemporibustotam.png?size=100x100&set=set1',
   },
   {
     id: 91,
@@ -1274,8 +1232,7 @@ export default [
     lastSignIn: '2023-01-28',
     disabled: false,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/consecteturautquidem.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/consecteturautquidem.png?size=100x100&set=set1',
   },
   {
     id: 96,
@@ -1301,8 +1258,7 @@ export default [
     lastSignIn: '2022-06-01',
     disabled: false,
     role: 'ADMIN',
-    avatar:
-      'https://robohash.org/temporibusfugavoluptatibus.png?size=100x100&set=set1',
+    avatar: 'https://robohash.org/temporibusfugavoluptatibus.png?size=100x100&set=set1',
   },
   {
     id: 98,

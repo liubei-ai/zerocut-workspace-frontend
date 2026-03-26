@@ -73,7 +73,7 @@ const handlePurchase = () => {
 
 <template>
   <v-card
-    class="package-card h-100 d-flex flex-column"
+    class="package-card d-flex flex-column h-100"
     elevation="3"
     :class="{ 'package-card--disabled': disabled }"
   >
@@ -97,9 +97,9 @@ const handlePurchase = () => {
     </v-card-title>
 
     <!-- 套餐内容 -->
-    <v-card-text class="flex-grow-1 d-flex flex-column">
+    <v-card-text class="d-flex flex-column flex-grow-1">
       <!-- 积分数量 -->
-      <div class="text-center mb-4">
+      <div class="mb-4 text-center">
         <v-icon size="48" color="primary" class="mb-2">mdi-star-circle</v-icon>
         <div class="text-h4 font-weight-bold text-primary">
           {{ packageInfo.creditsAmount.toLocaleString() }}
@@ -108,7 +108,7 @@ const handlePurchase = () => {
       </div>
 
       <!-- 价格信息 -->
-      <div class="text-center mb-4">
+      <div class="mb-4 text-center">
         <!-- 原价（如果有折扣） -->
         <div v-if="hasDiscount" class="mb-1">
           <span class="text-decoration-line-through text-medium-emphasis">
