@@ -51,6 +51,71 @@ const formData = ref({
 const isEdit = computed(() => !!props.config);
 const dialogTitle = computed(() => (isEdit.value ? '编辑配置' : '新建配置'));
 
+const normalizeLineBreaks = (value: string) => value.replace(/\r\n?/g, '\n');
+
+const parseArrayLineItem = (line: string) => {
+  try {
+    return JSON.parse(line);
+  } catch {
+    return line;
+  }
+};
+
+const parseArrayValue = (value: string): unknown[] | null => {
+  const trimmedValue = value.trim();
+  if (!trimmedValue) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      return parsed;
+    }
+  } catch {
+    // 非 JSON array 时继续尝试按行解析
+  }
+
+  const lines = normalizeLineBreaks(value)
+    .split('\n')
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  if (lines.length === 0) {
+    return null;
+  }
+
+  return lines.map(parseArrayLineItem);
+};
+
+const formatArrayValueForDisplay = (value: string) => {
+  const parsed = parseArrayValue(value);
+  if (!parsed) {
+    return value;
+  }
+
+  return parsed.map(item => (typeof item === 'string' ? item : JSON.stringify(item))).join('\n');
+};
+
+const normalizeConfigValueForSubmit = (value: string, type: ValueType) => {
+  switch (type) {
+    case 'boolean':
+      return value.toLowerCase();
+    case 'json':
+      try {
+        return JSON.stringify(JSON.parse(value), null, 2);
+      } catch {
+        return value;
+      }
+    case 'array': {
+      const parsed = parseArrayValue(value);
+      return parsed ? JSON.stringify(parsed) : value;
+    }
+    default:
+      return value;
+  }
+};
+
 // 获取系统配置枚举
 const fetchEnums = async () => {
   try {
@@ -99,11 +164,16 @@ watch(
     if (newVal) {
       resetForm();
       if (props.config) {
+        const configValue =
+          props.config.valueType === 'array'
+            ? formatArrayValueForDisplay(props.config.configValue)
+            : props.config.configValue;
+
         // 编辑模式，填充数据
         formData.value = {
           configKey: props.config.configKey,
           name: props.config.name,
-          configValue: props.config.configValue,
+          configValue,
           valueType: props.config.valueType,
           category: props.config.category,
           description: props.config.description || '',
@@ -140,12 +210,16 @@ const saveConfig = async () => {
 
   try {
     loading.value = true;
+    const normalizedConfigValue = normalizeConfigValueForSubmit(
+      formData.value.configValue,
+      formData.value.valueType
+    );
 
     if (isEdit.value) {
       // 编辑模式，只发送可编辑的字段
       const updateData: UpdateSystemConfigParams = {
         name: formData.value.name,
-        configValue: formData.value.configValue,
+        configValue: normalizedConfigValue,
         description: formData.value.description,
       };
       emit('save', updateData);
@@ -154,7 +228,7 @@ const saveConfig = async () => {
       const createData: CreateSystemConfigParams = {
         configKey: formData.value.configKey,
         name: formData.value.name,
-        configValue: formData.value.configValue,
+        configValue: normalizedConfigValue,
         valueType: formData.value.valueType,
         category: formData.value.category,
         description: formData.value.description,
@@ -172,38 +246,33 @@ const validateConfigValue = (value: string, type: ValueType) => {
   if (!value) return '配置值不能为空';
 
   switch (type) {
-  case 'number':
-    if (!/^-?\d+$/.test(value)) {
-      return '请输入有效的整数';
-    }
-    break;
-  case 'decimal':
-    if (!/^-?\d+(\.\d+)?$/.test(value)) {
-      return '请输入有效的小数';
-    }
-    break;
-  case 'boolean':
-    if (!['true', 'false'].includes(value.toLowerCase())) {
-      return '布尔值只能是 true 或 false';
-    }
-    break;
-  case 'json':
-    try {
-      JSON.parse(value);
-    } catch {
-      return '请输入有效的JSON格式';
-    }
-    break;
-  case 'array':
-    try {
-      const parsed = JSON.parse(value);
-      if (!Array.isArray(parsed)) {
-        return '请输入有效的数组格式';
+    case 'number':
+      if (!/^-?\d+$/.test(value)) {
+        return '请输入有效的整数';
       }
-    } catch {
-      return '请输入有效的数组格式';
-    }
-    break;
+      break;
+    case 'decimal':
+      if (!/^-?\d+(\.\d+)?$/.test(value)) {
+        return '请输入有效的小数';
+      }
+      break;
+    case 'boolean':
+      if (!['true', 'false'].includes(value.toLowerCase())) {
+        return '布尔值只能是 true 或 false';
+      }
+      break;
+    case 'json':
+      try {
+        JSON.parse(value);
+      } catch {
+        return '请输入有效的JSON格式';
+      }
+      break;
+    case 'array':
+      if (!parseArrayValue(value)) {
+        return '请输入合法的 JSON array，或每行输入一个值';
+      }
+      break;
   }
 
   return true;
@@ -214,49 +283,51 @@ const formatConfigValue = () => {
   const { valueType, configValue } = formData.value;
 
   switch (valueType) {
-  case 'boolean':
-    formData.value.configValue = configValue.toLowerCase();
-    break;
-  case 'json':
-  case 'array':
-    try {
-      const parsed = JSON.parse(configValue);
-      formData.value.configValue = JSON.stringify(parsed, null, 2);
-    } catch {
-      // 保持原值
-    }
-    break;
+    case 'boolean':
+      formData.value.configValue = configValue.toLowerCase();
+      break;
+    case 'json':
+      try {
+        const parsed = JSON.parse(configValue);
+        formData.value.configValue = JSON.stringify(parsed, null, 2);
+      } catch {
+        // 保持原值
+      }
+      break;
+    case 'array':
+      formData.value.configValue = formatArrayValueForDisplay(configValue);
+      break;
   }
 };
 
 // 获取配置值输入提示
 const getValuePlaceholder = (type: ValueType) => {
   switch (type) {
-  case 'string':
-    return '请输入字符串值';
-  case 'number':
-    return '请输入整数，如：123';
-  case 'decimal':
-    return '请输入小数，如：123.45';
-  case 'boolean':
-    return '请输入 true 或 false';
-  case 'json':
-    return '请输入JSON格式，如：{"key": "value"}';
-  case 'array':
-    return '请输入数组格式，如：["item1", "item2"]';
-  default:
-    return '请输入配置值';
+    case 'string':
+      return '请输入字符串值';
+    case 'number':
+      return '请输入整数，如：123';
+    case 'decimal':
+      return '请输入小数，如：123.45';
+    case 'boolean':
+      return '请输入 true 或 false';
+    case 'json':
+      return '请输入JSON格式，如：{"key": "value"}';
+    case 'array':
+      return '请输入 JSON array，如：["item1", "item2"]，或每行输入一个值';
+    default:
+      return '请输入配置值';
   }
 };
 
 // 获取配置值输入类型
 const getValueInputType = (type: ValueType) => {
   switch (type) {
-  case 'json':
-  case 'array':
-    return 'textarea';
-  default:
-    return 'text';
+    case 'json':
+    case 'array':
+      return 'textarea';
+    default:
+      return 'text';
   }
 };
 </script>
@@ -266,7 +337,6 @@ const getValueInputType = (type: ValueType) => {
     :model-value="modelValue"
     @update:model-value="emit('update:modelValue', $event)"
     max-width="600"
-    persistent
   >
     <v-card>
       <v-card-title class="text-h6 d-flex align-center">
@@ -370,6 +440,12 @@ const getValueInputType = (type: ValueType) => {
                 :placeholder="getValuePlaceholder(formData.valueType)"
                 variant="outlined"
                 density="comfortable"
+                :hint="
+                  formData.valueType === 'array'
+                    ? '支持 JSON array 或每行一个值，保存时会自动转换为数组'
+                    : undefined
+                "
+                persistent-hint
                 :rules="[
                   ...rules.configValue,
                   (v: string) => validateConfigValue(v, formData.valueType),
