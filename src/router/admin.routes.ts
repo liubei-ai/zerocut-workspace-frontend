@@ -121,6 +121,18 @@ const AdminRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'xiaoyanque-accounts',
+        name: 'admin-xiaoyanque-accounts',
+        component: () => import('@/views/admin/XiaoYanqueAccountPage.vue'),
+        meta: {
+          title: '小云雀账号管理',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
         path: 'toolbox',
         name: 'admin-toolbox',
         component: () => import('@/views/admin/AdminToolboxView.vue'),

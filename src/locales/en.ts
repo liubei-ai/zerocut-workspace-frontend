@@ -73,6 +73,7 @@ export default {
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Personas',
+    adminXiaoYanqueAccounts: 'XiaoYanque Accounts',
     adminWorkflows: 'Workflows',
     adminToolbox: 'Toolbox',
 

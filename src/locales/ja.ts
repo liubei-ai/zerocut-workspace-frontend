@@ -72,6 +72,7 @@ export default {
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'ロール管理',
+    adminXiaoYanqueAccounts: '小云雀アカウント',
     adminWorkflows: 'ワークフロー',
     adminToolbox: 'ツールボックス',
 

@@ -74,6 +74,7 @@ export default {
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '角色管理',
+    adminXiaoYanqueAccounts: '小云雀账号',
     adminWorkflows: '工作流',
     adminToolbox: '工具箱',
 
