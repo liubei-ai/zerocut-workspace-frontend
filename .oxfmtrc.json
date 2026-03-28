@@ -1,0 +1,34 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "vueIndentScriptAndStyle": false,
+  "sortTailwindcss": {
+    "functions": ["cn", "clsx"],
+    "preserveDuplicates": false,
+    "preserveWhitespace": false
+  },
+  "sortImports": {
+    "newlinesBetween": true,
+    "groups": [
+      "type-import",
+      ["value-builtin", "value-external"],
+      "type-internal",
+      "value-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "sortPackageJson": {
+    "sortScripts": true
+  },
+  "ignorePatterns": ["node_modules", "dist", ".husky", "pnpm-lock.yaml", "auto-imports.d.ts"]
+}

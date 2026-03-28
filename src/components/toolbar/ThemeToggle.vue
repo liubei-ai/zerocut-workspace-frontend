@@ -6,6 +6,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 import { useTheme } from 'vuetify';
+
 import { useAppStore } from '../../stores/appStore';
 const appStore = useAppStore();
 
@@ -25,10 +26,7 @@ const isDark = computed(() => theme.global.current.value.dark);
   </v-btn>
 
   <v-btn v-else @click="toggleTheme" icon color="white" class="text-red">
-    <Icon
-      width="30"
-      icon="line-md:moon-filled-alt-to-sunny-filled-loop-transition"
-    />
+    <Icon width="30" icon="line-md:moon-filled-alt-to-sunny-filled-loop-transition" />
   </v-btn>
 </template>
 

@@ -1,11 +1,9 @@
 import { type SyncedUser } from '../types/api';
 import apiClient from './api2client';
 
-export async function syncAuthingToken(token: string) {
-  return apiClient.post<SyncedUser>('/auth/sync', undefined, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+export async function syncAuthingToken(token: string, wechatIdentities) {
+  return apiClient.post<SyncedUser>('/auth/sync', wechatIdentities, {
+    headers: { Authorization: `Bearer ${token}` },
   });
 }
 

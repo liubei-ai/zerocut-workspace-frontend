@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import echarts, { RenderType, ThemeType, useChart } from '@/plugins/echarts';
 import type { EChartsOption } from 'echarts';
+
 import { Ref } from 'vue';
+
+import echarts, { RenderType, ThemeType, useChart } from '@/plugins/echarts';
 
 interface ChartSeries {
   name: string;
@@ -73,15 +75,15 @@ const option = computed<EChartsOption>(() => {
     backgroundColor: props.backgroundColor,
     title: props.title
       ? {
-        text: props.title,
-        textStyle: {
-          color: '#fff',
-          fontSize: 16,
-          fontWeight: 'bold',
-        },
-        left: 'center',
-        top: 10,
-      }
+          text: props.title,
+          textStyle: {
+            color: '#fff',
+            fontSize: 16,
+            fontWeight: 'bold',
+          },
+          left: 'center',
+          top: 10,
+        }
       : undefined,
     tooltip: {
       trigger: 'axis',
@@ -96,12 +98,12 @@ const option = computed<EChartsOption>(() => {
     },
     legend: props.showLegend
       ? {
-        data: props.series.map(s => s.name),
-        textStyle: {
-          color: '#ccc',
-        },
-        top: props.title ? 40 : 20,
-      }
+          data: props.series.map(s => s.name),
+          textStyle: {
+            color: '#ccc',
+          },
+          top: props.title ? 40 : 20,
+        }
       : undefined,
     grid: {
       left: '3%',

@@ -85,7 +85,7 @@
 
         <!-- Empty state -->
         <template #no-data>
-          <div class="text-center py-4">
+          <div class="py-4 text-center">
             <v-icon size="48" color="grey-lighten-1">mdi-cash-remove</v-icon>
             <p class="text-body-1 text-medium-emphasis mt-2">暂无支付记录</p>
           </div>
@@ -97,6 +97,7 @@
 
 <script setup lang="ts">
 import type { SubscriptionOrderItem, OrderStatus, OrderPurpose } from '@/api/memberAdminApi';
+
 import { formatDate } from '@/utils/date';
 
 defineProps<{

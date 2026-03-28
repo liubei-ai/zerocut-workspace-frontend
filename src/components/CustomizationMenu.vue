@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 import { useTheme } from 'vuetify';
+
+import { useCustomizeThemeStore } from '@/stores/customizeTheme';
 interface Color {
   colorId: number;
   colorName: string;
@@ -82,9 +83,9 @@ const updatePrimaryColor = (newColor: Color) => {
           </div>
           <div>新一代AI视频创作平台</div>
         </div>
-        <hr class="mb-6">
+        <hr class="mb-6" />
         <div>
-          <img src="@/assets/wechat.jpg" alt="">
+          <img src="@/assets/wechat.jpg" alt="" />
         </div>
       </div>
     </v-navigation-drawer>

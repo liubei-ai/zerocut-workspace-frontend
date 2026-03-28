@@ -83,7 +83,7 @@ onMounted(() => {
 
 <template>
   <!-- loading spinner -->
-  <div v-if="loading" class="h-full d-flex flex-grow-1 align-center justify-center">
+  <div v-if="loading" class="d-flex align-center h-full flex-grow-1 justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>
@@ -107,7 +107,11 @@ onMounted(() => {
             <CopyLabel :text="item.user.email" />
           </td>
           <td>
-            <v-chip size="small" :color="item.priority === 'High' ? 'pink' : 'primary'" class="font-weight-bold">
+            <v-chip
+              size="small"
+              :color="item.priority === 'High' ? 'pink' : 'primary'"
+              class="font-weight-bold"
+            >
               {{ item.priority }}</v-chip
             >
           </td>
@@ -124,7 +128,9 @@ onMounted(() => {
           </td>
           <td>{{ item.date }}</td>
           <td>
-            <v-btn elevation="4" variant="elevated" size="small" @click="open(item)"> Open Text </v-btn>
+            <v-btn elevation="4" variant="elevated" size="small" @click="open(item)">
+              Open Text
+            </v-btn>
           </td>
         </tr>
       </tbody>

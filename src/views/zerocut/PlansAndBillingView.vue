@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { computed, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
+import type { ApiError } from '@/types/api';
+
 import {
   cancelSubscription,
   getCurrentSubscription,
@@ -7,14 +13,10 @@ import {
   type SubscriptionDetails,
 } from '@/api/membershipApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useMembershipStore } from '@/stores/membershipStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { ApiError } from '@/types/api';
 import { formatDate } from '@/utils/date';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const snackbarStore = useSnackbarStore();
 const membershipStore = useMembershipStore();

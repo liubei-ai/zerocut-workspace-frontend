@@ -20,8 +20,8 @@
 
         <v-row class="mb-3">
           <v-col cols="12" md="6">
-            <v-list density="compact" class="bg-transparent pa-0">
-              <v-list-item class="px-0 min-h-auto py-1">
+            <v-list density="compact" class="pa-0 bg-transparent">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-identifier</v-icon>
                 </template>
@@ -31,7 +31,7 @@
                 }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-briefcase</v-icon>
                 </template>
@@ -41,7 +41,7 @@
                 </v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-tag</v-icon>
                 </template>
@@ -51,7 +51,7 @@
                 }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-shield-star</v-icon>
                 </template>
@@ -68,7 +68,7 @@
                 </v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-calendar-sync</v-icon>
                 </template>
@@ -88,8 +88,8 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-list density="compact" class="bg-transparent pa-0">
-              <v-list-item class="px-0 min-h-auto py-1">
+            <v-list density="compact" class="pa-0 bg-transparent">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon :color="getStatusColor(detail.status)" size="small" class="mr-2"
                     >mdi-circle</v-icon
@@ -108,7 +108,7 @@
                 </v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon :color="detail.autoRenew ? 'success' : 'grey'" size="small" class="mr-2">
                     {{ detail.autoRenew ? 'mdi-refresh-auto' : 'mdi-refresh-off' }}
@@ -127,7 +127,7 @@
                 </v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item v-if="detail.contractId" class="px-0 min-h-auto py-1">
+              <v-list-item v-if="detail.contractId" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2"
                     >mdi-file-document-outline</v-icon
@@ -139,7 +139,7 @@
                 </v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item v-if="detail.billingAnchorDay" class="px-0 min-h-auto py-1">
+              <v-list-item v-if="detail.billingAnchorDay" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-calendar-clock</v-icon>
                 </template>
@@ -149,7 +149,7 @@
                 >
               </v-list-item>
 
-              <v-list-item class="px-0 min-h-auto py-1">
+              <v-list-item class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="primary" size="small" class="mr-2">mdi-calendar-plus</v-icon>
                 </template>
@@ -176,8 +176,8 @@
 
         <v-row class="mb-3">
           <v-col cols="12" md="6">
-            <v-list density="compact" class="bg-transparent pa-0">
-              <v-list-item v-if="detail.termStartAt" class="px-0 min-h-auto py-1">
+            <v-list density="compact" class="pa-0 bg-transparent">
+              <v-list-item v-if="detail.termStartAt" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="success" size="small" class="mr-2">mdi-calendar-start</v-icon>
                 </template>
@@ -187,7 +187,7 @@
                 }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item v-if="detail.termEndAt" class="px-0 min-h-auto py-1">
+              <v-list-item v-if="detail.termEndAt" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="error" size="small" class="mr-2">mdi-calendar-end</v-icon>
                 </template>
@@ -197,7 +197,7 @@
                 }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item v-if="detail.currentPeriodStartAt" class="px-0 min-h-auto py-1">
+              <v-list-item v-if="detail.currentPeriodStartAt" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="info" size="small" class="mr-2">mdi-calendar-arrow-right</v-icon>
                 </template>
@@ -210,8 +210,8 @@
           </v-col>
 
           <v-col cols="12" md="6">
-            <v-list density="compact" class="bg-transparent pa-0">
-              <v-list-item v-if="detail.currentPeriodEndAt" class="px-0 min-h-auto py-1">
+            <v-list density="compact" class="pa-0 bg-transparent">
+              <v-list-item v-if="detail.currentPeriodEndAt" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="info" size="small" class="mr-2">mdi-calendar-arrow-left</v-icon>
                 </template>
@@ -221,7 +221,7 @@
                 }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item v-if="detail.nextActionAt" class="px-0 min-h-auto py-1">
+              <v-list-item v-if="detail.nextActionAt" class="min-h-auto px-0 py-1">
                 <template #prepend>
                   <v-icon color="warning" size="small" class="mr-2">mdi-calendar-clock</v-icon>
                 </template>
@@ -249,8 +249,8 @@
 
           <v-row>
             <v-col cols="12" md="6">
-              <v-list density="compact" class="bg-transparent pa-0">
-                <v-list-item v-if="detail.cancelAt" class="px-0 min-h-auto py-1">
+              <v-list density="compact" class="pa-0 bg-transparent">
+                <v-list-item v-if="detail.cancelAt" class="min-h-auto px-0 py-1">
                   <template #prepend>
                     <v-icon color="error" size="small" class="mr-2">mdi-calendar-remove</v-icon>
                   </template>
@@ -260,7 +260,7 @@
                   }}</v-list-item-subtitle>
                 </v-list-item>
 
-                <v-list-item v-if="detail.cancelReason" class="px-0 min-h-auto py-1">
+                <v-list-item v-if="detail.cancelReason" class="min-h-auto px-0 py-1">
                   <template #prepend>
                     <v-icon color="error" size="small" class="mr-2"
                       >mdi-comment-text-outline</v-icon
@@ -285,6 +285,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 import {
   getMemberDetail,
   type MemberDetail,
@@ -293,7 +295,6 @@ import {
   type SubscriptionStatus,
 } from '@/api/memberAdminApi';
 import { formatDate } from '@/utils/date';
-import { ref, watch } from 'vue';
 
 const props = defineProps<{
   subscriptionId: number;

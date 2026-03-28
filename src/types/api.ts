@@ -202,6 +202,8 @@ export interface UserInfoDto {
   phone?: string;
   name?: string; // 用户真实姓名
   avatar?: string; // 用户头像URL
+  openid?: string;
+  unionid?: string;
 }
 
 export interface WorkspaceOwnerDto {

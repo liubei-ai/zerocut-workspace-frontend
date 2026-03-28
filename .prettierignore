@@ -1,5 +1,0 @@
-node_modules
-dist
-.husky
-pnpm-lock.yaml
-auto-imports.d.ts 

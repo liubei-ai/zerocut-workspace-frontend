@@ -83,7 +83,7 @@
         </v-card>
 
         <!-- 主按钮居中 -->
-        <div class="text-center mt-4">
+        <div class="mt-4 text-center">
           <v-btn color="primary" size="large" variant="flat" @click="handleViewDetails">
             {{ t('zerocut.subscriptionSuccess.viewDetailsButton') }}
           </v-btn>
@@ -94,8 +94,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
 import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 
 const { t } = useI18n();

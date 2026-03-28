@@ -75,14 +75,15 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { getMemberDetail, type MemberDetail } from '@/api/memberAdminApi';
 import CreditGrantsSection from '@/components/admin/CreditGrantsSection.vue';
 import CreditPeriodsSection from '@/components/admin/CreditPeriodsSection.vue';
 import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue';
 import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
 import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();

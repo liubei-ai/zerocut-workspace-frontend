@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { useTheme } from 'vuetify';
+
+import BackToTop from '@/components/common/BackToTop.vue';
+import Snackbar from '@/components/common/Snackbar.vue';
 import CustomizationMenu from '@/components/CustomizationMenu.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import LandingLayout from '@/layouts/LandingLayout.vue';
 import UILayout from '@/layouts/UILayout.vue';
-
-import BackToTop from '@/components/common/BackToTop.vue';
-import Snackbar from '@/components/common/Snackbar.vue';
 import { useAppStore } from '@/stores/appStore';
-
-import { useTheme } from 'vuetify';
 
 const theme = useTheme();
 const route = useRoute();

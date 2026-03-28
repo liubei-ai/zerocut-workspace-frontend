@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
+
 import { ExpiredCreditItem, ExpiredCreditsResponse, getExpiredCredits } from '@/api/walletApi';
 import { Pagination } from '@/types/api';
 import { formatDate } from '@/utils/date';
-import { ref, watch } from 'vue';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -180,7 +181,7 @@ const close = () => emit('update:modelValue', false);
           </v-col>
         </v-row>
 
-        <div class="d-flex flex-wrap ga-2 mb-4">
+        <div class="d-flex ga-2 mb-4 flex-wrap">
           <v-chip color="green" variant="flat" size="small">
             微信：{{ expiredSummary.byPaymentMethod.wechat || 0 }}
           </v-chip>

@@ -56,11 +56,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import MaterialList from '@/components/resource/OtherMaterials/MaterialList.vue';
 import SceneList from '@/components/resource/SceneAssets/SceneList.vue';
 import SubjectList from '@/components/resource/SubjectAssets/SubjectList.vue';
 import { useResourceStore } from '@/stores/resourceStore';
-import { ref } from 'vue';
 
 defineEmits<{
   back: [];

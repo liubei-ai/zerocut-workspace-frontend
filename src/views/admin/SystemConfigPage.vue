@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import type {
   CreateSystemConfigParams,
   QuerySystemConfigParams,
@@ -6,6 +10,7 @@ import type {
   SystemConfigItem,
   UpdateSystemConfigParams,
 } from '@/api/adminApi';
+
 import {
   createSystemConfig,
   deleteSystemConfig,
@@ -15,9 +20,6 @@ import {
 } from '@/api/adminApi';
 import SystemConfigDialog from '@/components/admin/SystemConfigDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { useDebounceFn } from '@vueuse/core';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
@@ -235,34 +237,34 @@ const formatConfigValue = (value: string, type: string) => {
 // 获取分类颜色
 const getCategoryColor = (category: string) => {
   switch (category) {
-  case 'SYSTEM':
-    return 'error';
-  case 'SECURITY':
-    return 'warning';
-  case 'FEATURE':
-    return 'info';
-  case 'UI':
-    return 'success';
-  default:
-    return 'primary';
+    case 'SYSTEM':
+      return 'error';
+    case 'SECURITY':
+      return 'warning';
+    case 'FEATURE':
+      return 'info';
+    case 'UI':
+      return 'success';
+    default:
+      return 'primary';
   }
 };
 
 // 获取值类型颜色
 const getValueTypeColor = (type: string) => {
   switch (type) {
-  case 'STRING':
-    return 'primary';
-  case 'NUMBER':
-  case 'DECIMAL':
-    return 'success';
-  case 'BOOLEAN':
-    return 'warning';
-  case 'JSON':
-  case 'ARRAY':
-    return 'info';
-  default:
-    return 'default';
+    case 'STRING':
+      return 'primary';
+    case 'NUMBER':
+    case 'DECIMAL':
+      return 'success';
+    case 'BOOLEAN':
+      return 'warning';
+    case 'JSON':
+    case 'ARRAY':
+      return 'info';
+    default:
+      return 'default';
   }
 };
 

@@ -4,10 +4,12 @@
 * @Description:
 -->
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
-import { useUserStore } from '@/stores/userStore';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
+
 import StatusMenu from './StatusMenu.vue';
 
 const userStore = useUserStore();
@@ -98,7 +100,7 @@ const navs: Array<{
         <v-badge content="2" color="success" dot bordered>
           <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
             <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
-            <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
+            <span v-else class="font-weight-bold text-white">{{ userInitials }}</span>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -112,7 +114,7 @@ const navs: Array<{
           <template v-slot:prepend>
             <v-avatar size="40" :color="userAvatar ? undefined : 'primary'">
               <img v-if="userAvatar" :src="userAvatar" :alt="userName" />
-              <span v-else class="text-white font-weight-bold">{{ userInitials }}</span>
+              <span v-else class="font-weight-bold text-white">{{ userInitials }}</span>
             </v-avatar>
           </template>
 

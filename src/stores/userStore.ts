@@ -1,6 +1,8 @@
-import { getCurrentUserInfo } from '@/api/userApi';
-import type { UserInfoDto } from '@/types/api';
 import { defineStore } from 'pinia';
+
+import type { UserInfoDto } from '@/types/api';
+
+import { getCurrentUserInfo } from '@/api/userApi';
 
 export const useUserStore = defineStore('user', {
   state: () => ({

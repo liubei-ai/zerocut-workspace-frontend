@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
 import type { QueryWorkspacesParams, RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
+
 import { createRecharge, getWorkspaceList, syncUserFromAuthing } from '@/api/adminApi';
 import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
-import { useDebounceFn } from '@vueuse/core';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 
 // 响应式数据
 const loading = ref(false);
@@ -466,7 +468,7 @@ const handleSyncUser = async (workspace: WorkspaceListItem) => {
 
         <!-- 操作按钮 -->
         <template #item.actions="{ item }">
-          <div class="d-flex gap-2 justify-center">
+          <div class="d-flex justify-center gap-2">
             <v-btn
               color="primary"
               variant="flat"

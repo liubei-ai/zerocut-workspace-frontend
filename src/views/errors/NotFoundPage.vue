@@ -2,7 +2,7 @@
 import Animation404 from '@/components/animations/Animation404.vue';
 </script>
 <template>
-  <v-card variant="flat" height="100vh" class="d-flex justify-center align-center text-center">
+  <v-card variant="flat" height="100vh" class="d-flex align-center justify-center text-center">
     <div>
       <Animation404 />
 

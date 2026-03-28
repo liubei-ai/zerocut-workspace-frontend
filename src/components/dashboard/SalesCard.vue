@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import moment from 'moment';
 import { useTheme } from 'vuetify';
-import { formatCurrency } from '@/utils/formatCurrency';
+
 import PercentTrend from '@/components/common/PercentTrend.vue';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 const formatDate = (date: string) => {
   return date ? moment(date).format('D MMM') : '';
@@ -59,7 +60,9 @@ const props = defineProps({
 
 const { themes, current } = useTheme();
 const chartOptions = computed(() => {
-  const primaryColor = current.value.dark ? themes.value['dark'].colors.primary : themes.value['light'].colors.primary;
+  const primaryColor = current.value.dark
+    ? themes.value['dark'].colors.primary
+    : themes.value['light'].colors.primary;
 
   return {
     chart: {
@@ -109,9 +112,9 @@ onMounted(() => {
 });
 </script>
 <template>
-  <v-card class="d-flex flex-grow-1 bg-primary-darken-4 pa-3" theme="dark">
+  <v-card class="d-flex bg-primary-darken-4 pa-3 flex-grow-1" theme="dark">
     <!-- loading spinner -->
-    <div v-if="loading" class="d-flex flex-grow-1 align-center justify-center">
+    <div v-if="loading" class="d-flex align-center flex-grow-1 justify-center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
 
@@ -120,9 +123,13 @@ onMounted(() => {
       <v-card-title class="d-flex">
         <div class="font-weight-bold">{{ $t(label) }}</div>
         <v-spacer></v-spacer>
-        <v-btn variant="text" color="primary" class="font-weight-bold" @click="$emit('action-clicked')">{{
-          actionLabel
-        }}</v-btn>
+        <v-btn
+          variant="text"
+          color="primary"
+          class="font-weight-bold"
+          @click="$emit('action-clicked')"
+          >{{ actionLabel }}</v-btn
+        >
       </v-card-title>
 
       <div class="d-flex flex-column flex-grow-1">
@@ -139,7 +146,7 @@ onMounted(() => {
         <v-spacer></v-spacer>
 
         <div class="px-2 pb-2">
-          <div class="title mb-1 font-weight-bold">
+          <div class="title font-weight-bold mb-1">
             {{ $t('dashboard.weeklySales') }}
           </div>
           <div class="d-flex align-center">

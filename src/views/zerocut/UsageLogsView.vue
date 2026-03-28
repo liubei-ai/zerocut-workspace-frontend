@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import type { ConsumptionRecord } from '@/types/api';
+
 import { getConsumptionRecords } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { ConsumptionRecord } from '@/types/api';
 import { formatDate } from '@/utils/date';
-import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 // 使用工作空间store
 const workspaceStore = useWorkspaceStore();
@@ -272,7 +274,7 @@ onMounted(() => {
 
         <template #item.creditsAmount="{ item }">
           <span class="text-error font-weight-medium"
-          >-{{ formatCredits(item.creditsAmount) }}</span
+            >-{{ formatCredits(item.creditsAmount) }}</span
           >
         </template>
 
@@ -288,7 +290,7 @@ onMounted(() => {
 
         <!-- 空状态 -->
         <template #no-data>
-          <div class="text-center py-8">
+          <div class="py-8 text-center">
             <v-icon size="64" color="grey-lighten-1" class="mb-4">
               mdi-file-document-outline
             </v-icon>

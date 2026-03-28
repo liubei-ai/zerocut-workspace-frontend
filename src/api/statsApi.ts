@@ -4,6 +4,7 @@ import type {
   HourlyStatsData,
   HourlyStatsParams,
 } from '../types/stats';
+
 import client from './api2client';
 
 /**

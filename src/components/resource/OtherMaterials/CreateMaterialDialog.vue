@@ -53,7 +53,7 @@
             <!-- 上传中的文件 -->
             <v-card v-else-if="uploadingFile" class="mb-4" variant="outlined">
               <v-card-text>
-                <div class="d-flex align-center gap-3 mb-2">
+                <div class="d-flex align-center mb-2 gap-3">
                   <v-icon :icon="fileIcon" size="32" color="grey" />
                   <div class="flex-grow-1">
                     <div class="text-body-2">{{ uploadingFile.fileName }}</div>
@@ -128,11 +128,14 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { OtherMaterial } from '@/types/resource';
-import type { GalleryImage } from '@/types/image';
 import { computed, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { GalleryImage } from '@/types/image';
+import type { OtherMaterial } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import FileUploadHandler from '../FileUploadHandler.vue';
 
 interface UploadingFile {

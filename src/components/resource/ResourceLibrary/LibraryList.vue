@@ -77,9 +77,11 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { ResourceLibrary } from '@/types/resource';
 import { computed, ref } from 'vue';
+
+import type { ResourceLibrary } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
 
 const emit = defineEmits<{
   'select-library': [library: ResourceLibrary];

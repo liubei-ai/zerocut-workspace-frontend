@@ -24,14 +24,14 @@
             <v-row dense>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-currency-cny</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-currency-cny</v-icon>
                   <span class="text-body-2 text-medium-emphasis">充值金额</span>
                 </div>
                 <div class="text-h6 font-weight-medium text-success">¥{{ result?.amount }}</div>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-primary">mdi-star</v-icon>
+                  <v-icon size="20" class="text-primary mr-2">mdi-star</v-icon>
                   <span class="text-body-2 text-medium-emphasis">实际到账积分</span>
                 </div>
                 <div class="text-h5 font-weight-bold text-primary d-flex align-center">
@@ -41,7 +41,7 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-check-circle</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-check-circle</v-icon>
                   <span class="text-body-2 text-medium-emphasis">充值状态</span>
                 </div>
                 <v-chip color="success" variant="tonal" size="small">
@@ -50,21 +50,21 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-credit-card</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-credit-card</v-icon>
                   <span class="text-body-2 text-medium-emphasis">支付方式</span>
                 </div>
                 <div class="text-body-1">{{ getPaymentMethodText(result?.paymentMethod) }}</div>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-calendar</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-calendar</v-icon>
                   <span class="text-body-2 text-medium-emphasis">创建时间</span>
                 </div>
                 <div class="text-body-1">{{ formatDate(result?.createdAt) }}</div>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-update</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-update</v-icon>
                   <span class="text-body-2 text-medium-emphasis">更新时间</span>
                 </div>
                 <div class="text-body-1">{{ formatDate(result?.updatedAt) }}</div>
@@ -84,14 +84,14 @@
             <v-row dense>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-identifier</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-identifier</v-icon>
                   <span class="text-body-2 text-medium-emphasis">工作空间ID</span>
                 </div>
                 <div class="text-body-1 font-weight-medium">{{ result?.workspaceId }}</div>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">
-                  <v-icon size="20" class="mr-2 text-medium-emphasis">mdi-domain</v-icon>
+                  <v-icon size="20" class="text-medium-emphasis mr-2">mdi-domain</v-icon>
                   <span class="text-body-2 text-medium-emphasis">工作空间名称</span>
                 </div>
                 <div class="text-body-1 font-weight-medium">{{ workspace?.name }}</div>
@@ -120,8 +120,9 @@
 </template>
 
 <script setup lang="ts">
-import type { RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
 import { computed } from 'vue';
+
+import type { RechargeResponse, WorkspaceListItem } from '@/api/adminApi';
 
 interface Props {
   open: boolean;

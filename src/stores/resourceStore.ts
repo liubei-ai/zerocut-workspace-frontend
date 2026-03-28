@@ -1,3 +1,6 @@
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
+
 import type {
   CreateLibraryDto,
   CreateMaterialDto,
@@ -10,11 +13,10 @@ import type {
   UpdateSubjectDto,
   UploadUrlRequestDto,
 } from '@/api/resourceApi';
+import type { OtherMaterial, ResourceLibrary, Scene, Subject } from '@/types/resource';
+
 import * as resourceApi from '@/api/resourceApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { OtherMaterial, ResourceLibrary, Scene, Subject } from '@/types/resource';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
 
 export const useResourceStore = defineStore('resource', () => {
   // ==================== State ====================

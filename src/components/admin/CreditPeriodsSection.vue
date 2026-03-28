@@ -84,7 +84,7 @@
 
         <!-- Empty state -->
         <template #no-data>
-          <div class="text-center py-4">
+          <div class="py-4 text-center">
             <v-icon size="48" color="grey-lighten-1">mdi-calendar-blank</v-icon>
             <p class="text-body-1 text-medium-emphasis mt-2">暂无积分周期记录</p>
           </div>
@@ -124,7 +124,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import type { CreditPeriodItem, PeriodStatus } from '@/api/memberAdminApi';
+
 import { formatDate } from '@/utils/date';
 
 const props = defineProps<{

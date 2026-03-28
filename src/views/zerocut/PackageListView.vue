@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import {
   getPackageList,
   type CreatePaymentOrderResponse,
@@ -9,9 +13,6 @@ import PackageCard from '@/components/zerocut/PackageCard.vue';
 import PaymentDialog from '@/components/zerocut/PaymentDialog.vue';
 import RechargeSuccessOverlay from '@/components/zerocut/RechargeSuccessOverlay.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import { onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 // 状态管理
 const snackbarStore = useSnackbarStore();
@@ -167,7 +168,7 @@ onMounted(() => {
     </v-card>
 
     <!-- 套餐列表 -->
-    <div v-if="loading" class="text-center py-8">
+    <div v-if="loading" class="py-8 text-center">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
       <div class="text-subtitle-1 mt-4">{{ t('zerocut.packages.loading') }}</div>
     </div>
@@ -179,7 +180,7 @@ onMounted(() => {
     </v-row>
 
     <!-- 空状态 -->
-    <div v-if="!loading && packages.length === 0" class="text-center py-12">
+    <div v-if="!loading && packages.length === 0" class="py-12 text-center">
       <v-icon size="96" color="grey-lighten-2" class="mb-4">mdi-package-variant-closed</v-icon>
       <div class="text-h6 text-medium-emphasis mb-2">{{ t('zerocut.packages.empty.title') }}</div>
       <div class="text-body-2 text-medium-emphasis">{{ t('zerocut.packages.empty.subtitle') }}</div>

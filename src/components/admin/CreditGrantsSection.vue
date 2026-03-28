@@ -69,7 +69,7 @@
 
         <!-- Empty state -->
         <template #no-data>
-          <div class="text-center py-4">
+          <div class="py-4 text-center">
             <v-icon size="48" color="grey-lighten-1">mdi-gift-off-outline</v-icon>
             <p class="text-body-1 text-medium-emphasis mt-2">暂无积分发放记录</p>
           </div>
@@ -81,6 +81,7 @@
 
 <script setup lang="ts">
 import type { CreditGrantItem } from '@/api/memberAdminApi';
+
 import { formatDate } from '@/utils/date';
 
 defineProps<{

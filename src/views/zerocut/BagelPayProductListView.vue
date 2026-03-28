@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { type Product as BagelPayProduct } from 'bagelpay';
+import { onMounted, ref } from 'vue';
+
 import { createCheckout, listBagelPayProducts } from '@/api/bagelpayApi';
 import Pricing from '@/components/Pricing.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { type Product as BagelPayProduct } from 'bagelpay';
-import { onMounted, ref } from 'vue';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month';
 type PricingOption = {

@@ -1,9 +1,6 @@
 <template>
-  <div class="d-flex text-center flex-grow-1">
-    <v-card
-      variant="outlined"
-      class="flex-grow-1 d-flex align-center justify-center flex-column"
-    >
+  <div class="d-flex flex-grow-1 text-center">
+    <v-card variant="outlined" class="d-flex align-center flex-column flex-grow-1 justify-center">
       <div class="layout-content ma-auto w-full">
         <slot></slot>
       </div>

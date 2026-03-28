@@ -46,22 +46,14 @@ const currentStatus = ref<UserStatus>({
 });
 
 const setStatus = (status: string) => {
-  currentStatus.value = userStatusList.find(
-    userStatus => userStatus.code === status
-  ) as UserStatus;
+  currentStatus.value = userStatusList.find(userStatus => userStatus.code === status) as UserStatus;
 };
 </script>
 
 <template>
   <v-menu scroll-y :close-on-content-click="false">
     <template v-slot:activator="{ props }">
-      <v-btn
-        width="60"
-        variant="text"
-        size="small"
-        v-bind="props"
-        :color="currentStatus.color"
-      >
+      <v-btn width="60" variant="text" size="small" v-bind="props" :color="currentStatus.color">
         {{ currentStatus.label }}
       </v-btn>
     </template>

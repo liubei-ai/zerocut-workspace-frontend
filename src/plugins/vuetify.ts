@@ -7,13 +7,14 @@
 // Styles
 import '@mdi/font/css/materialdesignicons.css';
 import 'vuetify/styles';
-// Composables
-import { createVuetify } from 'vuetify';
 import type { ThemeDefinition } from 'vuetify';
 
+import { useI18n } from 'vue-i18n';
+// Composables
+import { createVuetify } from 'vuetify';
 import * as directives from 'vuetify/directives';
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n';
-import { useI18n } from 'vue-i18n';
+
 import i18n from '@/plugins/i18n';
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides

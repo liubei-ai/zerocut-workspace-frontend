@@ -118,12 +118,15 @@
 </template>
 
 <script setup lang="ts">
-import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
-import { useResourceStore } from '@/stores/resourceStore';
-import type { GalleryImage } from '@/types/image';
-import type { Subject } from '@/types/resource';
 import { nanoid } from 'nanoid';
 import { reactive, ref, watch } from 'vue';
+
+import type { GalleryImage } from '@/types/image';
+import type { Subject } from '@/types/resource';
+
+import ImageGallery from '@/components/resource/ResourceLibrary/ImageGallery.vue';
+import { useResourceStore } from '@/stores/resourceStore';
+
 import FileUploadHandler from '../FileUploadHandler.vue';
 
 const props = defineProps<{

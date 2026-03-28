@@ -56,15 +56,15 @@ function onSubscribe(plan: SubscriptionPlan) {
 <template>
   <v-card
     v-if="!props.embedded"
-    class="my-5 subscribe-pricing-card"
+    class="subscribe-pricing-card my-5"
     rounded="lg"
     variant="outlined"
   >
     <div class="pa-5">
       <!-- Loading state -->
-      <div v-if="props.loading" class="text-center py-10">
+      <div v-if="props.loading" class="py-10 text-center">
         <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-        <div class="text-h6 mt-4 subscribe-muted">{{ t('zerocut.membership.loading') }}</div>
+        <div class="text-h6 subscribe-muted mt-4">{{ t('zerocut.membership.loading') }}</div>
       </div>
 
       <!-- Plan cards -->
@@ -77,7 +77,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                   theme="light"
                   elevation="0"
                   height="100%"
-                  class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
+                  class="base-card pa-10 pa-md-15 d-flex flex-column mx-auto justify-center text-center"
                   :class="[selectedClass, { 'has-subscription-badge': plan.isCurrentSubscription }]"
                   @click="toggle"
                 >
@@ -108,7 +108,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                         </h1>
                         <div
                           v-if="plan.price.monthlyEquivalent"
-                          class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                          class="price-details d-flex flex-column flex-sm-row align-center ga-2 mt-2 justify-center"
                         >
                           <span class="price-monthly text-body-2">
                             {{ plan.price.monthlyEquivalent }}
@@ -116,7 +116,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                         </div>
                         <div
                           v-if="plan.price.discount"
-                          class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                          class="price-details d-flex flex-column flex-sm-row align-center ga-2 mt-2 justify-center"
                         >
                           <v-chip size="small" color="error" variant="flat" class="price-discount">
                             {{ plan.price.discount }}
@@ -132,7 +132,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                       <div
                         v-for="(feature, index) in plan.features"
                         :key="index"
-                        class="mb-2 subscribe-feature"
+                        class="subscribe-feature mb-2"
                       >
                         {{ feature }}
                       </div>
@@ -150,11 +150,11 @@ function onSubscribe(plan: SubscriptionPlan) {
       </v-card>
     </div>
   </v-card>
-  <div v-else class="subscribe-pricing-embedded pa-5">
+  <div v-else class="subscribe-pricing-embedded pa-4">
     <!-- Loading state -->
-    <div v-if="props.loading" class="text-center py-10">
+    <div v-if="props.loading" class="py-10 text-center">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-      <div class="text-h6 mt-4 subscribe-muted">{{ t('zerocut.membership.loading') }}</div>
+      <div class="text-h6 subscribe-muted mt-4">{{ t('zerocut.membership.loading') }}</div>
     </div>
 
     <!-- Plan cards -->
@@ -167,7 +167,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                 theme="light"
                 elevation="0"
                 height="100%"
-                class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
+                class="base-card pa-10 pa-md-15 d-flex flex-column mx-auto justify-center text-center"
                 :class="[selectedClass, { 'has-subscription-badge': plan.isCurrentSubscription }]"
                 @click="toggle"
               >
@@ -198,7 +198,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                       </h1>
                       <div
                         v-if="plan.price.monthlyEquivalent"
-                        class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                        class="price-details d-flex flex-column flex-sm-row align-center ga-2 mt-2 justify-center"
                       >
                         <span class="price-monthly text-body-2">
                           {{ plan.price.monthlyEquivalent }}
@@ -206,7 +206,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                       </div>
                       <div
                         v-if="plan.price.discount"
-                        class="price-details d-flex flex-column flex-sm-row align-center justify-center mt-2 ga-2"
+                        class="price-details d-flex flex-column flex-sm-row align-center ga-2 mt-2 justify-center"
                       >
                         <v-chip size="small" color="error" variant="flat" class="price-discount">
                           {{ plan.price.discount }}
@@ -222,7 +222,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                     <div
                       v-for="(feature, index) in plan.features"
                       :key="index"
-                      class="mb-2 subscribe-feature"
+                      class="subscribe-feature mb-2"
                     >
                       {{ feature }}
                     </div>

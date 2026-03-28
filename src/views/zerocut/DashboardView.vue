@@ -1,18 +1,25 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import type { MetricCardData } from '@/types/stats';
+
 import CreditsSection from '@/components/dashboard/CreditsSection.vue';
 import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
+import { useUserStore } from '@/stores/userStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { MetricCardData } from '@/types/stats';
-import { computed, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { isWeiXin } from '@/utils/wechat';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();
+const userStore = useUserStore();
 const workspaceStore = useWorkspaceStore();
 const { t } = useI18n();
+const route = useRoute();
 
 // 加载状态
 const loading = ref(true);
@@ -37,15 +44,35 @@ const statisticsChartData = computed(() => statsStore.statisticsChartData);
 // 生命周期
 onMounted(async () => {
   try {
-    loading.value = true;
+    const hasWechatBindResult = typeof route.query.wechatBind === 'string';
+    const hasWechatIdentity = !!userStore.userInfo?.openid || !!userStore.userInfo?.unionid;
+
+    // 如果是微信UA且没有绑定微信账号且没有微信身份
+    if (isWeiXin() && !hasWechatBindResult && !hasWechatIdentity) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('wechatBind');
+      const base = String(import.meta.env.VITE_API2_BASE_URL).replace(/\/$/, '');
+      const authorizeUrl =
+        `${base}/wechat/oauth/authorize` +
+        `?returnUrl=${encodeURIComponent(url.toString())}` +
+        `&scope=snsapi_userinfo`;
+      window.location.assign(authorizeUrl);
+      return;
+    }
+
+    // 如果是微信绑定成功，刷新用户信息
+    if (isWeiXin() && route.query.wechatBind === 'success') {
+      await userStore.loadUserInfo();
+    }
 
     // 设置日期范围为最近7天
+    loading.value = true;
     const endDate = new Date().toISOString().split('T')[0];
     const startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     statsStore.setDateRange({ start: startDate, end: endDate });
-    // if (!workspaceStore.currentWorkspaceId) {
-    //   await workspaceStore.loadWorkspaces();
-    // }
+    if (!workspaceStore.currentWorkspaceId) {
+      await workspaceStore.loadWorkspaces();
+    }
     await statsStore.refreshData(workspaceStore.currentWorkspaceId!);
   } catch (error) {
     console.error('Failed to load dashboard data:', error);
@@ -76,9 +103,9 @@ const handleMetricAction = (metric: MetricCardData) => {
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="loading" class="text-center py-8">
+      <div v-if="loading" class="py-8 text-center">
         <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-        <div class="mt-4 text-h6">{{ t('zerocut.dashboard.loading') }}</div>
+        <div class="text-h6 mt-4">{{ t('zerocut.dashboard.loading') }}</div>
       </div>
 
       <div v-else>

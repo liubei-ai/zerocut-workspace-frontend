@@ -1,7 +1,11 @@
-import router from '@/router';
-import type { RechargeRecord } from '@/types/api';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+
+import type { RechargeRecord } from '@/types/api';
+
+import router from '@/router';
+import { sleep } from '@/utils/common';
+
 import {
   requestAuth0Logout,
   requestAuthingLogout,
@@ -25,11 +29,13 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Handle Authing login success
    */
-  const setAuthToken = async (token: string) => {
-    // 调用 API 同步用户信息
+  const setAuthToken = async (
+    token: string,
+    wechatIdentities?: { openid?: string; unionid?: string }
+  ) => {
     let response;
     if (authType === 'authing') {
-      response = await syncAuthingToken(token);
+      response = await syncAuthingToken(token, wechatIdentities);
     } else if (authType === 'auth0') {
       response = await syncAuth0Token(token);
     }
@@ -38,6 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
     const { newbieCreditsRecord: record, ...rest } = response.data;
     userStore.updateUserInfo(rest);
 
+    await sleep(100);
     const workspaceStore = useWorkspaceStore();
     workspaceStore.loadWorkspaces();
 

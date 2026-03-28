@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { getSystemConfigByKey } from '@/api/adminApi';
-import type { Category } from '@/types/pricing';
 import { computed, onMounted, ref, watch } from 'vue';
+
+import type { Category } from '@/types/pricing';
+
+import { getSystemConfigByKey } from '@/api/adminApi';
 
 // State
 const loading = ref(false);
@@ -223,7 +225,7 @@ onMounted(() => {
 <template>
   <div>
     <!-- Loading State -->
-    <div v-if="loading" class="text-center py-8">
+    <div v-if="loading" class="py-8 text-center">
       <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
       <div class="text-h6 mt-4">加载定价数据中...</div>
     </div>
@@ -243,7 +245,7 @@ onMounted(() => {
         <!-- Form Inputs Column -->
         <v-col cols="12" md="6">
           <v-card elevation="0" class="pa-4">
-            <div class="text-h6 mb-4 d-flex align-center">
+            <div class="text-h6 d-flex align-center mb-4">
               <v-icon icon="mdi-form-select" class="mr-2"></v-icon>
               选择参数
             </div>
@@ -348,7 +350,7 @@ onMounted(() => {
         <v-col cols="12" md="6">
           <v-card
             elevation="4"
-            class="pa-6 text-center price-card"
+            class="pa-6 price-card text-center"
             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
           >
             <div class="text-h5 mb-2" style="color: rgba(255, 255, 255, 0.9)">计算结果</div>
@@ -361,7 +363,7 @@ onMounted(() => {
             <!-- Calculation Details -->
             <v-card
               v-if="currentModel && currentResolution"
-              class="mt-6 pa-4"
+              class="pa-4 mt-6"
               elevation="0"
               color="rgba(255, 255, 255, 0.15)"
             >

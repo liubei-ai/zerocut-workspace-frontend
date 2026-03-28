@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+
 import type { WalletInfo } from '@/api/walletApi';
+
 import { getWalletInfo, getWalletRechargeRecords } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
@@ -73,13 +75,13 @@ onMounted(() => {
   <v-card class="credits-section" elevation="2">
     <v-card-text class="pa-4 pa-md-6">
       <!-- 加载状态 -->
-      <div v-if="loading" class="text-center py-4">
+      <div v-if="loading" class="py-4 text-center">
         <v-progress-circular indeterminate color="primary" size="32"></v-progress-circular>
-        <div class="mt-2 text-body-2">加载中...</div>
+        <div class="text-body-2 mt-2">加载中...</div>
       </div>
 
       <!-- 错误状态 -->
-      <div v-else-if="error" class="text-center py-4">
+      <div v-else-if="error" class="py-4 text-center">
         <v-icon color="error" size="32" class="mb-2">mdi-alert-circle</v-icon>
         <div class="text-body-2 text-error">{{ error }}</div>
         <v-btn size="small" variant="text" color="primary" @click="fetchWalletData" class="mt-2">
@@ -92,11 +94,8 @@ onMounted(() => {
         <!-- 积分余额显示 -->
         <div class="mb-4">
           <div class="d-flex align-center mb-2">
-            <v-icon
-              color="primary"
-              class="mr-2"
-              :size="$vuetify.display.xs ? 20 : 24"
-            >mdi-wallet</v-icon
+            <v-icon color="primary" class="mr-2" :size="$vuetify.display.xs ? 20 : 24"
+              >mdi-wallet</v-icon
             >
             <span class="text-subtitle-1 font-weight-medium">{{
               t('zerocut.wallet.availableCredits')

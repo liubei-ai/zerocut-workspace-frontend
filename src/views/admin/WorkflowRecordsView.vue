@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+
 import {
   type CozeWorkflowItem,
   getWorkflowRecords,
@@ -8,7 +10,6 @@ import {
   type WorkflowRecordItem,
 } from '@/api/adminApi';
 import { formatDate } from '@/utils/date';
-import { computed, onMounted, ref } from 'vue';
 
 // Tab 状态
 const activeTab = ref('records');

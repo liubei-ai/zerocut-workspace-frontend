@@ -1,5 +1,7 @@
-import type { ApiError, ApiResponse } from '@/types/api';
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+
+import type { ApiError, ApiResponse } from '@/types/api';
+
 import { handleAuthFailure } from './helper';
 
 // Create axios instance with default configuration

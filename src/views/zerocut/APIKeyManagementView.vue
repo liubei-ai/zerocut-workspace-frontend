@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { debounce } from 'lodash';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
+
 import { createApiKey, deleteApiKey, generateOtt, getApiKeys } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
 import { formatDate } from '@/utils/date';
 import { maskApiKey } from '@/utils/stringUtils';
-import { debounce } from 'lodash';
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
@@ -659,7 +661,7 @@ const getStatusColor = (status: string) => {
           </v-text-field>
 
           <v-card variant="outlined" class="pa-3 mb-3">
-            <div class="text-subtitle-2 mb-2 d-flex align-center">
+            <div class="text-subtitle-2 d-flex align-center mb-2">
               <v-icon class="mr-2" size="20">mdi-code-braces</v-icon>
               {{ t('zerocut.apikeys.ott.ottUsageExample') }}
             </div>

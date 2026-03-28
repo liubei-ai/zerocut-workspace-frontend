@@ -26,7 +26,7 @@
     </v-row>
 
     <!-- Pagination -->
-    <div v-if="!loading && totalMaterials > limit" class="d-flex justify-center mt-6">
+    <div v-if="!loading && totalMaterials > limit" class="d-flex mt-6 justify-center">
       <v-pagination
         v-model="currentPage"
         :length="totalPages"
@@ -47,10 +47,13 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { OtherMaterial } from '@/types/resource';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import type { OtherMaterial } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import CreateMaterialDialog from './CreateMaterialDialog.vue';
 import MaterialCard from './MaterialCard.vue';
 

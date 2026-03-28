@@ -126,7 +126,7 @@
         <v-divider class="my-4"></v-divider>
         <v-row>
           <v-col cols="12">
-            <h3 class="text-h6 mb-3 text-error">
+            <h3 class="text-h6 text-error mb-3">
               <v-icon class="mr-2">mdi-cancel</v-icon>
               取消信息
             </h3>
@@ -165,6 +165,7 @@ import type {
   PurchaseMode,
   SubscriptionStatus,
 } from '@/api/memberAdminApi';
+
 import { formatDate } from '@/utils/date';
 
 defineProps<{

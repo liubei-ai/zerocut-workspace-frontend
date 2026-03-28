@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
   <v-list nav dense>
     <template v-for="menuArea in props.menu" :key="menuArea.key">
-      <div v-if="menuArea.key || menuArea.text" class="pa-1 mt-2 text-overline">
+      <div v-if="menuArea.key || menuArea.text" class="pa-1 text-overline mt-2">
         {{ menuArea.text || $t(menuArea.key) }}
       </div>
       <template v-if="menuArea.items">

@@ -15,11 +15,13 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
 import type { User } from '@authing/guard-vue3';
+
 import { useGuard } from '@authing/guard-vue3';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+
+import { useAuthStore } from '@/stores/authStore';
 
 const router = useRouter();
 const authStore = useAuthStore();

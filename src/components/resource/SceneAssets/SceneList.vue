@@ -22,7 +22,7 @@
     </v-row>
 
     <!-- Pagination -->
-    <div v-if="!loading && totalScenes > limit" class="d-flex justify-center mt-6">
+    <div v-if="!loading && totalScenes > limit" class="d-flex mt-6 justify-center">
       <v-pagination
         v-model="currentPage"
         :length="totalPages"
@@ -43,9 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { useResourceStore } from '@/stores/resourceStore';
-import type { Scene } from '@/types/resource';
 import { computed, nextTick, onMounted, ref } from 'vue';
+
+import type { Scene } from '@/types/resource';
+
+import { useResourceStore } from '@/stores/resourceStore';
+
 import CreateSceneDialog from './CreateSceneDialog.vue';
 import SceneCard from './SceneCard.vue';
 

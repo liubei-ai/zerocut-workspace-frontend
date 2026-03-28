@@ -1,5 +1,5 @@
 <template>
-  <v-card @click="$emit('edit')" class="pa-5 mt-4 card-shadow">
+  <v-card @click="$emit('edit')" class="pa-5 card-shadow mt-4">
     <div class="d-flex align-start font-weight-bold text-title">
       <span class="flex-fill">{{ card.title }}</span>
       <v-menu location="bottom end" transition="slide-x-transition">

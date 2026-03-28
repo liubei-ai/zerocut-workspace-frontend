@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+
 import type { CreatePersonaParams, PersonaItem, UpdatePersonaParams } from '@/api/adminApi';
+
 import { createPersona, deletePersona, getPersonas, updatePersona } from '@/api/adminApi';
 import PersonaDialog from '@/components/admin/PersonaDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
-import { computed, onMounted, ref } from 'vue';
 
 const loading = ref(false);
 const personas = ref<PersonaItem[]>([]);
@@ -171,20 +173,14 @@ const headerSecondaryActions = computed(() => [
       <v-data-table :headers="headers" :items="filteredItems" :loading="loading">
         <template #item.triggerPreview="{ item }">
           <div class="clamped-2">{{ item.trigger }}</div>
-          <v-btn
-            size="x-small"
-            variant="text"
-            @click="openPreview('触发词', item.trigger)"
-          >查看全文</v-btn
+          <v-btn size="x-small" variant="text" @click="openPreview('触发词', item.trigger)"
+            >查看全文</v-btn
           >
         </template>
         <template #item.promptPreview="{ item }">
           <div class="clamped-3">{{ item.prompt }}</div>
-          <v-btn
-            size="x-small"
-            variant="text"
-            @click="openPreview('提示词', item.prompt)"
-          >查看全文</v-btn
+          <v-btn size="x-small" variant="text" @click="openPreview('提示词', item.prompt)"
+            >查看全文</v-btn
           >
         </template>
         <template #item.updatedAt="{ item }">

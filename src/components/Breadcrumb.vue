@@ -1,9 +1,5 @@
 <template>
-  <v-breadcrumbs
-    v-if="breadcrumbs.length > 0"
-    :items="breadcrumbs"
-    class="ml-n3 text-body-2"
-  >
+  <v-breadcrumbs v-if="breadcrumbs.length > 0" :items="breadcrumbs" class="ml-n3 text-body-2">
     <!-- <template v-slot:prepend>
       <v-icon size="small" icon="mdi-vuetify" color="blue"></v-icon>
     </template> -->

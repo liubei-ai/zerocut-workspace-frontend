@@ -12,10 +12,7 @@ onMounted(() => {
 </script>
 <template>
   <!-- loading spinner -->
-  <div
-    v-if="loading"
-    class="h-full d-flex flex-grow-1 align-center justify-center"
-  >
+  <div v-if="loading" class="d-flex align-center h-full flex-grow-1 justify-center">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
   <div v-else>

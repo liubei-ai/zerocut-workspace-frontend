@@ -1,18 +1,20 @@
-/// <reference types="vitest" />
+/// <reference types="vite-plus/test" />
+
 // Plugins
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import vue from '@vitejs/plugin-vue';
+// Utilities
+import { fileURLToPath, URL } from 'node:url';
+import AutoImport from 'unplugin-auto-import/vite';
 import { viteMockServe } from 'vite-plugin-mock';
 import vuetify from 'vite-plugin-vuetify';
 
-import AutoImport from 'unplugin-auto-import/vite';
-
-// Utilities
-import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vite';
-
 // https://vitejs.dev/config/
-export default defineConfig({
+export default {
+  staged: {
+    '*.{js,mjs,cjs,ts,vue}': ['vp lint --fix --quiet', 'vp fmt'],
+    '*.{scss,css,md,json}': ['vp fmt'],
+  },
   plugins: [
     vue(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
@@ -59,4 +61,4 @@ export default defineConfig({
       },
     },
   },
-});
+};

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+
 import type {
   CreateMembershipPlanParams,
   IMembershipPlanFeature,
@@ -7,8 +9,8 @@ import type {
   PurchaseMode,
   UpdateMembershipPlanParams,
 } from '@/api/adminApi';
+
 import MembershipPlanFeaturesEditor from '@/components/admin/MembershipPlanFeaturesEditor.vue';
-import { computed, ref, watch } from 'vue';
 
 interface Props {
   modelValue: boolean;

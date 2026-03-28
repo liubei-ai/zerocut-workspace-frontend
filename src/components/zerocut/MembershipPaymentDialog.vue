@@ -1,13 +1,13 @@
 <template>
   <v-dialog v-model="isOpen" max-width="800px" persistent>
     <v-card>
-      <v-card-title class="text-h5 px-6 pt-6 d-flex align-center">
+      <v-card-title class="text-h5 d-flex align-center px-6 pt-6">
         <v-icon class="mr-3" color="primary">mdi-credit-card</v-icon>
         购买会员
       </v-card-title>
 
       <v-card-text class="px-6 pb-6">
-        <div v-if="paymentStatus === 'creating'" class="text-center py-8">
+        <div v-if="paymentStatus === 'creating'" class="py-8 text-center">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
           <div class="text-h6 mb-2">正在创建支付订单...</div>
           <div class="text-body-2 text-medium-emphasis">请稍候</div>
@@ -88,10 +88,10 @@
             <div class="qr-code-container">
               <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
               <div class="qr-code-overlay">
-                <div class="text-body-2 text-center mt-2 text-medium-emphasis">
+                <div class="text-body-2 text-medium-emphasis mt-2 text-center">
                   请使用微信扫码支付
                 </div>
-                <div class="text-center mt-2">
+                <div class="mt-2 text-center">
                   <div class="text-body-2 text-medium-emphasis">
                     剩余时间：{{ formatCountdown(countdown) }}
                   </div>
@@ -101,16 +101,25 @@
           </div>
         </div>
 
-        <div v-else-if="paymentStatus === 'success'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'confirming'" class="py-8 text-center">
+          <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+          <div class="text-h6 mb-2">等待支付确认...</div>
+          <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
+          <div class="text-body-2 text-medium-emphasis mt-2">
+            剩余时间：{{ formatCountdown(countdown) }}
+          </div>
+        </div>
+
+        <div v-else-if="paymentStatus === 'success'" class="py-8 text-center">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <div class="text-h5 mb-2 text-success">支付成功！</div>
+          <div class="text-h5 text-success mb-2">支付成功！</div>
           <div class="text-body-1 text-medium-emphasis mb-4">积分已到账，您可以开始使用了</div>
           <div class="text-body-2">订单号：{{ orderInfo?.outTradeNo }}</div>
         </div>
 
-        <div v-else-if="paymentStatus === 'failed'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'failed'" class="py-8 text-center">
           <v-icon size="80" color="error" class="mb-4">mdi-close-circle</v-icon>
-          <div class="text-h5 mb-2 text-error">支付失败</div>
+          <div class="text-h5 text-error mb-2">支付失败</div>
           <div class="text-body-1 text-medium-emphasis mb-4">
             {{ errorMessage || '支付过程中出现错误，请重试' }}
           </div>
@@ -119,7 +128,7 @@
           </div>
         </div>
 
-        <div v-else-if="paymentStatus === 'timeout'" class="text-center py-8">
+        <div v-else-if="paymentStatus === 'timeout'" class="py-8 text-center">
           <v-icon size="80" color="warning" class="mb-4">mdi-clock-alert</v-icon>
           <div class="text-body-1 text-medium-emphasis mb-4">订单已超时，请重新创建订单</div>
           <div v-if="orderInfo?.outTradeNo" class="text-body-2">
@@ -135,7 +144,7 @@
           <v-btn variant="text" @click="handleCancel" :disabled="loading">取消</v-btn>
         </template>
 
-        <template v-else-if="paymentStatus === 'pending'">
+        <template v-else-if="paymentStatus === 'pending' || paymentStatus === 'confirming'">
           <v-btn variant="text" @click="handleCancel" class="mr-2">取消支付</v-btn>
         </template>
 
@@ -158,16 +167,20 @@
 </template>
 
 <script setup lang="ts">
+import QRCode from 'qrcode';
+import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+
 import {
   closeOneTimeOrder,
+  JsapiPayParams,
   purchaseOneTimeSubscription,
+  purchaseOneTimeSubscriptionJsapi,
   type MembershipPlanDto,
 } from '@/api/membershipApi';
 import { queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import QRCode from 'qrcode';
-import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 
 interface Props {
   open: boolean;
@@ -177,7 +190,8 @@ interface Props {
 }
 
 interface OrderInfo {
-  codeUrl: string;
+  codeUrl?: string;
+  jsapiParams?: JsapiPayParams;
   outTradeNo: string;
   subscriptionId: number;
   expiresAt: string;
@@ -202,7 +216,9 @@ const workspaceStore = useWorkspaceStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
 const orderInfo = ref<OrderInfo | null>(null);
-const paymentStatus = ref<'creating' | 'pending' | 'success' | 'failed' | 'timeout'>('creating');
+const paymentStatus = ref<'creating' | 'pending' | 'confirming' | 'success' | 'failed' | 'timeout'>(
+  'creating'
+);
 const paymentCheckInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(300);
@@ -320,22 +336,12 @@ const stopPaymentStatusCheck = () => {
   }
 };
 
-const createPaymentOrder = async () => {
-  if (!props.membershipPlan) return;
-
-  if (!workspaceStore.currentWorkspaceId) {
-    snackbarStore.showErrorMessage('请先选择工作空间');
-    return;
-  }
-
+const createPaymentOrderNative = async () => {
   try {
-    paymentStatus.value = 'creating';
-    errorMessage.value = '';
-
     const response = await purchaseOneTimeSubscription({
-      planCode: props.membershipPlan.code,
-      totalAmount: props.membershipPlan.priceYuan,
-      workspaceId: workspaceStore.currentWorkspaceId,
+      planCode: props.membershipPlan!.code,
+      totalAmount: props.membershipPlan!.priceYuan,
+      workspaceId: workspaceStore.currentWorkspaceId!,
     });
 
     orderInfo.value = response;
@@ -362,6 +368,72 @@ const createPaymentOrder = async () => {
   }
 };
 
+const createPaymentOrderJsapi = async () => {
+  try {
+    const response = await purchaseOneTimeSubscriptionJsapi({
+      planCode: props.membershipPlan!.code,
+      totalAmount: props.membershipPlan!.priceYuan,
+      workspaceId: workspaceStore.currentWorkspaceId!,
+    });
+
+    orderInfo.value = response;
+    startCountdown();
+
+    const res = await invokeWeixinBridgePay(response.jsapiParams);
+    if (res.err_msg === 'get_brand_wcpay_request:ok') {
+      paymentStatus.value = 'confirming';
+      startPaymentStatusCheck();
+    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+      paymentStatus.value = 'failed';
+      errorMessage.value = '用户已取消支付';
+      stopCountdown();
+      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
+        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
+      }
+    } else {
+      paymentStatus.value = 'failed';
+      errorMessage.value = res.err_msg || '支付调起失败';
+      stopCountdown();
+      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
+        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
+      }
+    }
+  } catch (error: unknown) {
+    paymentStatus.value = 'failed';
+
+    let message: string | null = null;
+    if (error instanceof Error) {
+      message = error.message;
+    } else if (typeof error === 'object' && error !== null && 'message' in error) {
+      const maybeMessage = (error as { message?: unknown }).message;
+      if (typeof maybeMessage === 'string') {
+        message = maybeMessage;
+      }
+    }
+
+    errorMessage.value = message || '创建支付订单失败';
+    snackbarStore.showErrorMessage('创建支付订单失败');
+  }
+};
+
+const createPaymentOrder = async () => {
+  if (!props.membershipPlan) return;
+
+  if (!workspaceStore.currentWorkspaceId) {
+    snackbarStore.showErrorMessage('请先选择工作空间');
+    return;
+  }
+
+  paymentStatus.value = 'creating';
+  errorMessage.value = '';
+
+  if (isWeiXin()) {
+    await createPaymentOrderJsapi();
+  } else {
+    await createPaymentOrderNative();
+  }
+};
+
 const handleCancel = async () => {
   stopPaymentStatusCheck();
   stopCountdown();
@@ -381,6 +453,11 @@ const handleCancel = async () => {
 const handleClose = () => {
   stopPaymentStatusCheck();
   stopCountdown();
+  if (orderInfo.value?.outTradeNo && workspaceStore.currentWorkspaceId) {
+    closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId).catch(
+      () => {}
+    );
+  }
   emit('update:open', false);
 };
 
