@@ -3,13 +3,11 @@
 // Plugins
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import vue from '@vitejs/plugin-vue';
-import { viteMockServe } from 'vite-plugin-mock';
-import vuetify from 'vite-plugin-vuetify';
-
-import AutoImport from 'unplugin-auto-import/vite';
-
 // Utilities
 import { fileURLToPath, URL } from 'node:url';
+import AutoImport from 'unplugin-auto-import/vite';
+import { viteMockServe } from 'vite-plugin-mock';
+import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default {

@@ -27,12 +27,34 @@
                     {{ membershipPlan?.monthlyCredits }} 积分/月
                   </v-chip>
                 </div>
-                <div class="d-flex justify-space-between align-center">
-                  <span class="text-body-2 text-medium-emphasis">扣费金额</span>
-                  <span class="text-h6 font-weight-bold text-primary"
-                    >¥{{ membershipPlan?.priceYuan }}</span
-                  >
-                </div>
+                <template v-if="membershipPlan?.firstMonthPriceYuan != null">
+                  <div class="d-flex align-center mb-1">
+                    <span class="text-h6 font-weight-bold text-primary">
+                      {{
+                        t('zerocut.membership.prices.firstMonth', {
+                          price: membershipPlan.firstMonthPriceYuan,
+                        })
+                      }}
+                    </span>
+                  </div>
+                  <div class="d-flex align-center">
+                    <span class="text-body-1 font-weight-medium text-medium-emphasis">
+                      {{
+                        t('zerocut.membership.prices.autoRenewal', {
+                          price: membershipPlan.priceYuan,
+                        })
+                      }}
+                    </span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="d-flex justify-space-between align-center">
+                    <span class="text-body-2 text-medium-emphasis">扣费金额</span>
+                    <span class="text-h6 font-weight-bold text-primary"
+                      >¥{{ membershipPlan?.priceYuan }}</span
+                    >
+                  </div>
+                </template>
               </v-card-text>
             </v-card>
 
@@ -168,6 +190,7 @@
 <script setup lang="ts">
 import QRCode from 'qrcode';
 import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import {
   closeSigningSession,
@@ -200,6 +223,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+const { t } = useI18n();
 
 const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
