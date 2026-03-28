@@ -315,7 +315,10 @@ async function fetchMembershipPlans() {
     loading.value = true;
     error.value = null;
 
-    const [plans] = await Promise.all([getMembershipPlans(), membershipStore.refresh()]);
+    const [plans] = await Promise.all([
+      getMembershipPlans(workspaceStore.currentWorkspaceId!),
+      membershipStore.refresh(),
+    ]);
 
     rawPlans.value = plans ?? [];
   } catch (e: unknown) {
