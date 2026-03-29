@@ -83,6 +83,17 @@ const formatUnix = (ts: number | null) => {
   return new Date(ts * 1000).toLocaleString('zh-CN');
 };
 
+const formatRelative = (ts: number | null): string => {
+  if (ts == null) return '-';
+  const diffSeconds = ts - Math.floor(Date.now() / 1000);
+  if (diffSeconds <= 0) return '已过期';
+  const rtf = new Intl.RelativeTimeFormat('zh-CN', { numeric: 'auto' });
+  if (diffSeconds < 3600) return rtf.format(Math.ceil(diffSeconds / 60), 'minute');
+  if (diffSeconds < 86400) return rtf.format(Math.ceil(diffSeconds / 3600), 'hour');
+  if (diffSeconds < 86400 * 30) return rtf.format(Math.ceil(diffSeconds / 86400), 'day');
+  return new Date(ts * 1000).toLocaleDateString('zh-CN');
+};
+
 const fetchList = async () => {
   loading.value = true;
   try {
@@ -285,7 +296,11 @@ onMounted(() => {
           </v-chip>
         </template>
         <template #item.nearestExpiry="{ item }">
-          {{ formatUnix(item.nearestExpiry) }}
+          <v-tooltip :text="item.nearestExpiry ? formatUnix(item.nearestExpiry) : '-'">
+            <template #activator="{ props }">
+              <span v-bind="props">{{ formatRelative(item.nearestExpiry) }}</span>
+            </template>
+          </v-tooltip>
         </template>
         <template #item.createdAt="{ item }">
           {{ formatDate(item.createdAt) }}
@@ -313,7 +328,15 @@ onMounted(() => {
                       <td>{{ cookie.name }}</td>
                       <td>{{ cookie.domain }}</td>
                       <td>
-                        {{ cookie.expirationDate ? formatUnix(cookie.expirationDate) : 'Session' }}
+                        <v-tooltip
+                          v-if="cookie.expirationDate"
+                          :text="formatUnix(cookie.expirationDate)"
+                        >
+                          <template #activator="{ props }">
+                            <span v-bind="props">{{ formatRelative(cookie.expirationDate) }}</span>
+                          </template>
+                        </v-tooltip>
+                        <span v-else>Session</span>
                       </td>
                       <td>
                         <v-icon :color="cookie.session ? 'success' : 'default'" size="small">
