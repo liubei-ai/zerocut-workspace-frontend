@@ -7,6 +7,7 @@ export interface XiaoYanqueAccountListItem {
   phone: string;
   nearestExpiry: number | null;
   status: AccountStatus;
+  cookies: CookieItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -72,5 +73,10 @@ export async function updateXiaoYanqueAccountCookies(
     `/admin/xiaoyanque-accounts/${id}/cookies`,
     params
   );
+  return response.data;
+}
+
+export async function deleteXiaoYanqueAccount(id: number) {
+  const response = await apiClient.delete<{ message: string }>(`/admin/xiaoyanque-accounts/${id}`);
   return response.data;
 }

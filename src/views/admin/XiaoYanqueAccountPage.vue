@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { width } from 'happy-dom/lib/PropertySymbol';
 import { computed, onMounted, ref } from 'vue';
 
 import type {
@@ -9,6 +10,7 @@ import type {
 
 import {
   createXiaoYanqueAccount,
+  deleteXiaoYanqueAccount,
   listXiaoYanqueAccounts,
   updateXiaoYanqueAccountCookies,
 } from '@/api/xiaoyanqueApi';
@@ -26,8 +28,12 @@ const snackbar = ref({
   color: 'success' as 'success' | 'error' | 'warning' | 'info',
 });
 
+// Expand rows
+const expandedRows = ref<number[]>([]);
+
 // Create dialog
 const createDialogOpen = ref(false);
+const createForm = ref<{ validate: () => Promise<{ valid: boolean }> } | null>(null);
 const createPhone = ref('');
 const createCookiesText = ref('');
 const createLoading = ref(false);
@@ -40,14 +46,23 @@ const updateCookiesText = ref('');
 const updateLoading = ref(false);
 const updateError = ref('');
 
+// Delete dialog
+const deleteDialogOpen = ref(false);
+const deletingAccount = ref<XiaoYanqueAccountListItem | null>(null);
+const deleteLoading = ref(false);
+
+const phoneRules = [
+  (v: string) => !!v || '手机号不能为空',
+  (v: string) => /^1[3-9]\d{9}$/.test(v) || '请输入有效的中国手机号（11位）',
+];
+
 const headers = [
   { title: 'ID', key: 'id', sortable: false, width: '80px' },
-  { title: '手机号', key: 'phone', sortable: false },
+  { title: '手机号', key: 'phone', sortable: false, width: '150px' },
   { title: '状态', key: 'status', sortable: false, width: '120px' },
   { title: '最近到期时间', key: 'nearestExpiry', sortable: false, width: '180px' },
   { title: '创建时间', key: 'createdAt', sortable: false, width: '160px' },
   { title: '更新时间', key: 'updatedAt', sortable: false, width: '160px' },
-  { title: '操作', key: 'actions', sortable: false, width: '100px', align: 'center' as const },
 ];
 
 const statusColor = (status: string) => {
@@ -76,7 +91,6 @@ const fetchList = async () => {
       limit: limit.value,
       phone: searchPhone.value || undefined,
     });
-    debugger;
     accounts.value = result?.list ?? [];
     total.value = result?.total ?? 0;
   } catch (e: any) {
@@ -105,13 +119,11 @@ const openCreate = () => {
 
 const submitCreate = async () => {
   createError.value = '';
+  const validation = await createForm.value?.validate();
+  if (!validation?.valid) return;
   const cookies = parseCookies(createCookiesText.value);
   if (!cookies) {
     createError.value = 'Cookies 必须是合法的 JSON 数组';
-    return;
-  }
-  if (!createPhone.value.trim()) {
-    createError.value = '手机号不能为空';
     return;
   }
   createLoading.value = true;
@@ -156,6 +168,27 @@ const submitUpdate = async () => {
     updateError.value = e?.message || '更新失败';
   } finally {
     updateLoading.value = false;
+  }
+};
+
+const openDelete = (item: XiaoYanqueAccountListItem) => {
+  deletingAccount.value = item;
+  deleteDialogOpen.value = true;
+};
+
+const submitDelete = async () => {
+  if (!deletingAccount.value) return;
+  deleteLoading.value = true;
+  try {
+    await deleteXiaoYanqueAccount(deletingAccount.value.id);
+    showSnackbar('删除成功', 'success');
+    deleteDialogOpen.value = false;
+    expandedRows.value = [];
+    await fetchList();
+  } catch (e: any) {
+    showSnackbar(e?.message || '删除失败', 'error');
+  } finally {
+    deleteLoading.value = false;
   }
 };
 
@@ -236,7 +269,16 @@ onMounted(() => {
         <v-chip class="ml-2" size="small">共 {{ total }} 条</v-chip>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="accounts" :loading="loading" hide-default-footer>
+      <v-data-table
+        v-model:expanded="expandedRows"
+        :headers="headers"
+        :items="accounts"
+        :loading="loading"
+        item-value="id"
+        show-expand
+        single-expand
+        hide-default-footer
+      >
         <template #item.status="{ item }">
           <v-chip :color="statusColor(item.status)" size="small" label>
             {{ statusLabel(item.status) }}
@@ -251,10 +293,64 @@ onMounted(() => {
         <template #item.updatedAt="{ item }">
           {{ formatDate(item.updatedAt) }}
         </template>
-        <template #item.actions="{ item }">
-          <v-btn size="small" variant="text" color="primary" @click="openUpdate(item)">
-            更新 Cookies
-          </v-btn>
+
+        <template #expanded-row="{ columns, item }">
+          <tr>
+            <td :colspan="columns.length" class="pa-0">
+              <div class="pa-4">
+                <v-table density="compact" class="mb-4">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Domain</th>
+                      <th>到期时间</th>
+                      <th>Session</th>
+                      <th>Secure</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(cookie, i) in item.cookies" :key="i">
+                      <td>{{ cookie.name }}</td>
+                      <td>{{ cookie.domain }}</td>
+                      <td>
+                        {{ cookie.expirationDate ? formatUnix(cookie.expirationDate) : 'Session' }}
+                      </td>
+                      <td>
+                        <v-icon :color="cookie.session ? 'success' : 'default'" size="small">
+                          {{ cookie.session ? 'mdi-check' : 'mdi-minus' }}
+                        </v-icon>
+                      </td>
+                      <td>
+                        <v-icon :color="cookie.secure ? 'success' : 'default'" size="small">
+                          {{ cookie.secure ? 'mdi-check' : 'mdi-minus' }}
+                        </v-icon>
+                      </td>
+                    </tr>
+                  </tbody>
+                </v-table>
+                <div class="d-flex ga-2">
+                  <v-btn
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                    prepend-icon="mdi-pencil"
+                    @click="openUpdate(item)"
+                  >
+                    更新 Cookies
+                  </v-btn>
+                  <v-btn
+                    size="small"
+                    color="error"
+                    variant="outlined"
+                    prepend-icon="mdi-delete"
+                    @click="openDelete(item)"
+                  >
+                    删除账号
+                  </v-btn>
+                </div>
+              </div>
+            </td>
+          </tr>
         </template>
       </v-data-table>
 
@@ -273,23 +369,26 @@ onMounted(() => {
       <v-card>
         <v-card-title class="text-h6">新增小云雀账号</v-card-title>
         <v-card-text>
-          <v-text-field
-            v-model="createPhone"
-            label="手机号"
-            placeholder="输入账号手机号"
-            variant="outlined"
-            density="comfortable"
-            class="mb-3"
-          />
-          <v-textarea
-            v-model="createCookiesText"
-            label="Cookies (JSON 数组)"
-            placeholder='粘贴 cookies JSON 数组，例如 [{"domain":".xyq.jianying.com",...}]'
-            variant="outlined"
-            rows="10"
-            auto-grow
-            :error-messages="createError ? [createError] : []"
-          />
+          <v-form ref="createForm">
+            <v-text-field
+              v-model="createPhone"
+              label="手机号"
+              placeholder="输入账号手机号"
+              variant="outlined"
+              density="comfortable"
+              class="mb-3"
+              :rules="phoneRules"
+            />
+            <v-textarea
+              v-model="createCookiesText"
+              label="Cookies (JSON 数组)"
+              placeholder='粘贴 cookies JSON 数组，例如 [{"domain":".xyq.jianying.com",...}]'
+              variant="outlined"
+              rows="10"
+              auto-grow
+              :error-messages="createError ? [createError] : []"
+            />
+          </v-form>
         </v-card-text>
         <v-card-actions class="justify-end">
           <v-btn variant="text" @click="createDialogOpen = false">取消</v-btn>
@@ -316,6 +415,20 @@ onMounted(() => {
         <v-card-actions class="justify-end">
           <v-btn variant="text" @click="updateDialogOpen = false">取消</v-btn>
           <v-btn color="primary" :loading="updateLoading" @click="submitUpdate">更新</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Delete Confirm Dialog -->
+    <v-dialog v-model="deleteDialogOpen" max-width="400">
+      <v-card>
+        <v-card-title>确认删除</v-card-title>
+        <v-card-text>
+          确定删除账号 <strong>{{ deletingAccount?.phone }}</strong> 吗？此操作不可撤销。
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn variant="text" @click="deleteDialogOpen = false">取消</v-btn>
+          <v-btn color="error" :loading="deleteLoading" @click="submitDelete">删除</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
