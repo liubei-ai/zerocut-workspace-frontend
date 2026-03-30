@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import {
   getPackageList,
@@ -13,10 +13,14 @@ import PackageCard from '@/components/zerocut/PackageCard.vue';
 import PaymentDialog from '@/components/zerocut/PaymentDialog.vue';
 import RechargeSuccessOverlay from '@/components/zerocut/RechargeSuccessOverlay.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useUserStore } from '@/stores/userStore';
+import { isWeiXin } from '@/utils/wechat';
 
 // 状态管理
 const snackbarStore = useSnackbarStore();
 const router = useRouter();
+const route = useRoute();
+const userStore = useUserStore();
 
 // i18n
 const { t } = useI18n();
@@ -113,7 +117,28 @@ const handleViewWallet = () => {
 };
 
 // 组件挂载时获取数据
-onMounted(() => {
+onMounted(async () => {
+  const hasWechatBindResult = typeof route.query.wechatBind === 'string';
+  const hasWechatIdentity = !!userStore.userInfo?.openid;
+
+  // 微信内置浏览器且未绑定微信身份：跳转OAuth授权
+  if (isWeiXin() && !hasWechatBindResult && !hasWechatIdentity) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('wechatBind');
+    const base = String(import.meta.env.VITE_API2_BASE_URL).replace(/\/$/, '');
+    const authorizeUrl =
+      `${base}/wechat/oauth/authorize` +
+      `?returnUrl=${encodeURIComponent(url.toString())}` +
+      `&scope=snsapi_userinfo`;
+    window.location.assign(authorizeUrl);
+    return;
+  }
+
+  // 微信授权成功回调：刷新用户信息
+  if (isWeiXin() && route.query.wechatBind === 'success') {
+    await userStore.loadUserInfo();
+  }
+
   fetchPackages();
 });
 </script>

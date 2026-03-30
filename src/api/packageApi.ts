@@ -29,6 +29,29 @@ export interface CreatePaymentOrderResponse {
   outTradeNo: string;
 }
 
+// 微信JSAPI支付参数
+export interface JsapiPayParams {
+  appId: string;
+  timeStamp: string;
+  nonceStr: string;
+  package: string;
+  signType: 'RSA';
+  paySign: string;
+}
+
+// 创建JSAPI支付订单请求参数
+export interface CreateJsapiPaymentOrderParams {
+  packageCode: string;
+  totalAmount: number;
+  workspaceId: string;
+}
+
+// 创建JSAPI支付订单响应
+export interface CreateJsapiPaymentOrderResponse {
+  jsapiParams: JsapiPayParams;
+  outTradeNo: string;
+}
+
 // 查询订单状态请求参数
 export interface QueryOrderStatusParams {
   orderId: string;
@@ -65,7 +88,7 @@ export async function getPackageList(): Promise<PackageInfo[]> {
 }
 
 /**
- * 创建微信支付订单
+ * 创建微信支付Native订单（扫码支付）
  * @param params 订单参数
  * @returns 支付订单信息
  */
@@ -74,6 +97,21 @@ export async function createWechatPayOrder(
 ): Promise<CreatePaymentOrderResponse> {
   const response = await client.post<CreatePaymentOrderResponse>(
     '/wechat-pay-native/create-order',
+    params
+  );
+  return response.data;
+}
+
+/**
+ * 创建微信支付JSAPI订单（微信内置浏览器支付）
+ * @param params 订单参数
+ * @returns JSAPI支付参数
+ */
+export async function createWechatPayJsapiOrder(
+  params: CreateJsapiPaymentOrderParams
+): Promise<CreateJsapiPaymentOrderResponse> {
+  const response = await client.post<CreateJsapiPaymentOrderResponse>(
+    '/wechat-pay-native/create-jsapi-order',
     params
   );
   return response.data;

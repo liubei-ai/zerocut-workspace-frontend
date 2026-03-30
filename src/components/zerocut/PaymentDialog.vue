@@ -110,6 +110,16 @@
           </div>
         </div>
 
+        <!-- 等待支付确认（JSAPI支付后轮询中） -->
+        <div v-else-if="paymentStatus === 'confirming'" class="py-8 text-center">
+          <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
+          <div class="text-h6 mb-2">等待支付确认...</div>
+          <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
+          <div class="text-body-2 text-medium-emphasis mt-2">
+            剩余时间：{{ formatCountdown(countdown) }}
+          </div>
+        </div>
+
         <!-- 支付成功 -->
         <div v-else-if="paymentStatus === 'success'" class="py-8 text-center">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
@@ -149,7 +159,7 @@
         </template>
 
         <!-- 等待支付状态的按钮 -->
-        <template v-else-if="paymentStatus === 'pending'">
+        <template v-else-if="paymentStatus === 'pending' || paymentStatus === 'confirming'">
           <v-btn variant="text" @click="handleCancel" class="mr-2"> 取消支付 </v-btn>
         </template>
 
@@ -174,13 +184,19 @@
 
 <script setup lang="ts">
 import QRCode from 'qrcode';
-import { computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import type { CreatePaymentOrderResponse, PackageInfo } from '@/api/packageApi';
 
-import { closeOrder, createWechatPayOrder, queryOrderStatus } from '@/api/packageApi';
+import {
+  closeOrder,
+  createWechatPayJsapiOrder,
+  createWechatPayOrder,
+  queryOrderStatus,
+} from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 
 interface Props {
   open: boolean;
@@ -208,7 +224,9 @@ const workspaceStore = useWorkspaceStore();
 // Refs
 const qrCodeCanvas = ref<HTMLCanvasElement>();
 const orderInfo = ref<CreatePaymentOrderResponse | null>(null);
-const paymentStatus = ref<'creating' | 'pending' | 'success' | 'failed' | 'timeout'>('creating');
+const paymentStatus = ref<'creating' | 'pending' | 'confirming' | 'success' | 'failed' | 'timeout'>(
+  'creating'
+);
 const paymentCheckStatus = ref<'waiting' | 'checking'>('waiting');
 const errorMessage = ref<string>('');
 const paymentCheckInterval = ref<number | null>(null);
@@ -294,11 +312,10 @@ const generateQRCode = async (codeUrl: string) => {
   }
 };
 
-// 创建支付订单
-const createPaymentOrder = async () => {
+// 创建Native支付订单（扫码方式）
+const createNativePaymentOrder = async () => {
   if (!props.packageInfo) return;
 
-  // 检查是否有当前工作空间
   if (!workspaceStore.currentWorkspaceId) {
     snackbarStore.showErrorMessage('请先选择工作空间');
     return;
@@ -329,6 +346,65 @@ const createPaymentOrder = async () => {
     paymentStatus.value = 'failed';
     errorMessage.value = error.message || '创建支付订单失败';
     snackbarStore.showErrorMessage('创建支付订单失败');
+  }
+};
+
+// 创建JSAPI支付订单（微信内置浏览器方式）
+const createJsapiPaymentOrder = async () => {
+  if (!props.packageInfo) return;
+
+  if (!workspaceStore.currentWorkspaceId) {
+    snackbarStore.showErrorMessage('请先选择工作空间');
+    return;
+  }
+
+  try {
+    paymentStatus.value = 'creating';
+    errorMessage.value = '';
+
+    const response = await createWechatPayJsapiOrder({
+      packageCode: props.packageInfo.packageCode,
+      totalAmount: parseFloat(props.packageInfo.currentPrice),
+      workspaceId: workspaceStore.currentWorkspaceId,
+    });
+
+    // 存储订单信息（以outTradeNo为核心）
+    orderInfo.value = { codeUrl: '', outTradeNo: response.outTradeNo };
+
+    // 开始倒计时
+    startCountdown();
+
+    // 调起微信支付
+    const res = await invokeWeixinBridgePay(response.jsapiParams);
+
+    if (res.err_msg === 'get_brand_wcpay_request:ok') {
+      paymentStatus.value = 'confirming';
+      startPaymentStatusCheck();
+    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+      paymentStatus.value = 'failed';
+      errorMessage.value = '用户已取消支付';
+      stopCountdown();
+      closeOrder(response.outTradeNo).catch(() => {});
+    } else {
+      paymentStatus.value = 'failed';
+      errorMessage.value = res.err_msg || '支付调起失败';
+      stopCountdown();
+      closeOrder(response.outTradeNo).catch(() => {});
+    }
+  } catch (error: any) {
+    console.error('创建JSAPI支付订单失败:', error);
+    paymentStatus.value = 'failed';
+    errorMessage.value = error.message || '创建支付订单失败';
+    snackbarStore.showErrorMessage('创建支付订单失败');
+  }
+};
+
+// 根据环境选择支付方式
+const createPaymentOrder = async () => {
+  if (isWeiXin()) {
+    await createJsapiPaymentOrder();
+  } else {
+    await createNativePaymentOrder();
   }
 };
 
@@ -427,10 +503,22 @@ const resetState = () => {
   paymentCheckStatus.value = 'waiting';
   errorMessage.value = '';
   countdown.value = 300;
-  agreementAccepted.value = true; // 重置协议同意状态为默认选中
+  agreementAccepted.value = true;
   stopPaymentStatusCheck();
   stopCountdown();
 };
+
+// 处理页面可见性变化（前后台切换）
+const onVisibilityChange = () => {
+  if (document.visibilityState === 'visible' && paymentStatus.value === 'confirming') {
+    checkPaymentStatus();
+  }
+};
+
+// 组件挂载时注册可见性监听
+onMounted(() => {
+  document.addEventListener('visibilitychange', onVisibilityChange);
+});
 
 // 监听对话框打开
 watch(
@@ -450,6 +538,7 @@ watch(
 onUnmounted(() => {
   stopPaymentStatusCheck();
   stopCountdown();
+  document.removeEventListener('visibilitychange', onVisibilityChange);
 });
 </script>
 
