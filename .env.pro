@@ -22,6 +22,7 @@ VITE_AUTH0_AUDIENCE=https://zerocut-workspace-server-production.up.railway.app
 # 功能开关
 VITE_PRO_GUIDE_ENABLE=true
 VITE_PACKAGE_PAGE_ENABLE=true
+VITE_MEMBERSHIP_ENABLE=true
 VITE_MEMBER_PRICE_ENABLE=false
 
 # Zerocut Studio

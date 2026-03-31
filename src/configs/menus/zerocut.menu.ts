@@ -24,11 +24,13 @@ if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
   });
 }
 
-zerocutMenu.push({
-  key: 'menu.membership',
-  link: '/membership',
-  icon: 'mdi-account-check-outline',
-});
+if (import.meta.env.VITE_MEMBERSHIP_ENABLE === 'true') {
+  zerocutMenu.push({
+    key: 'menu.membership',
+    link: '/membership',
+    icon: 'mdi-account-check-outline',
+  });
+}
 
 if (import.meta.env.VITE_MEMBER_PRICE_ENABLE === 'true') {
   zerocutMenu.push({
