@@ -25,7 +25,7 @@ const emit = defineEmits<{
   ): void;
 }>();
 
-const selectedCycle = ref<Cycle>('yearly');
+const selectedCycle = ref<Cycle>('monthly');
 
 function displayOption(plan: PricingPlan) {
   const prefer = plan.options.find(o => o.type === selectedCycle.value);
@@ -90,7 +90,7 @@ function onSubscribe(plan: PricingPlan) {
           <v-btn-toggle v-model="selectedCycle" mandatory density="comfortable" class="mr-3">
             <v-btn v-if="hasYearly" value="yearly">Yearly</v-btn>
             <v-btn v-if="hasMonthly" value="monthly">Monthly</v-btn>
-            <v-btn v-if="hasOneTime" value="one_time">One-time</v-btn>
+            <v-btn v-if="hasOneTime" value="one_time_month">One-time</v-btn>
           </v-btn-toggle>
           <v-progress-circular
             v-if="props.loading"
