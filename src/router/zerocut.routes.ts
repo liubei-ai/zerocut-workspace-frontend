@@ -76,32 +76,6 @@ const zerocutRoutes = [
     component: () =>
       import(/* webpackChunkName: "plans-and-billing" */ '@/views/zerocut/PlansAndBillingView.vue'),
   },
-  {
-    path: '/membership',
-    name: 'Membership',
-    meta: {
-      requiresAuth: true,
-      layout: 'landing',
-      title: '会员计划',
-      category: 'ZeroCut',
-    },
-    component: () =>
-      import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
-  },
-  // {
-  //   path: '/bagelpay/products',
-  //   name: 'BagelPayProducts',
-  //   meta: {
-  //     requiresAuth: true,
-  //     layout: 'landing',
-  //     title: '会员',
-  //     category: 'ZeroCut',
-  //   },
-  //   component: () =>
-  //     import(
-  //       /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
-  //     ),
-  // },
 ];
 
 if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
@@ -116,6 +90,38 @@ if (import.meta.env.VITE_PACKAGE_PAGE_ENABLE === 'true') {
     },
     component: () =>
       import(/* webpackChunkName: "package-list" */ '@/views/zerocut/PackageListView.vue'),
+  });
+}
+
+if (import.meta.env.VITE_MEMBER_PRICE_ENABLE === 'true') {
+  zerocutRoutes.push({
+    path: '/bagelpay/products',
+    name: 'BagelPayProducts',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '会员',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "bagelpay-products" */ '@/views/zerocut/BagelPayProductListView.vue'
+      ),
+  });
+}
+
+if (import.meta.env.VITE_MEMBERSHIP_ENABLE === 'true') {
+  zerocutRoutes.push({
+    path: '/membership',
+    name: 'Membership',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '会员计划',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "membership-plans" */ '@/views/zerocut/MembershipPlansView.vue'),
   });
 }
 
