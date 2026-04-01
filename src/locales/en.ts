@@ -226,6 +226,8 @@ export default {
         oneTime: '¥{price} one-time',
         monthlyEquivalent: '≈¥{price}/mo',
         discount: 'Save {percent}%',
+        firstMonth: '¥{price}/1st month',
+        autoRenewal: 'then ¥{price}/mo',
       },
       credits: {
         monthly: '{credits} credits/mo',

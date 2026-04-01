@@ -225,6 +225,8 @@ export default {
         oneTime: '¥{price} 单次',
         monthlyEquivalent: '相当于¥{price}/月',
         discount: '省{percent}%',
+        firstMonth: '¥{price}/首月',
+        autoRenewal: '续费¥{price}/月',
       },
       credits: {
         monthly: '{credits} 积分/月',

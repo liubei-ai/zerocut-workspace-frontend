@@ -19,6 +19,7 @@ export interface MembershipPlanDto {
   discountZhe: number;
   unitPriceYuanPer100: number;
   baseUnitPriceYuanPer100: number;
+  firstMonthPriceYuan?: number;
 }
 
 export interface IMembershipPlanFeature {
@@ -92,8 +93,10 @@ export interface SubscriptionDetails {
  * Get all membership plans
  * @param activeOnly - Only return active plans (default true)
  */
-export async function getMembershipPlans() {
-  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans');
+export async function getMembershipPlans(workspaceId: string) {
+  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans', {
+    params: { workspaceId },
+  });
   return response.data;
 }
 
