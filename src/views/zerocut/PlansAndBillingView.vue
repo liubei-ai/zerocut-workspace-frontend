@@ -114,8 +114,8 @@ async function loadData() {
 
   try {
     const [plansResult, subscriptionResult] = await Promise.all([
-      getMembershipPlans(),
-      workspaceId.value ? getCurrentSubscription(workspaceId.value) : Promise.resolve(null),
+      getMembershipPlans(workspaceId.value),
+      getCurrentSubscription(workspaceId.value),
     ]);
 
     membershipPlans.value = plansResult ?? [];
