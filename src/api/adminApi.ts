@@ -440,6 +440,7 @@ export interface MembershipPlanItem {
   billingIntervalMonths: number;
   isActive: boolean;
   wechatPapayPlanId?: string;
+  firstMonthPriceCents?: number | null;
   features: IMembershipPlanFeature[];
   createdAt: string;
   updatedAt: string;
@@ -448,6 +449,7 @@ export interface MembershipPlanItem {
   baseUnitPriceYuanPer100?: number;
   unitPriceYuanPer100?: number;
   discountZhe?: number;
+  firstMonthPriceYuan?: number;
 }
 
 export interface QueryMembershipPlansParams {
@@ -467,6 +469,7 @@ export interface CreateMembershipPlanParams {
   billingIntervalMonths: number;
   isActive?: boolean;
   wechatPapayPlanId?: string;
+  firstMonthPriceCents?: number;
   features?: IMembershipPlanFeature[];
 }
 
@@ -481,6 +484,7 @@ export interface UpdateMembershipPlanParams {
   billingIntervalMonths?: number;
   isActive?: boolean;
   wechatPapayPlanId?: string;
+  firstMonthPriceCents?: number | null;
   features?: IMembershipPlanFeature[];
 }
 

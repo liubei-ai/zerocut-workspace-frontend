@@ -77,6 +77,7 @@ const headers = [
   { title: 'Tier', key: 'tier', sortable: true, width: '140px' },
   { title: 'PurchaseMode', key: 'purchaseMode', sortable: true, width: '200px' },
   { title: '价格（元）', key: 'priceYuan', width: '120px' },
+  { title: '首月价（元）', key: 'firstMonthPriceYuan', width: '120px' },
   { title: '周期积分', key: 'creditsPerPeriod', width: '120px' },
   { title: '100积分单价（元）', key: 'unitPriceYuanPer100', width: '160px' },
   { title: '折扣', key: 'discountText', width: '90px' },
@@ -93,6 +94,9 @@ const customKeySort = {
 const rows = computed(() => {
   return plans.value.map(p => {
     const priceYuan = p.priceYuan ?? p.priceCents / 100;
+    const firstMonthPriceYuan =
+      p.firstMonthPriceYuan ??
+      (p.firstMonthPriceCents != null ? p.firstMonthPriceCents / 100 : null);
     const creditsPerPeriod = p.monthlyCredits * p.billingIntervalMonths;
     const unitPriceYuanPer100 =
       p.unitPriceYuanPer100 ??
@@ -102,6 +106,7 @@ const rows = computed(() => {
     return {
       ...p,
       priceYuan,
+      firstMonthPriceYuan,
       creditsPerPeriod,
       unitPriceYuanPer100,
       discountText: discount > 0 ? `${discount.toFixed(1)}折` : '-',
@@ -277,6 +282,10 @@ onMounted(() => {
 
         <template #item.priceYuan="{ item }">
           {{ item.priceYuan.toFixed(2) }}
+        </template>
+
+        <template #item.firstMonthPriceYuan="{ item }">
+          {{ item.firstMonthPriceYuan != null ? item.firstMonthPriceYuan.toFixed(2) : '-' }}
         </template>
 
         <template #item.creditsPerPeriod="{ item }">

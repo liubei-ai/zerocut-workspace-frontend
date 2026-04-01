@@ -48,6 +48,7 @@ const formData = ref({
   tier: 'basic' as MembershipTier,
   purchaseMode: 'one_time_month' as PurchaseMode,
   priceYuan: '',
+  firstMonthPriceYuan: '',
   currency: 'CNY',
   monthlyCredits: '',
   billingIntervalMonths: '',
@@ -75,6 +76,13 @@ const rules = {
     (v: string) => {
       const n = Number(v);
       return Number.isFinite(n) && n > 0 ? true : '价格必须是大于 0 的数字';
+    },
+  ],
+  firstMonthPriceYuan: [
+    (v: string) => {
+      if (v === '' || v == null) return true;
+      const n = Number(v);
+      return Number.isFinite(n) && n > 0 ? true : '首月价格必须是大于 0 的数字';
     },
   ],
   currency: [
@@ -108,6 +116,7 @@ watch(
       tier: 'basic',
       purchaseMode: 'one_time_month',
       priceYuan: '',
+      firstMonthPriceYuan: '',
       currency: 'CNY',
       monthlyCredits: '',
       billingIntervalMonths: '',
@@ -124,6 +133,10 @@ watch(
     formData.value.tier = props.plan.tier;
     formData.value.purchaseMode = props.plan.purchaseMode;
     formData.value.priceYuan = (props.plan.priceCents / 100).toFixed(2);
+    formData.value.firstMonthPriceYuan =
+      props.plan.firstMonthPriceCents != null
+        ? (props.plan.firstMonthPriceCents / 100).toFixed(2)
+        : '';
     formData.value.currency = props.plan.currency || 'CNY';
     formData.value.monthlyCredits = String(props.plan.monthlyCredits);
     formData.value.billingIntervalMonths = String(props.plan.billingIntervalMonths);
@@ -145,6 +158,11 @@ const save = async () => {
   try {
     const priceYuanNum = Number(formData.value.priceYuan);
     const priceCents = Math.round(priceYuanNum * 100);
+    const firstMonthPriceYuanText = formData.value.firstMonthPriceYuan.trim();
+    const firstMonthPriceCents =
+      firstMonthPriceYuanText === ''
+        ? undefined
+        : Math.round(Number(firstMonthPriceYuanText) * 100);
     const monthlyCredits = Number(formData.value.monthlyCredits);
     const billingIntervalMonths = Number(formData.value.billingIntervalMonths);
 
@@ -159,11 +177,16 @@ const save = async () => {
       billingIntervalMonths,
       isActive: formData.value.isActive,
       wechatPapayPlanId: formData.value.wechatPapayPlanId.trim() || undefined,
+      firstMonthPriceCents,
       features: formData.value.features,
     };
 
     if (isEdit.value) {
-      const payload: UpdateMembershipPlanParams = basePayload;
+      const payload: UpdateMembershipPlanParams = {
+        ...basePayload,
+        firstMonthPriceCents:
+          firstMonthPriceYuanText === '' ? null : (basePayload.firstMonthPriceCents as number),
+      };
       emit('save', payload);
       return;
     }
@@ -240,6 +263,16 @@ const save = async () => {
                 density="comfortable"
                 type="number"
                 :rules="rules.priceYuan"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-text-field
+                v-model="formData.firstMonthPriceYuan"
+                label="首月价格（元，可选）"
+                variant="outlined"
+                density="comfortable"
+                type="number"
+                :rules="rules.firstMonthPriceYuan"
               />
             </v-col>
             <v-col cols="12" md="4">
