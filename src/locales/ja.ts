@@ -291,6 +291,9 @@ export default {
         title: 'フィルター',
         startDate: '開始日',
         endDate: '終了日',
+        apiKeyId: 'APIキーID',
+        apiKeyPlaceholder: 'APIキーを選択',
+        noApiKeys: '選択可能なAPIキーがありません',
       },
       service: {
         all: 'すべてのサービス',
@@ -302,6 +305,7 @@ export default {
       errors: {
         fetchFail: 'データの取得に失敗しました。後でもう一度お試しください',
         invalidDateRange: '終了日は開始日より前にできません',
+        fetchApiKeysFail: 'APIキー一覧の取得に失敗しました。後でもう一度お試しください',
       },
       table: {
         title: '使用記録',

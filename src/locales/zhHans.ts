@@ -290,6 +290,9 @@ export default {
         title: '筛选条件',
         startDate: '开始日期',
         endDate: '结束日期',
+        apiKeyId: 'API密钥ID',
+        apiKeyPlaceholder: '请选择 API 密钥',
+        noApiKeys: '暂无可选 API 密钥',
       },
       service: {
         all: '全部服务',
@@ -301,6 +304,7 @@ export default {
       errors: {
         fetchFail: '获取数据失败，请稍后重试',
         invalidDateRange: '结束日期不能早于开始日期',
+        fetchApiKeysFail: '获取 API 密钥列表失败，请稍后重试',
       },
       table: {
         title: '使用记录',

@@ -2,20 +2,23 @@
 import { onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import type { ConsumptionRecord } from '@/types/api';
+import type { ApiKey, ConsumptionRecord } from '@/types/api';
 
-import { getConsumptionRecords } from '@/api/workspaceApi';
+import { getApiKeys, getConsumptionRecords } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
+import { maskApiKey } from '@/utils/stringUtils';
 
 // 使用工作空间store
 const workspaceStore = useWorkspaceStore();
 
 // 数据状态
 const loading = ref(false);
+const apiKeysLoading = ref(false);
 const usageLogs = ref<ConsumptionRecord[]>([]);
 const error = ref('');
+const apiKeyOptions = ref<Array<{ title: string; value: string }>>([]);
 const pagination = ref({
   total: 0,
   page: 1,
@@ -31,6 +34,16 @@ const filters = ref({
 });
 
 const { t } = useI18n();
+
+const formatApiKeySuffix = (apiKey: string) => {
+  if (!apiKey) return t('common.unknown');
+  return apiKey.length > 8 ? apiKey.slice(-8) : apiKey;
+};
+
+const formatMaskedApiKey = (apiKey?: string) => {
+  if (!apiKey) return t('common.unknown');
+  return maskApiKey(apiKey);
+};
 
 // 服务类型选项（本地化）
 const serviceOptions = [
@@ -85,6 +98,29 @@ const fetchConsumptionRecords = async () => {
     usageLogs.value = [];
   } finally {
     loading.value = false;
+  }
+};
+
+const loadApiKeyOptions = async () => {
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!workspaceId) return;
+
+  try {
+    apiKeysLoading.value = true;
+    const keys = await getApiKeys(workspaceId);
+    apiKeyOptions.value = keys
+      .filter((key: ApiKey) => !!key.apiKeyPrefix)
+      .map((key: ApiKey) => ({
+        title: `${key.name} (${formatApiKeySuffix(key.apiKeyPrefix)})`,
+        value: key.apiKeyPrefix,
+      }));
+  } catch (err) {
+    console.error('获取 API Key 列表失败:', err);
+    if (!error.value) {
+      error.value = t('zerocut.usage.errors.fetchApiKeysFail');
+    }
+  } finally {
+    apiKeysLoading.value = false;
   }
 };
 
@@ -147,6 +183,7 @@ const validateDateRange = () => {
 
 // 挂载时获取数据
 onMounted(() => {
+  loadApiKeyOptions();
   fetchConsumptionRecords();
 });
 </script>
@@ -187,7 +224,22 @@ onMounted(() => {
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="6" class="d-flex align-center gap-3">
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="filters.apiKeyId"
+              :label="t('zerocut.usage.filters.apiKeyId')"
+              :placeholder="t('zerocut.usage.filters.apiKeyPlaceholder')"
+              :items="apiKeyOptions"
+              item-title="title"
+              item-value="value"
+              :no-data-text="t('zerocut.usage.filters.noApiKeys')"
+              prepend-inner-icon="mdi-key-outline"
+              clearable
+              :loading="apiKeysLoading"
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" md="3" class="d-flex align-center gap-3">
             <v-btn
               color="primary"
               prepend-icon="mdi-magnify"
@@ -285,7 +337,7 @@ onMounted(() => {
         </template>
 
         <template #item.apiKeyId="{ item }">
-          <code class="text-caption">{{ item.apiKeyId || t('common.unknown') }}</code>
+          <code class="text-caption">{{ formatMaskedApiKey(item.apiKeyId) }}</code>
         </template>
 
         <!-- 空状态 -->

@@ -293,6 +293,9 @@ export default {
         title: 'Filters',
         startDate: 'Start Date',
         endDate: 'End Date',
+        apiKeyId: 'API Key ID',
+        apiKeyPlaceholder: 'Select an API Key',
+        noApiKeys: 'No API Keys available',
       },
       service: {
         all: 'All Services',
@@ -304,6 +307,7 @@ export default {
       errors: {
         fetchFail: 'Failed to fetch data, please try again later',
         invalidDateRange: 'End date cannot be earlier than start date',
+        fetchApiKeysFail: 'Failed to load API Key list, please try again later',
       },
       table: {
         title: 'Usage Records',
