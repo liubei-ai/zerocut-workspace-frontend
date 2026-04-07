@@ -4,6 +4,7 @@ import type {
   CreateApiKeyRequest,
   PaginationResponse,
   RechargeRecord,
+  VoiceClone,
   WorkspaceDetails,
   WorkspaceMember,
 } from '../types/api';
@@ -214,5 +215,14 @@ export async function exchangeOtt(ott: string): Promise<{
   expiresAt: string | null;
 }> {
   const response = await client.post('/open/ott/exchange', { ott });
+  return response.data;
+}
+
+/**
+ * 获取当前工作空间的复刻音色列表
+ * @param workspaceId 工作空间ID
+ */
+export async function getVoiceClones(workspaceId: string): Promise<VoiceClone[]> {
+  const response = await client.get<VoiceClone[]>(`/workspaces/${workspaceId}/voice-clones`);
   return response.data;
 }

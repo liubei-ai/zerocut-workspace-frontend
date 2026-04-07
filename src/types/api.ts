@@ -174,6 +174,16 @@ export interface ConsumptionRecord {
   createdAt: string;
 }
 
+export interface VoiceClone {
+  id: number;
+  workspaceId: string;
+  voice_id: string;
+  voice_name: string;
+  demo_audio: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Recharge Record Types
 export interface RechargeRecord {
   id: number;

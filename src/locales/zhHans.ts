@@ -60,6 +60,7 @@ export default {
     apikeys: '密钥管理',
     usage: '使用日志',
     wallet: '钱包管理',
+    voiceClones: '复刻音色',
     packages: '积分充值',
     membership: '开通会员',
     plansAndBilling: '套餐与账单',
@@ -132,6 +133,21 @@ export default {
 
   // Zerocut 视图
   zerocut: {
+    voiceClones: {
+      title: '复刻音色',
+      subtitle: '查看当前工作空间保存的复刻音色列表',
+      listTitle: '音色列表',
+      empty: '暂无复刻音色',
+      columns: {
+        voiceId: 'voice_id',
+        voiceName: 'voice_name',
+        demoAudio: '试听音频',
+        updatedAt: '更新时间',
+      },
+      errors: {
+        fetchFailed: '获取复刻音色列表失败',
+      },
+    },
     bagelpay: {
       productsTitle: 'BagelPay 商品列表',
       productsSubtitle: '展示通过 BagelPay SDK 获取的商品',

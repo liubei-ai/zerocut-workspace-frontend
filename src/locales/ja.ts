@@ -59,6 +59,7 @@ export default {
     apikeys: 'APIキー',
     usage: '利用ログ',
     wallet: 'ウォレット管理',
+    voiceClones: '音声クローン',
     packages: 'ポイントパッケージ',
     membership: '会員',
     plansAndBilling: 'プランと請求',
@@ -147,6 +148,21 @@ export default {
 
   // Zerocut ビュー
   zerocut: {
+    voiceClones: {
+      title: '音声クローン',
+      subtitle: '現在のワークスペースに保存された音声クローン一覧',
+      listTitle: '音声クローン一覧',
+      empty: '音声クローンはありません',
+      columns: {
+        voiceId: 'voice_id',
+        voiceName: 'voice_name',
+        demoAudio: 'デモ音声',
+        updatedAt: '更新日時',
+      },
+      errors: {
+        fetchFailed: '音声クローン一覧の取得に失敗しました',
+      },
+    },
     membership: {
       title: '会員プラン',
       subtitle: '最適なプランを選んで、より多くの機能とポイント枠を解放',

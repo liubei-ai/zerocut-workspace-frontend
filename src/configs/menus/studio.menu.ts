@@ -10,6 +10,11 @@ const studioMenu = [
     icon: 'mdi-folder-multiple-outline',
   },
   {
+    key: 'menu.voiceClones',
+    link: '/voice-clones',
+    icon: 'mdi-account-voice',
+  },
+  {
     key: 'menu.studio',
     link: import.meta.env.VITE_ZEROCUT_STUDIO_PROJECT,
     icon: 'mdi-video-plus',

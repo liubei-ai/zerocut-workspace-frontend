@@ -59,6 +59,7 @@ export default {
     apikeys: 'API Keys',
     usage: 'Usage Logs',
     wallet: 'Wallet',
+    voiceClones: 'Voice Clones',
     packages: 'Credit Packages',
     membership: 'Membership',
     plansAndBilling: 'Plans & Billing',
@@ -132,6 +133,21 @@ export default {
 
   // Zerocut Views
   zerocut: {
+    voiceClones: {
+      title: 'Voice Clones',
+      subtitle: 'View saved cloned voices in the current workspace',
+      listTitle: 'Voice Clone List',
+      empty: 'No voice clones',
+      columns: {
+        voiceId: 'voice_id',
+        voiceName: 'voice_name',
+        demoAudio: 'Demo Audio',
+        updatedAt: 'Updated At',
+      },
+      errors: {
+        fetchFailed: 'Failed to load voice clones',
+      },
+    },
     bagelpay: {
       productsTitle: 'BagelPay Products',
       productsSubtitle: 'Fetched via BagelPay SDK',

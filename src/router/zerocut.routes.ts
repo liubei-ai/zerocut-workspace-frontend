@@ -65,6 +65,18 @@ const zerocutRoutes = [
       ),
   },
   {
+    path: '/voice-clones',
+    name: 'VoiceClones',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '复刻音色',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(/* webpackChunkName: "voice-clone-list" */ '@/views/zerocut/VoiceCloneListView.vue'),
+  },
+  {
     path: '/plans-and-billing',
     name: 'PlansAndBilling',
     meta: {
