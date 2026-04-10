@@ -427,6 +427,7 @@ export default {
       subtitle: 'APIアクセスキーを管理する',
       actions: {
         create: 'キーを作成',
+        edit: '編集',
       },
       stats: {
         total: 'キー総数',
@@ -442,10 +443,19 @@ export default {
           creator: '作成者',
           createdAt: '作成日時',
           expiresAt: '有効期限',
+          quota: '利用枠',
           status: 'ステータス',
           actions: '操作',
           lastUsedAt: '最終使用',
         },
+      },
+      quota: {
+        used: '使用済み',
+        remaining: '残り',
+        total: '合計',
+      },
+      limit: {
+        unlimited: '無制限',
       },
       copyMCP: {
         tooltip: 'MCP設定をコピー',
@@ -455,8 +465,8 @@ export default {
       neverExpire: '無期限',
       status: {
         active: '有効',
-        expired: '失効',
         disabled: '無効',
+        revoked: '失効',
       },
       dialog: {
         create: {
@@ -472,6 +482,14 @@ export default {
           title: '削除の確認',
           content: 'キー「{name}」を削除してもよろしいですか？この操作は元に戻せません。',
         },
+        edit: {
+          title: 'キーを編集',
+          nameLabel: 'キー名',
+          expireLabel: '有効期限（任意）',
+          expireHint: '空欄は無期限を意味します',
+          limitHint: '上限は引き上げのみ可能です。',
+          limitLabel: '上限',
+        },
       },
       rules: {
         nameRequired: 'キー名は必須です',
@@ -483,13 +501,17 @@ export default {
         noWorkspace: 'まずワークスペースを選択してください',
         loadFail: 'キー一覧の読み込み中にエラーが発生しました',
         invalidName: '有効なキー名（3文字以上）を入力してください',
+        invalidLimit: '有効な上限（正の整数）を入力してください',
+        limitOnlyIncrease: '上限は引き上げのみ可能です',
         createFail: 'キーの作成中にエラーが発生しました',
+        updateFail: 'キーの更新に失敗しました',
         deleteFail: 'キーの削除中にエラーが発生しました',
         copyFail: 'キーのコピーに失敗しました',
         copyMcpFail: 'MCP設定のコピーに失敗しました',
       },
       messages: {
         createSuccess: 'キーを作成しました',
+        updateSuccess: 'キーを更新しました',
         deleteSuccess: 'キーを削除しました',
         copySuccess: 'キーをクリップボードにコピーしました',
         copyMcpSuccess: 'MCP設定をクリップボードにコピーしました',

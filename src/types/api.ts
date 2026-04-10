@@ -74,6 +74,9 @@ export interface ApiKey {
   permissions: string[]; // 权限信息，当前为null
   lastUsedAt: string | null; // 最后使用时间
   expiresAt: string | null; // 过期时间
+  creditsLimit: number | null;
+  creditsConsumed: number;
+  remainingCredits?: number | null;
   createdAt: string;
   updatedAt: string;
   creator: {
@@ -161,6 +164,13 @@ export interface CreateApiKeyRequest {
   name: string;
   description?: string;
   expiresAt?: string;
+  creditsLimit?: number;
+}
+
+export interface UpdateApiKeyRequest {
+  name?: string;
+  expiresAt?: string | null;
+  creditsLimit?: number;
 }
 
 // Consumption Record Types

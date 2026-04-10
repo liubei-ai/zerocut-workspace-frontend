@@ -3,9 +3,15 @@ import { debounce } from 'lodash';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import type { ApiKey, CreateApiKeyRequest } from '@/types/api';
+import type { ApiKey, CreateApiKeyRequest, UpdateApiKeyRequest } from '@/types/api';
 
-import { createApiKey, deleteApiKey, generateOtt, getApiKeys } from '@/api/workspaceApi';
+import {
+  createApiKey,
+  deleteApiKey,
+  generateOtt,
+  getApiKeys,
+  updateApiKey,
+} from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
@@ -18,12 +24,19 @@ const { t } = useI18n();
 const loading = ref(false);
 const creating = ref(false);
 const deleting = ref(false);
+const updatingToken = ref(false);
 
 // 对话框状态
 const createTokenDialog = ref(false);
 const deleteTokenDialog = ref(false);
+const editTokenDialog = ref(false);
 const selectedToken = ref<ApiKey | null>(null);
 const createdTokenKey = ref<string>('');
+const editForm = ref({
+  name: '',
+  expiresAt: '',
+  creditsLimit: '',
+});
 
 // OTT state
 const ottDialog = ref(false);
@@ -115,7 +128,7 @@ const loadTokens = async () => {
 const stats = computed(() => ({
   total: tokens.value.length,
   active: tokens.value.filter(t => t.status === 'active').length,
-  expired: tokens.value.filter(t => t.status === 'expired').length,
+  expired: tokens.value.filter(t => t.status !== 'active').length,
   totalUsage: tokens.value.length, // API Key类型没有usageCount字段，暂时使用总数
 }));
 
@@ -191,6 +204,67 @@ const resetForm = () => {
     permissions: ['read'],
     expiresAt: '',
   };
+};
+
+const formatDateInput = (value: string | null | undefined) => {
+  if (!value) return '';
+  return value.slice(0, 10);
+};
+
+const openEditTokenDialog = (token: ApiKey) => {
+  selectedToken.value = token;
+  editForm.value.name = token.name || '';
+  editForm.value.expiresAt = formatDateInput(token.expiresAt);
+  editForm.value.creditsLimit =
+    token.creditsLimit == null ? '' : String(Math.trunc(token.creditsLimit));
+  editTokenDialog.value = true;
+};
+
+const saveTokenEdits = async () => {
+  if (!selectedToken.value) return;
+
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!workspaceId) {
+    showError(t('zerocut.apikeys.errors.noWorkspace'));
+    return;
+  }
+
+  const trimmedName = editForm.value.name.trim();
+  if (!trimmedName || trimmedName.length < 3 || trimmedName.length > 50) {
+    showError(t('zerocut.apikeys.errors.invalidName'));
+    return;
+  }
+
+  const nextLimit = Number.parseInt(editForm.value.creditsLimit, 10);
+  if (!Number.isInteger(nextLimit) || nextLimit < 1) {
+    showError(t('zerocut.apikeys.errors.invalidLimit'));
+    return;
+  }
+
+  const currentLimit = selectedToken.value.creditsLimit;
+  if (currentLimit != null && nextLimit < currentLimit) {
+    showError(t('zerocut.apikeys.errors.limitOnlyIncrease'));
+    return;
+  }
+
+  updatingToken.value = true;
+  try {
+    const payload: UpdateApiKeyRequest = {
+      name: trimmedName,
+      creditsLimit: nextLimit,
+      expiresAt: editForm.value.expiresAt ? new Date(editForm.value.expiresAt).toISOString() : null,
+    };
+    await updateApiKey(workspaceId, selectedToken.value.id, payload);
+    await loadTokens();
+    showSuccess(t('zerocut.apikeys.messages.updateSuccess'));
+    editTokenDialog.value = false;
+    selectedToken.value = null;
+  } catch (error) {
+    console.error('更新密钥失败:', error);
+    showError(t('zerocut.apikeys.errors.updateFail'));
+  } finally {
+    updatingToken.value = false;
+  }
 };
 
 // 复制密钥
@@ -357,13 +431,47 @@ const getStatusColor = (status: string) => {
   switch (status) {
     case 'active':
       return 'success';
-    case 'expired':
-      return 'error';
-    case 'disabled':
+    case 'inactive':
+    case 'revoked':
       return 'warning';
     default:
       return 'grey';
   }
+};
+
+const formatCredits = (value: number | null | undefined) =>
+  value == null ? '--' : Math.max(0, Number(value)).toLocaleString();
+
+const getLimitLabel = (token: ApiKey | null) => {
+  if (!token) return '--';
+  return token.creditsLimit == null
+    ? t('zerocut.apikeys.limit.unlimited')
+    : formatCredits(token.creditsLimit);
+};
+
+const getConsumedLabel = (token: ApiKey | null) => {
+  if (!token) return '--';
+  return formatCredits(token.creditsConsumed);
+};
+
+const getRemainingLabel = (token: ApiKey | null) => {
+  if (!token) return '--';
+  if (token.creditsLimit == null) {
+    return t('zerocut.apikeys.limit.unlimited');
+  }
+  const remaining = Math.max(0, token.creditsLimit - token.creditsConsumed);
+  return remaining.toLocaleString();
+};
+
+const getRemainingPercent = (token: ApiKey) => {
+  if (token.creditsLimit == null || token.creditsLimit <= 0) return null;
+  const remaining = Math.max(0, token.creditsLimit - token.creditsConsumed);
+  return Math.max(0, Math.min(100, Math.round((remaining / token.creditsLimit) * 100)));
+};
+
+const getUsedPercent = (token: ApiKey) => {
+  if (token.creditsLimit == null || token.creditsLimit <= 0) return null;
+  return Math.max(0, Math.min(100, Math.round((token.creditsConsumed / token.creditsLimit) * 100)));
 };
 </script>
 
@@ -427,23 +535,27 @@ const getStatusColor = (status: string) => {
 
       <v-data-table
         :headers="[
-          { title: t('zerocut.apikeys.table.columns.name'), key: 'name', sortable: true },
           {
-            title: t('zerocut.apikeys.table.columns.description'),
-            key: 'description',
-            sortable: false,
+            title: t('zerocut.apikeys.table.columns.name'),
+            key: 'name',
+            sortable: true,
+            width: '160px',
           },
           {
             title: t('zerocut.apikeys.table.columns.key'),
             key: 'key',
             sortable: false,
-            width: '240px',
+            width: '400px',
           },
-          { title: t('zerocut.apikeys.table.columns.creator'), key: 'creator', sortable: true },
-          { title: t('zerocut.apikeys.table.columns.createdAt'), key: 'createdAt', sortable: true },
-          { title: t('zerocut.apikeys.table.columns.expiresAt'), key: 'expiresAt', sortable: true },
+          {
+            title: t('zerocut.apikeys.table.columns.quota'),
+            key: 'quota',
+            sortable: false,
+            width: '30px',
+          },
           { title: t('zerocut.apikeys.table.columns.status'), key: 'status', sortable: true },
-          // { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
+          { title: t('zerocut.apikeys.table.columns.expiresAt'), key: 'expiresAt', sortable: true },
+          { title: t('zerocut.apikeys.table.columns.actions'), key: 'actions', sortable: false },
         ]"
         :items="tokens"
         item-value="id"
@@ -454,7 +566,7 @@ const getStatusColor = (status: string) => {
       >
         <template #item.key="{ item }">
           <div class="d-flex align-center">
-            <code class="text-caption mr-2">{{ maskApiKey(item.apiKeyPrefix) }}</code>
+            <span class="text-caption mr-2">{{ maskApiKey(item.apiKeyPrefix) }}</span>
             <v-btn icon="mdi-key" size="x-small" variant="text" @click="copyToken(item)"></v-btn>
             <v-btn
               icon="mdi-robot"
@@ -480,29 +592,48 @@ const getStatusColor = (status: string) => {
           </div>
         </template>
 
-        <template #item.creator="{ item }">
-          <div class="d-flex align-center">
-            <v-avatar size="24" class="mr-2">
-              <v-icon icon="mdi-account" size="16"></v-icon>
-            </v-avatar>
-            <span class="text-body-2">
-              {{
-                item.creator?.username || item.creator?.email || t('zerocut.apikeys.unknownUser')
-              }}
-            </span>
-          </div>
-        </template>
-
-        <template #item.createdAt="{ item }">
-          {{ formatDate(item.createdAt) }}
-        </template>
-
         <template #item.lastUsedAt="{ item }">
           {{ item.lastUsedAt || t('zerocut.apikeys.neverUsed') }}
         </template>
 
-        <template #item.expiresAt="{ item }">
-          {{ item.expiresAt ? formatDate(item.expiresAt) : t('zerocut.apikeys.neverExpire') }}
+        <template #item.quota="{ item }">
+          <div class="quota-cell">
+            <div v-if="getUsedPercent(item) !== null">
+              <div class="quota-progress-label">
+                {{ getConsumedLabel(item) }} / {{ getLimitLabel(item) }}
+              </div>
+              <v-progress-linear
+                :model-value="getUsedPercent(item) || 0"
+                color="success"
+                height="8"
+                rounded
+              ></v-progress-linear>
+            </div>
+            <div v-else class="quota-progress-label quota-unlimited">
+              {{ t('zerocut.apikeys.limit.unlimited') }}
+            </div>
+            <v-tooltip activator="parent" location="top" max-width="420">
+              <div class="quota-tooltip">
+                <div class="quota-row">
+                  <span>{{ t('zerocut.apikeys.quota.used') }}:</span>
+                  <strong>{{ getConsumedLabel(item) }}</strong>
+                </div>
+                <div class="quota-row">
+                  <span>{{ t('zerocut.apikeys.quota.remaining') }}:</span>
+                  <strong>
+                    {{ getRemainingLabel(item) }}
+                    <template v-if="getRemainingPercent(item) !== null">
+                      ({{ getRemainingPercent(item) }}%)
+                    </template>
+                  </strong>
+                </div>
+                <div class="quota-row">
+                  <span>{{ t('zerocut.apikeys.quota.total') }}:</span>
+                  <strong>{{ getLimitLabel(item) }}</strong>
+                </div>
+              </div>
+            </v-tooltip>
+          </div>
         </template>
 
         <template #item.status="{ item }">
@@ -510,11 +641,27 @@ const getStatusColor = (status: string) => {
             {{
               item.status === 'active'
                 ? t('zerocut.apikeys.status.active')
-                : item.status === 'expired'
-                  ? t('zerocut.apikeys.status.expired')
-                  : t('zerocut.apikeys.status.disabled')
+                : item.status === 'inactive'
+                  ? t('zerocut.apikeys.status.disabled')
+                  : t('zerocut.apikeys.status.revoked')
             }}
           </v-chip>
+        </template>
+
+        <template #item.expiresAt="{ item }">
+          {{ item.expiresAt ? formatDate(item.expiresAt) : t('zerocut.apikeys.neverExpire') }}
+        </template>
+
+        <template #item.actions="{ item }">
+          <v-btn
+            size="small"
+            variant="text"
+            color="primary"
+            prepend-icon="mdi-pencil-outline"
+            @click="openEditTokenDialog(item)"
+          >
+            {{ t('zerocut.apikeys.actions.edit') }}
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -596,6 +743,62 @@ const getStatusColor = (status: string) => {
             :loading="creating"
           >
             {{ t('common.create') }}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="editTokenDialog" max-width="520">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon class="mr-2">mdi-pencil-outline</v-icon>
+          {{ t('zerocut.apikeys.dialog.edit.title') }}
+        </v-card-title>
+
+        <v-card-text>
+          <v-text-field
+            v-model="editForm.name"
+            :label="t('zerocut.apikeys.dialog.edit.nameLabel')"
+            :rules="nameRules"
+            required
+            class="mb-3"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="editForm.expiresAt"
+            :label="t('zerocut.apikeys.dialog.edit.expireLabel')"
+            type="date"
+            :hint="t('zerocut.apikeys.dialog.edit.expireHint')"
+            persistent-hint
+            class="mb-3"
+          ></v-text-field>
+
+          <div class="text-caption text-medium-emphasis mb-4">
+            {{ t('zerocut.apikeys.dialog.edit.limitHint') }}
+          </div>
+
+          <v-text-field
+            v-model="editForm.creditsLimit"
+            :label="t('zerocut.apikeys.dialog.edit.limitLabel')"
+            type="number"
+            min="1"
+            variant="outlined"
+          ></v-text-field>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            variant="text"
+            @click="
+              editTokenDialog = false;
+              selectedToken = null;
+            "
+          >
+            {{ t('common.cancel') }}
+          </v-btn>
+          <v-btn color="primary" variant="flat" :loading="updatingToken" @click="saveTokenEdits">
+            {{ t('common.save') }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -715,5 +918,40 @@ code {
   padding: 2px 4px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
+}
+
+.quota-cell {
+  min-width: 240px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.quota-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.quota-progress-wrap {
+  margin-top: 8px;
+}
+
+.quota-progress-label {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.quota-unlimited {
+  margin-bottom: 0;
+}
+
+.quota-tooltip {
+  min-width: 260px;
+  padding: 4px 2px;
 }
 </style>

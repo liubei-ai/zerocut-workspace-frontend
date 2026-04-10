@@ -431,6 +431,7 @@ export default {
       subtitle: 'Manage your API access keys',
       actions: {
         create: 'Create Key',
+        edit: 'Edit',
       },
       stats: {
         total: 'Total Keys',
@@ -446,10 +447,19 @@ export default {
           creator: 'Creator',
           createdAt: 'Created At',
           expiresAt: 'Expires At',
+          quota: 'Quota',
           status: 'Status',
           actions: 'Actions',
           lastUsedAt: 'Last Used',
         },
+      },
+      quota: {
+        used: 'Used',
+        remaining: 'Remaining',
+        total: 'Total',
+      },
+      limit: {
+        unlimited: 'Unlimited',
       },
       copyMCP: {
         tooltip: 'Copy MCP config',
@@ -459,8 +469,8 @@ export default {
       neverExpire: 'Never Expire',
       status: {
         active: 'Active',
-        expired: 'Expired',
         disabled: 'Disabled',
+        revoked: 'Revoked',
       },
       dialog: {
         create: {
@@ -476,6 +486,14 @@ export default {
           title: 'Confirm Deletion',
           content: 'Are you sure you want to delete key "{name}"? This action cannot be undone.',
         },
+        edit: {
+          title: 'Edit API Key',
+          nameLabel: 'Key Name',
+          expireLabel: 'Expiration (optional)',
+          expireHint: 'Leave empty for no expiration',
+          limitHint: 'Credits limit can only be increased.',
+          limitLabel: 'Credits limit',
+        },
       },
       rules: {
         nameRequired: 'Key name cannot be empty',
@@ -487,13 +505,17 @@ export default {
         noWorkspace: 'Please select a workspace first',
         loadFail: 'Error loading key list',
         invalidName: 'Please enter a valid key name (at least 3 characters)',
+        invalidLimit: 'Please enter a valid credits limit (positive integer)',
+        limitOnlyIncrease: 'Credits limit can only be increased',
         createFail: 'Error creating key',
+        updateFail: 'Failed to update key',
         deleteFail: 'Error deleting key',
         copyFail: 'Failed to copy key',
         copyMcpFail: 'Failed to copy MCP config',
       },
       messages: {
         createSuccess: 'Key created successfully',
+        updateSuccess: 'Key updated successfully',
         deleteSuccess: 'Key deleted successfully',
         copySuccess: 'Key copied to clipboard',
         copyMcpSuccess: 'MCP config copied to clipboard',

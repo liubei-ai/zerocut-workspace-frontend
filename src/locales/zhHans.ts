@@ -428,6 +428,7 @@ export default {
       subtitle: '管理您的API访问密钥',
       actions: {
         create: '创建密钥',
+        edit: '编辑',
       },
       stats: {
         total: '总密钥数',
@@ -443,10 +444,19 @@ export default {
           creator: '创建者',
           createdAt: '创建时间',
           expiresAt: '过期时间',
+          quota: '额度',
           status: '状态',
           actions: '操作',
           lastUsedAt: '最后使用',
         },
+      },
+      quota: {
+        used: '已用额度',
+        remaining: '剩余额度',
+        total: '总额度',
+      },
+      limit: {
+        unlimited: '不限额',
       },
       copyMCP: {
         tooltip: '复制MCP配置',
@@ -456,8 +466,8 @@ export default {
       neverExpire: '永不过期',
       status: {
         active: '活跃',
-        expired: '已过期',
         disabled: '已禁用',
+        revoked: '已吊销',
       },
       dialog: {
         create: {
@@ -473,6 +483,14 @@ export default {
           title: '确认删除',
           content: '确定要删除密钥 "{name}" 吗？此操作不可撤销。',
         },
+        edit: {
+          title: '编辑密钥',
+          nameLabel: '密钥名称',
+          expireLabel: '过期时间（可选）',
+          expireHint: '留空表示永不过期',
+          limitHint: '积分上限仅支持调大，不支持调小。',
+          limitLabel: '积分上限',
+        },
       },
       rules: {
         nameRequired: '密钥名称不能为空',
@@ -484,13 +502,17 @@ export default {
         noWorkspace: '请先选择工作空间',
         loadFail: '加载密钥列表时发生错误',
         invalidName: '请输入有效的密钥名称（至少3个字符）',
+        invalidLimit: '请输入有效的积分上限（正整数）',
+        limitOnlyIncrease: '积分上限仅支持调大，不可调小',
         createFail: '创建密钥时发生错误',
+        updateFail: '更新密钥失败',
         deleteFail: '删除密钥时发生错误',
         copyFail: '复制密钥失败',
         copyMcpFail: '复制 MCP 配置失败',
       },
       messages: {
         createSuccess: '密钥创建成功',
+        updateSuccess: '密钥更新成功',
         deleteSuccess: '密钥删除成功',
         copySuccess: '密钥已复制到剪贴板',
         copyMcpSuccess: 'MCP 配置已复制到剪贴板',

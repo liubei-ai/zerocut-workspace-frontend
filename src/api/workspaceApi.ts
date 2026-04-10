@@ -4,6 +4,7 @@ import type {
   CreateApiKeyRequest,
   PaginationResponse,
   RechargeRecord,
+  UpdateApiKeyRequest,
   VoiceClone,
   WorkspaceDetails,
   WorkspaceMember,
@@ -118,6 +119,14 @@ export async function updateApiKeyStatus(workspaceId: string, keyId: number, sta
   const response = await client.put<ApiKey>(`/workspaces/${workspaceId}/api-keys/${keyId}`, {
     status,
   });
+  return response.data;
+}
+
+/**
+ * 更新 API Key（名称、过期时间、积分上限）
+ */
+export async function updateApiKey(workspaceId: string, keyId: number, data: UpdateApiKeyRequest) {
+  const response = await client.patch<ApiKey>(`/workspaces/${workspaceId}/api-keys/${keyId}`, data);
   return response.data;
 }
 
