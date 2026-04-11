@@ -52,8 +52,6 @@ let countdownTimer: NodeJS.Timeout | null = null;
 // 新密钥表单
 const newToken = ref({
   name: '',
-  description: '',
-  permissions: [] as string[],
   expiresAt: '',
   creditsLimit: '',
 });
@@ -87,18 +85,6 @@ const nameRules = [
   (v: string) => v.length >= 3 || t('zerocut.apikeys.rules.nameMin'),
   (v: string) => v.length <= 50 || t('zerocut.apikeys.rules.nameMax'),
 ];
-
-const descriptionRules = [
-  (v: string) => !v || v.length <= 200 || t('zerocut.apikeys.rules.descMax'),
-];
-
-// 权限选项（暂时隐藏）
-// const permissionOptions = [
-//   { value: 'read', title: '读取权限', description: '查看数据和资源' },
-//   { value: 'write', title: '写入权限', description: '创建和修改资源' },
-//   { value: 'delete', title: '删除权限', description: '删除资源' },
-//   { value: 'admin', title: '管理员权限', description: '完全访问权限' },
-// ];
 
 const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
@@ -159,7 +145,6 @@ const createToken = async () => {
 
     const request: CreateApiKeyRequest = {
       name: newToken.value.name,
-      description: newToken.value.description,
       expiresAt: newToken.value.expiresAt
         ? new Date(newToken.value.expiresAt).toISOString()
         : undefined,
@@ -211,8 +196,6 @@ const deleteToken = async () => {
 const resetForm = () => {
   newToken.value = {
     name: '',
-    description: '',
-    permissions: ['read'],
     expiresAt: '',
     creditsLimit: '',
   };
@@ -696,35 +679,6 @@ const getUsedPercent = (token: ApiKey) => {
               required
               class="mb-4"
             ></v-text-field>
-
-            <v-textarea
-              v-model="newToken.description"
-              :label="t('zerocut.apikeys.dialog.create.descLabel')"
-              :placeholder="t('zerocut.apikeys.dialog.create.descPlaceholder')"
-              :rules="descriptionRules"
-              rows="3"
-              class="mb-4"
-            ></v-textarea>
-
-            <!-- 权限选择暂时隐藏 -->
-            <!-- <v-select
-              v-model="newToken.permissions"
-              :items="permissionOptions"
-              item-title="title"
-              item-value="value"
-              label="权限"
-              multiple
-              chips
-              class="mb-4"
-            >
-              <template #item="{ props, item }">
-                <v-list-item v-bind="props">
-                  <template #subtitle>
-                    {{ item.raw.description }}
-                  </template>
-                </v-list-item>
-              </template>
-            </v-select> -->
 
             <v-text-field
               v-model="newToken.expiresAt"

@@ -70,8 +70,6 @@ export interface ApiKey {
   apiKey?: string; // 只在创建时返回完整密钥
   apiKeyPrefix: string; // 列表中显示的密钥前缀
   status: string;
-  description: string;
-  permissions: string[]; // 权限信息，当前为null
   lastUsedAt: string | null; // 最后使用时间
   expiresAt: string | null; // 过期时间
   creditsLimit: number | null;
@@ -162,7 +160,6 @@ export interface VideoProject {
 // API Key Management Types
 export interface CreateApiKeyRequest {
   name: string;
-  description?: string;
   expiresAt?: string;
   creditsLimit?: number;
 }

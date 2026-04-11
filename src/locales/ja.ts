@@ -438,7 +438,6 @@ export default {
         title: 'APIキー一覧',
         columns: {
           name: '名称',
-          description: '説明',
           key: 'キー',
           creator: '作成者',
           createdAt: '作成日時',
@@ -473,8 +472,6 @@ export default {
           title: '新しいキーを作成',
           nameLabel: 'キー名',
           namePlaceholder: 'キー名を入力',
-          descLabel: '説明',
-          descPlaceholder: 'キーの用途説明を入力',
           expireLabel: '有効期限（任意）',
           expireHint: '空欄は無期限を意味します',
           limitLabel: '上限（任意）',
@@ -497,7 +494,6 @@ export default {
         nameRequired: 'キー名は必須です',
         nameMin: 'キー名は3文字以上である必要があります',
         nameMax: 'キー名は50文字以下である必要があります',
-        descMax: '説明は200文字以下にしてください',
       },
       errors: {
         noWorkspace: 'まずワークスペースを選択してください',

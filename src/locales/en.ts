@@ -442,7 +442,6 @@ export default {
         title: 'API Keys',
         columns: {
           name: 'Name',
-          description: 'Description',
           key: 'Key',
           creator: 'Creator',
           createdAt: 'Created At',
@@ -477,8 +476,6 @@ export default {
           title: 'Create New Key',
           nameLabel: 'Key Name',
           namePlaceholder: 'Enter key name',
-          descLabel: 'Description',
-          descPlaceholder: 'Enter key purpose description',
           expireLabel: 'Expiration (optional)',
           expireHint: 'Leave empty for no expiration',
           limitLabel: 'Credits limit (optional)',
@@ -501,7 +498,6 @@ export default {
         nameRequired: 'Key name cannot be empty',
         nameMin: 'Key name must be at least 3 characters',
         nameMax: 'Key name cannot exceed 50 characters',
-        descMax: 'Description cannot exceed 200 characters',
       },
       errors: {
         noWorkspace: 'Please select a workspace first',

@@ -439,7 +439,6 @@ export default {
         title: '密钥列表',
         columns: {
           name: '名称',
-          description: '描述',
           key: '密钥',
           creator: '创建者',
           createdAt: '创建时间',
@@ -474,8 +473,6 @@ export default {
           title: '创建新密钥',
           nameLabel: '密钥名称',
           namePlaceholder: '输入密钥名称',
-          descLabel: '描述',
-          descPlaceholder: '输入密钥用途描述',
           expireLabel: '过期时间（可选）',
           expireHint: '留空表示永不过期',
           limitLabel: '积分上限（可选）',
@@ -498,7 +495,6 @@ export default {
         nameRequired: '密钥名称不能为空',
         nameMin: '密钥名称至少需要3个字符',
         nameMax: '密钥名称不能超过50个字符',
-        descMax: '描述不能超过200个字符',
       },
       errors: {
         noWorkspace: '请先选择工作空间',
