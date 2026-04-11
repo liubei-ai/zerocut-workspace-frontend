@@ -477,6 +477,8 @@ export default {
           descPlaceholder: 'キーの用途説明を入力',
           expireLabel: '有効期限（任意）',
           expireHint: '空欄は無期限を意味します',
+          limitLabel: '上限（任意）',
+          limitHint: '空欄は無制限を意味します',
         },
         delete: {
           title: '削除の確認',

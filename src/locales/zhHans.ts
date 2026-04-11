@@ -478,6 +478,8 @@ export default {
           descPlaceholder: '输入密钥用途描述',
           expireLabel: '过期时间（可选）',
           expireHint: '留空表示永不过期',
+          limitLabel: '积分上限（可选）',
+          limitHint: '留空表示不限额',
         },
         delete: {
           title: '确认删除',

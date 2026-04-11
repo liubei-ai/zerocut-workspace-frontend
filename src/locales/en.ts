@@ -481,6 +481,8 @@ export default {
           descPlaceholder: 'Enter key purpose description',
           expireLabel: 'Expiration (optional)',
           expireHint: 'Leave empty for no expiration',
+          limitLabel: 'Credits limit (optional)',
+          limitHint: 'Leave empty for unlimited',
         },
         delete: {
           title: 'Confirm Deletion',

@@ -55,6 +55,7 @@ const newToken = ref({
   description: '',
   permissions: [] as string[],
   expiresAt: '',
+  creditsLimit: '',
 });
 
 const headerPrimaryActions = computed(() => [
@@ -147,12 +148,22 @@ const createToken = async () => {
 
   creating.value = true;
   try {
+    const parsedCreateLimit = Number.parseInt(newToken.value.creditsLimit, 10);
+    if (
+      newToken.value.creditsLimit &&
+      (!Number.isInteger(parsedCreateLimit) || parsedCreateLimit < 1)
+    ) {
+      showError(t('zerocut.apikeys.errors.invalidLimit'));
+      return;
+    }
+
     const request: CreateApiKeyRequest = {
       name: newToken.value.name,
       description: newToken.value.description,
       expiresAt: newToken.value.expiresAt
         ? new Date(newToken.value.expiresAt).toISOString()
         : undefined,
+      creditsLimit: newToken.value.creditsLimit ? parsedCreateLimit : undefined,
     };
 
     const apiKeyInfo = await createApiKey(workspaceId, request);
@@ -203,6 +214,7 @@ const resetForm = () => {
     description: '',
     permissions: ['read'],
     expiresAt: '',
+    creditsLimit: '',
   };
 };
 
@@ -720,6 +732,17 @@ const getUsedPercent = (token: ApiKey) => {
               type="date"
               :hint="t('zerocut.apikeys.dialog.create.expireHint')"
               persistent-hint
+              class="mb-4"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="newToken.creditsLimit"
+              :label="t('zerocut.apikeys.dialog.create.limitLabel')"
+              type="number"
+              min="1"
+              :hint="t('zerocut.apikeys.dialog.create.limitHint')"
+              persistent-hint
+              class="mb-2"
             ></v-text-field>
           </v-form>
         </v-card-text>
