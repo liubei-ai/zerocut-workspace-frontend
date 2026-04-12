@@ -253,6 +253,7 @@ export default {
         expired: 'Membership Expired',
         expiredAt: 'Expired on: {date}',
         validUntil: 'Valid until: {date}',
+        canceledNotice: 'Auto-renew is canceled, membership ends at period end',
         creditsUnit: 'credits',
         buyCredits: 'Buy Credits',
         manageSubscription: 'Manage Subscription',

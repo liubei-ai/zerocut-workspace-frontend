@@ -11,7 +11,23 @@ export const useMembershipStore = defineStore('membership', () => {
   const loading = ref(false);
   const initialized = ref(false);
 
-  const hasActiveSubscription = computed(() => subscription.value?.status === 'active');
+  const effectiveMembershipStatuses = new Set<SubscriptionDetails['status']>([
+    'active',
+    'past_due',
+    'canceled',
+  ]);
+
+  const isMembershipEffectiveStatus = (
+    status: SubscriptionDetails['status'] | null | undefined
+  ): boolean => {
+    if (!status) return false;
+    return effectiveMembershipStatuses.has(status);
+  };
+
+  // Backward-compatible field name, now means "has effective membership entitlement".
+  const hasActiveSubscription = computed(() =>
+    isMembershipEffectiveStatus(subscription.value?.status)
+  );
   const isExpired = computed(() => subscription.value?.status === 'expired');
   const availableCredits = computed(() => walletInfo.value?.availableCredits ?? 0);
   const expiryDate = computed(
@@ -31,7 +47,7 @@ export const useMembershipStore = defineStore('membership', () => {
       const workspaceId = workspaceStore.currentWorkspaceId;
       if (workspaceId) {
         subscription.value = await getCurrentSubscription(workspaceId);
-        if (subscription.value?.status === 'active') {
+        if (isMembershipEffectiveStatus(subscription.value?.status)) {
           walletInfo.value = await getWalletInfo(workspaceId);
         }
       }
@@ -58,6 +74,7 @@ export const useMembershipStore = defineStore('membership', () => {
     availableCredits,
     expiryDate,
     tierI18nKey,
+    isMembershipEffectiveStatus,
     initialize,
     refresh,
   };

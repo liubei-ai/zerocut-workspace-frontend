@@ -252,6 +252,7 @@ export default {
         expired: '会员已过期',
         expiredAt: '到期时间：{date}',
         validUntil: '有效期至：{date}',
+        canceledNotice: '已取消自动续费，到期后失效',
         creditsUnit: '积分',
         buyCredits: '购买积分',
         manageSubscription: '订阅管理',

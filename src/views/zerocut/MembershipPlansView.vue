@@ -254,11 +254,11 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
       credits: formatCredits(plan.monthlyCredits),
       features: formatPlanFeatures(plan),
       productId: plan.code,
-      // Mark as current subscription if matches planCode and status is active
+      // Mark as current subscription if matches planCode and membership is still effective
       isCurrentSubscription:
         membershipStore.subscription !== null &&
         membershipStore.subscription.planCode === plan.code &&
-        membershipStore.subscription.status === 'active',
+        membershipStore.isMembershipEffectiveStatus(membershipStore.subscription.status),
     };
   });
 });
@@ -274,9 +274,11 @@ const statusBarState = computed<'none' | 'expired' | 'active'>(() => {
   const sub = membershipStore.subscription;
   if (!sub) return 'none';
   if (sub.status === 'expired') return 'expired';
-  if (sub.status === 'active') return 'active';
+  if (membershipStore.isMembershipEffectiveStatus(sub.status)) return 'active';
   return 'none';
 });
+
+const showCanceledNotice = computed(() => membershipStore.subscription?.status === 'canceled');
 
 const formattedExpiryDate = computed(() => {
   const date = membershipStore.expiryDate;
@@ -479,6 +481,9 @@ onMounted(fetchMembershipPlans);
               </div>
               <div class="status-sub">
                 {{ t('zerocut.membership.statusBar.validUntil', { date: formattedExpiryDate }) }}
+              </div>
+              <div v-if="showCanceledNotice" class="status-sub status-sub--notice">
+                {{ t('zerocut.membership.statusBar.canceledNotice') }}
               </div>
             </template>
           </div>
@@ -754,6 +759,10 @@ onMounted(fetchMembershipPlans);
   font-size: 0.75rem;
   margin-top: 2px;
   color: rgba(var(--v-theme-on-surface), 0.55);
+
+  &--notice {
+    color: rgba(var(--v-theme-warning), 0.92);
+  }
 }
 
 .credits-chip {

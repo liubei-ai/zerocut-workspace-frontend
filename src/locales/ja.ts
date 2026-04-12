@@ -252,6 +252,7 @@ export default {
         expired: '会員期限切れ',
         expiredAt: '有効期限：{date}',
         validUntil: '有効期限：{date}',
+        canceledNotice: '自動更新は解約済みです。期間終了まで利用できます',
         creditsUnit: 'ポイント',
         buyCredits: 'ポイント購入',
         manageSubscription: '購読管理',
