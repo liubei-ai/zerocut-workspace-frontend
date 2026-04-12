@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-// import { useRoute } from 'vue-router';
 
 import type { MetricCardData } from '@/types/stats';
 
@@ -10,16 +9,12 @@ import StatisticsChart from '@/components/dashboard/StatisticsChart.vue';
 import NewbieCreditsDialog from '@/components/NewbieCreditsDialog.vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useStatsStore } from '@/stores/statsStore';
-// import { useUserStore } from '@/stores/userStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-// import { isWeiXin } from '@/utils/wechat';
 
 const authStore = useAuthStore();
 const statsStore = useStatsStore();
-// const userStore = useUserStore();
 const workspaceStore = useWorkspaceStore();
 const { t } = useI18n();
-// const route = useRoute();
 
 // 加载状态
 const loading = ref(true);
@@ -44,27 +39,6 @@ const statisticsChartData = computed(() => statsStore.statisticsChartData);
 // 生命周期
 onMounted(async () => {
   try {
-    // const hasWechatBindResult = typeof route.query.wechatBind === 'string';
-    // const hasWechatIdentity = !!userStore.userInfo?.openid || !!userStore.userInfo?.unionid;
-
-    // 如果是微信UA且没有绑定微信账号且没有微信身份
-    // if (isWeiXin() && !hasWechatBindResult && !hasWechatIdentity) {
-    //   const url = new URL(window.location.href);
-    //   url.searchParams.delete('wechatBind');
-    //   const base = String(import.meta.env.VITE_API2_BASE_URL).replace(/\/$/, '');
-    //   const authorizeUrl =
-    //     `${base}/wechat/oauth/authorize` +
-    //     `?returnUrl=${encodeURIComponent(url.toString())}` +
-    //     `&scope=snsapi_userinfo`;
-    //   window.location.assign(authorizeUrl);
-    //   return;
-    // }
-
-    // 如果是微信绑定成功，刷新用户信息
-    // if (isWeiXin() && route.query.wechatBind === 'success') {
-    //   await userStore.loadUserInfo();
-    // }
-
     // 设置日期范围为最近7天
     loading.value = true;
     const endDate = new Date().toISOString().split('T')[0];
