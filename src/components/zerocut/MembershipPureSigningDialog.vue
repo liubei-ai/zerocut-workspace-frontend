@@ -108,9 +108,6 @@
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
           <div class="text-h6 mb-2">已签约，正在首扣确认...</div>
           <div class="text-body-2 text-medium-emphasis">请稍候，系统正在确认首扣结果</div>
-          <div class="text-body-2 text-medium-emphasis mt-2">
-            剩余时间：{{ formatCountdown(countdown) }}
-          </div>
         </div>
 
         <div v-else-if="uiStatus === 'signed'" class="py-8 text-center">
@@ -213,8 +210,7 @@ const uiStatus = ref<'creating' | 'pending' | 'confirming' | 'signed' | 'failed'
 );
 const pollingInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
-const countdown = ref<number>(1800);
-const pollingStartedAt = ref<number | null>(null);
+const countdown = ref<number>(0);
 const errorMessage = ref('');
 const sessionCreatedAt = ref<Date | null>(null);
 const isMobileDevice = computed(() => typeof navigator !== 'undefined' && isMobile());
@@ -285,12 +281,12 @@ const startCountdown = (expiresAtIso: string) => {
 
   stopCountdown();
   countdownInterval.value = window.setInterval(() => {
-    countdown.value--;
     if (countdown.value <= 0) {
-      uiStatus.value = 'timeout';
+      countdown.value = 0;
       stopCountdown();
-      stopPolling();
+      return;
     }
+    countdown.value--;
   }, 1000);
 };
 
@@ -311,6 +307,7 @@ const pollSigningStatusOnce = async () => {
     }
     if (status.status === 'signed') {
       uiStatus.value = 'confirming';
+      stopCountdown();
       return;
     }
     if (status.status === 'failed') {
@@ -332,14 +329,7 @@ const pollSigningStatusOnce = async () => {
 
 const startPolling = () => {
   stopPolling();
-  pollingStartedAt.value = Date.now();
   pollingInterval.value = window.setInterval(() => {
-    if (pollingStartedAt.value && Date.now() - pollingStartedAt.value > 30 * 60 * 1000) {
-      uiStatus.value = 'timeout';
-      stopPolling();
-      stopCountdown();
-      return;
-    }
     pollSigningStatusOnce();
   }, 2000);
 };
@@ -349,8 +339,7 @@ const resetState = () => {
   sessionCreatedAt.value = null;
   uiStatus.value = 'creating';
   errorMessage.value = '';
-  countdown.value = 1800;
-  pollingStartedAt.value = null;
+  countdown.value = 0;
   stopPolling();
   stopCountdown();
 };

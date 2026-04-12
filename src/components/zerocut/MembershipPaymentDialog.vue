@@ -222,7 +222,7 @@ const paymentStatus = ref<'creating' | 'pending' | 'confirming' | 'success' | 'f
 );
 const paymentCheckInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
-const countdown = ref<number>(300);
+const countdown = ref<number>(0);
 const agreementAccepted = ref<boolean>(true);
 const errorMessage = ref<string>('');
 
@@ -260,16 +260,42 @@ const copyOrderNumber = async () => {
   }
 };
 
-const startCountdown = () => {
-  countdown.value = 300;
-  countdownInterval.value = window.setInterval(() => {
-    countdown.value--;
+const closeCurrentOrderSilently = async () => {
+  if (!orderInfo.value?.outTradeNo || !workspaceStore.currentWorkspaceId) {
+    return;
+  }
+  try {
+    await closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId);
+  } catch (error) {
+    console.warn('关闭订单失败:', error);
+  }
+};
+
+const startCountdown = (expiresAtIso: string) => {
+  const expiresAtMs = Date.parse(expiresAtIso);
+  if (!Number.isFinite(expiresAtMs)) {
+    countdown.value = 0;
+    return;
+  }
+
+  stopCountdown();
+
+  const updateRemaining = () => {
+    countdown.value = Math.max(0, Math.floor((expiresAtMs - Date.now()) / 1000));
     if (countdown.value <= 0) {
       paymentStatus.value = 'timeout';
       stopCountdown();
       stopPaymentStatusCheck();
+      void closeCurrentOrderSilently();
     }
-  }, 1000);
+  };
+
+  updateRemaining();
+  if (countdown.value <= 0) {
+    return;
+  }
+
+  countdownInterval.value = window.setInterval(updateRemaining, 1000);
 };
 
 const stopCountdown = () => {
@@ -351,7 +377,7 @@ const createPaymentOrderNative = async () => {
     await nextTick();
     await generateQRCode(response.codeUrl);
 
-    startCountdown();
+    startCountdown(response.expiresAt);
     startPaymentStatusCheck();
   } catch (error: unknown) {
     paymentStatus.value = 'failed';
@@ -374,7 +400,7 @@ const createPaymentOrderJsapi = async () => {
     });
 
     orderInfo.value = response;
-    startCountdown();
+    startCountdown(response.expiresAt);
 
     const res = await invokeWeixinBridgePay(response.jsapiParams);
     if (res.err_msg === 'get_brand_wcpay_request:ok') {
@@ -384,16 +410,12 @@ const createPaymentOrderJsapi = async () => {
       paymentStatus.value = 'failed';
       errorMessage.value = '用户已取消支付';
       stopCountdown();
-      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
-        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
-      }
+      void closeCurrentOrderSilently();
     } else {
       paymentStatus.value = 'failed';
       errorMessage.value = res.err_msg || '支付调起失败';
       stopCountdown();
-      if (response.outTradeNo && workspaceStore.currentWorkspaceId) {
-        closeOneTimeOrder(response.outTradeNo, workspaceStore.currentWorkspaceId).catch(() => {});
-      }
+      void closeCurrentOrderSilently();
     }
   } catch (error: unknown) {
     paymentStatus.value = 'failed';
@@ -429,13 +451,7 @@ const handleCancel = async () => {
   stopPaymentStatusCheck();
   stopCountdown();
 
-  if (orderInfo.value?.outTradeNo && workspaceStore.currentWorkspaceId) {
-    try {
-      await closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId);
-    } catch (error) {
-      console.warn('关闭订单失败:', error);
-    }
-  }
+  await closeCurrentOrderSilently();
 
   emit('cancel');
   emit('update:open', false);
@@ -444,11 +460,7 @@ const handleCancel = async () => {
 const handleClose = () => {
   stopPaymentStatusCheck();
   stopCountdown();
-  if (orderInfo.value?.outTradeNo && workspaceStore.currentWorkspaceId) {
-    closeOneTimeOrder(orderInfo.value.outTradeNo, workspaceStore.currentWorkspaceId).catch(
-      () => {}
-    );
-  }
+  void closeCurrentOrderSilently();
   emit('update:open', false);
 };
 
@@ -461,7 +473,7 @@ const resetState = () => {
   orderInfo.value = null;
   paymentStatus.value = 'creating';
   errorMessage.value = '';
-  countdown.value = 300;
+  countdown.value = 0;
   agreementAccepted.value = true;
   stopPaymentStatusCheck();
   stopCountdown();
