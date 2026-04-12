@@ -200,9 +200,12 @@ export async function createSigningSession(params: CreateSigningSessionParams) {
   return response.data;
 }
 
-export async function getSigningSessionStatus(sessionId: string) {
+export async function getSigningSessionStatus(sessionId: string, workspaceId: string) {
   const response = await client.get<SigningSessionStatus>(
-    `/subscriptions/signing-sessions/${sessionId}`
+    `/subscriptions/signing-sessions/${sessionId}`,
+    {
+      params: { workspaceId },
+    }
   );
   return response.data;
 }
@@ -215,9 +218,12 @@ export async function createSigningSessionPureJsapi(params: CreateSigningSession
   return response.data;
 }
 
-export async function getSigningSessionPureStatus(sessionId: string) {
+export async function getSigningSessionPureStatus(sessionId: string, workspaceId: string) {
   const response = await client.get<PureSigningSessionStatus>(
-    `/subscriptions/signing-sessions-pure/${sessionId}`
+    `/subscriptions/signing-sessions-pure/${sessionId}`,
+    {
+      params: { workspaceId },
+    }
   );
   return response.data;
 }

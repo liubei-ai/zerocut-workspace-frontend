@@ -324,10 +324,11 @@ const startCountdown = (expiresAtIso: string) => {
 
 const pollSigningStatusOnce = async () => {
   const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
-  if (!sessionId) return;
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!sessionId || !workspaceId) return;
 
   try {
-    const status = await getSigningSessionStatus(sessionId);
+    const status = await getSigningSessionStatus(sessionId, workspaceId);
     if (status.status === 'signed' || status.status === 'paid') {
       uiStatus.value = 'signed';
       stopPolling();

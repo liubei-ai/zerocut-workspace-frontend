@@ -290,9 +290,10 @@ const startCountdown = (expiresAtIso: string) => {
 
 const pollSigningStatusOnce = async () => {
   const sessionId = signingSession.value?.signingSessionId;
-  if (!sessionId) return;
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!sessionId || !workspaceId) return;
   try {
-    const status = await getSigningSessionPureStatus(sessionId);
+    const status = await getSigningSessionPureStatus(sessionId, workspaceId);
     if (status.status === 'active') {
       uiStatus.value = 'signed';
       stopPolling();
