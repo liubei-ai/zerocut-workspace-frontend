@@ -441,14 +441,14 @@ onMounted(fetchMembershipPlans);
   <v-container fluid class="pa-0">
     <!-- Membership Status Bar -->
     <v-card class="membership-status-bar mb-4" :class="statusBarClass" variant="flat">
-      <v-card-text class="d-flex align-center justify-space-between px-5 py-3">
+      <v-card-text class="membership-status-content px-5 py-3">
         <!-- Left: icon + info -->
-        <div class="d-flex align-center ga-3">
+        <div class="status-main">
           <div class="status-icon-wrap" :class="statusBarClass">
             <v-icon :color="statusBarIconColor" size="20">{{ statusBarIcon }}</v-icon>
           </div>
 
-          <div>
+          <div class="status-info">
             <template v-if="statusBarState === 'none'">
               <div class="status-label">{{ t('zerocut.membership.statusBar.noMembership') }}</div>
             </template>
@@ -461,7 +461,7 @@ onMounted(fetchMembershipPlans);
               </div>
             </template>
             <template v-else>
-              <div class="d-flex align-center ga-2">
+              <div class="status-headline">
                 <span class="status-label">
                   {{ membershipStore.tierI18nKey ? t(membershipStore.tierI18nKey) : '' }}
                 </span>
@@ -485,17 +485,23 @@ onMounted(fetchMembershipPlans);
         </div>
 
         <!-- Right: actions -->
-        <div class="d-flex align-center ga-2">
+        <div class="status-actions">
           <v-btn
             v-if="statusBarState === 'active'"
             size="small"
             color="primary"
             variant="tonal"
+            class="status-action-btn"
             @click="router.push('/packages')"
           >
             {{ t('zerocut.membership.statusBar.buyCredits') }}
           </v-btn>
-          <v-btn size="small" variant="outlined" @click="router.push('/plans-and-billing')">
+          <v-btn
+            size="small"
+            variant="outlined"
+            class="status-action-btn"
+            @click="router.push('/plans-and-billing')"
+          >
             {{ t('zerocut.membership.statusBar.manageSubscription') }}
           </v-btn>
         </div>
@@ -683,6 +689,34 @@ onMounted(fetchMembershipPlans);
   }
 }
 
+.membership-status-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.status-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.status-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.status-headline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
 .status-icon-wrap {
   display: flex;
   align-items: center;
@@ -726,6 +760,7 @@ onMounted(fetchMembershipPlans);
   cursor: pointer;
   font-weight: 600;
   letter-spacing: 0;
+  max-width: 100%;
 
   &:hover {
     opacity: 0.85;
@@ -811,5 +846,41 @@ onMounted(fetchMembershipPlans);
 
 .benefits-list li:last-child {
   margin-bottom: 0;
+}
+
+.status-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.status-action-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .membership-status-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px 16px !important;
+  }
+
+  .status-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .status-action-btn {
+    width: 100%;
+    min-height: 36px;
+  }
+
+  .status-sub {
+    word-break: break-word;
+  }
 }
 </style>
