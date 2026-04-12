@@ -68,6 +68,7 @@ export interface SigningSessionStatus {
 export interface PureSigningSessionResponse {
   signingSessionId: string;
   entrustwebUrl: string;
+  createdAt: string;
   expiresAt: string;
 }
 
@@ -210,7 +211,7 @@ export async function getSigningSessionStatus(sessionId: string, workspaceId: st
   return response.data;
 }
 
-export async function createSigningSessionPureJsapi(params: CreateSigningSessionParams) {
+export async function createSigningSessionPure(params: CreateSigningSessionParams) {
   const response = await client.post<PureSigningSessionResponse>(
     '/subscriptions/signing-sessions-pure',
     params

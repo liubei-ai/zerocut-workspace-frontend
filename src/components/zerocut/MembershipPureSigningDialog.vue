@@ -79,7 +79,9 @@
                 </div>
                 <div class="d-flex align-center">
                   <span class="text-body-2 text-medium-emphasis mr-2">创建时间：</span>
-                  <span class="text-body-2">{{ formatTime(new Date()) }}</span>
+                  <span class="text-body-2">{{
+                    sessionCreatedAt ? formatTime(sessionCreatedAt) : '-'
+                  }}</span>
                 </div>
               </v-card-text>
             </v-card>
@@ -171,7 +173,7 @@ import { useI18n } from 'vue-i18n';
 
 import {
   closeSigningSession,
-  createSigningSessionPureJsapi,
+  createSigningSessionPure,
   getSigningSessionPureStatus,
   type MembershipPlanDto,
   type PureSigningSessionResponse,
@@ -212,6 +214,7 @@ const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(1800);
 const pollingStartedAt = ref<number | null>(null);
 const errorMessage = ref('');
+const sessionCreatedAt = ref<Date | null>(null);
 
 const isOpen = computed({
   get: () => props.open,
@@ -340,6 +343,7 @@ const startPolling = () => {
 
 const resetState = () => {
   signingSession.value = null;
+  sessionCreatedAt.value = null;
   uiStatus.value = 'creating';
   errorMessage.value = '';
   countdown.value = 1800;
@@ -360,12 +364,13 @@ const createSession = async () => {
   uiStatus.value = 'creating';
   errorMessage.value = '';
   try {
-    const session = await createSigningSessionPureJsapi({
+    const session = await createSigningSessionPure({
       workspaceId: workspaceStore.currentWorkspaceId,
       planCode: props.membershipPlan.code,
       displayAccountName: workspaceStore.currentWorkspaceName || undefined,
     });
     signingSession.value = session;
+    sessionCreatedAt.value = new Date(session.createdAt);
     uiStatus.value = 'pending';
 
     if (isWeiXin()) {
@@ -397,7 +402,10 @@ const handleCancel = async () => {
   stopCountdown();
 
   const sessionId = signingSession.value?.signingSessionId;
-  const canCleanup = uiStatus.value === 'creating' || uiStatus.value === 'pending';
+  const canCleanup =
+    uiStatus.value === 'creating' ||
+    uiStatus.value === 'pending' ||
+    uiStatus.value === 'confirming';
   if (sessionId && canCleanup) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
@@ -415,7 +423,12 @@ const handleClose = async () => {
   stopCountdown();
 
   const sessionId = signingSession.value?.signingSessionId;
-  if (sessionId && uiStatus.value === 'pending') {
+  const canCleanup =
+    uiStatus.value === 'pending' ||
+    uiStatus.value === 'confirming' ||
+    uiStatus.value === 'timeout' ||
+    uiStatus.value === 'failed';
+  if (sessionId && canCleanup) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
     } catch {
