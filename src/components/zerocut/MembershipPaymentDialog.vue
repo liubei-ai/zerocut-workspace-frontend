@@ -84,7 +84,7 @@
             </div>
           </div>
 
-          <div class="payment-right">
+          <div class="payment-right" v-if="!isMobileDevice">
             <div class="qr-code-container">
               <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
               <div class="qr-code-overlay">
@@ -181,6 +181,7 @@ import { queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { extractApiErrorMessage } from '@/utils/apiError';
+import { isMobile } from '@/utils/common';
 import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 
 interface Props {
@@ -225,6 +226,8 @@ const countdownInterval = ref<number | null>(null);
 const countdown = ref<number>(0);
 const agreementAccepted = ref<boolean>(true);
 const errorMessage = ref<string>('');
+
+const isMobileDevice = computed(() => typeof navigator !== 'undefined' && isMobile());
 
 const isOpen = computed({
   get: () => props.open,

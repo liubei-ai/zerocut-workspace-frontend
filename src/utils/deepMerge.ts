@@ -8,7 +8,7 @@ const mergeArrayWithDedupe = (a: string[], b: string[]): string[] =>
  * @param {Object} target the existing object
  * @param {Object} obj the new object
  */
-function deepMerge(target: Object, obj: Object): Object {
+function deepMerge(target: object, obj: object): object {
   const keys = Object.keys(obj);
 
   for (const key of keys) {
