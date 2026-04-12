@@ -87,7 +87,7 @@
             </v-card>
           </div>
 
-          <div class="payment-right">
+          <div v-if="!isMobileDevice" class="payment-right">
             <div class="qr-code-container">
               <canvas ref="qrCodeCanvas" class="qr-code-canvas" />
               <div class="qr-code-overlay">
@@ -181,6 +181,8 @@ import {
 } from '@/api/membershipApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { extractApiErrorMessage } from '@/utils/apiError';
+import { isMobile } from '@/utils/common';
 import { isWeiXin } from '@/utils/wechat';
 
 interface Props {
@@ -215,6 +217,7 @@ const countdown = ref<number>(1800);
 const pollingStartedAt = ref<number | null>(null);
 const errorMessage = ref('');
 const sessionCreatedAt = ref<Date | null>(null);
+const isMobileDevice = computed(() => typeof navigator !== 'undefined' && isMobile());
 
 const isOpen = computed({
   get: () => props.open,
@@ -386,14 +389,13 @@ const createSession = async () => {
     startPolling();
   } catch (error: unknown) {
     uiStatus.value = 'failed';
-    const message =
-      error instanceof Error
-        ? error.message
-        : typeof error === 'object' && error !== null && 'message' in error
-          ? String((error as { message?: unknown }).message ?? '')
-          : '';
-    errorMessage.value = message || '创建签约会话失败';
-    snackbarStore.showErrorMessage('创建签约会话失败');
+    const message = extractApiErrorMessage(error, '创建签约会话失败');
+    errorMessage.value = message;
+    console.error('[MembershipPureSigningDialog] signing-sessions-pure failed', {
+      message,
+      error,
+    });
+    snackbarStore.showErrorMessage(message);
   }
 };
 

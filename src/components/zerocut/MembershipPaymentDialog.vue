@@ -180,6 +180,7 @@ import {
 import { queryOrderStatus } from '@/api/packageApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { extractApiErrorMessage } from '@/utils/apiError';
 import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
 
 interface Props {
@@ -354,17 +355,13 @@ const createPaymentOrderNative = async () => {
     startPaymentStatusCheck();
   } catch (error: unknown) {
     paymentStatus.value = 'failed';
-    let message: string | null = null;
-    if (error instanceof Error) {
-      message = error.message;
-    } else if (typeof error === 'object' && error !== null && 'message' in error) {
-      const maybeMessage = (error as { message?: unknown }).message;
-      if (typeof maybeMessage === 'string') {
-        message = maybeMessage;
-      }
-    }
-    errorMessage.value = message || '创建支付订单失败';
-    snackbarStore.showErrorMessage('创建支付订单失败');
+    const message = extractApiErrorMessage(error, '创建支付订单失败');
+    errorMessage.value = message;
+    console.error('[MembershipPaymentDialog] purchase failed', {
+      message,
+      error,
+    });
+    snackbarStore.showErrorMessage(message);
   }
 };
 
@@ -400,19 +397,13 @@ const createPaymentOrderJsapi = async () => {
     }
   } catch (error: unknown) {
     paymentStatus.value = 'failed';
-
-    let message: string | null = null;
-    if (error instanceof Error) {
-      message = error.message;
-    } else if (typeof error === 'object' && error !== null && 'message' in error) {
-      const maybeMessage = (error as { message?: unknown }).message;
-      if (typeof maybeMessage === 'string') {
-        message = maybeMessage;
-      }
-    }
-
-    errorMessage.value = message || '创建支付订单失败';
-    snackbarStore.showErrorMessage('创建支付订单失败');
+    const message = extractApiErrorMessage(error, '创建支付订单失败');
+    errorMessage.value = message;
+    console.error('[MembershipPaymentDialog] purchase-jsapi failed', {
+      message,
+      error,
+    });
+    snackbarStore.showErrorMessage(message);
   }
 };
 

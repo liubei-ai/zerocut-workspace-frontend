@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
 
 import type { ApiError, ApiResponse } from '@/types/api';
 
+import { extractApiMessageFromPayload } from '@/utils/apiError';
+
 import { handleAuthFailure } from './helper';
 
 // Create axios instance with default configuration
@@ -52,6 +54,9 @@ apiClient.interceptors.response.use(
     if (error.response) {
       const status = error.response.status;
       const url = error.config?.url || '';
+      const responseData = error.response.data;
+      const extractedMessage = extractApiMessageFromPayload(responseData);
+      const statusText = error.response.statusText?.trim();
 
       // Handle HTTP 401 Unauthorized
       if (status === 401 || (status === 403 && url.startsWith('/admin/'))) {
@@ -62,8 +67,8 @@ apiClient.interceptors.response.use(
       // Server responded with error status
       const apiError: ApiError = {
         code: status,
-        message: error.response.statusText || 'Request failed',
-        details: error.response.data,
+        message: extractedMessage || statusText || error.message || 'Request failed',
+        details: responseData,
       };
       return Promise.reject(apiError);
     } else if (error.request) {
