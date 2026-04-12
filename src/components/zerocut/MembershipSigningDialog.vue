@@ -415,16 +415,22 @@ const createSessionJsapi = async () => {
       uiStatus.value = 'failed';
       errorMessage.value = '用户已取消支付';
       stopCountdown();
-      closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!).catch(
-        () => {}
-      );
+      try {
+        await closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!);
+      } catch (error) {
+        console.warn('关闭签约会话失败:', error);
+        snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
+      }
     } else {
       uiStatus.value = 'failed';
       errorMessage.value = res.err_msg || '支付调起失败';
       stopCountdown();
-      closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!).catch(
-        () => {}
-      );
+      try {
+        await closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!);
+      } catch (error) {
+        console.warn('关闭签约会话失败:', error);
+        snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
+      }
     }
   } catch (error) {
     uiStatus.value = 'failed';
@@ -484,12 +490,14 @@ const handleClose = async () => {
     sessionId &&
     (uiStatus.value === 'pending' ||
       uiStatus.value === 'confirming' ||
-      uiStatus.value === 'timeout')
+      uiStatus.value === 'timeout' ||
+      uiStatus.value === 'failed')
   ) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
     } catch (error) {
       console.warn('关闭签约会话失败:', error);
+      snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
     }
   }
 
@@ -497,8 +505,24 @@ const handleClose = async () => {
 };
 
 const handleRetry = () => {
-  resetState();
-  createSession();
+  const retry = async () => {
+    const sessionId =
+      signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
+
+    if (sessionId) {
+      try {
+        await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
+      } catch (error) {
+        console.warn('关闭签约会话失败:', error);
+        snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
+      }
+    }
+
+    resetState();
+    await createSession();
+  };
+
+  void retry();
 };
 
 watch(
