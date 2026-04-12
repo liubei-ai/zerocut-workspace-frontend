@@ -65,6 +65,22 @@ export interface SigningSessionStatus {
   subscriptionId: number | null;
 }
 
+export interface PureSigningSessionResponse {
+  signingSessionId: string;
+  entrustwebUrl: string;
+  expiresAt: string;
+}
+
+export interface PureSigningSessionStatus {
+  status: 'signing' | 'signed' | 'active' | 'failed' | 'expired';
+  contractId: string | null;
+  subscriptionId: number | null;
+  latestOrderNo: string | null;
+  latestOrderStatus: 'created' | 'processing' | 'success' | 'failed' | null;
+  failCode: string | null;
+  failMessage: string | null;
+}
+
 export type SubscriptionStatus =
   | 'draft'
   | 'signing'
@@ -187,6 +203,21 @@ export async function createSigningSession(params: CreateSigningSessionParams) {
 export async function getSigningSessionStatus(sessionId: string) {
   const response = await client.get<SigningSessionStatus>(
     `/subscriptions/signing-sessions/${sessionId}`
+  );
+  return response.data;
+}
+
+export async function createSigningSessionPureJsapi(params: CreateSigningSessionParams) {
+  const response = await client.post<PureSigningSessionResponse>(
+    '/subscriptions/signing-sessions-pure',
+    params
+  );
+  return response.data;
+}
+
+export async function getSigningSessionPureStatus(sessionId: string) {
+  const response = await client.get<PureSigningSessionStatus>(
+    `/subscriptions/signing-sessions-pure/${sessionId}`
   );
   return response.data;
 }
