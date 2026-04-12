@@ -53,18 +53,6 @@ export interface CreateSigningSessionParams {
   displayAccountName?: string;
 }
 
-export interface SigningSessionResponse {
-  signingSessionId: string;
-  qrUrl: string;
-  expiresAt: string;
-}
-
-export interface SigningSessionStatus {
-  status: 'signing' | 'paid' | 'signed' | 'expired';
-  contractId: string | null;
-  subscriptionId: number | null;
-}
-
 export interface PureSigningSessionResponse {
   signingSessionId: string;
   entrustwebUrl: string;
@@ -160,20 +148,6 @@ export interface JsapiPayParams {
   paySign: string;
 }
 
-export interface SigningSessionJsapiResponse {
-  signingSessionId: string;
-  jsapiParams: JsapiPayParams;
-  expiresAt: string;
-}
-
-export async function createSigningSessionJsapi(params: CreateSigningSessionParams) {
-  const response = await client.post<SigningSessionJsapiResponse>(
-    '/subscriptions/signing-sessions-jsapi',
-    params
-  );
-  return response.data;
-}
-
 export interface PurchaseOneTimeJsapiResponse {
   jsapiParams: JsapiPayParams;
   outTradeNo: string;
@@ -189,24 +163,6 @@ export async function purchaseOneTimeSubscriptionJsapi(params: {
   const response = await client.post<PurchaseOneTimeJsapiResponse>(
     '/subscriptions/purchase-jsapi',
     params
-  );
-  return response.data;
-}
-
-export async function createSigningSession(params: CreateSigningSessionParams) {
-  const response = await client.post<SigningSessionResponse>(
-    '/subscriptions/signing-sessions',
-    params
-  );
-  return response.data;
-}
-
-export async function getSigningSessionStatus(sessionId: string, workspaceId: string) {
-  const response = await client.get<SigningSessionStatus>(
-    `/subscriptions/signing-sessions/${sessionId}`,
-    {
-      params: { workspaceId },
-    }
   );
   return response.data;
 }
