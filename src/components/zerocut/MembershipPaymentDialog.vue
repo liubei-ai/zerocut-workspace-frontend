@@ -189,7 +189,7 @@ interface Props {
   loading?: boolean;
 }
 
-interface OrderInfo {
+export interface OrderInfo {
   codeUrl?: string;
   jsapiParams?: JsapiPayParams;
   outTradeNo: string;

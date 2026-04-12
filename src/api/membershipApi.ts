@@ -65,6 +65,23 @@ export interface SigningSessionStatus {
   subscriptionId: number | null;
 }
 
+export interface PureSigningSessionResponse {
+  signingSessionId: string;
+  entrustwebUrl: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+export interface PureSigningSessionStatus {
+  status: 'signing' | 'signed' | 'active' | 'failed' | 'expired';
+  contractId: string | null;
+  subscriptionId: number | null;
+  latestOrderNo: string | null;
+  latestOrderStatus: 'created' | 'processing' | 'success' | 'failed' | null;
+  failCode: string | null;
+  failMessage: string | null;
+}
+
 export type SubscriptionStatus =
   | 'draft'
   | 'signing'
@@ -184,9 +201,30 @@ export async function createSigningSession(params: CreateSigningSessionParams) {
   return response.data;
 }
 
-export async function getSigningSessionStatus(sessionId: string) {
+export async function getSigningSessionStatus(sessionId: string, workspaceId: string) {
   const response = await client.get<SigningSessionStatus>(
-    `/subscriptions/signing-sessions/${sessionId}`
+    `/subscriptions/signing-sessions/${sessionId}`,
+    {
+      params: { workspaceId },
+    }
+  );
+  return response.data;
+}
+
+export async function createSigningSessionPure(params: CreateSigningSessionParams) {
+  const response = await client.post<PureSigningSessionResponse>(
+    '/subscriptions/signing-sessions-pure',
+    params
+  );
+  return response.data;
+}
+
+export async function getSigningSessionPureStatus(sessionId: string, workspaceId: string) {
+  const response = await client.get<PureSigningSessionStatus>(
+    `/subscriptions/signing-sessions-pure/${sessionId}`,
+    {
+      params: { workspaceId },
+    }
   );
   return response.data;
 }

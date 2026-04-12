@@ -79,33 +79,12 @@
                 </div>
                 <div class="d-flex align-center">
                   <span class="text-body-2 text-medium-emphasis mr-2">创建时间：</span>
-                  <span class="text-body-2">{{ formatTime(new Date()) }}</span>
+                  <span class="text-body-2">{{
+                    sessionCreatedAt ? formatTime(sessionCreatedAt) : '-'
+                  }}</span>
                 </div>
               </v-card-text>
             </v-card>
-
-            <div v-if="uiStatus === 'pending'">
-              <v-checkbox
-                v-model="agreementAccepted"
-                color="primary"
-                hide-details
-                class="agreement-checkbox"
-              >
-                <template #label>
-                  <span class="text-body-2">
-                    我已阅读并同意
-                    <a
-                      href="https://workspace.zerocut.cn/paid_service_agreement.html"
-                      target="_blank"
-                      class="text-primary text-decoration-none"
-                      @click.stop
-                    >
-                      ZeroCut充值协议
-                    </a>
-                  </span>
-                </template>
-              </v-checkbox>
-            </div>
           </div>
 
           <div class="payment-right">
@@ -127,8 +106,8 @@
 
         <div v-else-if="uiStatus === 'confirming'" class="py-8 text-center">
           <v-progress-circular indeterminate color="primary" size="64" class="mb-4" />
-          <div class="text-h6 mb-2">等待签约确认...</div>
-          <div class="text-body-2 text-medium-emphasis">请在微信支付界面完成操作</div>
+          <div class="text-h6 mb-2">已签约，正在首扣确认...</div>
+          <div class="text-body-2 text-medium-emphasis">请稍候，系统正在确认首扣结果</div>
           <div class="text-body-2 text-medium-emphasis mt-2">
             剩余时间：{{ formatCountdown(countdown) }}
           </div>
@@ -136,7 +115,7 @@
 
         <div v-else-if="uiStatus === 'signed'" class="py-8 text-center">
           <v-icon size="80" color="success" class="mb-4">mdi-check-circle</v-icon>
-          <div class="text-h5 text-success mb-2">签约成功！</div>
+          <div class="text-h5 text-success mb-2">签约成功并开通会员！</div>
           <div class="text-body-1 text-medium-emphasis mb-4">后续将按周期自动扣费并发放积分</div>
           <div class="text-body-2">会话ID：{{ signingSession?.signingSessionId }}</div>
         </div>
@@ -194,17 +173,15 @@ import { useI18n } from 'vue-i18n';
 
 import {
   closeSigningSession,
-  createSigningSession,
-  createSigningSessionJsapi,
-  getSigningSessionStatus,
+  createSigningSessionPure,
+  getSigningSessionPureStatus,
   type MembershipPlanDto,
-  type SigningSessionJsapiResponse,
-  type SigningSessionResponse,
-  type SigningSessionStatus,
+  type PureSigningSessionResponse,
+  type PureSigningSessionStatus,
 } from '@/api/membershipApi';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
-import { invokeWeixinBridgePay, isWeiXin } from '@/utils/wechat';
+import { isWeiXin } from '@/utils/wechat';
 
 interface Props {
   open: boolean;
@@ -214,7 +191,7 @@ interface Props {
 
 interface Emits {
   (e: 'update:open', value: boolean): void;
-  (e: 'success', payload: SigningSessionStatus): void;
+  (e: 'success', payload: PureSigningSessionStatus): void;
   (e: 'cancel'): void;
 }
 
@@ -223,29 +200,26 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
 const { t } = useI18n();
-
 const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
-const signingSession = ref<SigningSessionResponse | null>(null);
-const jsapiSession = ref<SigningSessionJsapiResponse | null>(null);
+const signingSession = ref<PureSigningSessionResponse | null>(null);
 const uiStatus = ref<'creating' | 'pending' | 'confirming' | 'signed' | 'failed' | 'timeout'>(
   'creating'
 );
 const pollingInterval = ref<number | null>(null);
 const countdownInterval = ref<number | null>(null);
-const countdown = ref<number>(600);
-const agreementAccepted = ref<boolean>(true);
-const errorMessage = ref<string>('');
+const countdown = ref<number>(1800);
+const pollingStartedAt = ref<number | null>(null);
+const errorMessage = ref('');
+const sessionCreatedAt = ref<Date | null>(null);
 
 const isOpen = computed({
   get: () => props.open,
   set: value => emit('update:open', value),
 });
-
 const membershipPlan = computed(() => props.membershipPlan);
 const planTitle = computed(() => props.title || props.membershipPlan?.code || '');
 
@@ -255,8 +229,8 @@ const formatCountdown = (seconds: number): string => {
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
-const formatTime = (date: Date): string => {
-  return date.toLocaleString('zh-CN', {
+const formatTime = (date: Date): string =>
+  date.toLocaleString('zh-CN', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -264,7 +238,6 @@ const formatTime = (date: Date): string => {
     minute: '2-digit',
     second: '2-digit',
   });
-};
 
 const copySessionId = async () => {
   if (!signingSession.value?.signingSessionId) return;
@@ -296,10 +269,7 @@ const generateQRCode = async (url: string) => {
     await QRCode.toCanvas(qrCodeCanvas.value, url, {
       width: 200,
       margin: 2,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF',
-      },
+      color: { dark: '#000000', light: '#FFFFFF' },
     });
   } catch {
     snackbarStore.showErrorMessage('生成二维码失败');
@@ -308,8 +278,7 @@ const generateQRCode = async (url: string) => {
 
 const startCountdown = (expiresAtIso: string) => {
   const expiresAtMs = Date.parse(expiresAtIso);
-  const initial = Math.max(0, Math.floor((expiresAtMs - Date.now()) / 1000));
-  countdown.value = initial;
+  countdown.value = Math.max(0, Math.floor((expiresAtMs - Date.now()) / 1000));
 
   stopCountdown();
   countdownInterval.value = window.setInterval(() => {
@@ -323,22 +292,32 @@ const startCountdown = (expiresAtIso: string) => {
 };
 
 const pollSigningStatusOnce = async () => {
-  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
+  const sessionId = signingSession.value?.signingSessionId;
   const workspaceId = workspaceStore.currentWorkspaceId;
   if (!sessionId || !workspaceId) return;
-
   try {
-    const status = await getSigningSessionStatus(sessionId, workspaceId);
-    if (status.status === 'signed' || status.status === 'paid') {
+    const status = await getSigningSessionPureStatus(sessionId, workspaceId);
+    if (status.status === 'active') {
       uiStatus.value = 'signed';
       stopPolling();
       stopCountdown();
       emit('success', status);
       emit('update:open', false);
-      if (status.status === 'paid') {
-        snackbarStore.showSuccessMessage('支付成功');
-      }
-    } else if (status.status === 'expired') {
+      snackbarStore.showSuccessMessage('签约成功并已开通会员');
+      return;
+    }
+    if (status.status === 'signed') {
+      uiStatus.value = 'confirming';
+      return;
+    }
+    if (status.status === 'failed') {
+      uiStatus.value = 'failed';
+      errorMessage.value = status.failMessage || '首扣失败，请稍后重试';
+      stopPolling();
+      stopCountdown();
+      return;
+    }
+    if (status.status === 'expired') {
       uiStatus.value = 'timeout';
       stopPolling();
       stopCountdown();
@@ -350,93 +329,27 @@ const pollSigningStatusOnce = async () => {
 
 const startPolling = () => {
   stopPolling();
+  pollingStartedAt.value = Date.now();
   pollingInterval.value = window.setInterval(() => {
+    if (pollingStartedAt.value && Date.now() - pollingStartedAt.value > 30 * 60 * 1000) {
+      uiStatus.value = 'timeout';
+      stopPolling();
+      stopCountdown();
+      return;
+    }
     pollSigningStatusOnce();
   }, 2000);
 };
 
 const resetState = () => {
   signingSession.value = null;
-  jsapiSession.value = null;
+  sessionCreatedAt.value = null;
   uiStatus.value = 'creating';
   errorMessage.value = '';
-  countdown.value = 600;
-  agreementAccepted.value = true;
+  countdown.value = 1800;
+  pollingStartedAt.value = null;
   stopPolling();
   stopCountdown();
-};
-
-const createSessionNative = async () => {
-  try {
-    const session = await createSigningSession({
-      workspaceId: workspaceStore.currentWorkspaceId!,
-      planCode: props.membershipPlan!.code,
-      displayAccountName: workspaceStore.currentWorkspaceName || undefined,
-    });
-
-    signingSession.value = session;
-    uiStatus.value = 'pending';
-
-    await nextTick();
-    await generateQRCode(session.qrUrl);
-
-    startCountdown(session.expiresAt);
-    startPolling();
-  } catch (error: unknown) {
-    uiStatus.value = 'failed';
-    let message: string | null = null;
-    if (error instanceof Error) {
-      message = error.message;
-    } else if (typeof error === 'object' && error !== null && 'message' in error) {
-      const maybeMessage = (error as { message?: unknown }).message;
-      if (typeof maybeMessage === 'string') {
-        message = maybeMessage;
-      }
-    }
-    errorMessage.value = message || '创建签约会话失败';
-    snackbarStore.showErrorMessage('创建签约会话失败');
-  }
-};
-
-const createSessionJsapi = async () => {
-  try {
-    const session = await createSigningSessionJsapi({
-      workspaceId: workspaceStore.currentWorkspaceId!,
-      planCode: props.membershipPlan!.code,
-      displayAccountName: workspaceStore.currentWorkspaceName || undefined,
-    });
-    jsapiSession.value = session;
-    startCountdown(session.expiresAt);
-
-    const res = await invokeWeixinBridgePay(session.jsapiParams);
-    if (res.err_msg === 'get_brand_wcpay_request:ok') {
-      uiStatus.value = 'confirming';
-      startPolling();
-    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-      uiStatus.value = 'failed';
-      errorMessage.value = '用户已取消支付';
-      stopCountdown();
-      try {
-        await closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!);
-      } catch (error) {
-        console.warn('关闭签约会话失败:', error);
-        snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
-      }
-    } else {
-      uiStatus.value = 'failed';
-      errorMessage.value = res.err_msg || '支付调起失败';
-      stopCountdown();
-      try {
-        await closeSigningSession(session.signingSessionId, workspaceStore.currentWorkspaceId!);
-      } catch (error) {
-        console.warn('关闭签约会话失败:', error);
-        snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
-      }
-    }
-  } catch (error) {
-    uiStatus.value = 'failed';
-    errorMessage.value = error instanceof Error ? error.message : '创建签约会话失败';
-  }
 };
 
 const createSession = async () => {
@@ -450,11 +363,37 @@ const createSession = async () => {
 
   uiStatus.value = 'creating';
   errorMessage.value = '';
+  try {
+    const session = await createSigningSessionPure({
+      workspaceId: workspaceStore.currentWorkspaceId,
+      planCode: props.membershipPlan.code,
+      displayAccountName: workspaceStore.currentWorkspaceName || undefined,
+    });
+    signingSession.value = session;
+    sessionCreatedAt.value = new Date(session.createdAt);
+    uiStatus.value = 'pending';
 
-  if (isWeiXin()) {
-    await createSessionJsapi();
-  } else {
-    await createSessionNative();
+    if (isWeiXin()) {
+      window.location.href = session.entrustwebUrl;
+      startCountdown(session.expiresAt);
+      startPolling();
+      return;
+    }
+
+    await nextTick();
+    await generateQRCode(session.entrustwebUrl);
+    startCountdown(session.expiresAt);
+    startPolling();
+  } catch (error: unknown) {
+    uiStatus.value = 'failed';
+    const message =
+      error instanceof Error
+        ? error.message
+        : typeof error === 'object' && error !== null && 'message' in error
+          ? String((error as { message?: unknown }).message ?? '')
+          : '';
+    errorMessage.value = message || '创建签约会话失败';
+    snackbarStore.showErrorMessage('创建签约会话失败');
   }
 };
 
@@ -462,18 +401,16 @@ const handleCancel = async () => {
   stopPolling();
   stopCountdown();
 
-  // 调用清理API
-  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
-  if (
-    sessionId &&
-    (uiStatus.value === 'creating' ||
-      uiStatus.value === 'pending' ||
-      uiStatus.value === 'confirming')
-  ) {
+  const sessionId = signingSession.value?.signingSessionId;
+  const canCleanup =
+    uiStatus.value === 'creating' ||
+    uiStatus.value === 'pending' ||
+    uiStatus.value === 'confirming';
+  if (sessionId && canCleanup) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
-    } catch (error) {
-      console.warn('关闭签约会话失败:', error);
+    } catch {
+      console.warn('关闭签约会话失败');
     }
   }
 
@@ -485,45 +422,35 @@ const handleClose = async () => {
   stopPolling();
   stopCountdown();
 
-  // 超时或待签约状态也清理
-  const sessionId = signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
-  if (
-    sessionId &&
-    (uiStatus.value === 'pending' ||
-      uiStatus.value === 'confirming' ||
-      uiStatus.value === 'timeout' ||
-      uiStatus.value === 'failed')
-  ) {
+  const sessionId = signingSession.value?.signingSessionId;
+  const canCleanup =
+    uiStatus.value === 'pending' ||
+    uiStatus.value === 'confirming' ||
+    uiStatus.value === 'timeout' ||
+    uiStatus.value === 'failed';
+  if (sessionId && canCleanup) {
     try {
       await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
-    } catch (error) {
-      console.warn('关闭签约会话失败:', error);
+    } catch {
       snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
     }
   }
-
   emit('update:open', false);
 };
 
 const handleRetry = () => {
-  const retry = async () => {
-    const sessionId =
-      signingSession.value?.signingSessionId ?? jsapiSession.value?.signingSessionId;
-
+  void (async () => {
+    const sessionId = signingSession.value?.signingSessionId;
     if (sessionId) {
       try {
         await closeSigningSession(sessionId, workspaceStore.currentWorkspaceId!);
-      } catch (error) {
-        console.warn('关闭签约会话失败:', error);
+      } catch {
         snackbarStore.showErrorMessage('关闭签约会话失败，请稍后重试');
       }
     }
-
     resetState();
     await createSession();
-  };
-
-  void retry();
+  })();
 };
 
 watch(
@@ -531,7 +458,7 @@ watch(
   newOpen => {
     if (newOpen && props.membershipPlan) {
       resetState();
-      createSession();
+      void createSession();
     } else if (!newOpen) {
       stopPolling();
       stopCountdown();
@@ -589,19 +516,6 @@ onUnmounted(() => {
 
 .font-family-monospace {
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-}
-
-.agreement-checkbox :deep(.v-label) {
-  opacity: 1;
-  line-height: 1.4;
-}
-
-.agreement-checkbox a {
-  font-weight: 500;
-}
-
-.agreement-checkbox a:hover {
-  text-decoration: underline !important;
 }
 
 @media (max-width: 768px) {

@@ -6,27 +6,22 @@ import { useRouter } from 'vue-router';
 import {
   getMembershipPlans,
   type MembershipPlanDto,
-  type SigningSessionStatus,
+  type PureSigningSessionStatus,
 } from '@/api/membershipApi';
 import SubscribePricing, {
   type PriceDisplay,
   type SubscriptionPlan,
 } from '@/components/landing/pricing/components/SubscribePricing.vue';
-import MembershipPaymentDialog from '@/components/zerocut/MembershipPaymentDialog.vue';
-import MembershipSigningDialog from '@/components/zerocut/MembershipSigningDialog.vue';
+import MembershipPaymentDialog, {
+  OrderInfo,
+} from '@/components/zerocut/MembershipPaymentDialog.vue';
+import MembershipPureSigningDialog from '@/components/zerocut/MembershipPureSigningDialog.vue';
 import SubscriptionSuccessDialog from '@/components/zerocut/SubscriptionSuccessDialog.vue';
 import { useMembershipStore } from '@/stores/membershipStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
-
-interface OrderInfo {
-  codeUrl: string;
-  outTradeNo: string;
-  subscriptionId: number;
-  expiresAt: string;
-}
 
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
@@ -400,7 +395,7 @@ function handleMembershipPaymentCancel() {
   selectedPlanTitle.value = '';
 }
 
-function handleMembershipSigningSuccess(status: SigningSessionStatus) {
+function handleMembershipSigningSuccess(status: PureSigningSessionStatus) {
   membershipSigningOpen.value = false;
   const planLabel = selectedSigningTitle.value || selectedPlanForSigning.value?.code || '';
   const suffix = status.subscriptionId ? `（订阅ID：${status.subscriptionId}）` : '';
@@ -640,7 +635,7 @@ onMounted(fetchMembershipPlans);
       @cancel="handleMembershipPaymentCancel"
     />
 
-    <MembershipSigningDialog
+    <MembershipPureSigningDialog
       v-model:open="membershipSigningOpen"
       :membership-plan="selectedPlanForSigning"
       :title="selectedSigningTitle"
