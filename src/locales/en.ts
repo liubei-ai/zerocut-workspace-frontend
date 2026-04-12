@@ -162,6 +162,9 @@ export default {
       loading: 'Loading...',
       actions: {
         subscribe: 'Subscribe',
+        purchaseBlocked: 'Your current membership is still active, repeat purchase is unavailable',
+        purchaseBlockedUntil:
+          'Your current membership is valid until {date}, repeat purchase is unavailable',
       },
       labels: {
         currentSubscription: 'Current Plan',

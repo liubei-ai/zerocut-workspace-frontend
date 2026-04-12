@@ -259,6 +259,8 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
         membershipStore.subscription !== null &&
         membershipStore.subscription.planCode === plan.code &&
         membershipStore.isMembershipEffectiveStatus(membershipStore.subscription.status),
+      isDisabled: isPurchaseBlocked.value,
+      disabledReason: purchaseBlockedReason.value ?? undefined,
     };
   });
 });
@@ -280,6 +282,12 @@ const statusBarState = computed<'none' | 'expired' | 'active'>(() => {
 
 const showCanceledNotice = computed(() => membershipStore.subscription?.status === 'canceled');
 
+const isPurchaseBlocked = computed(() => {
+  const sub = membershipStore.subscription;
+  if (!sub) return false;
+  return sub.status !== 'expired';
+});
+
 const formattedExpiryDate = computed(() => {
   const date = membershipStore.expiryDate;
   if (!date) return '';
@@ -288,6 +296,16 @@ const formattedExpiryDate = computed(() => {
     month: '2-digit',
     day: '2-digit',
   });
+});
+
+const purchaseBlockedReason = computed(() => {
+  if (!isPurchaseBlocked.value) return null;
+  if (formattedExpiryDate.value) {
+    return t('zerocut.membership.actions.purchaseBlockedUntil', {
+      date: formattedExpiryDate.value,
+    });
+  }
+  return t('zerocut.membership.actions.purchaseBlocked');
 });
 
 const statusBarClass = computed(() => ({
@@ -340,6 +358,13 @@ function handleSubscribe(productId: string, planName: string) {
   const plan = rawPlans.value.find(p => p.code === productId);
   if (!plan) {
     snackbarStore.showErrorMessage(t('zerocut.membership.errors.fetchPlansFailed'));
+    return;
+  }
+
+  if (isPurchaseBlocked.value) {
+    snackbarStore.showWarningMessage(
+      purchaseBlockedReason.value || t('zerocut.membership.actions.purchaseBlocked')
+    );
     return;
   }
 

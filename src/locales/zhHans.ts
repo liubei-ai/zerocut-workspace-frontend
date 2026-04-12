@@ -162,6 +162,8 @@ export default {
       loading: '加载中...',
       actions: {
         subscribe: '订阅',
+        purchaseBlocked: '当前会员尚未失效，暂不可重复购买',
+        purchaseBlockedUntil: '当前会员有效至 {date}，暂不可重复购买',
       },
       labels: {
         currentSubscription: '当前订阅',

@@ -25,6 +25,8 @@ export interface SubscriptionPlan {
   features: string[]; // Feature list
   productId: string; // SKU code (for subscription)
   isCurrentSubscription?: boolean; // Flag to indicate if this is the current active subscription
+  isDisabled?: boolean; // Whether subscribe action is blocked
+  disabledReason?: string; // Reason shown when subscribe action is blocked
 }
 
 const { t } = useI18n();
@@ -49,6 +51,7 @@ const emit = defineEmits<{
  * Handle subscribe button click
  */
 function onSubscribe(plan: SubscriptionPlan) {
+  if (plan.isDisabled) return;
   emit('subscribe', plan.productId, plan.planName);
 }
 </script>
@@ -138,9 +141,22 @@ function onSubscribe(plan: SubscriptionPlan) {
                       </div>
                     </div>
 
-                    <v-btn color="primary" size="large" class="mt-10" @click="onSubscribe(plan)">
+                    <v-btn
+                      color="primary"
+                      size="large"
+                      class="mt-10"
+                      :disabled="plan.isDisabled"
+                      :title="plan.disabledReason"
+                      @click="onSubscribe(plan)"
+                    >
                       {{ t('zerocut.membership.actions.subscribe') }}
                     </v-btn>
+                    <div
+                      v-if="plan.isDisabled && plan.disabledReason"
+                      class="subscribe-disabled-reason mt-2"
+                    >
+                      {{ plan.disabledReason }}
+                    </div>
                   </div>
                 </v-card>
               </v-item>
@@ -228,9 +244,22 @@ function onSubscribe(plan: SubscriptionPlan) {
                     </div>
                   </div>
 
-                  <v-btn color="primary" size="large" class="mt-10" @click="onSubscribe(plan)">
+                  <v-btn
+                    color="primary"
+                    size="large"
+                    class="mt-10"
+                    :disabled="plan.isDisabled"
+                    :title="plan.disabledReason"
+                    @click="onSubscribe(plan)"
+                  >
                     {{ t('zerocut.membership.actions.subscribe') }}
                   </v-btn>
+                  <div
+                    v-if="plan.isDisabled && plan.disabledReason"
+                    class="subscribe-disabled-reason mt-2"
+                  >
+                    {{ plan.disabledReason }}
+                  </div>
                 </div>
               </v-card>
             </v-item>
@@ -272,6 +301,12 @@ function onSubscribe(plan: SubscriptionPlan) {
 
 .subscribe-feature {
   color: rgba(var(--v-theme-on-surface), 0.78);
+}
+
+.subscribe-disabled-reason {
+  font-size: 0.8125rem;
+  color: rgba(var(--v-theme-warning), 0.92);
+  line-height: 1.35;
 }
 
 /* Price display styles */

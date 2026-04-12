@@ -169,6 +169,8 @@ export default {
       loading: '読み込み中…',
       actions: {
         subscribe: '購読',
+        purchaseBlocked: '現在の会員権が有効なため、重複購入はできません',
+        purchaseBlockedUntil: '現在の会員権は {date} まで有効のため、重複購入はできません',
       },
       cycles: {
         yearly: '年払い',
