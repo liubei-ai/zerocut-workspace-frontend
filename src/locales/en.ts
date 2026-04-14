@@ -333,7 +333,6 @@ export default {
         title: 'Usage Records',
         columns: {
           time: 'Time',
-          serviceType: 'Service Type',
           creditsAmount: 'Credits Used',
           reason: 'Reason',
           transactionId: 'Transaction ID',

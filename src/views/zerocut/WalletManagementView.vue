@@ -47,7 +47,6 @@ const pagination = ref<Pagination>({
 // 筛选选项
 const filterOptions = ref({
   type: 'all',
-  serviceType: 'all',
   dateRange: [null, null] as [Date | null, Date | null],
 });
 

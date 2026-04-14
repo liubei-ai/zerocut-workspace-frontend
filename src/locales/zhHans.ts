@@ -329,7 +329,6 @@ export default {
         title: '使用记录',
         columns: {
           time: '时间',
-          serviceType: '服务类型',
           creditsAmount: '消耗数量',
           reason: '消耗原因',
           transactionId: '交易ID',

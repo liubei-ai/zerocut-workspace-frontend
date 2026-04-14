@@ -29,7 +29,6 @@ const pagination = ref({
 // 筛选选项
 const filters = ref({
   dateRange: [],
-  serviceType: '',
   apiKeyId: '',
 });
 
@@ -45,15 +44,6 @@ const formatMaskedApiKey = (apiKey?: string) => {
   return maskApiKey(apiKey);
 };
 
-// 服务类型选项（本地化）
-const serviceOptions = [
-  { value: '', title: t('zerocut.usage.service.all') },
-  { value: 'video_generation', title: t('zerocut.usage.service.video') },
-  { value: 'image_generation', title: t('zerocut.usage.service.image') },
-  { value: 'audio_generation', title: t('zerocut.usage.service.audio') },
-  { value: 'text_generation', title: t('zerocut.usage.service.text') },
-];
-
 // 获取数据函数
 const fetchConsumptionRecords = async () => {
   try {
@@ -64,10 +54,6 @@ const fetchConsumptionRecords = async () => {
       page: pagination.value.page,
       limit: pagination.value.limit,
     };
-
-    if (filters.value.serviceType) {
-      Object.assign(params, { serviceType: filters.value.serviceType });
-    }
 
     if (filters.value.apiKeyId) {
       Object.assign(params, { apiKeyId: filters.value.apiKeyId });
@@ -124,17 +110,6 @@ const loadApiKeyOptions = async () => {
   }
 };
 
-// 服务图标
-const getServiceIcon = (serviceType: string) => {
-  const icons = {
-    video: 'mdi-video',
-    image: 'mdi-image',
-    audio: 'mdi-music',
-    text: 'mdi-text',
-  };
-  return icons[serviceType] || 'mdi-help-circle';
-};
-
 // 格式化积分数量
 const formatCredits = (amount: number) => {
   return Math.abs(amount).toLocaleString();
@@ -163,7 +138,6 @@ const handleSearch = () => {
 const handleReset = () => {
   filters.value = {
     dateRange: [],
-    serviceType: '',
     apiKeyId: '',
   };
   pagination.value.page = 1;
@@ -281,11 +255,6 @@ onMounted(() => {
         :headers="[
           { title: t('zerocut.usage.table.columns.time'), key: 'createdAt', sortable: true },
           {
-            title: t('zerocut.usage.table.columns.serviceType'),
-            key: 'serviceType',
-            sortable: true,
-          },
-          {
             title: t('zerocut.usage.table.columns.creditsAmount'),
             key: 'creditsAmount',
             sortable: true,
@@ -315,13 +284,6 @@ onMounted(() => {
       >
         <template #item.createdAt="{ item }">
           {{ formatDate(item.createdAt) }}
-        </template>
-
-        <template #item.serviceType="{ item }">
-          <div class="d-flex align-center">
-            <v-icon :icon="getServiceIcon(item.serviceType || '')" size="20" class="mr-2"></v-icon>
-            {{ serviceOptions.find(s => s.value === item.serviceType)?.title || item.serviceType }}
-          </div>
         </template>
 
         <template #item.creditsAmount="{ item }">

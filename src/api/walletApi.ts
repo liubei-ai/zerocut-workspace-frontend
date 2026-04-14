@@ -46,7 +46,6 @@ export async function getWalletRechargeRecords(params?: {
   page?: number;
   limit?: number;
   transactionType?: string;
-  serviceType?: string;
 }) {
   const response = await client.get<PaginationResponse<TransactionItem>>(
     `/wallet/recharge/records`,
@@ -99,7 +98,6 @@ export async function getExpiredCredits(params: {
 
 // 消费记录查询参数
 export interface QueryCreditsConsumptionParams {
-  serviceType?: string;
   apiKeyId?: string;
   startDate?: string; // YYYY-MM-DD
   endDate?: string; // YYYY-MM-DD
@@ -111,7 +109,6 @@ export interface QueryCreditsConsumptionParams {
 export interface CreditsConsumptionItem {
   id: number;
   transactionId: string;
-  serviceType?: string;
   serviceDetails?: Record<string, any>;
   creditsAmount: number;
   apiKeyId?: string;

@@ -330,7 +330,6 @@ export default {
         title: '使用記録',
         columns: {
           time: '時間',
-          serviceType: 'サービス種別',
           creditsAmount: '消費ポイント',
           reason: '理由',
           transactionId: '取引ID',

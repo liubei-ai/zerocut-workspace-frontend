@@ -37,7 +37,6 @@ const consumptionLoading = ref(false);
 const consumptionItems = ref<CreditsConsumptionItem[]>([]);
 const consumptionPagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
 const consumptionFilters = ref<QueryCreditsConsumptionParams>({
-  serviceType: '',
   startDate: '',
   endDate: '',
 });
@@ -172,7 +171,6 @@ async function fetchConsumption() {
     const params: QueryCreditsConsumptionParams = {
       page: consumptionPagination.value.page,
       limit: consumptionPagination.value.limit,
-      serviceType: consumptionFilters.value.serviceType || undefined,
       startDate: consumptionFilters.value.startDate || undefined,
       endDate: consumptionFilters.value.endDate || undefined,
     };
@@ -238,7 +236,7 @@ function handleConsumptionItemsPerPageChange(limit: number) {
 }
 
 function resetConsumptionFilters() {
-  consumptionFilters.value = { serviceType: '', startDate: '', endDate: '' };
+  consumptionFilters.value = { startDate: '', endDate: '' };
   consumptionPagination.value.page = 1;
   fetchConsumption();
 }
@@ -397,20 +395,6 @@ onMounted(refreshAll);
             <v-card-text>
               <v-row>
                 <v-col cols="12" md="3">
-                  <v-select
-                    v-model="consumptionFilters.serviceType"
-                    :items="[
-                      { title: '全部', value: '' },
-                      { title: 'LLM调用', value: 'LLM调用' },
-                      { title: 'other', value: 'other' },
-                    ]"
-                    label="服务类型"
-                    variant="outlined"
-                    density="comfortable"
-                    clearable
-                  />
-                </v-col>
-                <v-col cols="12" md="3">
                   <v-text-field
                     v-model="consumptionFilters.startDate"
                     label="开始日期"
@@ -458,7 +442,6 @@ onMounted(refreshAll);
             <v-data-table-server
               :headers="[
                 { title: '交易ID', key: 'transactionId', sortable: false, width: '220px' },
-                { title: '服务类型', key: 'serviceType', sortable: false, width: '120px' },
                 {
                   title: '消费积分',
                   key: 'creditsAmount',

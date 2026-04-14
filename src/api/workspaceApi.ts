@@ -139,7 +139,6 @@ export async function updateApiKey(workspaceId: string, keyId: number, data: Upd
 export async function getConsumptionRecords(
   workspaceId: string,
   params?: {
-    serviceType?: string;
     transactionType?: string;
     apiKeyId?: string;
     startDate?: string;

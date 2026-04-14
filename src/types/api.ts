@@ -174,7 +174,6 @@ export interface UpdateApiKeyRequest {
 export interface ConsumptionRecord {
   id: number;
   transactionId: string;
-  serviceType?: string;
   serviceDetails?: Record<string, string>;
   creditsAmount: number;
   apiKeyId?: string;
