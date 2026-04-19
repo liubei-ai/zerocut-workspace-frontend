@@ -20,11 +20,6 @@ export default [
     icon: 'mdi-cog',
   },
   {
-    key: 'menu.adminSystemConfigAudit',
-    link: '/admin/system-config-audit',
-    icon: 'mdi-history',
-  },
-  {
     key: 'menu.adminPersonas',
     link: '/admin/personas',
     icon: 'mdi-account',

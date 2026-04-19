@@ -17,7 +17,6 @@ export interface TransactionItem {
   id: string;
   amount: number;
   creditsAmount: number;
-  description: string;
   createdAt: string;
   orderNo: string;
   paymentMethod: string;

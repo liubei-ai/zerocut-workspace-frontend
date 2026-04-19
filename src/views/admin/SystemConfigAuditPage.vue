@@ -205,7 +205,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <ResponsivePageHeader title="系统配置审计日志">
+    <ResponsivePageHeader title="系统配置审计日志" show-back>
       <template #description>
         <p class="text-medium-emphasis text-sm sm:text-base">
           查看系统配置的变更历史记录和操作日志
