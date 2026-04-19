@@ -507,3 +507,24 @@ export async function deleteMembershipPlan(id: number) {
   const response = await apiClient.delete<{ message: string }>(`/admin/membership-plans/${id}`);
   return response.data;
 }
+
+// 积分消耗来源趋势统计
+export interface CreditsDailySourceStatItem {
+  day: string;
+  source: string;
+  total_credits: number;
+  total_price: number;
+}
+
+export interface CreditsDailySourceStatsParams {
+  startDate?: string;
+  endDate?: string;
+}
+
+export async function getCreditsDailySourceStats(params: CreditsDailySourceStatsParams = {}) {
+  const response = await apiClient.get<CreditsDailySourceStatItem[]>(
+    '/admin/credits/daily-source-stats',
+    { params }
+  );
+  return response.data;
+}

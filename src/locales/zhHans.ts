@@ -78,6 +78,7 @@ export default {
     adminXiaoYanqueAccounts: '小云雀账号',
     adminWorkflows: '工作流',
     adminToolbox: '工具箱',
+    adminDataReport: '数据报表',
 
     // 常用动作
     search: '搜索（按“ Ctrl + /”进行聚焦）',

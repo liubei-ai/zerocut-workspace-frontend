@@ -77,6 +77,7 @@ export default {
     adminXiaoYanqueAccounts: 'XiaoYanque Accounts',
     adminWorkflows: 'Workflows',
     adminToolbox: 'Toolbox',
+    adminDataReport: 'Data Report',
 
     // Common actions
     search: 'Search (press "ctrl + /" to focus)',

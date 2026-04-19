@@ -144,6 +144,18 @@ const AdminRoutes: RouteRecordRaw[] = [
           requiresSuperAdmin: true,
         },
       },
+      {
+        path: 'data-report',
+        name: 'admin-data-report',
+        component: () => import('@/views/admin/DataReportPage.vue'),
+        meta: {
+          title: '数据报表',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
     ],
   },
 ];

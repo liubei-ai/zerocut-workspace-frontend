@@ -39,4 +39,9 @@ export default [
     link: '/admin/toolbox',
     icon: 'mdi-toolbox',
   },
+  {
+    key: 'menu.adminDataReport',
+    link: '/admin/data-report',
+    icon: 'mdi-chart-line',
+  },
 ];

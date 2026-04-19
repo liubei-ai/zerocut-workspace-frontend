@@ -76,6 +76,7 @@ export default {
     adminXiaoYanqueAccounts: '小云雀アカウント',
     adminWorkflows: 'ワークフロー',
     adminToolbox: 'ツールボックス',
+    adminDataReport: 'データレポート',
 
     // 共通アクション
     search: '検索（フォーカスするには「ctrl + /」を押します）',
