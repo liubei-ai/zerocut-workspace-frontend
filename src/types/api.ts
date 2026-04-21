@@ -75,6 +75,7 @@ export interface ApiKey {
   creditsLimit: number | null;
   creditsConsumed: number;
   remainingCredits?: number | null;
+  isDefault: boolean;
   createdAt: string;
   updatedAt: string;
   creator: {

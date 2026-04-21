@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { debounce } from 'lodash';
+import { useDebounceFn } from '@vueuse/core';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -10,6 +10,7 @@ import {
   deleteApiKey,
   generateOtt,
   getApiKeys,
+  setDefaultApiKey,
   updateApiKey,
 } from '@/api/workspaceApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
@@ -25,6 +26,7 @@ const loading = ref(false);
 const creating = ref(false);
 const deleting = ref(false);
 const updatingToken = ref(false);
+const settingDefault = ref<number | null>(null);
 
 // 对话框状态
 const createTokenDialog = ref(false);
@@ -112,12 +114,16 @@ const loadTokens = async () => {
 };
 
 // 统计数据
-const stats = computed(() => ({
-  total: tokens.value.length,
-  active: tokens.value.filter(t => t.status === 'active').length,
-  expired: tokens.value.filter(t => t.status !== 'active').length,
-  totalUsage: tokens.value.length, // API Key类型没有usageCount字段，暂时使用总数
-}));
+const stats = computed(() => {
+  const now = Date.now();
+  const isTokenExpired = (tk: ApiKey) => !!tk.expiresAt && new Date(tk.expiresAt).getTime() < now;
+  return {
+    total: tokens.value.length,
+    active: tokens.value.filter(t => t.status === 'active' && !isTokenExpired(t)).length,
+    expired: tokens.value.filter(t => t.status !== 'active' || isTokenExpired(t)).length,
+    totalUsage: tokens.value.length, // API Key类型没有usageCount字段，暂时使用总数
+  };
+});
 
 // 创建密钥
 const createToken = async () => {
@@ -231,14 +237,8 @@ const saveTokenEdits = async () => {
   }
 
   const nextLimit = Number.parseInt(editForm.value.creditsLimit, 10);
-  if (!Number.isInteger(nextLimit) || nextLimit < 1) {
+  if (!Number.isInteger(nextLimit) || nextLimit < 0) {
     showError(t('zerocut.apikeys.errors.invalidLimit'));
-    return;
-  }
-
-  const currentLimit = selectedToken.value.creditsLimit;
-  if (currentLimit != null && nextLimit < currentLimit) {
-    showError(t('zerocut.apikeys.errors.limitOnlyIncrease'));
     return;
   }
 
@@ -259,6 +259,27 @@ const saveTokenEdits = async () => {
     showError(t('zerocut.apikeys.errors.updateFail'));
   } finally {
     updatingToken.value = false;
+  }
+};
+
+// 将指定密钥设为默认
+const handleSetDefault = async (token: ApiKey) => {
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!workspaceId) {
+    showError(t('zerocut.apikeys.errors.noWorkspace'));
+    return;
+  }
+
+  settingDefault.value = token.id;
+  try {
+    await setDefaultApiKey(workspaceId, token.id);
+    await loadTokens();
+    showSuccess(t('zerocut.apikeys.messages.setDefaultSuccess'));
+  } catch (error: any) {
+    console.error('设为默认失败:', error);
+    showError(error.message || t('zerocut.apikeys.errors.setDefaultFail'));
+  } finally {
+    settingDefault.value = null;
   }
 };
 
@@ -304,7 +325,7 @@ const copyMCPConfig = async (token: ApiKey) => {
 /**
  * 生成 OTT
  */
-const handleGenerateOtt = debounce(async (apiKeyId: number) => {
+const handleGenerateOtt = useDebounceFn(async (apiKeyId: number) => {
   if (ottGenerating.value) return;
 
   ottGenerating.value = apiKeyId;
@@ -465,8 +486,36 @@ const getRemainingPercent = (token: ApiKey) => {
 };
 
 const getUsedPercent = (token: ApiKey) => {
-  if (token.creditsLimit == null || token.creditsLimit <= 0) return null;
+  if (token.creditsLimit == null) return null;
+  if (token.creditsLimit <= 0) return 100;
   return Math.max(0, Math.min(100, Math.round((token.creditsConsumed / token.creditsLimit) * 100)));
+};
+
+const isExpired = (token: ApiKey) =>
+  !!token.expiresAt && new Date(token.expiresAt).getTime() < Date.now();
+
+const isTokenDisabled = (token: ApiKey) => token.status !== 'active' || isExpired(token);
+
+const getDisplayStatusColor = (token: ApiKey) => getStatusColor(token.status);
+
+const getDisplayStatusLabel = (token: ApiKey) => {
+  if (token.status === 'active') return t('zerocut.apikeys.status.active');
+  if (token.status === 'inactive') return t('zerocut.apikeys.status.disabled');
+  return t('zerocut.apikeys.status.revoked');
+};
+
+const formatRelativeExpire = (dateString: string | null | undefined) => {
+  if (!dateString) return t('zerocut.apikeys.neverExpire');
+  const target = new Date(dateString).getTime();
+  const diffMs = target - Date.now();
+  if (diffMs <= 0) return t('zerocut.apikeys.expire.expired');
+  const dayMs = 24 * 60 * 60 * 1000;
+  const days = Math.ceil(diffMs / dayMs);
+  if (days <= 1) {
+    const hours = Math.max(1, Math.ceil(diffMs / (60 * 60 * 1000)));
+    return t('zerocut.apikeys.expire.hours', { hours });
+  }
+  return t('zerocut.apikeys.expire.days', { days });
 };
 </script>
 
@@ -559,14 +608,36 @@ const getUsedPercent = (token: ApiKey) => {
         :items-per-page="-1"
         hide-default-footer
       >
+        <template #item.name="{ item }">
+          <div class="d-flex align-center">
+            <span>{{ item.name }}</span>
+            <v-chip
+              v-if="item.isDefault"
+              class="ml-2"
+              size="x-small"
+              color="primary"
+              variant="tonal"
+            >
+              {{ t('zerocut.apikeys.badges.default') }}
+            </v-chip>
+          </div>
+        </template>
+
         <template #item.key="{ item }">
           <div class="d-flex align-center">
             <span class="text-caption mr-2">{{ maskApiKey(item.apiKeyPrefix) }}</span>
-            <v-btn icon="mdi-key" size="x-small" variant="text" @click="copyToken(item)"></v-btn>
+            <v-btn
+              icon="mdi-key"
+              size="x-small"
+              variant="text"
+              :disabled="isTokenDisabled(item)"
+              @click="copyToken(item)"
+            ></v-btn>
             <v-btn
               icon="mdi-robot"
               size="x-small"
               variant="text"
+              :disabled="isTokenDisabled(item)"
               :tooltip="t('zerocut.apikeys.copyMCP.tooltip')"
               @click="copyMCPConfig(item)"
               >MCP</v-btn
@@ -576,7 +647,7 @@ const getUsedPercent = (token: ApiKey) => {
               size="x-small"
               variant="text"
               :loading="ottGenerating === item.id"
-              :disabled="item.status !== 'active' || ottGenerating === item.id"
+              :disabled="isTokenDisabled(item) || ottGenerating === item.id"
               @click="handleGenerateOtt(item.id)"
             >
               <v-icon>mdi-clock-fast</v-icon>
@@ -632,27 +703,37 @@ const getUsedPercent = (token: ApiKey) => {
         </template>
 
         <template #item.status="{ item }">
-          <v-chip :color="getStatusColor(item.status)" size="small" variant="tonal">
-            {{
-              item.status === 'active'
-                ? t('zerocut.apikeys.status.active')
-                : item.status === 'inactive'
-                  ? t('zerocut.apikeys.status.disabled')
-                  : t('zerocut.apikeys.status.revoked')
-            }}
+          <v-chip :color="getDisplayStatusColor(item)" size="small" variant="tonal">
+            {{ getDisplayStatusLabel(item) }}
           </v-chip>
         </template>
 
         <template #item.expiresAt="{ item }">
-          {{ item.expiresAt ? formatDate(item.expiresAt) : t('zerocut.apikeys.neverExpire') }}
+          <span v-if="item.expiresAt" :title="formatDate(item.expiresAt)">
+            {{ formatRelativeExpire(item.expiresAt) }}
+          </span>
+          <span v-else>{{ t('zerocut.apikeys.neverExpire') }}</span>
         </template>
 
         <template #item.actions="{ item }">
+          <v-btn
+            v-if="!item.isDefault"
+            size="small"
+            variant="text"
+            color="primary"
+            prepend-icon="mdi-star-outline"
+            :loading="settingDefault === item.id"
+            :disabled="isTokenDisabled(item) || settingDefault !== null"
+            @click="handleSetDefault(item)"
+          >
+            {{ t('zerocut.apikeys.actions.setDefault') }}
+          </v-btn>
           <v-btn
             size="small"
             variant="text"
             color="primary"
             prepend-icon="mdi-pencil-outline"
+            :disabled="isTokenDisabled(item)"
             @click="openEditTokenDialog(item)"
           >
             {{ t('zerocut.apikeys.actions.edit') }}
@@ -758,7 +839,7 @@ const getUsedPercent = (token: ApiKey) => {
             v-model="editForm.creditsLimit"
             :label="t('zerocut.apikeys.dialog.edit.limitLabel')"
             type="number"
-            min="1"
+            min="0"
             variant="outlined"
           ></v-text-field>
         </v-card-text>

@@ -74,7 +74,7 @@ export default {
     adminMembershipPlans: '会员商品',
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
-    adminPersonas: '角色管理',
+    adminPersonas: '技能管理',
     adminXiaoYanqueAccounts: '小云雀账号',
     adminWorkflows: '工作流',
     adminToolbox: '工具箱',
@@ -432,6 +432,10 @@ export default {
       actions: {
         create: '创建密钥',
         edit: '编辑',
+        setDefault: '设为默认',
+      },
+      badges: {
+        default: '默认',
       },
       stats: {
         total: '总密钥数',
@@ -470,6 +474,12 @@ export default {
         active: '活跃',
         disabled: '已禁用',
         revoked: '已吊销',
+        expired: '已过期',
+      },
+      expire: {
+        expired: '已过期',
+        days: '{days} 天后过期',
+        hours: '{hours} 小时后过期',
       },
       dialog: {
         create: {
@@ -490,7 +500,7 @@ export default {
           nameLabel: '密钥名称',
           expireLabel: '过期时间（可选）',
           expireHint: '留空表示永不过期',
-          limitHint: '积分上限仅支持调大，不支持调小。',
+          limitHint: '允许调小，但不可为负数；调小到等于或低于已消耗额度会立即冻结此 API Key。',
           limitLabel: '积分上限',
         },
       },
@@ -503,13 +513,13 @@ export default {
         noWorkspace: '请先选择工作空间',
         loadFail: '加载密钥列表时发生错误',
         invalidName: '请输入有效的密钥名称（至少3个字符）',
-        invalidLimit: '请输入有效的积分上限（正整数）',
-        limitOnlyIncrease: '积分上限仅支持调大，不可调小',
+        invalidLimit: '请输入有效的积分上限（非负整数）',
         createFail: '创建密钥时发生错误',
         updateFail: '更新密钥失败',
         deleteFail: '删除密钥时发生错误',
         copyFail: '复制密钥失败',
         copyMcpFail: '复制 MCP 配置失败',
+        setDefaultFail: '设为默认失败',
       },
       messages: {
         createSuccess: '密钥创建成功',
@@ -517,6 +527,7 @@ export default {
         deleteSuccess: '密钥删除成功',
         copySuccess: '密钥已复制到剪贴板',
         copyMcpSuccess: 'MCP 配置已复制到剪贴板',
+        setDefaultSuccess: '已设为默认密钥',
       },
       ott: {
         generateOtt: '生成临时令牌',

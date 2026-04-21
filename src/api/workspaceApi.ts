@@ -131,6 +131,16 @@ export async function updateApiKey(workspaceId: string, keyId: number, data: Upd
 }
 
 /**
+ * 将指定 API Key 设为 workspace 默认
+ */
+export async function setDefaultApiKey(workspaceId: string, keyId: number) {
+  const response = await client.post<ApiKey>(
+    `/workspaces/${workspaceId}/api-keys/${keyId}/default`
+  );
+  return response.data;
+}
+
+/**
  * 获取消费记录
  * @param workspaceId 工作空间ID
  * @param params 查询参数

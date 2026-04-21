@@ -348,11 +348,17 @@ export async function saveWorkflowMetadata(workflowId: string, metadata: Record<
   return response.data;
 }
 
+export interface PersonaReference {
+  name: string;
+  prompt: string;
+}
+
 export interface PersonaItem {
   id: number;
   name: string;
   trigger: string;
   prompt: string;
+  references: PersonaReference[];
   createdAt: string;
   updatedAt: string;
 }
@@ -361,12 +367,14 @@ export interface CreatePersonaParams {
   name: string;
   trigger: string;
   prompt: string;
+  references?: PersonaReference[];
 }
 
 export interface UpdatePersonaParams {
   name?: string;
   trigger?: string;
   prompt?: string;
+  references?: PersonaReference[];
 }
 
 export async function getPersonas() {

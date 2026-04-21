@@ -72,7 +72,7 @@ export default {
     adminMembershipPlans: '会員商品',
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
-    adminPersonas: 'ロール管理',
+    adminPersonas: 'スキル管理',
     adminXiaoYanqueAccounts: '小云雀アカウント',
     adminWorkflows: 'ワークフロー',
     adminToolbox: 'ツールボックス',
@@ -431,6 +431,10 @@ export default {
       actions: {
         create: 'キーを作成',
         edit: '編集',
+        setDefault: 'デフォルトに設定',
+      },
+      badges: {
+        default: 'デフォルト',
       },
       stats: {
         total: 'キー総数',
@@ -469,6 +473,12 @@ export default {
         active: '有効',
         disabled: '無効',
         revoked: '失効',
+        expired: '期限切れ',
+      },
+      expire: {
+        expired: '期限切れ',
+        days: '{days} 日後に期限切れ',
+        hours: '{hours} 時間後に期限切れ',
       },
       dialog: {
         create: {
@@ -489,7 +499,8 @@ export default {
           nameLabel: 'キー名',
           expireLabel: '有効期限（任意）',
           expireHint: '空欄は無期限を意味します',
-          limitHint: '上限は引き上げのみ可能です。',
+          limitHint:
+            '上限は引き下げ可能ですが、負の値にはできません。消費済みポイント以下に設定すると、このAPIキーは直ちに凍結されます。',
           limitLabel: '上限',
         },
       },
@@ -502,13 +513,13 @@ export default {
         noWorkspace: 'まずワークスペースを選択してください',
         loadFail: 'キー一覧の読み込み中にエラーが発生しました',
         invalidName: '有効なキー名（3文字以上）を入力してください',
-        invalidLimit: '有効な上限（正の整数）を入力してください',
-        limitOnlyIncrease: '上限は引き上げのみ可能です',
+        invalidLimit: '有効な上限（0以上の整数）を入力してください',
         createFail: 'キーの作成中にエラーが発生しました',
         updateFail: 'キーの更新に失敗しました',
         deleteFail: 'キーの削除中にエラーが発生しました',
         copyFail: 'キーのコピーに失敗しました',
         copyMcpFail: 'MCP設定のコピーに失敗しました',
+        setDefaultFail: 'デフォルト設定に失敗しました',
       },
       messages: {
         createSuccess: 'キーを作成しました',
@@ -516,6 +527,7 @@ export default {
         deleteSuccess: 'キーを削除しました',
         copySuccess: 'キーをクリップボードにコピーしました',
         copyMcpSuccess: 'MCP設定をクリップボードにコピーしました',
+        setDefaultSuccess: 'デフォルトAPIキーを更新しました',
       },
       ott: {
         generateOtt: '一時トークンを生成',

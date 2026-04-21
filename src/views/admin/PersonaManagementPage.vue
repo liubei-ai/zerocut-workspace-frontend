@@ -14,6 +14,7 @@ const editingPersona = ref<PersonaItem | null>(null);
 const deleteDialogOpen = ref(false);
 const personaToDelete = ref<PersonaItem | null>(null);
 const searchText = ref('');
+const expandedRows = ref<number[]>([]);
 const snackbar = ref({
   show: false,
   message: '',
@@ -24,6 +25,13 @@ const headers = [
   { title: '名称', key: 'name', sortable: false, width: '200px' },
   { title: '触发词', key: 'triggerPreview', sortable: false },
   { title: '提示词', key: 'promptPreview', sortable: false },
+  {
+    title: 'References',
+    key: 'referencesCount',
+    sortable: false,
+    width: '120px',
+    align: 'center' as const,
+  },
   { title: '更新时间', key: 'updatedAt', sortable: false, width: '160px' },
   { title: '操作', key: 'actions', sortable: false, width: '200px', align: 'center' as const },
 ];
@@ -92,7 +100,6 @@ const confirmDelete = async () => {
 };
 
 const formatDate = (s: string) => new Date(s).toLocaleString('zh-CN');
-const truncate = (s: string, len = 80) => (s?.length > len ? s.slice(0, len) + '...' : s || '-');
 const previewDialogOpen = ref(false);
 const previewTitle = ref('');
 const previewText = ref('');
@@ -115,7 +122,7 @@ onMounted(() => {
 const headerPrimaryActions = computed(() => [
   {
     key: 'create',
-    label: '新建 Persona',
+    label: '新建技能',
     icon: 'mdi-plus',
     color: 'primary',
     variant: 'flat' as const,
@@ -138,12 +145,14 @@ const headerSecondaryActions = computed(() => [
 <template>
   <div>
     <ResponsivePageHeader
-      title="角色管理"
+      title="技能管理"
       :primary-actions="headerPrimaryActions"
       :secondary-actions="headerSecondaryActions"
     >
       <template #description>
-        <p class="text-medium-emphasis text-sm sm:text-base">管理员配置触发词与提示词</p>
+        <p class="text-medium-emphasis text-sm sm:text-base">
+          管理员配置技能（触发词、提示词与 References）
+        </p>
       </template>
     </ResponsivePageHeader>
 
@@ -167,10 +176,18 @@ const headerSecondaryActions = computed(() => [
 
     <v-card>
       <v-card-title class="d-flex align-center">
-        <v-icon class="mr-2">mdi-account</v-icon>
-        角色列表
+        <v-icon class="mr-2">mdi-toolbox</v-icon>
+        技能列表
       </v-card-title>
-      <v-data-table :headers="headers" :items="filteredItems" :loading="loading">
+      <v-data-table
+        v-model:expanded="expandedRows"
+        :headers="headers"
+        :items="filteredItems"
+        :loading="loading"
+        item-value="id"
+        show-expand
+        single-expand
+      >
         <template #item.triggerPreview="{ item }">
           <div class="clamped-2">{{ item.trigger }}</div>
           <v-btn size="x-small" variant="text" @click="openPreview('触发词', item.trigger)"
@@ -183,12 +200,60 @@ const headerSecondaryActions = computed(() => [
             >查看全文</v-btn
           >
         </template>
+        <template #item.referencesCount="{ item }">
+          <v-chip size="small" :color="item.references?.length ? 'primary' : undefined">
+            {{ item.references?.length ?? 0 }}
+          </v-chip>
+        </template>
         <template #item.updatedAt="{ item }">
           <span>{{ formatDate(item.updatedAt) }}</span>
         </template>
         <template #item.actions="{ item }">
           <v-btn size="small" variant="text" color="primary" @click="openEdit(item)">编辑</v-btn>
           <v-btn size="small" variant="text" color="error" @click="openDelete(item)">删除</v-btn>
+        </template>
+        <template #expanded-row="{ columns, item }">
+          <tr>
+            <td :colspan="columns.length" class="pa-0">
+              <div class="pa-4" style="background-color: rgba(var(--v-theme-surface), 0.6)">
+                <div class="text-subtitle-2 d-flex align-center mb-2">
+                  <v-icon size="small" class="mr-1">mdi-book-multiple</v-icon>
+                  References
+                  <span class="text-caption text-medium-emphasis ml-2"
+                    >共 {{ item.references?.length ?? 0 }} 项</span
+                  >
+                </div>
+                <div v-if="!item.references?.length" class="text-caption text-medium-emphasis py-2">
+                  暂无 References
+                </div>
+                <v-table v-else density="compact">
+                  <thead>
+                    <tr>
+                      <th style="width: 200px">名称</th>
+                      <th>提示词</th>
+                      <th style="width: 120px" class="text-center">操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(ref, i) in item.references" :key="i">
+                      <td>{{ ref.name }}</td>
+                      <td>
+                        <div class="clamped-3">{{ ref.prompt }}</div>
+                      </td>
+                      <td class="text-center">
+                        <v-btn
+                          size="x-small"
+                          variant="text"
+                          @click="openPreview(`Reference · ${ref.name}`, ref.prompt)"
+                          >查看全文</v-btn
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </v-table>
+              </div>
+            </td>
+          </tr>
         </template>
       </v-data-table>
     </v-card>
@@ -203,7 +268,7 @@ const headerSecondaryActions = computed(() => [
     <v-dialog v-model="deleteDialogOpen" max-width="420">
       <v-card>
         <v-card-title class="text-h6">确认删除</v-card-title>
-        <v-card-text>确定要删除 "{{ personaToDelete?.name }}" 吗？此操作不可撤销。</v-card-text>
+        <v-card-text>确定要删除技能 "{{ personaToDelete?.name }}" 吗？此操作不可撤销。</v-card-text>
         <v-card-actions class="justify-end">
           <v-btn variant="text" @click="deleteDialogOpen = false">取消</v-btn>
           <v-btn color="error" @click="confirmDelete">删除</v-btn>

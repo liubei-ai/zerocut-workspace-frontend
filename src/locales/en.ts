@@ -73,7 +73,7 @@ export default {
     adminMembershipPlans: 'Membership Plans',
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
-    adminPersonas: 'Personas',
+    adminPersonas: 'Skills',
     adminXiaoYanqueAccounts: 'XiaoYanque Accounts',
     adminWorkflows: 'Workflows',
     adminToolbox: 'Toolbox',
@@ -436,6 +436,10 @@ export default {
       actions: {
         create: 'Create Key',
         edit: 'Edit',
+        setDefault: 'Set as Default',
+      },
+      badges: {
+        default: 'Default',
       },
       stats: {
         total: 'Total Keys',
@@ -474,6 +478,12 @@ export default {
         active: 'Active',
         disabled: 'Disabled',
         revoked: 'Revoked',
+        expired: 'Expired',
+      },
+      expire: {
+        expired: 'Expired',
+        days: 'In {days} days',
+        hours: 'In {hours} hours',
       },
       dialog: {
         create: {
@@ -494,7 +504,8 @@ export default {
           nameLabel: 'Key Name',
           expireLabel: 'Expiration (optional)',
           expireHint: 'Leave empty for no expiration',
-          limitHint: 'Credits limit can only be increased.',
+          limitHint:
+            'The limit can be decreased but not set to a negative value. Setting it at or below current consumption immediately freezes this API Key.',
           limitLabel: 'Credits limit',
         },
       },
@@ -507,13 +518,13 @@ export default {
         noWorkspace: 'Please select a workspace first',
         loadFail: 'Error loading key list',
         invalidName: 'Please enter a valid key name (at least 3 characters)',
-        invalidLimit: 'Please enter a valid credits limit (positive integer)',
-        limitOnlyIncrease: 'Credits limit can only be increased',
+        invalidLimit: 'Please enter a valid credits limit (non-negative integer)',
         createFail: 'Error creating key',
         updateFail: 'Failed to update key',
         deleteFail: 'Error deleting key',
         copyFail: 'Failed to copy key',
         copyMcpFail: 'Failed to copy MCP config',
+        setDefaultFail: 'Failed to set as default',
       },
       messages: {
         createSuccess: 'Key created successfully',
@@ -521,6 +532,7 @@ export default {
         deleteSuccess: 'Key deleted successfully',
         copySuccess: 'Key copied to clipboard',
         copyMcpSuccess: 'MCP config copied to clipboard',
+        setDefaultSuccess: 'Default API Key updated',
       },
       ott: {
         generateOtt: 'Generate Temporary Token',
