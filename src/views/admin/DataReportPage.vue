@@ -25,6 +25,18 @@ interface PivotRow {
 
 const UNKNOWN_SOURCE = '未知来源';
 
+const SOURCE_LABELS: Record<string, string> = {
+  admin_give: '系统赠与',
+  admin_manual: '手动充值',
+  Newbie: '新用户赠送',
+  subscription_grant: '会员订阅',
+  wechat_recharge: '积分套餐',
+};
+
+function labelOfSource(source: string) {
+  return SOURCE_LABELS[source] ?? source;
+}
+
 const pivotSources = computed<string[]>(() => {
   const set = new Set<string>();
   for (const item of items.value) {
@@ -55,7 +67,7 @@ const pivotRows = computed<PivotRow[]>(() => {
 
 const pivotHeaders = computed(() => {
   const sourceHeaders = pivotSources.value.map(source => ({
-    title: source,
+    title: labelOfSource(source),
     key: source,
     align: 'end' as const,
     sortable: false,
@@ -80,7 +92,7 @@ function exportCsv() {
   if (pivotRows.value.length === 0) return;
   const sources = pivotSources.value;
   const metric = tableMetric.value;
-  const header = ['日期', ...sources, '合计'];
+  const header = ['日期', ...sources.map(labelOfSource), '合计'];
   const lines: string[] = [header.join(',')];
   for (const row of pivotRows.value) {
     const cells: string[] = [row.day];
@@ -117,7 +129,6 @@ const leaderboardEndDate = ref(moment().subtract(1, 'days').format('YYYY-MM-DD')
 
 const leaderboardHeaders = [
   { title: '排名', key: 'rank', width: 60, align: 'center' as const },
-  { title: '工作区名', key: 'workspace_name' },
   { title: 'Owner 手机', key: 'owner_phone', width: 150 },
   { title: 'Owner 姓名', key: 'owner_name', width: 120 },
   { title: '消耗积分', key: 'total_credits', width: 120, align: 'end' as const },
