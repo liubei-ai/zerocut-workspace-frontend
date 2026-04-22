@@ -444,6 +444,7 @@ export default {
       stats: {
         total: 'Total Keys',
         active: 'Active Keys',
+        inactive: 'Inactive Keys',
         expired: 'Expired',
       },
       table: {

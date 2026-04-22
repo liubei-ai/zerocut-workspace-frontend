@@ -564,7 +564,7 @@ const formatRelativeExpire = (dateString: string | null | undefined) => {
             {{ stats.expired }}
           </div>
           <div class="text-subtitle-2 text-medium-emphasis">
-            {{ t('zerocut.apikeys.stats.expired') }}
+            {{ t('zerocut.apikeys.stats.inactive') }}
           </div>
         </v-card>
       </v-col>

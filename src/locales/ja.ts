@@ -439,6 +439,7 @@ export default {
       stats: {
         total: 'キー総数',
         active: '有効キー',
+        inactive: '無効キー',
         expired: '失効',
       },
       table: {

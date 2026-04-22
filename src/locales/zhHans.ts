@@ -440,6 +440,7 @@ export default {
       stats: {
         total: '总密钥数',
         active: '活跃密钥',
+        inactive: '已禁用',
         expired: '已过期',
       },
       table: {
