@@ -536,3 +536,29 @@ export async function getCreditsDailySourceStats(params: CreditsDailySourceStats
   );
   return response.data;
 }
+
+// 工作区维度消耗榜
+export interface WorkspaceCreditsLeaderboardItem {
+  workspace_id: string;
+  workspace_name: string;
+  owner_phone: string | null;
+  owner_name: string | null;
+  total_credits: number;
+  total_count: number;
+}
+
+export interface WorkspaceCreditsLeaderboardParams {
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+}
+
+export async function getWorkspaceCreditsLeaderboard(
+  params: WorkspaceCreditsLeaderboardParams = {}
+) {
+  const response = await apiClient.get<WorkspaceCreditsLeaderboardItem[]>(
+    '/admin/credits/workspace-leaderboard',
+    { params }
+  );
+  return response.data;
+}
