@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import moment from 'moment';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 
 import type { CreditsDailySourceStatItem, WorkspaceCreditsLeaderboardItem } from '@/api/adminApi';
 
@@ -12,6 +12,102 @@ const trendLoading = ref(false);
 const items = ref<CreditsDailySourceStatItem[]>([]);
 const trendStartDate = ref(moment().subtract(30, 'days').format('YYYY-MM-DD'));
 const trendEndDate = ref(moment().format('YYYY-MM-DD'));
+
+// 每日明细表格状态
+const tableMetric = ref<'credits' | 'price'>('credits');
+
+interface PivotRow {
+  day: string;
+  sources: Record<string, { credits: number; price: number }>;
+  totalCredits: number;
+  totalPrice: number;
+}
+
+const UNKNOWN_SOURCE = '未知来源';
+
+const pivotSources = computed<string[]>(() => {
+  const set = new Set<string>();
+  for (const item of items.value) {
+    set.add(item.source || UNKNOWN_SOURCE);
+  }
+  return [...set].sort((a, b) => a.localeCompare(b));
+});
+
+const pivotRows = computed<PivotRow[]>(() => {
+  const byDay = new Map<string, PivotRow>();
+  for (const item of items.value) {
+    const source = item.source || UNKNOWN_SOURCE;
+    let row = byDay.get(item.day);
+    if (!row) {
+      row = { day: item.day, sources: {}, totalCredits: 0, totalPrice: 0 };
+      byDay.set(item.day, row);
+    }
+    const prev = row.sources[source] ?? { credits: 0, price: 0 };
+    row.sources[source] = {
+      credits: prev.credits + item.total_credits,
+      price: prev.price + item.total_price,
+    };
+    row.totalCredits += item.total_credits;
+    row.totalPrice += item.total_price;
+  }
+  return [...byDay.values()].sort((a, b) => b.day.localeCompare(a.day));
+});
+
+const pivotHeaders = computed(() => {
+  const sourceHeaders = pivotSources.value.map(source => ({
+    title: source,
+    key: source,
+    align: 'end' as const,
+    sortable: false,
+  }));
+  return [
+    { title: '日期', key: 'day', sortable: true },
+    ...sourceHeaders,
+    { title: '合计', key: 'total', align: 'end' as const, sortable: true },
+  ];
+});
+
+function formatCell(value: number | undefined, metric: 'credits' | 'price') {
+  if (value === undefined) return '—';
+  if (metric === 'credits') return value.toLocaleString();
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function exportCsv() {
+  if (pivotRows.value.length === 0) return;
+  const sources = pivotSources.value;
+  const metric = tableMetric.value;
+  const header = ['日期', ...sources, '合计'];
+  const lines: string[] = [header.join(',')];
+  for (const row of pivotRows.value) {
+    const cells: string[] = [row.day];
+    for (const source of sources) {
+      const cell = row.sources[source];
+      if (!cell) {
+        cells.push('');
+        continue;
+      }
+      const v = metric === 'credits' ? cell.credits : cell.price;
+      cells.push(metric === 'credits' ? String(v) : v.toFixed(4));
+    }
+    const total = metric === 'credits' ? row.totalCredits : row.totalPrice;
+    cells.push(metric === 'credits' ? String(total) : total.toFixed(4));
+    lines.push(cells.join(','));
+  }
+  const csv = '\ufeff' + lines.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `credits-daily-${metric}-${trendStartDate.value}_${trendEndDate.value}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 // 消耗榜独立状态
 const leaderboardLoading = ref(false);
@@ -94,7 +190,68 @@ onMounted(() => {
           </v-card-title>
           <v-card-text>
             <v-progress-linear v-if="trendLoading" indeterminate color="primary" />
-            <CreditsSourceTrendChart v-else :items="items" />
+            <template v-else>
+              <CreditsSourceTrendChart :items="items" />
+
+              <v-divider class="my-4" />
+
+              <div class="d-flex align-center mb-3">
+                <v-icon start>mdi-table</v-icon>
+                <span class="text-subtitle-1 font-weight-medium">每日明细</span>
+                <v-spacer />
+                <v-btn-toggle
+                  v-model="tableMetric"
+                  mandatory
+                  density="compact"
+                  color="primary"
+                  class="mr-2"
+                >
+                  <v-btn value="credits" size="small">积分数</v-btn>
+                  <v-btn value="price" size="small">金额（元）</v-btn>
+                </v-btn-toggle>
+                <v-btn
+                  color="primary"
+                  variant="tonal"
+                  prepend-icon="mdi-download"
+                  :disabled="pivotRows.length === 0"
+                  @click="exportCsv"
+                >
+                  导出 CSV
+                </v-btn>
+              </div>
+
+              <v-data-table
+                :headers="pivotHeaders"
+                :items="pivotRows"
+                :items-per-page="-1"
+                hide-default-footer
+                no-data-text="暂无数据"
+                density="comfortable"
+              >
+                <template
+                  v-for="source in pivotSources"
+                  #[`item.${source}`]="{ item }"
+                  :key="source"
+                >
+                  {{
+                    formatCell(
+                      tableMetric === 'credits'
+                        ? item.sources[source]?.credits
+                        : item.sources[source]?.price,
+                      tableMetric
+                    )
+                  }}
+                </template>
+                <template #[`item.total`]="{ item }">
+                  {{
+                    formatCell(
+                      tableMetric === 'credits' ? item.totalCredits : item.totalPrice,
+                      tableMetric
+                    )
+                  }}
+                </template>
+              </v-data-table>
+            </template>
           </v-card-text>
         </v-card>
       </v-col>
