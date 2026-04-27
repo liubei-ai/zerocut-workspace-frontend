@@ -109,6 +109,11 @@ export interface CreditsConsumptionItem {
   id: number;
   transactionId: string;
   serviceDetails?: Record<string, any>;
+  displayDetails?: {
+    reason?: string;
+    urls?: string[];
+    prompt?: string;
+  };
   creditsAmount: number;
   apiKeyId?: string;
   createdAt: string;

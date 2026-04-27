@@ -33,6 +33,11 @@ const filters = ref({
 });
 
 const { t } = useI18n();
+const detailDialog = ref(false);
+const detailDialogTitle = ref('');
+const detailDialogContent = ref('');
+const PROMPT_PREVIEW_LENGTH = 120;
+const URL_PREVIEW_COUNT = 2;
 
 const formatApiKeySuffix = (apiKey: string) => {
   if (!apiKey) return t('common.unknown');
@@ -42,6 +47,44 @@ const formatApiKeySuffix = (apiKey: string) => {
 const formatMaskedApiKey = (apiKey?: string) => {
   if (!apiKey) return t('common.unknown');
   return maskApiKey(apiKey);
+};
+
+const getReasonText = (item: ConsumptionRecord): string | undefined => {
+  const reason = item.displayDetails?.reason ?? item.serviceDetails?.reason;
+  return typeof reason === 'string' && reason.trim() ? reason : undefined;
+};
+
+const getPromptText = (item: ConsumptionRecord): string | undefined => {
+  const prompt = item.displayDetails?.prompt ?? item.serviceDetails?.prompt;
+  return typeof prompt === 'string' && prompt.trim() ? prompt : undefined;
+};
+
+const getUrls = (item: ConsumptionRecord): string[] => {
+  const raw = item.displayDetails?.urls ?? item.serviceDetails?.urls;
+  if (typeof raw === 'string') return raw.trim() ? [raw.trim()] : [];
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((u): u is string => typeof u === 'string' && !!u.trim()).map(u => u.trim());
+};
+
+const truncateText = (text: string, maxLen: number): string => {
+  if (text.length <= maxLen) return text;
+  return `${text.slice(0, maxLen)}...`;
+};
+
+const getPromptPreview = (item: ConsumptionRecord): string => {
+  const prompt = getPromptText(item);
+  return prompt ? truncateText(prompt, PROMPT_PREVIEW_LENGTH) : '';
+};
+
+const isPromptLong = (item: ConsumptionRecord): boolean => {
+  const prompt = getPromptText(item);
+  return !!prompt && prompt.length > PROMPT_PREVIEW_LENGTH;
+};
+
+const openFullText = (title: string, content: string) => {
+  detailDialogTitle.value = title;
+  detailDialogContent.value = content;
+  detailDialog.value = true;
 };
 
 // 获取数据函数
@@ -293,8 +336,48 @@ onMounted(() => {
         </template>
 
         <template #item.serviceDetails="{ item }">
-          <div class="d-flex align-center">
-            {{ item.serviceDetails?.reason || t('common.unknown') }}
+          <div class="service-details-cell">
+            <div v-if="getReasonText(item)">
+              <span class="detail-label">消耗原因：</span>{{ getReasonText(item) }}
+            </div>
+            <div v-if="getUrls(item).length > 0" class="mt-1">
+              <span class="detail-label">生成物：</span>
+              <div
+                v-for="(url, idx) in getUrls(item).slice(0, URL_PREVIEW_COUNT)"
+                :key="`${item.id}-url-${idx}`"
+                class="url-line"
+              >
+                {{ url }}
+              </div>
+              <v-btn
+                v-if="getUrls(item).length > URL_PREVIEW_COUNT"
+                size="x-small"
+                variant="text"
+                class="px-0"
+                @click="openFullText('生成物', getUrls(item).join('\n'))"
+              >
+                查看全部（{{ getUrls(item).length }}）
+              </v-btn>
+            </div>
+            <div v-if="getPromptText(item)" class="mt-1">
+              <span class="detail-label">提示词：</span>
+              {{ getPromptPreview(item) }}
+              <v-btn
+                v-if="isPromptLong(item)"
+                size="x-small"
+                variant="text"
+                class="ml-1 px-0"
+                @click="openFullText('提示词', getPromptText(item) || '')"
+              >
+                展开
+              </v-btn>
+            </div>
+            <div
+              v-if="!getReasonText(item) && getUrls(item).length === 0 && !getPromptText(item)"
+              class="d-flex align-center"
+            >
+              {{ t('common.unknown') }}
+            </div>
           </div>
         </template>
 
@@ -320,10 +403,41 @@ onMounted(() => {
         </template>
       </v-data-table-server>
     </v-card>
+
+    <v-dialog v-model="detailDialog" max-width="900">
+      <v-card>
+        <v-card-title>{{ detailDialogTitle }}</v-card-title>
+        <v-card-text>
+          <pre class="dialog-content">{{ detailDialogContent }}</pre>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="detailDialog = false">关闭</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <style scoped>
+.service-details-cell {
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: 600;
+}
+
+.url-line {
+  word-break: break-all;
+}
+
+.dialog-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
 .v-card {
   transition: all 0.3s ease;
 }

@@ -40,6 +40,11 @@ const consumptionFilters = ref<QueryCreditsConsumptionParams>({
   startDate: '',
   endDate: '',
 });
+const detailDialog = ref(false);
+const detailDialogTitle = ref('');
+const detailDialogContent = ref('');
+const PROMPT_PREVIEW_LENGTH = 120;
+const URL_PREVIEW_COUNT = 2;
 
 const expiredLoading = ref(false);
 const expiredItems = ref<ExpiredCreditItem[]>([]);
@@ -139,6 +144,44 @@ function shouldShowValidity(item: TransactionItem) {
   if (!v) return false;
   if (v.expired) return true;
   return (item.remainingCredits ?? 0) > 0;
+}
+
+function getReasonText(item: CreditsConsumptionItem): string | undefined {
+  const reason = item.displayDetails?.reason ?? item.serviceDetails?.reason;
+  return typeof reason === 'string' && reason.trim() ? reason : undefined;
+}
+
+function getPromptText(item: CreditsConsumptionItem): string | undefined {
+  const prompt = item.displayDetails?.prompt ?? item.serviceDetails?.prompt;
+  return typeof prompt === 'string' && prompt.trim() ? prompt : undefined;
+}
+
+function getUrls(item: CreditsConsumptionItem): string[] {
+  const raw = item.displayDetails?.urls ?? item.serviceDetails?.urls;
+  if (typeof raw === 'string') return raw.trim() ? [raw.trim()] : [];
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((u): u is string => typeof u === 'string' && !!u.trim()).map(u => u.trim());
+}
+
+function truncateText(text: string, maxLen: number): string {
+  if (text.length <= maxLen) return text;
+  return `${text.slice(0, maxLen)}...`;
+}
+
+function getPromptPreview(item: CreditsConsumptionItem): string {
+  const prompt = getPromptText(item);
+  return prompt ? truncateText(prompt, PROMPT_PREVIEW_LENGTH) : '';
+}
+
+function isPromptLong(item: CreditsConsumptionItem): boolean {
+  const prompt = getPromptText(item);
+  return !!prompt && prompt.length > PROMPT_PREVIEW_LENGTH;
+}
+
+function openFullText(title: string, content: string) {
+  detailDialogTitle.value = title;
+  detailDialogContent.value = content;
+  detailDialog.value = true;
 }
 
 async function fetchWallet() {
@@ -463,7 +506,52 @@ onMounted(refreshAll);
               class="elevation-0"
             >
               <template #item.createdAt="{ item }">{{ formatDate(item.createdAt) }}</template>
-              <template #item.serviceDetails="{ item }">{{ item.serviceDetails }}</template>
+              <template #item.serviceDetails="{ item }">
+                <div class="service-details-cell">
+                  <div v-if="getReasonText(item)">
+                    <span class="detail-label">消耗原因：</span>{{ getReasonText(item) }}
+                  </div>
+                  <div v-if="getUrls(item).length > 0" class="mt-1">
+                    <span class="detail-label">生成物：</span>
+                    <div
+                      v-for="(url, idx) in getUrls(item).slice(0, URL_PREVIEW_COUNT)"
+                      :key="`${item.id}-url-${idx}`"
+                      class="url-line"
+                    >
+                      {{ url }}
+                    </div>
+                    <v-btn
+                      v-if="getUrls(item).length > URL_PREVIEW_COUNT"
+                      size="x-small"
+                      variant="text"
+                      class="px-0"
+                      @click="openFullText('生成物', getUrls(item).join('\n'))"
+                    >
+                      查看全部（{{ getUrls(item).length }}）
+                    </v-btn>
+                  </div>
+                  <div v-if="getPromptText(item)" class="mt-1">
+                    <span class="detail-label">提示词：</span>
+                    {{ getPromptPreview(item) }}
+                    <v-btn
+                      v-if="isPromptLong(item)"
+                      size="x-small"
+                      variant="text"
+                      class="ml-1 px-0"
+                      @click="openFullText('提示词', getPromptText(item) || '')"
+                    >
+                      展开
+                    </v-btn>
+                  </div>
+                  <div
+                    v-if="
+                      !getReasonText(item) && getUrls(item).length === 0 && !getPromptText(item)
+                    "
+                  >
+                    -
+                  </div>
+                </div>
+              </template>
               <template #item.creditsAmount="{ item }">
                 <div class="text-right">
                   <span class="font-weight-medium">{{ item.creditsAmount }}</span>
@@ -472,6 +560,18 @@ onMounted(refreshAll);
               </template>
             </v-data-table-server>
           </v-card>
+          <v-dialog v-model="detailDialog" max-width="900">
+            <v-card>
+              <v-card-title>{{ detailDialogTitle }}</v-card-title>
+              <v-card-text>
+                <pre class="dialog-content">{{ detailDialogContent }}</pre>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn variant="text" @click="detailDialog = false">关闭</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-window-item>
         <v-window-item value="expired">
           <v-card flat>
@@ -554,6 +654,24 @@ onMounted(refreshAll);
 </template>
 
 <style scoped>
+.service-details-cell {
+  line-height: 1.5;
+}
+
+.detail-label {
+  font-weight: 600;
+}
+
+.url-line {
+  word-break: break-all;
+}
+
+.dialog-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+}
+
 .v-card {
   transition: all 0.3s ease;
 }
