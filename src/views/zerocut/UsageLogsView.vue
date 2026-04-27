@@ -308,7 +308,6 @@ onMounted(() => {
             :dialog-title="t('zerocut.usage.details.dialogTitle')"
             :no-outputs-text="t('zerocut.usage.details.noOutputs')"
             :no-prompt-text="t('zerocut.usage.details.noPrompt')"
-            :open-link-label="t('zerocut.usage.details.openLink')"
             :empty-text="t('common.unknown')"
           />
         </template>

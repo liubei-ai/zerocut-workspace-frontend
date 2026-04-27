@@ -32,7 +32,6 @@ const props = withDefaults(
     dialogTitle?: string;
     noOutputsText?: string;
     noPromptText?: string;
-    openLinkLabel?: string;
   }>(),
   {
     emptyText: '-',
@@ -45,7 +44,6 @@ const props = withDefaults(
     dialogTitle: '提示词和生成物',
     noOutputsText: '-',
     noPromptText: '-',
-    openLinkLabel: '打开链接',
   }
 );
 
@@ -93,6 +91,7 @@ const hasLongPrompt = computed(
 const previewUrls = computed(() => urls.value.slice(0, props.urlPreviewCount));
 const imageUrls = computed(() => urls.value.filter(isLikelyImageUrl));
 const nonImageUrls = computed(() => urls.value.filter(url => !isLikelyImageUrl(url)));
+const hasDetails = computed(() => urls.value.length > 0 || !!promptText.value);
 
 const isEmpty = computed(() => !reasonText.value && urls.value.length === 0 && !promptText.value);
 
@@ -125,7 +124,7 @@ function isLikelyImageUrl(url: string): boolean {
       <div class="reason-text">
         {{ reasonText || emptyText }}
       </div>
-      <v-tooltip location="top">
+      <v-tooltip v-if="hasDetails" location="top">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             v-bind="tooltipProps"
@@ -195,10 +194,14 @@ function isLikelyImageUrl(url: string): boolean {
                     </template>
                   </v-img>
                   <v-card-text>
-                    <a :href="url" target="_blank" rel="noopener noreferrer" class="url-link">
-                      {{ openLinkLabel }}
+                    <a
+                      :href="url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="url-link url-line"
+                    >
+                      {{ url }}
                     </a>
-                    <div class="url-line mt-1">{{ url }}</div>
                   </v-card-text>
                 </v-card>
               </v-col>
@@ -206,10 +209,9 @@ function isLikelyImageUrl(url: string): boolean {
             <div v-if="nonImageUrls.length > 0" class="mt-3">
               <div class="text-caption text-medium-emphasis mb-2">URL</div>
               <div v-for="(url, idx) in nonImageUrls" :key="`preview-url-${idx}`" class="mb-2">
-                <a :href="url" target="_blank" rel="noopener noreferrer" class="url-link">
-                  {{ openLinkLabel }}
+                <a :href="url" target="_blank" rel="noopener noreferrer" class="url-link url-line">
+                  {{ url }}
                 </a>
-                <div class="url-line mt-1">{{ url }}</div>
               </div>
             </div>
 
