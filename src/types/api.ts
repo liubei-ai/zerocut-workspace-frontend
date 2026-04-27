@@ -175,6 +175,7 @@ export interface UpdateApiKeyRequest {
 export interface ConsumptionRecord {
   id: number;
   transactionId: string;
+  prompt?: string;
   serviceDetails?: Record<string, any>;
   displayDetails?: {
     reason?: string;

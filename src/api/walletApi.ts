@@ -108,6 +108,7 @@ export interface QueryCreditsConsumptionParams {
 export interface CreditsConsumptionItem {
   id: number;
   transactionId: string;
+  prompt?: string;
   serviceDetails?: Record<string, any>;
   displayDetails?: {
     reason?: string;

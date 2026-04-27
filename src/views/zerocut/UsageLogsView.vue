@@ -296,12 +296,19 @@ onMounted(() => {
         <template #item.serviceDetails="{ item }">
           <ConsumptionDetailsCell
             :item="item"
+            mode="button"
             :reason-label="t('zerocut.usage.details.reasonLabel')"
             :outputs-label="t('zerocut.usage.details.outputsLabel')"
             :prompt-label="t('zerocut.usage.details.promptLabel')"
             :view-all-label="t('zerocut.usage.details.viewAll')"
             :expand-label="t('zerocut.usage.details.expand')"
             :close-label="t('zerocut.usage.details.close')"
+            :action-label="t('zerocut.usage.details.viewDetails')"
+            :action-tooltip="t('zerocut.usage.details.viewDetailsTooltip')"
+            :dialog-title="t('zerocut.usage.details.dialogTitle')"
+            :no-outputs-text="t('zerocut.usage.details.noOutputs')"
+            :no-prompt-text="t('zerocut.usage.details.noPrompt')"
+            :open-link-label="t('zerocut.usage.details.openLink')"
             :empty-text="t('common.unknown')"
           />
         </template>
