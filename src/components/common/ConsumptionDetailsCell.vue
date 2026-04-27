@@ -143,7 +143,7 @@ function isLikelyImageUrl(url: string): boolean {
     </div>
     <template v-else>
       <div v-if="reasonText">
-        <span class="detail-label">{{ reasonLabel }}：</span>{{ reasonText }}
+        {{ reasonText }}
       </div>
 
       <div v-if="urls.length > 0" class="mt-1">
