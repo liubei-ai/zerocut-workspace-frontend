@@ -27,6 +27,7 @@ const props = withDefaults(
     urlPreviewCount?: number;
     mode?: 'inline' | 'button';
     actionLabel?: string;
+    actionIcon?: string;
     actionTooltip?: string;
     dialogTitle?: string;
     noOutputsText?: string;
@@ -39,6 +40,7 @@ const props = withDefaults(
     urlPreviewCount: 2,
     mode: 'inline',
     actionLabel: '查看',
+    actionIcon: 'mdi-key',
     actionTooltip: '查看提示词和生成物',
     dialogTitle: '提示词和生成物',
     noOutputsText: '-',
@@ -89,6 +91,8 @@ const hasLongPrompt = computed(
 );
 
 const previewUrls = computed(() => urls.value.slice(0, props.urlPreviewCount));
+const imageUrls = computed(() => urls.value.filter(isLikelyImageUrl));
+const nonImageUrls = computed(() => urls.value.filter(url => !isLikelyImageUrl(url)));
 
 const isEmpty = computed(() => !reasonText.value && urls.value.length === 0 && !promptText.value);
 
@@ -125,13 +129,14 @@ function isLikelyImageUrl(url: string): boolean {
         <template #activator="{ props: tooltipProps }">
           <v-btn
             v-bind="tooltipProps"
-            size="x-small"
+            :icon="actionIcon"
+            size="small"
             variant="text"
+            color="primary"
+            :aria-label="actionLabel"
             class="action-btn"
             @click="openDetailsDialog"
-          >
-            {{ actionLabel }}
-          </v-btn>
+          />
         </template>
         <span>{{ actionTooltip }}</span>
       </v-tooltip>
@@ -179,16 +184,10 @@ function isLikelyImageUrl(url: string): boolean {
           <template v-if="mode === 'button'">
             <div class="section-title">{{ outputsLabel }}</div>
             <div v-if="urls.length === 0" class="text-medium-emphasis">{{ noOutputsText }}</div>
-            <v-row v-else dense>
-              <v-col v-for="(url, idx) in urls" :key="`preview-${idx}`" cols="12" md="6">
+            <v-row v-if="imageUrls.length > 0" dense>
+              <v-col v-for="(url, idx) in imageUrls" :key="`preview-image-${idx}`" cols="12" md="6">
                 <v-card variant="outlined">
-                  <v-img
-                    v-if="isLikelyImageUrl(url)"
-                    :src="url"
-                    height="220"
-                    cover
-                    class="bg-grey-lighten-3"
-                  >
+                  <v-img :src="url" height="220" cover class="bg-grey-lighten-3">
                     <template #error>
                       <div class="d-flex align-center text-medium-emphasis h-100 justify-center">
                         {{ noOutputsText }}
@@ -204,6 +203,15 @@ function isLikelyImageUrl(url: string): boolean {
                 </v-card>
               </v-col>
             </v-row>
+            <div v-if="nonImageUrls.length > 0" class="mt-3">
+              <div class="text-caption text-medium-emphasis mb-2">URL</div>
+              <div v-for="(url, idx) in nonImageUrls" :key="`preview-url-${idx}`" class="mb-2">
+                <a :href="url" target="_blank" rel="noopener noreferrer" class="url-link">
+                  {{ openLinkLabel }}
+                </a>
+                <div class="url-line mt-1">{{ url }}</div>
+              </div>
+            </div>
 
             <div class="section-title mt-4">{{ promptLabel }}</div>
             <pre v-if="promptText" class="dialog-content">{{ promptText }}</pre>
@@ -237,6 +245,9 @@ function isLikelyImageUrl(url: string): boolean {
 .reason-text {
   min-width: 0;
   flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .action-btn {
