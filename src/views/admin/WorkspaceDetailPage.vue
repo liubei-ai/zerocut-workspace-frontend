@@ -15,6 +15,7 @@ import {
   type WalletInfo,
 } from '@/api/walletApi';
 import WalletOverview from '@/components/admin/WalletOverview.vue';
+import ConsumptionDetailsCell from '@/components/common/ConsumptionDetailsCell.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
 import { formatDate } from '@/utils/date';
@@ -463,7 +464,18 @@ onMounted(refreshAll);
               class="elevation-0"
             >
               <template #item.createdAt="{ item }">{{ formatDate(item.createdAt) }}</template>
-              <template #item.serviceDetails="{ item }">{{ item.serviceDetails }}</template>
+              <template #item.serviceDetails="{ item }">
+                <ConsumptionDetailsCell
+                  :item="item"
+                  reason-label="消耗原因"
+                  outputs-label="生成物"
+                  prompt-label="提示词"
+                  view-all-label="查看全部"
+                  expand-label="展开"
+                  close-label="关闭"
+                  empty-text="-"
+                />
+              </template>
               <template #item.creditsAmount="{ item }">
                 <div class="text-right">
                   <span class="font-weight-medium">{{ item.creditsAmount }}</span>

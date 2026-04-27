@@ -341,6 +341,20 @@ export default {
           // actions: 'Actions',
         },
       },
+      details: {
+        reasonLabel: 'Reason',
+        outputsLabel: 'Outputs',
+        promptLabel: 'Prompt',
+        viewDetails: 'View',
+        viewDetailsTooltip: 'View prompt and outputs',
+        dialogTitle: 'Prompt and Outputs',
+        noOutputs: 'No outputs',
+        noPrompt: 'No prompt',
+        openLink: 'Open link',
+        viewAll: 'View all',
+        expand: 'Expand',
+        close: 'Close',
+      },
       empty: {
         title: 'No usage records',
         subtitle: {

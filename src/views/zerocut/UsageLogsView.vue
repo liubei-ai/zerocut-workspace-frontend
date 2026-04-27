@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import type { ApiKey, ConsumptionRecord } from '@/types/api';
 
 import { getApiKeys, getConsumptionRecords } from '@/api/workspaceApi';
+import ConsumptionDetailsCell from '@/components/common/ConsumptionDetailsCell.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
@@ -293,9 +294,22 @@ onMounted(() => {
         </template>
 
         <template #item.serviceDetails="{ item }">
-          <div class="d-flex align-center">
-            {{ item.serviceDetails?.reason || t('common.unknown') }}
-          </div>
+          <ConsumptionDetailsCell
+            :item="item"
+            mode="button"
+            :reason-label="t('zerocut.usage.details.reasonLabel')"
+            :outputs-label="t('zerocut.usage.details.outputsLabel')"
+            :prompt-label="t('zerocut.usage.details.promptLabel')"
+            :view-all-label="t('zerocut.usage.details.viewAll')"
+            :expand-label="t('zerocut.usage.details.expand')"
+            :close-label="t('zerocut.usage.details.close')"
+            :action-label="t('zerocut.usage.details.viewDetails')"
+            :action-tooltip="t('zerocut.usage.details.viewDetailsTooltip')"
+            :dialog-title="t('zerocut.usage.details.dialogTitle')"
+            :no-outputs-text="t('zerocut.usage.details.noOutputs')"
+            :no-prompt-text="t('zerocut.usage.details.noPrompt')"
+            :empty-text="t('common.unknown')"
+          />
         </template>
 
         <template #item.apiKeyId="{ item }">
@@ -340,4 +354,3 @@ code {
   font-size: 0.75rem;
 }
 </style>
-// i18n const { t } = useI18n();

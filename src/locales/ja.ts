@@ -338,6 +338,20 @@ export default {
           // actions: '操作',
         },
       },
+      details: {
+        reasonLabel: '理由',
+        outputsLabel: '生成物',
+        promptLabel: 'プロンプト',
+        viewDetails: '表示',
+        viewDetailsTooltip: 'プロンプトと生成物を表示',
+        dialogTitle: 'プロンプトと生成物',
+        noOutputs: '生成物はありません',
+        noPrompt: 'プロンプトはありません',
+        openLink: 'リンクを開く',
+        viewAll: 'すべて表示',
+        expand: '展開',
+        close: '閉じる',
+      },
       empty: {
         title: '使用記録はありません',
         subtitle: {
