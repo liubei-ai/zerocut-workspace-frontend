@@ -337,6 +337,14 @@ export default {
           // actions: '操作',
         },
       },
+      details: {
+        reasonLabel: '消耗原因',
+        outputsLabel: '生成物',
+        promptLabel: '提示词',
+        viewAll: '查看全部',
+        expand: '展开',
+        close: '关闭',
+      },
       empty: {
         title: '暂无使用记录',
         subtitle: {

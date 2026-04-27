@@ -341,6 +341,14 @@ export default {
           // actions: 'Actions',
         },
       },
+      details: {
+        reasonLabel: 'Reason',
+        outputsLabel: 'Outputs',
+        promptLabel: 'Prompt',
+        viewAll: 'View all',
+        expand: 'Expand',
+        close: 'Close',
+      },
       empty: {
         title: 'No usage records',
         subtitle: {
