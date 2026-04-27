@@ -40,7 +40,7 @@ const props = withDefaults(
     urlPreviewCount: 2,
     mode: 'inline',
     actionLabel: '查看',
-    actionIcon: 'mdi-key',
+    actionIcon: 'mdi-eye-outline',
     actionTooltip: '查看提示词和生成物',
     dialogTitle: '提示词和生成物',
     noOutputsText: '-',
@@ -123,7 +123,7 @@ function isLikelyImageUrl(url: string): boolean {
   <div class="service-details-cell">
     <div v-if="mode === 'button'" class="reason-row">
       <div class="reason-text">
-        <span class="detail-label">{{ reasonLabel }}：</span>{{ reasonText || emptyText }}
+        {{ reasonText || emptyText }}
       </div>
       <v-tooltip location="top">
         <template #activator="{ props: tooltipProps }">
