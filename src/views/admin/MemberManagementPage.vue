@@ -1,6 +1,10 @@
 <template>
   <v-container fluid>
-    <ResponsivePageHeader title="会员管理" subtitle="查看和管理所有会员订阅信息" />
+    <ResponsivePageHeader
+      title="会员管理"
+      subtitle="查看和管理所有会员订阅信息"
+      :primary-actions="headerActions"
+    />
 
     <!-- Summary Cards Section -->
     <v-row class="mb-6">
@@ -41,6 +45,17 @@ import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 const summary = ref<MemberSummary | null>(null);
 const summaryLoading = ref(false);
 const error = ref<string | null>(null);
+
+const headerActions = [
+  {
+    key: 'grant',
+    label: '开通会员',
+    icon: 'mdi-account-plus',
+    color: 'primary',
+    variant: 'flat' as const,
+    to: { name: 'admin-members-grant' },
+  },
+];
 
 function handleSummaryUpdated(updatedSummary: MemberSummary) {
   // Update summary when table fetches new data (to keep it in sync)

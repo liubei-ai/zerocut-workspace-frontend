@@ -49,6 +49,18 @@ const AdminRoutes: RouteRecordRaw[] = [
         },
       },
       {
+        path: 'members/grant',
+        name: 'admin-members-grant',
+        component: () => import('@/views/admin/MemberGrantPage.vue'),
+        meta: {
+          title: '开通会员',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          requiresSuperAdmin: true,
+        },
+      },
+      {
         path: 'members/:id',
         name: 'admin-member-detail',
         component: () => import('@/views/admin/MemberDetailPage.vue'),

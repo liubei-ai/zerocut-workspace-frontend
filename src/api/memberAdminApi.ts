@@ -145,3 +145,111 @@ export async function getMemberDetail(subscriptionId: number): Promise<MemberDet
   const response = await apiClient.get<MemberDetail>(`/admin/members/${subscriptionId}`);
   return response.data;
 }
+
+// ============================================================
+// Admin Grant Membership (005-admin-grant-membership)
+// ============================================================
+
+export type GrantablePlanCode = 'BASIC_ONE_TIME' | 'STANDARD_ONE_TIME' | 'PREMIUM_ONE_TIME';
+
+export interface LookupRequest {
+  phones: string[];
+}
+
+export interface LookupUser {
+  userId: number;
+  name: string;
+  registeredAt: string;
+}
+
+export interface LookupWorkspace {
+  workspaceId: string;
+  name: string;
+  isDefault: boolean;
+}
+
+export interface LookupCurrentSubscription {
+  planCode: string;
+  planName: string;
+  status: SubscriptionStatus;
+  currentPeriodEndAt?: string;
+}
+
+export interface LookupResultItem {
+  phone: string;
+  found: boolean;
+  user?: LookupUser;
+  workspaces?: LookupWorkspace[];
+  currentSubscription?: LookupCurrentSubscription;
+  currentCredits?: number;
+  reason?: string;
+}
+
+export interface LookupResultSummary {
+  total: number;
+  found: number;
+  notFound: number;
+}
+
+export interface LookupResult {
+  summary: LookupResultSummary;
+  results: LookupResultItem[];
+}
+
+export interface GrantItem {
+  workspaceId: string;
+  phone: string;
+}
+
+export interface GrantRequest {
+  items: GrantItem[];
+  planCode: GrantablePlanCode;
+  periods?: number;
+  remark: string;
+  clientRequestId: string;
+}
+
+export type GrantResultStatus = 'success' | 'skipped' | 'failed';
+
+export interface GrantResultItem {
+  workspaceId: string;
+  phone: string;
+  status: GrantResultStatus;
+  subscriptionId?: number;
+  orderId?: number;
+  orderNo?: string;
+  creditsGranted?: number;
+  currentCredits?: number;
+  failureReason?: string;
+}
+
+export interface GrantResultSummary {
+  total: number;
+  success: number;
+  skipped: number;
+  failed: number;
+}
+
+export interface GrantResult {
+  batchId: number;
+  summary: GrantResultSummary;
+  results: GrantResultItem[];
+}
+
+/**
+ * Lookup users + workspaces + subscription state by a batch of phones.
+ * Read-only; safe to retry.
+ */
+export async function lookupMembersByPhones(payload: LookupRequest): Promise<LookupResult> {
+  const response = await apiClient.post<LookupResult>('/admin/members/lookup-by-phones', payload);
+  return response.data;
+}
+
+/**
+ * Batch grant membership subscriptions to selected workspaces.
+ * Idempotent within a 10-minute window keyed by `clientRequestId`.
+ */
+export async function grantMemberships(payload: GrantRequest): Promise<GrantResult> {
+  const response = await apiClient.post<GrantResult>('/admin/members/grant', payload);
+  return response.data;
+}
