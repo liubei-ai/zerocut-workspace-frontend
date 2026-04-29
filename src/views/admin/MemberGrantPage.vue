@@ -26,8 +26,19 @@
                   label="选择套餐"
                   variant="outlined"
                   density="comfortable"
+                  :loading="plansLoading"
+                  :disabled="plansLoading || planOptions.length === 0"
                   required
                 />
+                <v-alert
+                  v-if="plansLoadError && !plansLoading"
+                  type="error"
+                  variant="tonal"
+                  density="compact"
+                  class="mt-2"
+                >
+                  套餐加载失败。<a href="#" class="text-primary" @click.prevent="loadPlans">重试</a>
+                </v-alert>
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
@@ -68,7 +79,7 @@
               <v-btn
                 color="primary"
                 :loading="lookupLoading"
-                :disabled="normalizedPhones.length === 0 || !remark"
+                :disabled="normalizedPhones.length === 0 || !remark || !planCode || plansLoading"
                 @click="onSubmitStep1"
               >
                 查询用户信息
@@ -252,9 +263,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h, ref, watch } from 'vue';
+import { computed, h, onMounted, ref, watch } from 'vue';
 
+import { type MembershipPlanItem, getMembershipPlans } from '@/api/adminApi';
 import {
+  GRANTABLE_PLAN_CODES,
   type GrantablePlanCode,
   type GrantItem,
   type GrantResult,
@@ -285,20 +298,21 @@ const snackbar = useSnackbarStore();
 
 const MAX_PHONES = 200;
 
-const planOptions: Array<{ value: GrantablePlanCode; label: string }> = [
-  { value: 'STANDARD_ONE_TIME', label: '标准会员（月付版）¥299/月 · 8000 积分' },
-  { value: 'BASIC_ONE_TIME', label: '基础会员（月付版）¥99/月 · 2500 积分' },
-  { value: 'PREMIUM_ONE_TIME', label: '高级会员（月付版）¥799/月 · 25000 积分' },
-];
+// 套餐选项动态从 /admin/membership-plans 拉取，避免硬编码价格/积分与运营调价不一致。
+// 实际开通时后端会再用 planCode 反查 MembershipPlan 表，UI 这里仅负责展示与默认值。
+const planOptions = ref<Array<{ value: GrantablePlanCode; label: string }>>([]);
+const plansLoading = ref(false);
+const plansLoadError = ref(false);
 
-const planLabelOf = (code: GrantablePlanCode) =>
-  planOptions.find(p => p.value === code)?.label ?? code;
+const planLabelOf = (code: GrantablePlanCode | '') =>
+  (code && planOptions.value.find(p => p.value === code)?.label) || code || '';
 
 // State ----------------------------------------------------------------------
 const step1Form = ref<any>(null);
 
 const currentStep = ref(1);
-const planCode = ref<GrantablePlanCode>('STANDARD_ONE_TIME');
+// 等套餐列表从后端加载完再设默认值（loadPlans 中会自动选 STANDARD_ONE_TIME）。
+const planCode = ref<GrantablePlanCode | ''>('');
 const remark = ref('');
 const phonesRaw = ref('');
 
@@ -462,9 +476,56 @@ const skippedFailedColumns = [
 ];
 
 // Actions --------------------------------------------------------------------
+async function loadPlans() {
+  plansLoading.value = true;
+  plansLoadError.value = false;
+  try {
+    const list = await getMembershipPlans({
+      purchaseMode: 'one_time_month',
+      isActive: true,
+    });
+    // 过滤出 GRANTABLE 白名单内的 plan；按白名单顺序排列（基础 → 标准 → 高级）。
+    const grantableSet = new Set<string>(GRANTABLE_PLAN_CODES);
+    const byCode = new Map<GrantablePlanCode, MembershipPlanItem>();
+    for (const p of list) {
+      if (grantableSet.has(p.code)) {
+        byCode.set(p.code as GrantablePlanCode, p);
+      }
+    }
+    planOptions.value = GRANTABLE_PLAN_CODES.flatMap(code => {
+      const p = byCode.get(code);
+      if (!p) return [];
+      const priceYuan = p.priceYuan ?? p.priceCents / 100;
+      return [
+        {
+          value: code,
+          label: `${p.name}（月付版）¥${priceYuan}/月 · ${p.monthlyCredits} 积分`,
+        },
+      ];
+    });
+    // 默认选中 STANDARD_ONE_TIME；若被禁用就退化到第一个可用项。
+    if (!planCode.value || !planOptions.value.some(o => o.value === planCode.value)) {
+      planCode.value =
+        planOptions.value.find(o => o.value === 'STANDARD_ONE_TIME')?.value ??
+        planOptions.value[0]?.value ??
+        '';
+    }
+  } catch (err: unknown) {
+    plansLoadError.value = true;
+    const msg = extractErrorMessage(err);
+    console.error('[grant] load plans failed:', msg);
+    snackbar.showErrorMessage(`加载套餐列表失败：${msg}`);
+  } finally {
+    plansLoading.value = false;
+  }
+}
+
+onMounted(loadPlans);
+
 async function onSubmitStep1() {
   if (normalizedPhones.value.length === 0) return;
   if (!remark.value) return;
+  if (!planCode.value) return;
 
   // Vuetify 3 的 validate() 是异步的；早期 PR 评审里被多次指出忽略 await 会让校验形同虚设。
   const validation = await step1Form.value?.validate();
@@ -489,16 +550,18 @@ async function onSubmitStep1() {
 
 async function onSubmitStep2() {
   if (pendingItems.value.length === 0) return;
+  if (!planCode.value) return;
   if (!clientRequestId.value) {
     // 没有 lookup 就不应该到 step2，但兜底兼容 hot-reload / 异常路径。
     clientRequestId.value = crypto.randomUUID();
   }
 
+  const submitPlanCode = planCode.value;
   grantLoading.value = true;
   try {
     const res = await grantMemberships({
       items: pendingItems.value,
-      planCode: planCode.value,
+      planCode: submitPlanCode,
       periods: 1,
       remark: remark.value,
       clientRequestId: clientRequestId.value,

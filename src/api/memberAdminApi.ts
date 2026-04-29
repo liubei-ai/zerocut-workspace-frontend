@@ -152,6 +152,14 @@ export async function getMemberDetail(subscriptionId: number): Promise<MemberDet
 
 export type GrantablePlanCode = 'BASIC_ONE_TIME' | 'STANDARD_ONE_TIME' | 'PREMIUM_ONE_TIME';
 
+// 与后端 GRANTABLE_PLAN_CODES (grant-members.dto.ts) 对齐的运行时白名单。
+// 顺序即 v-select 中的展示顺序（基础 → 标准 → 高级）。
+export const GRANTABLE_PLAN_CODES: readonly GrantablePlanCode[] = [
+  'BASIC_ONE_TIME',
+  'STANDARD_ONE_TIME',
+  'PREMIUM_ONE_TIME',
+] as const;
+
 export interface LookupRequest {
   phones: string[];
 }
