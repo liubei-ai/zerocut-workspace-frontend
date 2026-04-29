@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import type { GrantResult, GrantResultItem, LookupResultItem } from '@/api/memberAdminApi';
 
 const CSV_BOM = '﻿';
@@ -12,7 +14,7 @@ const STATUS_LABEL: Record<GrantResultItem['status'], string> = {
  * 把单元格值转义为 CSV 字段：
  * - 包裹双引号
  * - 内部双引号转义为 ""
- * - undefined / null 输出为空字符串
+ * - undefined / null 输出为带引号的空单元格 `""`
  */
 function escapeCell(value: string | number | undefined | null): string {
   if (value === undefined || value === null) return '""';
@@ -90,14 +92,7 @@ export function downloadGrantResultCsv(grantResult: GrantResult, ctx: ExportCont
   const csv = buildGrantResultCsv(grantResult, ctx);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const now = new Date();
-  const ts =
-    now.getFullYear().toString().padStart(4, '0') +
-    (now.getMonth() + 1).toString().padStart(2, '0') +
-    now.getDate().toString().padStart(2, '0') +
-    '-' +
-    now.getHours().toString().padStart(2, '0') +
-    now.getMinutes().toString().padStart(2, '0');
+  const ts = moment().format('YYYYMMDD-HHmm');
   const filename = `grant-result-${grantResult.batchId}-${ts}.csv`;
 
   const link = document.createElement('a');
@@ -106,5 +101,7 @@ export function downloadGrantResultCsv(grantResult: GrantResult, ctx: ExportCont
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  // link.click() 触发的下载在某些浏览器（Firefox/Safari）下是异步读取 blob 的，
+  // 同步立即 revoke 可能让下载读到空内容；延迟一段时间再回收。
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
 }

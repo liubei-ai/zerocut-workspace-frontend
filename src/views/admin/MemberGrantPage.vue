@@ -166,7 +166,10 @@
               :disabled="pendingItems.length === 0"
               @click="onSubmitStep2"
             >
-              确认开通 {{ pendingItems.length }} 人
+              确认开通 {{ pendingNewGrantCount }} 人<template
+                v-if="selectedAlreadySubscribedCount > 0"
+                >（另 {{ selectedAlreadySubscribedCount }} 人已有订阅将被跳过）</template
+              >
             </v-btn>
           </div>
         </div>
@@ -261,9 +264,24 @@ import {
   grantMemberships,
   lookupMembersByPhones,
 } from '@/api/memberAdminApi';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 
 import { downloadGrantResultCsv } from './utils/exportGrantCsv';
 import { normalizePhones } from './utils/normalizePhones';
+
+// api2client rejects with plain `{ code, message, details }` objects (see api2client.ts),
+// not Error instances — so a vanilla `instanceof Error` check would always fall through
+// to `String(err)` → "[object Object]".
+function extractErrorMessage(err: unknown): string {
+  if (err && typeof err === 'object' && 'message' in err) {
+    const m = (err as { message?: unknown }).message;
+    if (typeof m === 'string' && m) return m;
+  }
+  if (err instanceof Error) return err.message;
+  return String(err);
+}
+
+const snackbar = useSnackbarStore();
 
 const MAX_PHONES = 200;
 
@@ -277,6 +295,8 @@ const planLabelOf = (code: GrantablePlanCode) =>
   planOptions.find(p => p.value === code)?.label ?? code;
 
 // State ----------------------------------------------------------------------
+const step1Form = ref<any>(null);
+
 const currentStep = ref(1);
 const planCode = ref<GrantablePlanCode>('STANDARD_ONE_TIME');
 const remark = ref('');
@@ -288,6 +308,12 @@ const grantLoading = ref(false);
 const lookupResult = ref<LookupResult | null>(null);
 const grantResult = ref<GrantResult | null>(null);
 
+// Stable across retries within the same submission attempt — backend uses this
+// as the idempotency key in a 10-minute window. Regenerated per fresh batch
+// (after a successful step-1 lookup) so a retried network failure does NOT
+// produce a duplicate grant.
+const clientRequestId = ref('');
+
 const stepperItems = [
   { title: '录入手机号', value: 1 },
   { title: '预览与勾选', value: 2 },
@@ -295,7 +321,8 @@ const stepperItems = [
 ];
 
 // Step 1 derived state -------------------------------------------------------
-const normalizedPhones = computed(() => normalizePhones(phonesRaw.value).slice(0, MAX_PHONES));
+const allParsedPhones = computed(() => normalizePhones(phonesRaw.value));
+const normalizedPhones = computed(() => allParsedPhones.value.slice(0, MAX_PHONES));
 
 const phoneHint = computed(() => {
   const total = normalizedPhones.value.length;
@@ -303,9 +330,9 @@ const phoneHint = computed(() => {
 });
 
 const phoneOverflowWarning = computed(() => {
-  const allParsed = normalizePhones(phonesRaw.value);
-  if (allParsed.length > MAX_PHONES) {
-    return `单次最多 ${MAX_PHONES} 个手机号，已自动截取前 ${MAX_PHONES} 个；多余 ${allParsed.length - MAX_PHONES} 个被忽略。`;
+  const total = allParsedPhones.value.length;
+  if (total > MAX_PHONES) {
+    return `单次最多 ${MAX_PHONES} 个手机号，已自动截取前 ${MAX_PHONES} 个；多余 ${total - MAX_PHONES} 个被忽略。`;
   }
   return '';
 });
@@ -396,6 +423,19 @@ const pendingItems = computed<GrantItem[]>(() => {
   return out;
 });
 
+// 已勾选行中已经存在订阅的人数 —— 提交后会被后端 skip。
+// 单独展示，避免按钮上"开通 N 人"的承诺与实际"成功 N-M 人"不一致。
+const selectedAlreadySubscribedCount = computed(() => {
+  const selectedSet = new Set(selectedRowKeys.value);
+  return foundTableRows.value.filter(
+    row => selectedSet.has(row.rowKey) && !!row.currentSubscription
+  ).length;
+});
+
+const pendingNewGrantCount = computed(
+  () => pendingItems.value.length - selectedAlreadySubscribedCount.value
+);
+
 // Step 3 derived state -------------------------------------------------------
 const successResults = computed<GrantResultItem[]>(
   () => grantResult.value?.results.filter(r => r.status === 'success') ?? []
@@ -426,18 +466,22 @@ async function onSubmitStep1() {
   if (normalizedPhones.value.length === 0) return;
   if (!remark.value) return;
 
+  // Vuetify 3 的 validate() 是异步的；早期 PR 评审里被多次指出忽略 await 会让校验形同虚设。
+  const validation = await step1Form.value?.validate();
+  if (validation && validation.valid === false) return;
+
   lookupLoading.value = true;
   try {
-    // US2/T037: lookup 接口在 US2 阶段实现；当前会得到 NotImplementedException 错误。
-    // 为让 US1 happy path 在 US2 落地前也可演示，约定：lookup 失败时降级用空 workspaces 路径。
-    // 真正的端到端流程在 US2 完成后才能跑通。
     const res = await lookupMembersByPhones({ phones: normalizedPhones.value });
     lookupResult.value = res;
+    // 新一批查询成功 → 为本批次生成新的 clientRequestId；
+    // 后续 step2 的所有重试都会复用它，使后端 10 分钟幂等窗口生效。
+    clientRequestId.value = crypto.randomUUID();
     currentStep.value = 2;
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = extractErrorMessage(err);
     console.error('[grant] lookup failed:', msg);
-    alert(`查询失败：${msg}`);
+    snackbar.showErrorMessage(`查询失败：${msg}`);
   } finally {
     lookupLoading.value = false;
   }
@@ -445,23 +489,27 @@ async function onSubmitStep1() {
 
 async function onSubmitStep2() {
   if (pendingItems.value.length === 0) return;
+  if (!clientRequestId.value) {
+    // 没有 lookup 就不应该到 step2，但兜底兼容 hot-reload / 异常路径。
+    clientRequestId.value = crypto.randomUUID();
+  }
 
   grantLoading.value = true;
   try {
-    const clientRequestId = crypto.randomUUID();
     const res = await grantMemberships({
       items: pendingItems.value,
       planCode: planCode.value,
       periods: 1,
       remark: remark.value,
-      clientRequestId,
+      clientRequestId: clientRequestId.value,
     });
     grantResult.value = res;
     currentStep.value = 3;
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = extractErrorMessage(err);
     console.error('[grant] submit failed:', msg);
-    alert(`开通失败：${msg}`);
+    snackbar.showErrorMessage(`开通失败：${msg}`);
+    // 失败时保留 clientRequestId，让用户重试时复用同一个 ID 触发后端幂等。
   } finally {
     grantLoading.value = false;
   }
@@ -479,6 +527,7 @@ function resetForNextBatch() {
   remark.value = '';
   lookupResult.value = null;
   grantResult.value = null;
+  clientRequestId.value = '';
   currentStep.value = 1;
 }
 
