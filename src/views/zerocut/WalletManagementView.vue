@@ -386,7 +386,7 @@ const headerSecondaryActions = computed(() => [
       <v-data-table-server
         :headers="[
           { title: $t('zerocut.wallet.columns.time'), key: 'createdAt', sortable: true },
-          { title: $t('zerocut.wallet.columns.amount'), key: 'amount', sortable: true },
+          { title: $t('zerocut.wallet.columns.amount'), key: 'amountYuan', sortable: false },
           { title: $t('zerocut.wallet.columns.credits'), key: 'creditsAmount', sortable: true },
           {
             title: $t('zerocut.wallet.columns.remainingCredits'),
@@ -424,7 +424,7 @@ const headerSecondaryActions = computed(() => [
           {{ formatDate(item.createdAt) }}
         </template>
 
-        <template #item.amount="{ item }">
+        <template #item.amountYuan="{ item }">
           <span class="text-success font-weight-medium"> ¥{{ item.amountYuan }} </span>
         </template>
 

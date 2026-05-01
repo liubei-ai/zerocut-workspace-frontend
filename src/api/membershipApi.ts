@@ -15,7 +15,6 @@ export interface MembershipPlanDto {
   isActive: boolean;
   wechatPapayPlanId?: string;
   features: IMembershipPlanFeature[];
-  firstMonthPriceCents?: number;
   // Pre-formatted display strings from server (frontend never does math).
   priceYuan: string;
   firstMonthPriceYuan?: string;

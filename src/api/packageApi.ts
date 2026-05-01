@@ -13,7 +13,6 @@ export interface PackageInfo {
   /** Pre-computed savings (yuan string), and discount percent. */
   savingsYuan: string;
   discountPercent: number;
-  discountRate: string;
   creditsAmount: number;
   isActive: boolean;
   description?: string;
