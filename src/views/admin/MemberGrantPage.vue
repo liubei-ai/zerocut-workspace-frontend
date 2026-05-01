@@ -495,11 +495,10 @@ async function loadPlans() {
     planOptions.value = GRANTABLE_PLAN_CODES.flatMap(code => {
       const p = byCode.get(code);
       if (!p) return [];
-      const priceYuan = p.priceYuan ?? p.priceCents / 100;
       return [
         {
           value: code,
-          label: `${p.name}（月付版）¥${priceYuan}/月 · ${p.monthlyCredits} 积分`,
+          label: `${p.name}（月付版）¥${p.priceYuan}/月 · ${p.monthlyCredits} 积分`,
         },
       ];
     });

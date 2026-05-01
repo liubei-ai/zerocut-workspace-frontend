@@ -20,7 +20,7 @@
         <!-- Amount Column -->
         <template #item.amountCents="{ item }">
           <span class="text-body-1 font-weight-medium">
-            {{ formatCurrency(item.amountCents, item.currency) }}
+            {{ formatCurrency(item.amountYuan, item.currency) }}
           </span>
         </template>
 
@@ -115,10 +115,9 @@ const headers = [
   { title: '交易详情', key: 'details', sortable: false },
 ];
 
-function formatCurrency(amountCents: number, currency: string): string {
-  const amount = amountCents / 100;
+function formatCurrency(amountYuan: string, currency: string): string {
   const symbol = currency === 'CNY' ? '¥' : currency;
-  return `${symbol}${amount.toFixed(2)}`;
+  return `${symbol}${amountYuan}`;
 }
 
 function getStatusColor(status: OrderStatus): string {

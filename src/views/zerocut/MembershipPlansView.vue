@@ -45,9 +45,9 @@ const router = useRouter();
 type PriceListTier = 'basic' | 'standard' | 'premium';
 
 type ModeCell = {
-  priceYuan: number;
-  unitPriceYuanPer100: number;
-  discountZhe: number;
+  priceYuan: string;
+  unitPriceYuanPer100: string;
+  discountZhe: string;
 };
 
 type TierComparisonRow = {
@@ -96,7 +96,7 @@ function formatPlanFeatures(plan: MembershipPlanDto): string[] {
 
 function formatPrice(
   plan: MembershipPlanDto,
-  allPlans: MembershipPlanDto[]
+  _allPlans: MembershipPlanDto[]
 ): string | PriceDisplay {
   if (plan.purchaseMode === 'auto_monthly') {
     if (plan.firstMonthPriceYuan != null) {
@@ -110,26 +110,16 @@ function formatPrice(
     // One-time monthly: display as "¥XX/月"
     return t('zerocut.membership.prices.monthly', { price: plan.priceYuan });
   } else if (plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year') {
-    // Yearly plans: return structured price object
-    const monthlyPrice = (plan.priceYuan / 12).toFixed(2);
-
-    // Calculate discount percentage based on one_time_month price
-    const oneTimeMonthlyPlan = allPlans.find(
-      p => p.tier === plan.tier && p.purchaseMode === 'one_time_month'
-    );
-
-    let discount: string | undefined;
-    if (oneTimeMonthlyPlan && oneTimeMonthlyPlan.priceYuan > 0) {
-      const basePrice = oneTimeMonthlyPlan.priceYuan * 12;
-      const percent = Math.round((1 - plan.priceYuan / basePrice) * 100);
-      if (Number.isFinite(percent) && percent > 0) {
-        discount = t('zerocut.membership.prices.discount', { percent });
-      }
-    }
-
+    // Yearly plans: server pre-computes monthly equivalent and discount %.
+    const discount =
+      plan.yearlyDiscountPercent != null && plan.yearlyDiscountPercent > 0
+        ? t('zerocut.membership.prices.discount', { percent: plan.yearlyDiscountPercent })
+        : undefined;
     return {
       main: t('zerocut.membership.prices.yearly', { price: plan.priceYuan }),
-      monthlyEquivalent: t('zerocut.membership.prices.monthlyEquivalent', { price: monthlyPrice }),
+      monthlyEquivalent: t('zerocut.membership.prices.monthlyEquivalent', {
+        price: plan.monthlyEquivalentYuan ?? plan.priceYuan,
+      }),
       discount,
     };
   } else {
@@ -143,30 +133,30 @@ function formatCredits(monthlyCredits: number): string {
   });
 }
 
-function formatYuanPrice(priceYuan: number): string {
+function formatYuanPrice(priceYuan: string): string {
   return t('zerocut.membership.priceList.formats.priceYuan', { price: priceYuan });
 }
 
-function formatYuanYearly(priceYuan: number): string {
+function formatYuanYearly(priceYuan: string): string {
   return t('zerocut.membership.priceList.formats.priceYearly', { price: priceYuan });
 }
 
-function formatUnitPricePer100(unitPriceYuanPer100: number): string {
+function formatUnitPricePer100(unitPriceYuanPer100: string): string {
   return t('zerocut.membership.priceList.formats.unitPricePer100', {
-    price: unitPriceYuanPer100.toFixed(2),
+    price: unitPriceYuanPer100,
   });
 }
 
-function formatDiscountPer100(discountZhe: number): string {
+function formatDiscountPer100(discountZhe: string): string {
   return t('zerocut.membership.priceList.formats.discountPer100', {
-    discount: discountZhe.toFixed(1),
+    discount: discountZhe,
   });
 }
 
 function getDiscountLabelByUnitPricePer100(plan: MembershipPlanDto): string | undefined {
-  const discountZhe = plan.discountZhe;
-  if (!Number.isFinite(discountZhe) || discountZhe <= 0 || discountZhe >= 10) return undefined;
-  return formatDiscountPer100(discountZhe);
+  const discount = Number(plan.discountZhe ?? '0');
+  if (!Number.isFinite(discount) || discount <= 0 || discount >= 10) return undefined;
+  return formatDiscountPer100(plan.discountZhe);
 }
 
 const priceComparisonRows = computed<TierComparisonRow[]>(() => {

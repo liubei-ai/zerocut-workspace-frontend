@@ -28,7 +28,7 @@ function openExpired() {
           <v-card class="pa-4 text-center" elevation="2">
             <v-icon size="32" color="success" class="mb-2">mdi-account-cash</v-icon>
             <div class="text-h6 font-weight-bold mb-1">
-              ¥{{ props.walletInfo?.userRechargeAmount || 0 }}
+              ¥{{ props.walletInfo?.userRechargeAmountYuan ?? '0.00' }}
             </div>
             <div class="text-caption text-medium-emphasis">
               {{ $t('zerocut.wallet.userRechargeAmount') }}

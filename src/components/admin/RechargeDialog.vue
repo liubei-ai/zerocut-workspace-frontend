@@ -264,7 +264,7 @@ interface Emits {
   (
     e: 'confirm',
     data: {
-      amount: number;
+      amountYuan: string;
       creditsAmount?: number;
       creditsValidityDays?: number;
       paymentMethod: 'manual' | 'give';
@@ -460,12 +460,13 @@ const handleConfirm = () => {
   if (!isValid.value) return;
 
   const data: {
-    amount: number;
+    amountYuan: string;
     creditsAmount?: number;
     creditsValidityDays?: number;
     paymentMethod: 'manual' | 'give';
   } = {
-    amount: rechargeType.value === 'give' ? 0 : parseFloat(amount.value),
+    // 不再做 yuan→cents 计算，直接把用户输入的元字符串发到服务端
+    amountYuan: rechargeType.value === 'give' ? '0' : amount.value.trim(),
     paymentMethod: rechargeType.value,
     creditsValidityDays: parseInt(creditsValidityDays.value),
   };

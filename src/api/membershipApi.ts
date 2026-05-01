@@ -15,11 +15,15 @@ export interface MembershipPlanDto {
   isActive: boolean;
   wechatPapayPlanId?: string;
   features: IMembershipPlanFeature[];
-  priceYuan: number;
-  discountZhe: number;
-  unitPriceYuanPer100: number;
-  baseUnitPriceYuanPer100: number;
-  firstMonthPriceYuan?: number;
+  firstMonthPriceCents?: number;
+  // Pre-formatted display strings from server (frontend never does math).
+  priceYuan: string;
+  firstMonthPriceYuan?: string;
+  monthlyEquivalentYuan?: string;
+  yearlyDiscountPercent?: number;
+  discountZhe: string;
+  unitPriceYuanPer100: string;
+  baseUnitPriceYuanPer100: string;
 }
 
 export interface IMembershipPlanFeature {
@@ -38,7 +42,7 @@ export interface IMembershipPlanFeature {
 
 export interface CreateMembershipPaymentOrderParams {
   planCode: string;
-  totalAmount: number;
+  totalAmountCents: number;
   workspaceId: string;
 }
 
@@ -111,7 +115,7 @@ export async function getMembershipPlans(workspaceId: string) {
  */
 export async function purchaseOneTimeSubscription(params: {
   planCode: string;
-  totalAmount: number;
+  totalAmountCents: number;
   workspaceId: string;
 }) {
   const response = await client.post<{
@@ -157,7 +161,7 @@ export interface PurchaseOneTimeJsapiResponse {
 
 export async function purchaseOneTimeSubscriptionJsapi(params: {
   planCode: string;
-  totalAmount: number;
+  totalAmountCents: number;
   workspaceId: string;
 }) {
   const response = await client.post<PurchaseOneTimeJsapiResponse>(

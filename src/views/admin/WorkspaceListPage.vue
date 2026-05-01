@@ -146,7 +146,7 @@ const openRechargeDialog = (workspace: WorkspaceListItem) => {
 
 // 处理充值
 const handleRecharge = async (data: {
-  amount: number;
+  amountYuan: string;
   creditsAmount?: number;
   creditsValidityDays?: number;
   paymentMethod: 'manual' | 'give';
@@ -158,7 +158,7 @@ const handleRecharge = async (data: {
 
     const rechargeData: any = {
       workspaceId: selectedWorkspace.value.workspaceId,
-      amount: data.amount,
+      amountYuan: data.amountYuan,
       paymentMethod: data.paymentMethod,
     };
 

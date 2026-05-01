@@ -59,6 +59,8 @@ export interface SubscriptionOrderItem {
   orderId: number;
   orderNo: string;
   amountCents: number;
+  /** Pre-formatted yuan string for display (e.g. "9.99"). */
+  amountYuan: string;
   currency: string;
   purpose: OrderPurpose;
   status: OrderStatus;

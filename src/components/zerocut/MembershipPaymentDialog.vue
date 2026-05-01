@@ -370,7 +370,7 @@ const createPaymentOrderNative = async () => {
   try {
     const response = await purchaseOneTimeSubscription({
       planCode: props.membershipPlan!.code,
-      totalAmount: props.membershipPlan!.priceYuan,
+      totalAmountCents: props.membershipPlan!.priceCents,
       workspaceId: workspaceStore.currentWorkspaceId!,
     });
 
@@ -398,7 +398,7 @@ const createPaymentOrderJsapi = async () => {
   try {
     const response = await purchaseOneTimeSubscriptionJsapi({
       planCode: props.membershipPlan!.code,
-      totalAmount: props.membershipPlan!.priceYuan,
+      totalAmountCents: props.membershipPlan!.priceCents,
       workspaceId: workspaceStore.currentWorkspaceId!,
     });
 

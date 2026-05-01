@@ -19,50 +19,27 @@ const emit = defineEmits<{
   refresh: [packageCode: string];
 }>();
 
-// 格式化价格
-const formatPrice = (price: string): string => {
-  return parseFloat(price).toFixed(2);
-};
-
-// 是否有折扣
-const hasDiscount = computed((): boolean => {
-  return parseFloat(props.packageInfo.currentPrice) < parseFloat(props.packageInfo.originalPrice);
-});
-
-// 折扣百分比
-const discountPercentage = computed((): number => {
-  if (!hasDiscount.value) return 0;
-  const current = parseFloat(props.packageInfo.currentPrice);
-  const original = parseFloat(props.packageInfo.originalPrice);
-  return Math.round((1 - current / original) * 100);
-});
+// 是否有折扣（依据服务端下发的 currentPriceCents/originalPriceCents 整数比较）
+const hasDiscount = computed(
+  (): boolean => props.packageInfo.currentPriceCents < props.packageInfo.originalPriceCents
+);
 
 // 获取折扣标签颜色
 const getDiscountColor = computed((): string => {
   if (!hasDiscount.value) return 'grey';
-  if (discountPercentage.value >= 50) return 'error';
-  if (discountPercentage.value >= 20) return 'warning';
+  if (props.packageInfo.discountPercent >= 50) return 'error';
+  if (props.packageInfo.discountPercent >= 20) return 'warning';
   return 'success';
 });
 
 // 获取折扣标签文本
 const getDiscountText = computed((): string => {
   if (!hasDiscount.value) return '';
-  return `${discountPercentage.value}% OFF`;
+  return `${props.packageInfo.discountPercent}% OFF`;
 });
 
 // 是否显示折扣标签
-const showDiscountChip = computed((): boolean => {
-  return hasDiscount.value;
-});
-
-// 节省金额
-const savedAmount = computed((): string => {
-  if (!hasDiscount.value) return '0.00';
-  const original = parseFloat(props.packageInfo.originalPrice);
-  const current = parseFloat(props.packageInfo.currentPrice);
-  return (original - current).toFixed(2);
-});
+const showDiscountChip = computed((): boolean => hasDiscount.value);
 
 // 处理购买点击
 const handlePurchase = () => {
@@ -113,17 +90,19 @@ const handlePurchase = () => {
         <!-- 原价（如果有折扣） -->
         <div v-if="hasDiscount" class="mb-1">
           <span class="text-decoration-line-through text-medium-emphasis">
-            ¥{{ formatPrice(packageInfo.originalPrice) }}
+            ¥{{ packageInfo.originalPriceYuan }}
           </span>
         </div>
 
         <!-- 现价 -->
         <div class="text-h5 font-weight-bold" :class="hasDiscount ? 'text-success' : ''">
-          ¥{{ formatPrice(packageInfo.currentPrice) }}
+          ¥{{ packageInfo.currentPriceYuan }}
         </div>
 
         <!-- 节省金额 -->
-        <div v-if="hasDiscount" class="text-caption text-success">节省 ¥{{ savedAmount }}</div>
+        <div v-if="hasDiscount" class="text-caption text-success">
+          节省 ¥{{ packageInfo.savingsYuan }}
+        </div>
       </div>
 
       <!-- 套餐描述 -->

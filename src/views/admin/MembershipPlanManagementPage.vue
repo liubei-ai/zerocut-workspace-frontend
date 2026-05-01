@@ -93,23 +93,12 @@ const customKeySort = {
 
 const rows = computed(() => {
   return plans.value.map(p => {
-    const priceYuan = p.priceYuan ?? p.priceCents / 100;
-    const firstMonthPriceYuan =
-      p.firstMonthPriceYuan ??
-      (p.firstMonthPriceCents != null ? p.firstMonthPriceCents / 100 : null);
     const creditsPerPeriod = p.monthlyCredits * p.billingIntervalMonths;
-    const unitPriceYuanPer100 =
-      p.unitPriceYuanPer100 ??
-      (creditsPerPeriod > 0 ? (priceYuan * 100) / creditsPerPeriod : priceYuan);
-    const discount = p.discountZhe ?? 0;
-
+    const discount = Number(p.discountZhe ?? '0');
     return {
       ...p,
-      priceYuan,
-      firstMonthPriceYuan,
       creditsPerPeriod,
-      unitPriceYuanPer100,
-      discountText: discount > 0 ? `${discount.toFixed(1)}折` : '-',
+      discountText: discount > 0 ? `${p.discountZhe}折` : '-',
     };
   });
 });
@@ -281,11 +270,11 @@ onMounted(() => {
         </template>
 
         <template #item.priceYuan="{ item }">
-          {{ item.priceYuan.toFixed(2) }}
+          {{ item.priceYuan }}
         </template>
 
         <template #item.firstMonthPriceYuan="{ item }">
-          {{ item.firstMonthPriceYuan != null ? item.firstMonthPriceYuan.toFixed(2) : '-' }}
+          {{ item.firstMonthPriceYuan ?? '-' }}
         </template>
 
         <template #item.creditsPerPeriod="{ item }">
@@ -293,7 +282,7 @@ onMounted(() => {
         </template>
 
         <template #item.unitPriceYuanPer100="{ item }">
-          {{ item.unitPriceYuanPer100.toFixed(2) }}
+          {{ item.unitPriceYuanPer100 }}
         </template>
 
         <template #item.isActive="{ item }">

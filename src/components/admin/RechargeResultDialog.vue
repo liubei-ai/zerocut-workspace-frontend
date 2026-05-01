@@ -27,7 +27,7 @@
                   <v-icon size="20" class="text-medium-emphasis mr-2">mdi-currency-cny</v-icon>
                   <span class="text-body-2 text-medium-emphasis">充值金额</span>
                 </div>
-                <div class="text-h6 font-weight-medium text-success">¥{{ result?.amount }}</div>
+                <div class="text-h6 font-weight-medium text-success">¥{{ result?.amountYuan }}</div>
               </v-col>
               <v-col cols="12" sm="6">
                 <div class="d-flex align-center mb-3">

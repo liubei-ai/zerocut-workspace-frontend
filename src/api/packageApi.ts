@@ -5,8 +5,14 @@ export interface PackageInfo {
   id: string;
   packageCode: string;
   packageName: string;
-  originalPrice: string;
-  currentPrice: string;
+  originalPriceCents: number;
+  currentPriceCents: number;
+  /** Pre-formatted display strings (e.g. "199.00") */
+  originalPriceYuan: string;
+  currentPriceYuan: string;
+  /** Pre-computed savings (yuan string), and discount percent. */
+  savingsYuan: string;
+  discountPercent: number;
   discountRate: string;
   creditsAmount: number;
   isActive: boolean;
@@ -19,7 +25,7 @@ export interface PackageInfo {
 // 创建支付订单请求参数
 export interface CreatePaymentOrderParams {
   packageCode: string;
-  totalAmount: number;
+  totalAmountCents: number;
   workspaceId: string;
 }
 
@@ -42,7 +48,7 @@ export interface JsapiPayParams {
 // 创建JSAPI支付订单请求参数
 export interface CreateJsapiPaymentOrderParams {
   packageCode: string;
-  totalAmount: number;
+  totalAmountCents: number;
   workspaceId: string;
 }
 

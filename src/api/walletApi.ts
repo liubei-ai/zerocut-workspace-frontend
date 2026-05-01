@@ -3,8 +3,9 @@ import client from './api2client';
 
 // 后端钱包信息响应类型
 export interface WalletInfo {
-  // 按充值类型分类统计
-  userRechargeAmount: number; // 用户充值金额（wechat/alipay）
+  // 按充值类型分类统计（金额单位：人民币分；展示用 *Yuan 字符串）
+  userRechargeAmountCents: number;
+  userRechargeAmountYuan: string;
   userRechargeCredits: number; // 用户充值积分（wechat/alipay）
   platformGiftCredits: number; // 平台赠送积分（bot/manual/give）
   totalCreditsConsumption: number; // 保留：总消耗积分
@@ -15,7 +16,9 @@ export interface WalletInfo {
 // 后端交易记录项类型
 export interface TransactionItem {
   id: string;
-  amount: number;
+  amountCents: number;
+  /** Pre-formatted yuan string (e.g. "9.99") */
+  amountYuan: string;
   creditsAmount: number;
   createdAt: string;
   orderNo: string;

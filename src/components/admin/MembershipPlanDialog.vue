@@ -132,11 +132,8 @@ watch(
     formData.value.name = props.plan.name;
     formData.value.tier = props.plan.tier;
     formData.value.purchaseMode = props.plan.purchaseMode;
-    formData.value.priceYuan = (props.plan.priceCents / 100).toFixed(2);
-    formData.value.firstMonthPriceYuan =
-      props.plan.firstMonthPriceCents != null
-        ? (props.plan.firstMonthPriceCents / 100).toFixed(2)
-        : '';
+    formData.value.priceYuan = props.plan.priceYuan ?? '';
+    formData.value.firstMonthPriceYuan = props.plan.firstMonthPriceYuan ?? '';
     formData.value.currency = props.plan.currency || 'CNY';
     formData.value.monthlyCredits = String(props.plan.monthlyCredits);
     formData.value.billingIntervalMonths = String(props.plan.billingIntervalMonths);
@@ -156,13 +153,8 @@ const save = async () => {
 
   loading.value = true;
   try {
-    const priceYuanNum = Number(formData.value.priceYuan);
-    const priceCents = Math.round(priceYuanNum * 100);
+    const priceYuan = formData.value.priceYuan.trim();
     const firstMonthPriceYuanText = formData.value.firstMonthPriceYuan.trim();
-    const firstMonthPriceCents =
-      firstMonthPriceYuanText === ''
-        ? undefined
-        : Math.round(Number(firstMonthPriceYuanText) * 100);
     const monthlyCredits = Number(formData.value.monthlyCredits);
     const billingIntervalMonths = Number(formData.value.billingIntervalMonths);
 
@@ -171,21 +163,20 @@ const save = async () => {
       name: formData.value.name.trim(),
       tier: formData.value.tier,
       purchaseMode: formData.value.purchaseMode,
-      priceCents,
+      priceYuan,
       currency: formData.value.currency.trim(),
       monthlyCredits,
       billingIntervalMonths,
       isActive: formData.value.isActive,
       wechatPapayPlanId: formData.value.wechatPapayPlanId.trim() || undefined,
-      firstMonthPriceCents,
+      firstMonthPriceYuan: firstMonthPriceYuanText === '' ? undefined : firstMonthPriceYuanText,
       features: formData.value.features,
     };
 
     if (isEdit.value) {
       const payload: UpdateMembershipPlanParams = {
         ...basePayload,
-        firstMonthPriceCents:
-          firstMonthPriceYuanText === '' ? null : (basePayload.firstMonthPriceCents as number),
+        firstMonthPriceYuan: firstMonthPriceYuanText === '' ? null : firstMonthPriceYuanText,
       };
       emit('save', payload);
       return;

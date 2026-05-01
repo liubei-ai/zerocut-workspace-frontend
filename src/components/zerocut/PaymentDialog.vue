@@ -34,7 +34,7 @@
                 <div class="d-flex justify-space-between align-center">
                   <span class="text-body-2 text-medium-emphasis">支付金额</span>
                   <span class="text-h6 font-weight-bold text-primary"
-                    >¥{{ packageInfo?.currentPrice }}</span
+                    >¥{{ packageInfo?.currentPriceYuan }}</span
                   >
                 </div>
               </v-card-text>
@@ -327,7 +327,7 @@ const createNativePaymentOrder = async () => {
 
     const response = await createWechatPayOrder({
       packageCode: props.packageInfo.packageCode,
-      totalAmount: parseFloat(props.packageInfo.currentPrice),
+      totalAmountCents: props.packageInfo.currentPriceCents,
       workspaceId: workspaceStore.currentWorkspaceId,
     });
 
@@ -364,7 +364,7 @@ const createJsapiPaymentOrder = async () => {
 
     const response = await createWechatPayJsapiOrder({
       packageCode: props.packageInfo.packageCode,
-      totalAmount: parseFloat(props.packageInfo.currentPrice),
+      totalAmountCents: props.packageInfo.currentPriceCents,
       workspaceId: workspaceStore.currentWorkspaceId,
     });
 

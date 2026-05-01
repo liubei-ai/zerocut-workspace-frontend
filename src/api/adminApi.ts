@@ -32,7 +32,7 @@ export interface QueryWorkspacesParams {
 // 充值请求参数接口
 export interface CreateRechargeParams {
   workspaceId?: string;
-  amount: number;
+  amountYuan: string;
   creditsAmount?: number;
   creditsValidityDays?: number;
   paymentMethod?: 'manual' | 'give';
@@ -43,7 +43,8 @@ export interface RechargeResponse {
   id: number;
   orderNo: string;
   workspaceId: string;
-  amount: number;
+  amountCents: number;
+  amountYuan: string;
   creditsAmount: number;
   status: string;
   paymentMethod: string;
@@ -453,11 +454,14 @@ export interface MembershipPlanItem {
   createdAt: string;
   updatedAt: string;
   deletedAt?: string | null;
-  priceYuan?: number;
-  baseUnitPriceYuanPer100?: number;
-  unitPriceYuanPer100?: number;
-  discountZhe?: number;
-  firstMonthPriceYuan?: number;
+  // Pre-formatted display strings from server (frontend never does math).
+  priceYuan: string;
+  baseUnitPriceYuanPer100: string;
+  unitPriceYuanPer100: string;
+  discountZhe: string;
+  firstMonthPriceYuan?: string;
+  monthlyEquivalentYuan?: string;
+  yearlyDiscountPercent?: number;
 }
 
 export interface QueryMembershipPlansParams {
@@ -471,13 +475,13 @@ export interface CreateMembershipPlanParams {
   name: string;
   tier: MembershipTier;
   purchaseMode: PurchaseMode;
-  priceCents: number;
+  priceYuan: string;
   currency?: string;
   monthlyCredits: number;
   billingIntervalMonths: number;
   isActive?: boolean;
   wechatPapayPlanId?: string;
-  firstMonthPriceCents?: number;
+  firstMonthPriceYuan?: string;
   features?: IMembershipPlanFeature[];
 }
 
@@ -486,13 +490,13 @@ export interface UpdateMembershipPlanParams {
   name?: string;
   tier?: MembershipTier;
   purchaseMode?: PurchaseMode;
-  priceCents?: number;
+  priceYuan?: string;
   currency?: string;
   monthlyCredits?: number;
   billingIntervalMonths?: number;
   isActive?: boolean;
   wechatPapayPlanId?: string;
-  firstMonthPriceCents?: number | null;
+  firstMonthPriceYuan?: string | null;
   features?: IMembershipPlanFeature[];
 }
 
