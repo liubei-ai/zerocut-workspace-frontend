@@ -93,13 +93,9 @@
               </span>
             </div>
 
-            <!-- 兑换比例提示 -->
-            <v-card
-              v-if="showExchangeRateInfo"
-              variant="outlined"
-              class="pa-4 mb-3"
-              :color="exchangeRateCardColor"
-            >
+            <!-- 兑换比例提示（不再使用 pastel 背景，避免与 text-medium-emphasis 文字对比度不足；
+                 警示语义由左上角彩色图标和底部 v-alert 承担）-->
+            <v-card v-if="showExchangeRateInfo" variant="outlined" class="pa-4 mb-3">
               <div class="d-flex align-center mb-2">
                 <v-icon :color="exchangeRateIconColor" size="20" class="mr-2">
                   {{ exchangeRateIcon }}
@@ -200,7 +196,6 @@
               v-if="creditsAmount && parseInt(creditsAmount) > 0"
               variant="outlined"
               class="pa-4 mb-3"
-              color="orange-lighten-5"
             >
               <div class="d-flex align-center mb-2">
                 <v-icon color="orange" size="20" class="mr-2">mdi-gift</v-icon>
@@ -376,15 +371,6 @@ const exchangeRateColor = computed(() => {
   if (rate >= 40) return 'error';
   if (rate >= 30) return 'warning';
   return 'primary';
-});
-
-const exchangeRateCardColor = computed(() => {
-  if (!isCustomExchangeRate.value) return 'blue-lighten-5';
-
-  const rate = currentExchangeRate.value;
-  if (rate >= 40) return 'red-lighten-5';
-  if (rate >= 30) return 'orange-lighten-5';
-  return 'blue-lighten-5';
 });
 
 const exchangeRateIconColor = computed(() => {
