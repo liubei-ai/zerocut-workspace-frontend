@@ -415,24 +415,31 @@ onMounted(refreshAll);
                     clearable
                   />
                 </v-col>
+                <v-col cols="12" md="6">
+                  <div class="d-flex gap-2">
+                    <v-btn
+                      color="primary"
+                      variant="flat"
+                      prepend-icon="mdi-magnify"
+                      @click="
+                        () => {
+                          consumptionPagination.page = 1;
+                          fetchConsumption();
+                        }
+                      "
+                    >
+                      搜索</v-btn
+                    >
+                    <v-btn
+                      variant="text"
+                      prepend-icon="mdi-backspace"
+                      @click="resetConsumptionFilters"
+                    >
+                      重置
+                    </v-btn>
+                  </div>
+                </v-col>
               </v-row>
-              <div class="d-flex gap-2">
-                <v-btn
-                  color="primary"
-                  variant="flat"
-                  prepend-icon="mdi-magnify"
-                  @click="
-                    () => {
-                      consumptionPagination.page = 1;
-                      fetchConsumption();
-                    }
-                  "
-                  >搜索</v-btn
-                >
-                <v-btn variant="text" prepend-icon="mdi-backspace" @click="resetConsumptionFilters"
-                  >重置</v-btn
-                >
-              </div>
             </v-card-text>
           </v-card>
           <v-card flat>
