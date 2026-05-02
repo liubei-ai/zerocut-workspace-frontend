@@ -340,7 +340,7 @@ onMounted(refreshAll);
             <v-data-table-server
               :headers="[
                 { title: '时间', key: 'createdAt', sortable: true },
-                { title: '金额', key: 'amount', sortable: true },
+                { title: '金额', key: 'amountYuan', sortable: false },
                 { title: '积分', key: 'creditsAmount', sortable: true },
                 { title: '剩余积分', key: 'remainingCredits', sortable: true },
                 { title: '剩余有效期', key: 'validity', sortable: false },
