@@ -51,6 +51,20 @@ const zerocutRoutes = [
       import(/* webpackChunkName: "usage-logs" */ '@/views/zerocut/UsageLogsView.vue'),
   },
   {
+    path: '/usage/project/:projectId',
+    name: 'UsageProjectDetail',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '项目使用详情',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "usage-project-detail" */ '@/views/zerocut/ProjectUsageDetailView.vue'
+      ),
+  },
+  {
     path: '/wallet',
     name: 'Wallet',
     meta: {

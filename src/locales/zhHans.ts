@@ -306,6 +306,47 @@ export default {
     usage: {
       title: '使用日志',
       subtitle: '查看详细的积分使用记录',
+      tabs: {
+        consumption: '积分消费记录',
+        usage: '使用记录',
+      },
+      records: {
+        source: {
+          workflow: '工作台调用',
+          api: 'API 调用',
+        },
+        columns: {
+          projectName: '项目',
+          callCount: '调用次数',
+          creditsConsumed: '消耗积分',
+          lastCalledAt: '最近调用',
+          time: '时间',
+          type: '类型',
+          status: '状态',
+          creditsAmount: '消耗积分',
+          uid: '用户 ID',
+          apiKey: 'API Key',
+          actions: '操作',
+        },
+        empty: {
+          title: '暂无项目',
+          subtitle: '当前工作空间下还没有任何工作流执行记录',
+          detailTitle: '该项目下暂无执行记录',
+        },
+        errors: {
+          fetchProjectsFail: '获取项目列表失败',
+          fetchRecordsFail: '获取工作流记录失败',
+        },
+        detail: {
+          title: '项目详情',
+          createdAt: '创建时间',
+          viewIo: '查看 I/O',
+          dialogTitle: '请求与响应',
+          paramLabel: '请求 (param)',
+          outputLabel: '响应 (output)',
+          linkedTransaction: '关联扣分交易',
+        },
+      },
       filters: {
         title: '筛选条件',
         startDate: '开始日期',

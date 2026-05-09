@@ -158,6 +158,45 @@ export interface VideoProject {
   userId: number;
 }
 
+// Video Workflow Usage Records
+export type VideoWorkflowSource = 'workflow' | 'api';
+
+export interface ProjectOverviewItem {
+  id: number;
+  projectName: string;
+  status?: string;
+  createdAt: string;
+  callCount: number;
+  creditsConsumed: number;
+  lastCalledAt?: string | null;
+}
+
+export interface VideoWorkflowRecordItem {
+  id: number;
+  type: string;
+  status: string;
+  param?: Record<string, any> | null;
+  output?: Record<string, any> | null;
+  createdAt: string;
+  updatedAt: string;
+  uid?: number;
+  apiKey?: string;
+  transactionId?: string;
+  creditsAmount?: number;
+}
+
+export interface ProjectMeta {
+  id: number;
+  projectName: string;
+  status?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectRecordsResponse extends PaginationResponse<VideoWorkflowRecordItem> {
+  project: ProjectMeta;
+}
+
 // API Key Management Types
 export interface CreateApiKeyRequest {
   name: string;

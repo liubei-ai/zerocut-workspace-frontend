@@ -307,6 +307,47 @@ export default {
     usage: {
       title: '利用ログ',
       subtitle: '詳細なポイント使用記録を表示',
+      tabs: {
+        consumption: 'ポイント消費履歴',
+        usage: '利用履歴',
+      },
+      records: {
+        source: {
+          workflow: 'スタジオ呼び出し',
+          api: 'API 呼び出し',
+        },
+        columns: {
+          projectName: 'プロジェクト',
+          callCount: '呼び出し回数',
+          creditsConsumed: '消費ポイント',
+          lastCalledAt: '最終呼び出し',
+          time: '時刻',
+          type: 'タイプ',
+          status: 'ステータス',
+          creditsAmount: '消費ポイント',
+          uid: 'ユーザー ID',
+          apiKey: 'API Key',
+          actions: '操作',
+        },
+        empty: {
+          title: 'プロジェクトがありません',
+          subtitle: 'このワークスペースにはワークフロー実行履歴がまだありません',
+          detailTitle: 'このプロジェクトには実行履歴がありません',
+        },
+        errors: {
+          fetchProjectsFail: 'プロジェクト一覧の取得に失敗しました',
+          fetchRecordsFail: 'ワークフロー履歴の取得に失敗しました',
+        },
+        detail: {
+          title: 'プロジェクト詳細',
+          createdAt: '作成日時',
+          viewIo: 'I/O を表示',
+          dialogTitle: 'リクエストとレスポンス',
+          paramLabel: 'リクエスト (param)',
+          outputLabel: 'レスポンス (output)',
+          linkedTransaction: '関連トランザクション',
+        },
+      },
       filters: {
         title: 'フィルター',
         startDate: '開始日',

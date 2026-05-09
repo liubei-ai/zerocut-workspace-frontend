@@ -310,6 +310,47 @@ export default {
     usage: {
       title: 'Usage Logs',
       subtitle: 'View detailed credits consumption records',
+      tabs: {
+        consumption: 'Credits Consumption',
+        usage: 'Usage Records',
+      },
+      records: {
+        source: {
+          workflow: 'Studio Calls',
+          api: 'API Calls',
+        },
+        columns: {
+          projectName: 'Project',
+          callCount: 'Calls',
+          creditsConsumed: 'Credits',
+          lastCalledAt: 'Last Called',
+          time: 'Time',
+          type: 'Type',
+          status: 'Status',
+          creditsAmount: 'Credits',
+          uid: 'User ID',
+          apiKey: 'API Key',
+          actions: 'Actions',
+        },
+        empty: {
+          title: 'No projects yet',
+          subtitle: 'No workflow executions found in this workspace',
+          detailTitle: 'No execution records for this project',
+        },
+        errors: {
+          fetchProjectsFail: 'Failed to load project list',
+          fetchRecordsFail: 'Failed to load workflow records',
+        },
+        detail: {
+          title: 'Project Detail',
+          createdAt: 'Created',
+          viewIo: 'View I/O',
+          dialogTitle: 'Request & Response',
+          paramLabel: 'Request (param)',
+          outputLabel: 'Response (output)',
+          linkedTransaction: 'Linked transaction',
+        },
+      },
       filters: {
         title: 'Filters',
         startDate: 'Start Date',
