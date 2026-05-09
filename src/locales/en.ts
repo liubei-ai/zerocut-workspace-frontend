@@ -391,6 +391,8 @@ export default {
         dialogTitle: 'Prompt and Outputs',
         noOutputs: 'No outputs',
         noPrompt: 'No prompt',
+        metadataLabel: 'Metadata',
+        noMetadata: 'No metadata',
         openLink: 'Open link',
         viewAll: 'View all',
         expand: 'Expand',

@@ -285,6 +285,8 @@ onMounted(() => {
             :dialog-title="t('zerocut.usage.details.dialogTitle')"
             :no-outputs-text="t('zerocut.usage.details.noOutputs')"
             :no-prompt-text="t('zerocut.usage.details.noPrompt')"
+            :metadata-label="t('zerocut.usage.details.metadataLabel')"
+            :no-metadata-text="t('zerocut.usage.details.noMetadata')"
             :empty-text="t('common.unknown')"
           />
         </template>

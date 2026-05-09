@@ -32,6 +32,8 @@ const props = withDefaults(
     dialogTitle?: string;
     noOutputsText?: string;
     noPromptText?: string;
+    metadataLabel?: string;
+    noMetadataText?: string;
   }>(),
   {
     emptyText: '-',
@@ -44,6 +46,8 @@ const props = withDefaults(
     dialogTitle: '提示词和生成物',
     noOutputsText: '-',
     noPromptText: '-',
+    metadataLabel: '元数据',
+    noMetadataText: '-',
   }
 );
 
@@ -91,9 +95,25 @@ const hasLongPrompt = computed(
 const previewUrls = computed(() => urls.value.slice(0, props.urlPreviewCount));
 const imageUrls = computed(() => urls.value.filter(isLikelyImageUrl));
 const nonImageUrls = computed(() => urls.value.filter(url => !isLikelyImageUrl(url)));
-const hasDetails = computed(() => urls.value.length > 0 || !!promptText.value);
 
-const isEmpty = computed(() => !reasonText.value && urls.value.length === 0 && !promptText.value);
+const serviceDetailsJson = computed(() => {
+  const sd = props.item.serviceDetails;
+  if (!sd || typeof sd !== 'object' || Object.keys(sd).length === 0) return undefined;
+  try {
+    return JSON.stringify(sd, null, 2);
+  } catch {
+    return undefined;
+  }
+});
+
+const hasDetails = computed(
+  () => urls.value.length > 0 || !!promptText.value || !!serviceDetailsJson.value
+);
+
+const isEmpty = computed(
+  () =>
+    !reasonText.value && urls.value.length === 0 && !promptText.value && !serviceDetailsJson.value
+);
 
 function openDialog(title: string, content: string) {
   dialogTitle.value = title;
@@ -218,6 +238,10 @@ function isLikelyImageUrl(url: string): boolean {
             <div class="section-title mt-4">{{ promptLabel }}</div>
             <pre v-if="promptText" class="dialog-content">{{ promptText }}</pre>
             <div v-else class="text-medium-emphasis">{{ noPromptText }}</div>
+
+            <div class="section-title mt-4">{{ metadataLabel }}</div>
+            <pre v-if="serviceDetailsJson" class="dialog-content">{{ serviceDetailsJson }}</pre>
+            <div v-else class="text-medium-emphasis">{{ noMetadataText }}</div>
           </template>
           <template v-else>
             <pre class="dialog-content">{{ dialogContent }}</pre>
