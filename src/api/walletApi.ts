@@ -136,3 +136,14 @@ export async function getWorkspaceConsumptionRecords(
   );
   return response.data;
 }
+
+/**
+ * 通过 transactionId 查询单条积分消费记录（用于工作流记录详情联动）
+ */
+export async function getConsumptionByTransactionId(workspaceId: string, transactionId: string) {
+  const response = await client.get<CreditsConsumptionItem>(
+    `/wallet/credits/consumption/by-transaction/${encodeURIComponent(transactionId)}`,
+    { params: { workspaceId } }
+  );
+  return response.data;
+}

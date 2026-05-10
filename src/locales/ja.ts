@@ -73,7 +73,6 @@ export default {
     adminSystemConfig: 'システム設定',
     adminSystemConfigAudit: '設定監査',
     adminPersonas: 'スキル管理',
-    adminXiaoYanqueAccounts: '小云雀アカウント',
     adminWorkflows: 'ワークフロー',
     adminToolbox: 'ツールボックス',
     adminDataReport: 'データレポート',
@@ -323,10 +322,12 @@ export default {
           lastCalledAt: '最終呼び出し',
           time: '時刻',
           type: 'タイプ',
+          model: 'モデル',
           status: 'ステータス',
           creditsAmount: '消費ポイント',
           uid: 'ユーザー ID',
           apiKey: 'API Key',
+          transactionId: '関連トランザクション',
           actions: '操作',
         },
         empty: {
@@ -337,6 +338,7 @@ export default {
         errors: {
           fetchProjectsFail: 'プロジェクト一覧の取得に失敗しました',
           fetchRecordsFail: 'ワークフロー履歴の取得に失敗しました',
+          fetchConsumptionFail: '消費記録の取得に失敗しました',
         },
         detail: {
           title: 'プロジェクト詳細',
@@ -346,6 +348,17 @@ export default {
           paramLabel: 'リクエスト (param)',
           outputLabel: 'レスポンス (output)',
           linkedTransaction: '関連トランザクション',
+        },
+        consumption: {
+          viewBtn: '消費記録を表示',
+          dialogTitle: '消費記録の詳細',
+          reasonLabel: '理由',
+          promptLabel: 'プロンプト',
+          outputsLabel: '生成物',
+          metadataLabel: 'メタデータ',
+          creditsAmountLabel: '消費ポイント',
+          createdAtLabel: '発生時刻',
+          empty: '—',
         },
       },
       filters: {

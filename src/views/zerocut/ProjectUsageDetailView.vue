@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import type { ProjectMeta, VideoWorkflowSource, VideoWorkflowRecordItem } from '@/types/api';
 
 import { listVideoProjectRecords } from '@/api/videoWorkflowApi';
+import { getConsumptionByTransactionId, type CreditsConsumptionItem } from '@/api/walletApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
@@ -29,6 +30,54 @@ const pagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
 
 const detailDialog = ref(false);
 const detailRecord = ref<VideoWorkflowRecordItem | null>(null);
+
+const consumptionDialog = ref(false);
+const consumptionLoading = ref(false);
+const consumptionError = ref('');
+const consumptionItem = ref<CreditsConsumptionItem | null>(null);
+
+const consumptionReason = computed(() => {
+  const item = consumptionItem.value;
+  if (!item) return '';
+  const raw =
+    item.displayDetails?.reason ??
+    (item.serviceDetails as any)?.reason ??
+    (item.serviceDetails as any)?.metadata?.reason;
+  return typeof raw === 'string' ? raw : '';
+});
+
+const consumptionPrompt = computed(() => {
+  const item = consumptionItem.value;
+  if (!item) return '';
+  const raw =
+    item.prompt ??
+    item.displayDetails?.prompt ??
+    (item.serviceDetails as any)?.prompt ??
+    (item.serviceDetails as any)?.metadata?.prompt;
+  return typeof raw === 'string' ? raw : '';
+});
+
+const consumptionUrls = computed<string[]>(() => {
+  const item = consumptionItem.value;
+  if (!item) return [];
+  const raw =
+    item.displayDetails?.urls ??
+    (item.serviceDetails as any)?.urls ??
+    (item.serviceDetails as any)?.metadata?.urls;
+  if (typeof raw === 'string') return raw.trim() ? [raw.trim()] : [];
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((u): u is string => typeof u === 'string' && !!u.trim()).map(u => u.trim());
+});
+
+const consumptionMetadataJson = computed(() => {
+  const sd = consumptionItem.value?.serviceDetails;
+  if (!sd || typeof sd !== 'object' || Object.keys(sd).length === 0) return '';
+  try {
+    return JSON.stringify(sd, null, 2);
+  } catch {
+    return '';
+  }
+});
 
 const fetchRecords = async () => {
   const workspaceId = workspaceStore.currentWorkspaceId;
@@ -61,6 +110,24 @@ const fetchRecords = async () => {
 const openDetail = (record: VideoWorkflowRecordItem) => {
   detailRecord.value = record;
   detailDialog.value = true;
+};
+
+const openConsumption = async (transactionId: string) => {
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  if (!workspaceId || !transactionId) return;
+  consumptionItem.value = null;
+  consumptionError.value = '';
+  consumptionLoading.value = true;
+  consumptionDialog.value = true;
+  try {
+    consumptionItem.value = await getConsumptionByTransactionId(workspaceId, transactionId);
+  } catch (err) {
+    console.error('查询消费记录失败:', err);
+    consumptionError.value =
+      (err as any)?.message || t('zerocut.usage.records.errors.fetchConsumptionFail');
+  } finally {
+    consumptionLoading.value = false;
+  }
 };
 
 const formatJson = (value?: Record<string, any> | null) => {
@@ -135,7 +202,7 @@ const goBack = () => {
             key: 'createdAt',
             sortable: false,
           },
-          { title: t('zerocut.usage.records.columns.type'), key: 'type', sortable: false },
+          { title: t('zerocut.usage.records.columns.model'), key: 'type', sortable: false },
           { title: t('zerocut.usage.records.columns.status'), key: 'status', sortable: false },
           {
             title: t('zerocut.usage.records.columns.creditsAmount'),
@@ -143,13 +210,20 @@ const goBack = () => {
             sortable: false,
             align: 'end',
           },
-          source === 'api'
-            ? {
-                title: t('zerocut.usage.records.columns.apiKey'),
-                key: 'apiKey',
-                sortable: false,
-              }
-            : { title: t('zerocut.usage.records.columns.uid'), key: 'uid', sortable: false },
+          ...(source === 'api'
+            ? [
+                {
+                  title: t('zerocut.usage.records.columns.apiKey'),
+                  key: 'apiKey',
+                  sortable: false,
+                },
+              ]
+            : []),
+          {
+            title: t('zerocut.usage.records.columns.transactionId'),
+            key: 'transactionId',
+            sortable: false,
+          },
           { title: t('zerocut.usage.records.columns.actions'), key: 'actions', sortable: false },
         ]"
         :items="records"
@@ -192,8 +266,20 @@ const goBack = () => {
           <code class="text-caption">{{ item.apiKey ? maskApiKey(item.apiKey) : '—' }}</code>
         </template>
 
-        <template #item.uid="{ item }">
-          {{ item.uid ?? '—' }}
+        <template #item.transactionId="{ item }">
+          <div v-if="item.transactionId" class="d-flex align-center gap-2">
+            <code class="text-caption">{{ item.transactionId }}</code>
+            <v-btn
+              size="x-small"
+              variant="text"
+              color="primary"
+              prepend-icon="mdi-receipt-text-outline"
+              @click="openConsumption(item.transactionId)"
+            >
+              {{ t('zerocut.usage.records.consumption.viewBtn') }}
+            </v-btn>
+          </div>
+          <span v-else class="text-grey">—</span>
         </template>
 
         <template #item.actions="{ item }">
@@ -251,6 +337,86 @@ const goBack = () => {
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog v-model="consumptionDialog" max-width="900">
+      <v-card>
+        <v-card-title>
+          {{ t('zerocut.usage.records.consumption.dialogTitle') }}
+        </v-card-title>
+        <v-card-text>
+          <div v-if="consumptionLoading" class="d-flex justify-center py-6">
+            <v-progress-circular indeterminate color="primary" />
+          </div>
+          <v-alert v-else-if="consumptionError" type="error" variant="tonal" class="mb-2">
+            {{ consumptionError }}
+          </v-alert>
+          <div v-else-if="consumptionItem" class="d-flex flex-column gap-3">
+            <div class="d-flex flex-wrap gap-4">
+              <div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ t('zerocut.usage.records.consumption.creditsAmountLabel') }}
+                </div>
+                <div class="text-error font-weight-medium">
+                  -{{ consumptionItem.creditsAmount.toLocaleString() }}
+                </div>
+              </div>
+              <div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ t('zerocut.usage.records.consumption.createdAtLabel') }}
+                </div>
+                <div>{{ formatDate(consumptionItem.createdAt) }}</div>
+              </div>
+              <div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ t('zerocut.usage.records.detail.linkedTransaction') }}
+                </div>
+                <code class="text-caption">{{ consumptionItem.transactionId }}</code>
+              </div>
+            </div>
+
+            <div v-if="consumptionReason">
+              <div class="text-subtitle-2 mb-1">
+                {{ t('zerocut.usage.records.consumption.reasonLabel') }}
+              </div>
+              <div>{{ consumptionReason }}</div>
+            </div>
+
+            <div v-if="consumptionPrompt">
+              <div class="text-subtitle-2 mb-1">
+                {{ t('zerocut.usage.records.consumption.promptLabel') }}
+              </div>
+              <pre class="json-block">{{ consumptionPrompt }}</pre>
+            </div>
+
+            <div v-if="consumptionUrls.length > 0">
+              <div class="text-subtitle-2 mb-1">
+                {{ t('zerocut.usage.records.consumption.outputsLabel') }}
+              </div>
+              <div
+                v-for="(url, idx) in consumptionUrls"
+                :key="`consumption-url-${idx}`"
+                class="mb-1"
+              >
+                <a :href="url" target="_blank" rel="noopener noreferrer" class="url-link">
+                  {{ url }}
+                </a>
+              </div>
+            </div>
+
+            <div v-if="consumptionMetadataJson">
+              <div class="text-subtitle-2 mb-1">
+                {{ t('zerocut.usage.records.consumption.metadataLabel') }}
+              </div>
+              <pre class="json-block">{{ consumptionMetadataJson }}</pre>
+            </div>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" @click="consumptionDialog = false">{{ t('common.close') }}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -273,5 +439,10 @@ code {
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.url-link {
+  word-break: break-all;
 }
 </style>

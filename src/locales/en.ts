@@ -74,7 +74,6 @@ export default {
     adminSystemConfig: 'System Config',
     adminSystemConfigAudit: 'Config Audit',
     adminPersonas: 'Skills',
-    adminXiaoYanqueAccounts: 'XiaoYanque Accounts',
     adminWorkflows: 'Workflows',
     adminToolbox: 'Toolbox',
     adminDataReport: 'Data Report',
@@ -326,10 +325,12 @@ export default {
           lastCalledAt: 'Last Called',
           time: 'Time',
           type: 'Type',
+          model: 'Model',
           status: 'Status',
           creditsAmount: 'Credits',
           uid: 'User ID',
           apiKey: 'API Key',
+          transactionId: 'Linked transaction',
           actions: 'Actions',
         },
         empty: {
@@ -340,6 +341,7 @@ export default {
         errors: {
           fetchProjectsFail: 'Failed to load project list',
           fetchRecordsFail: 'Failed to load workflow records',
+          fetchConsumptionFail: 'Failed to load consumption record',
         },
         detail: {
           title: 'Project Detail',
@@ -349,6 +351,17 @@ export default {
           paramLabel: 'Request (param)',
           outputLabel: 'Response (output)',
           linkedTransaction: 'Linked transaction',
+        },
+        consumption: {
+          viewBtn: 'View consumption',
+          dialogTitle: 'Consumption details',
+          reasonLabel: 'Reason',
+          promptLabel: 'Prompt',
+          outputsLabel: 'Outputs',
+          metadataLabel: 'Metadata',
+          creditsAmountLabel: 'Credits used',
+          createdAtLabel: 'Time',
+          empty: '—',
         },
       },
       filters: {

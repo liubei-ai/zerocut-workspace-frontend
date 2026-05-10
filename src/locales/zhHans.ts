@@ -75,7 +75,6 @@ export default {
     adminSystemConfig: '系统配置',
     adminSystemConfigAudit: '配置审计',
     adminPersonas: '技能管理',
-    adminXiaoYanqueAccounts: '小云雀账号',
     adminWorkflows: '工作流',
     adminToolbox: '工具箱',
     adminDataReport: '数据报表',
@@ -322,10 +321,12 @@ export default {
           lastCalledAt: '最近调用',
           time: '时间',
           type: '类型',
+          model: '模型',
           status: '状态',
           creditsAmount: '消耗积分',
           uid: '用户 ID',
           apiKey: 'API Key',
+          transactionId: '关联扣分交易',
           actions: '操作',
         },
         empty: {
@@ -336,6 +337,7 @@ export default {
         errors: {
           fetchProjectsFail: '获取项目列表失败',
           fetchRecordsFail: '获取工作流记录失败',
+          fetchConsumptionFail: '查询消费记录失败',
         },
         detail: {
           title: '项目详情',
@@ -345,6 +347,17 @@ export default {
           paramLabel: '请求 (param)',
           outputLabel: '响应 (output)',
           linkedTransaction: '关联扣分交易',
+        },
+        consumption: {
+          viewBtn: '查看消费记录',
+          dialogTitle: '消费记录详情',
+          reasonLabel: '消耗原因',
+          promptLabel: '提示词',
+          outputsLabel: '生成物',
+          metadataLabel: '元数据',
+          creditsAmountLabel: '消耗积分',
+          createdAtLabel: '发生时间',
+          empty: '—',
         },
       },
       filters: {
