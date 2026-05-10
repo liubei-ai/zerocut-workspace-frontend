@@ -34,6 +34,7 @@ const props = withDefaults(
     noPromptText?: string;
     metadataLabel?: string;
     noMetadataText?: string;
+    showMetadata?: boolean;
   }>(),
   {
     emptyText: '-',
@@ -48,6 +49,7 @@ const props = withDefaults(
     noPromptText: '-',
     metadataLabel: '元数据',
     noMetadataText: '-',
+    showMetadata: false,
   }
 );
 
@@ -107,7 +109,10 @@ const serviceDetailsJson = computed(() => {
 });
 
 const hasDetails = computed(
-  () => urls.value.length > 0 || !!promptText.value || !!serviceDetailsJson.value
+  () =>
+    urls.value.length > 0 ||
+    !!promptText.value ||
+    (props.showMetadata && !!serviceDetailsJson.value)
 );
 
 const isEmpty = computed(
@@ -239,9 +244,11 @@ function isLikelyImageUrl(url: string): boolean {
             <pre v-if="promptText" class="dialog-content">{{ promptText }}</pre>
             <div v-else class="text-medium-emphasis">{{ noPromptText }}</div>
 
-            <div class="section-title mt-4">{{ metadataLabel }}</div>
-            <pre v-if="serviceDetailsJson" class="dialog-content">{{ serviceDetailsJson }}</pre>
-            <div v-else class="text-medium-emphasis">{{ noMetadataText }}</div>
+            <template v-if="showMetadata">
+              <div class="section-title mt-4">{{ metadataLabel }}</div>
+              <pre v-if="serviceDetailsJson" class="dialog-content">{{ serviceDetailsJson }}</pre>
+              <div v-else class="text-medium-emphasis">{{ noMetadataText }}</div>
+            </template>
           </template>
           <template v-else>
             <pre class="dialog-content">{{ dialogContent }}</pre>

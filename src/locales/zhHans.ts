@@ -387,8 +387,6 @@ export default {
         dialogTitle: '提示词和生成物',
         noOutputs: '暂无生成物',
         noPrompt: '暂无提示词',
-        metadataLabel: '元数据',
-        noMetadata: '暂无元数据',
         openLink: '打开链接',
         viewAll: '查看全部',
         expand: '展开',

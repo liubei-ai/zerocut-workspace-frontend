@@ -458,7 +458,7 @@ onMounted(refreshAll);
                   align: 'end',
                 },
                 { title: '创建时间', key: 'createdAt', sortable: false, width: '160px' },
-                { title: '服务详情', key: 'serviceDetails', sortable: false },
+                { title: '元数据', key: 'serviceDetails', sortable: false },
               ]"
               :items="consumptionItems"
               :loading="consumptionLoading"
@@ -474,12 +474,21 @@ onMounted(refreshAll);
               <template #item.serviceDetails="{ item }">
                 <ConsumptionDetailsCell
                   :item="item"
+                  mode="button"
+                  :show-metadata="true"
                   reason-label="消耗原因"
                   outputs-label="生成物"
                   prompt-label="提示词"
                   view-all-label="查看全部"
                   expand-label="展开"
                   close-label="关闭"
+                  action-label="查看元数据"
+                  action-tooltip="查看提示词、生成物与元数据"
+                  dialog-title="元数据"
+                  metadata-label="元数据"
+                  no-outputs-text="无"
+                  no-prompt-text="无"
+                  no-metadata-text="无"
                   empty-text="-"
                 />
               </template>

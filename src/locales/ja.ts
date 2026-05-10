@@ -388,8 +388,6 @@ export default {
         dialogTitle: 'プロンプトと生成物',
         noOutputs: '生成物はありません',
         noPrompt: 'プロンプトはありません',
-        metadataLabel: 'メタデータ',
-        noMetadata: 'メタデータはありません',
         openLink: 'リンクを開く',
         viewAll: 'すべて表示',
         expand: '展開',
