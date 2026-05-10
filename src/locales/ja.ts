@@ -405,7 +405,8 @@ export default {
       title: '🎉 ようこそ！',
       congratulations: '登録が完了しました！ご用意したのは',
       creditsUnit: 'ポイント',
-      validityNotice: 'ポイントの有効期限は90日です。できるだけ早く ZeroCut をお試しください。',
+      validityNotice: 'ポイントの有効期限は{days}日です。できるだけ早く ZeroCut をお試しください。',
+      validityNoticeFallback: 'できるだけ早く ZeroCut をお試しください。',
       startButton: '始める',
     },
     subscriptionSuccess: {

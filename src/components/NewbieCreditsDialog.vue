@@ -21,7 +21,7 @@
           </v-chip>
         </div>
         <div class="text-body-1 text-medium-emphasis mt-3">
-          {{ t('zerocut.newbieCredits.validityNotice') }}
+          {{ validityNoticeText }}
         </div>
       </v-card-text>
 
@@ -62,7 +62,14 @@ const dialog = computed({
 });
 
 const creditsAmount = computed(() => {
-  return props.rechargeRecord?.creditsAmount || 200;
+  return props.rechargeRecord?.creditsAmount || 500;
+});
+
+const validityNoticeText = computed(() => {
+  const days = props.rechargeRecord?.creditsValidityDays;
+  return typeof days === 'number' && days > 0
+    ? t('zerocut.newbieCredits.validityNotice', { days })
+    : t('zerocut.newbieCredits.validityNoticeFallback');
 });
 
 const handleClose = () => {

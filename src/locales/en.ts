@@ -409,7 +409,8 @@ export default {
       congratulations: 'Congratulations on your successful registration! We have prepared',
       creditsUnit: 'credits',
       validityNotice:
-        'Credits are valid for 90 days. Please experience ZeroCut as soon as possible.',
+        'Credits are valid for {days} days. Please experience ZeroCut as soon as possible.',
+      validityNoticeFallback: 'Please experience ZeroCut as soon as possible.',
       startButton: 'Get Started',
     },
     subscriptionSuccess: {

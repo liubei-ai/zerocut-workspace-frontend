@@ -404,7 +404,8 @@ export default {
       title: '🎉 欢迎加入！',
       congratulations: '恭喜您成功注册！我们为您准备了',
       creditsUnit: '积分',
-      validityNotice: '积分有效期为 90 天，请尽快体验 ZeroCut。',
+      validityNotice: '积分有效期为 {days} 天，请尽快体验 ZeroCut。',
+      validityNoticeFallback: '请尽快体验 ZeroCut。',
       startButton: '开始体验',
     },
     subscriptionSuccess: {

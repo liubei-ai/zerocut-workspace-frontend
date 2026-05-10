@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 
 import type { WalletInfo } from '@/api/walletApi';
 
-import { getWalletInfo, getWalletRechargeRecords } from '@/api/walletApi';
+import { getWalletInfo } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 const router = useRouter();
@@ -14,7 +14,6 @@ const { t } = useI18n();
 
 // 响应式数据
 const walletInfo = ref<WalletInfo | null>(null);
-const isNewUser = ref(false);
 const loading = ref(false);
 const error = ref<string | null>(null);
 
@@ -22,31 +21,14 @@ const error = ref<string | null>(null);
 const workspaceId = computed(() => workspaceStore.currentWorkspaceId || '');
 const availableCredits = computed(() => walletInfo.value?.availableCredits || 0);
 
-// 新人优惠信息
-const newUserPromotion = {
-  discount: '50%',
-  price: '99',
-  credits: '4000',
-  originalPrice: '198',
-};
-
-// 获取钱包信息和新人资格
+// 获取钱包信息
 const fetchWalletData = async () => {
   if (!workspaceId.value) return;
 
   try {
     loading.value = true;
     error.value = null;
-
-    // 并行获取钱包信息和充值记录
-    const [wallet, recordsResponse] = await Promise.all([
-      getWalletInfo(workspaceId.value),
-      getWalletRechargeRecords({ workspaceId: workspaceId.value }),
-    ]);
-
-    walletInfo.value = wallet;
-    // 方案A：通过充值记录判断新人资格（没有充值记录即为新人）
-    isNewUser.value = recordsResponse.list.length === 0;
+    walletInfo.value = await getWalletInfo(workspaceId.value);
   } catch (err) {
     console.error('Failed to fetch wallet data:', err);
     error.value = '获取积分信息失败';
@@ -58,11 +40,6 @@ const fetchWalletData = async () => {
 // 处理充值按钮点击
 const handleRecharge = () => {
   router.push('/packages');
-};
-
-// 处理新人优惠点击
-const handleNewUserPromotion = () => {
-  router.push('/packages?highlight=newuser');
 };
 
 // 生命周期
@@ -119,31 +96,6 @@ onMounted(() => {
           <v-icon class="mr-2">mdi-plus-circle</v-icon>
           {{ t('zerocut.wallet.recharge') }}
         </v-btn>
-
-        <!-- 新人优惠（条件显示） -->
-        <v-card
-          v-if="isNewUser"
-          class="new-user-promotion"
-          color="orange-lighten-3"
-          variant="outlined"
-          @click="handleNewUserPromotion"
-          style="cursor: pointer"
-        >
-          <v-card-text class="pa-3">
-            <div class="d-flex align-center mb-2">
-              <v-icon color="orange-darken-2" size="20" class="mr-1">mdi-fire</v-icon>
-              <span class="promotion-title">新人专享</span>
-            </div>
-            <div class="promotion-price mb-2">
-              <span class="original-price"> {{ newUserPromotion.originalPrice }} RMB </span>
-              <span class="current-price"> {{ newUserPromotion.price }} RMB </span>
-              <v-chip size="x-small" color="orange-darken-1" variant="flat" class="ml-2">
-                {{ newUserPromotion.discount }} OFF
-              </v-chip>
-            </div>
-            <div class="promotion-credits">获得 {{ newUserPromotion.credits }} 积分</div>
-          </v-card-text>
-        </v-card>
       </div>
     </v-card-text>
   </v-card>
@@ -181,61 +133,6 @@ onMounted(() => {
 
   .credits-unit {
     font-size: 0.875rem;
-  }
-}
-
-/* 新人优惠卡片 */
-.new-user-promotion {
-  transition: all 0.2s ease;
-}
-
-.new-user-promotion:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
-}
-
-.promotion-title {
-  font-size: 0.875rem;
-  font-weight: bold;
-  color: rgb(var(--v-theme-orange-darken-3));
-}
-
-.promotion-price {
-  font-size: 0.875rem;
-}
-
-.original-price {
-  text-decoration: line-through;
-  color: #424242;
-  opacity: 0.8;
-}
-
-.current-price {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: rgb(var(--v-theme-orange-darken-3));
-  margin-left: 0.5rem;
-}
-
-.promotion-credits {
-  font-size: 0.875rem;
-  color: #424242;
-  opacity: 0.9;
-}
-
-/* 小屏幕优化 */
-@media (max-width: 600px) {
-  .promotion-title {
-    font-size: 0.8rem;
-  }
-
-  .current-price {
-    font-size: 1.1rem;
-  }
-
-  .promotion-price,
-  .promotion-credits {
-    font-size: 0.8rem;
   }
 }
 </style>

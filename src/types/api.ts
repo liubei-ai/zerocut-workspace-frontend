@@ -251,6 +251,7 @@ export interface RechargeRecord {
   paidAt?: string;
   createdAt: string;
   updatedAt: string;
+  creditsValidityDays?: number;
 }
 
 export type UserRole = 'user' | 'super_admin';
