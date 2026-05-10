@@ -37,46 +37,22 @@ const consumptionError = ref('');
 const consumptionItem = ref<CreditsConsumptionItem | null>(null);
 
 const consumptionReason = computed(() => {
-  const item = consumptionItem.value;
-  if (!item) return '';
-  const raw =
-    item.displayDetails?.reason ??
-    (item.serviceDetails as any)?.reason ??
-    (item.serviceDetails as any)?.metadata?.reason;
+  const raw = consumptionItem.value?.displayDetails?.reason;
   return typeof raw === 'string' ? raw : '';
 });
 
 const consumptionPrompt = computed(() => {
   const item = consumptionItem.value;
   if (!item) return '';
-  const raw =
-    item.prompt ??
-    item.displayDetails?.prompt ??
-    (item.serviceDetails as any)?.prompt ??
-    (item.serviceDetails as any)?.metadata?.prompt;
+  const raw = item.prompt ?? item.displayDetails?.prompt;
   return typeof raw === 'string' ? raw : '';
 });
 
 const consumptionUrls = computed<string[]>(() => {
-  const item = consumptionItem.value;
-  if (!item) return [];
-  const raw =
-    item.displayDetails?.urls ??
-    (item.serviceDetails as any)?.urls ??
-    (item.serviceDetails as any)?.metadata?.urls;
+  const raw = consumptionItem.value?.displayDetails?.urls;
   if (typeof raw === 'string') return raw.trim() ? [raw.trim()] : [];
   if (!Array.isArray(raw)) return [];
   return raw.filter((u): u is string => typeof u === 'string' && !!u.trim()).map(u => u.trim());
-});
-
-const consumptionMetadataJson = computed(() => {
-  const sd = consumptionItem.value?.serviceDetails;
-  if (!sd || typeof sd !== 'object' || Object.keys(sd).length === 0) return '';
-  try {
-    return JSON.stringify(sd, null, 2);
-  } catch {
-    return '';
-  }
 });
 
 const fetchRecords = async () => {
@@ -357,7 +333,7 @@ const goBack = () => {
                   {{ t('zerocut.usage.records.consumption.creditsAmountLabel') }}
                 </div>
                 <div class="text-error font-weight-medium">
-                  -{{ consumptionItem.creditsAmount.toLocaleString() }}
+                  {{ consumptionItem.creditsAmount.toLocaleString() }}
                 </div>
               </div>
               <div>
@@ -381,13 +357,6 @@ const goBack = () => {
               <div>{{ consumptionReason }}</div>
             </div>
 
-            <div v-if="consumptionPrompt">
-              <div class="text-subtitle-2 mb-1">
-                {{ t('zerocut.usage.records.consumption.promptLabel') }}
-              </div>
-              <pre class="json-block">{{ consumptionPrompt }}</pre>
-            </div>
-
             <div v-if="consumptionUrls.length > 0">
               <div class="text-subtitle-2 mb-1">
                 {{ t('zerocut.usage.records.consumption.outputsLabel') }}
@@ -403,11 +372,11 @@ const goBack = () => {
               </div>
             </div>
 
-            <div v-if="consumptionMetadataJson">
+            <div v-if="consumptionPrompt">
               <div class="text-subtitle-2 mb-1">
-                {{ t('zerocut.usage.records.consumption.metadataLabel') }}
+                {{ t('zerocut.usage.records.consumption.promptLabel') }}
               </div>
-              <pre class="json-block">{{ consumptionMetadataJson }}</pre>
+              <pre class="json-block">{{ consumptionPrompt }}</pre>
             </div>
           </div>
         </v-card-text>

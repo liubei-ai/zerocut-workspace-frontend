@@ -358,7 +358,6 @@ export default {
           reasonLabel: 'Reason',
           promptLabel: 'Prompt',
           outputsLabel: 'Outputs',
-          metadataLabel: 'Metadata',
           creditsAmountLabel: 'Credits used',
           createdAtLabel: 'Time',
           empty: '—',

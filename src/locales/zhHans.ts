@@ -354,7 +354,6 @@ export default {
           reasonLabel: '消耗原因',
           promptLabel: '提示词',
           outputsLabel: '生成物',
-          metadataLabel: '元数据',
           creditsAmountLabel: '消耗积分',
           createdAtLabel: '发生时间',
           empty: '—',

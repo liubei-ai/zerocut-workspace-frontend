@@ -355,7 +355,6 @@ export default {
           reasonLabel: '理由',
           promptLabel: 'プロンプト',
           outputsLabel: '生成物',
-          metadataLabel: 'メタデータ',
           creditsAmountLabel: '消費ポイント',
           createdAtLabel: '発生時刻',
           empty: '—',
