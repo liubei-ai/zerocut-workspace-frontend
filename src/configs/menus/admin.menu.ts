@@ -25,11 +25,6 @@ export default [
     icon: 'mdi-account',
   },
   {
-    key: 'menu.adminXiaoYanqueAccounts',
-    link: '/admin/xiaoyanque-accounts',
-    icon: 'mdi-cookie',
-  },
-  {
     key: 'menu.workflows',
     link: '/admin/workflows',
     icon: 'mdi-clipboard-list-outline',
