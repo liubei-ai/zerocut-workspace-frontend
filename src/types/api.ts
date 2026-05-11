@@ -254,12 +254,14 @@ export interface RechargeRecord {
   creditsValidityDays?: number;
 }
 
-export type UserRole = 'user' | 'super_admin';
+export type UserRole = 'user' | 'super_admin' | 'ops_admin' | 'finance_admin' | 'support';
 
 // Homepage Types
 export interface UserInfoDto {
   id: number;
   role: UserRole;
+  /** 后端下发的权限点列表，用于前端三级守卫 */
+  permissions?: string[];
   username?: string;
   email?: string;
   phone?: string;

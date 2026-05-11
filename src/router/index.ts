@@ -18,6 +18,11 @@ export const routes = [
   ...ZerocutRoutes,
   ...AdminRoutes,
   {
+    path: '/403',
+    name: 'forbidden',
+    component: () => import(/* webpackChunkName: "error" */ '@/views/errors/ForbiddenPage.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/errors/NotFoundPage.vue'),
@@ -68,7 +73,16 @@ router.beforeEach(async to => {
     }
   }
 
-  // Check super admin permission
+  // 收集所有匹配路由的 permissions 元数据（AND 语义：每条都要满足）
+  const requiredPermissions = to.matched.flatMap(record => {
+    const m = record.meta as { permissions?: string[] };
+    return Array.isArray(m.permissions) ? m.permissions : [];
+  });
+  if (requiredPermissions.length > 0 && !userStore.hasPermission(requiredPermissions)) {
+    return { path: '/403' };
+  }
+
+  // 兼容旧的 requiresSuperAdmin meta 字段
   if (requiresSuperAdmin && !userStore.isSuperAdmin) {
     return '/';
   }

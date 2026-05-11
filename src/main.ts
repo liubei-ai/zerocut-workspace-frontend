@@ -22,6 +22,7 @@ import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
 // Components
 import App from './App.vue';
 import 'vue3-perfect-scrollbar/style.css';
+import { vPermission } from './directives/permission';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
 import router from './router';
@@ -40,6 +41,7 @@ app.use(i18n);
 app.use(vuetify);
 app.use(Vue3Lottie, { name: 'LottieAnimation' });
 app.use(autoAnimatePlugin);
+app.directive('permission', vPermission);
 app.use(
   createGuard({
     appId: import.meta.env.VITE_AUTHING_APP_ID,

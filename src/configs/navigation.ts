@@ -1,9 +1,22 @@
+import { Permission } from '@/constants/permissions';
+
 import menuAdmin from './menus/admin.menu';
 import menuStudio from './menus/studio.menu';
 import menuZeroCut from './menus/zerocut.menu';
 
-// 生产环境菜单（只包含zerocut）
-const productionMenus = [
+interface MenuItem {
+  key: string;
+  permission?: string;
+  [k: string]: unknown;
+}
+
+interface MenuGroup {
+  key: string;
+  items: MenuItem[];
+}
+
+// 生产环境菜单（只包含 zerocut）
+const productionMenus: MenuGroup[] = [
   {
     key: 'menu.zerocut',
     items: menuStudio,
@@ -14,37 +27,42 @@ const productionMenus = [
   },
 ];
 
-// 生成动态菜单的函数
-export function generateNavigation(isSuperAdmin = false) {
-  const baseMenus = [...productionMenus];
+interface PermissionAware {
+  hasPermission(perm: string | string[]): boolean;
+}
 
-  // 如果用户是超级管理员，在 zerocut 菜单后面添加管理员菜单
-  if (isSuperAdmin) {
-    // 找到 zerocut 菜单的位置，在其后插入管理员菜单
-    const plansAndBillingIndex = baseMenus.findIndex(menu => menu.key === 'menu.plansAndBilling');
-    const zerocutIndex = baseMenus.findIndex(menu => menu.key === 'menu.zerocut');
-    const insertIndex = plansAndBillingIndex !== -1 ? plansAndBillingIndex : zerocutIndex;
+/**
+ * 根据用户权限生成侧栏菜单：
+ *  - admin 组只在用户拥有 ADMIN_ACCESS 时插入
+ *  - admin 子项各自的 permission 字段进一步过滤
+ *  - 子项被全部过滤掉的组一并隐藏
+ */
+export function generateNavigation(userStore: PermissionAware): { menu: MenuGroup[] } {
+  const baseMenus: MenuGroup[] = productionMenus.map(group => ({
+    ...group,
+    items: group.items.filter(item => !item.permission || userStore.hasPermission(item.permission)),
+  }));
 
-    if (insertIndex !== -1) {
-      baseMenus.splice(insertIndex + 1, 0, {
-        key: 'menu.admin',
-        items: menuAdmin,
-      });
-    } else {
-      // 如果没找到 zerocut 菜单，就添加到最后
-      baseMenus.push({
-        key: 'menu.admin',
-        items: menuAdmin,
-      });
+  if (userStore.hasPermission(Permission.ADMIN_ACCESS)) {
+    const adminGroup: MenuGroup = {
+      key: 'menu.admin',
+      items: menuAdmin.filter(item => !item.permission || userStore.hasPermission(item.permission)),
+    };
+    if (adminGroup.items.length > 0) {
+      const plansAndBillingIndex = baseMenus.findIndex(g => g.key === 'menu.plansAndBilling');
+      const zerocutIndex = baseMenus.findIndex(g => g.key === 'menu.zerocut');
+      const insertIndex = plansAndBillingIndex !== -1 ? plansAndBillingIndex : zerocutIndex;
+      if (insertIndex !== -1) baseMenus.splice(insertIndex + 1, 0, adminGroup);
+      else baseMenus.push(adminGroup);
     }
   }
 
   return {
-    menu: baseMenus,
+    menu: baseMenus.filter(group => group.items.length > 0),
   };
 }
 
-// 默认导出（向后兼容）
+// 默认导出（向后兼容）— 不含权限过滤
 export default {
   menu: productionMenus,
 };

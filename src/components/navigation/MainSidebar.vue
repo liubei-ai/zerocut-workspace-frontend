@@ -13,7 +13,7 @@ const customizeTheme = useCustomizeThemeStore();
 const membershipStore = useMembershipStore();
 
 const navigation = computed(() => {
-  const nav = generateNavigation(userStore.isSuperAdmin);
+  const nav = generateNavigation(userStore);
   if (membershipStore.hasActiveSubscription) return nav;
   return {
     menu: nav.menu.map(group => ({

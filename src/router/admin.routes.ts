@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import { Permission } from '@/constants/permissions';
+
 const AdminRoutes: RouteRecordRaw[] = [
   {
     path: '/admin',
@@ -8,7 +10,7 @@ const AdminRoutes: RouteRecordRaw[] = [
     meta: {
       layout: 'landing',
       requiresAuth: true,
-      requiresSuperAdmin: true,
+      permissions: [Permission.ADMIN_ACCESS],
       category: 'Admin',
     },
     children: [
@@ -21,7 +23,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.WORKSPACE_READ],
         },
       },
       {
@@ -33,7 +35,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.MEMBER_READ],
         },
       },
       {
@@ -45,7 +47,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.MEMBERSHIP_PLAN_READ],
         },
       },
       {
@@ -57,7 +59,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.WALLET_GRANT],
         },
       },
       {
@@ -69,7 +71,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.MEMBER_DETAIL_READ],
         },
       },
       {
@@ -81,7 +83,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.WORKSPACE_READ],
         },
       },
       {
@@ -93,7 +95,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.SYSTEM_CONFIG_READ],
         },
       },
       {
@@ -105,7 +107,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.SYSTEM_CONFIG_AUDIT_READ],
         },
       },
       {
@@ -117,7 +119,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.WORKFLOW_MANAGE],
         },
       },
       {
@@ -129,7 +131,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.PERSONA_MANAGE],
         },
       },
       {
@@ -141,7 +143,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.ADMIN_ACCESS],
         },
       },
       {
@@ -153,7 +155,7 @@ const AdminRoutes: RouteRecordRaw[] = [
           layout: 'landing',
           category: 'Admin',
           requiresAuth: true,
-          requiresSuperAdmin: true,
+          permissions: [Permission.DATA_REPORT_READ],
         },
       },
     ],

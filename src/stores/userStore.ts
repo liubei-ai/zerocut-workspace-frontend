@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import type { UserInfoDto } from '@/types/api';
 
 import { getCurrentUserInfo } from '@/api/userApi';
+import { Permission } from '@/constants/permissions';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -21,8 +22,31 @@ export const useUserStore = defineStore('user', {
 
     // 角色和权限
     userRole: state => state.userInfo?.role || null,
+    /** @deprecated 用 hasPermission 代替；保留以兼容旧路由/页面 */
     isSuperAdmin: state => state.userInfo?.role === 'super_admin',
     isUser: state => state.userInfo?.role === 'user',
+    permissions: (state): string[] => state.userInfo?.permissions ?? [],
+    isAdminTier: (state): boolean =>
+      (state.userInfo?.permissions ?? []).includes(Permission.ADMIN_ACCESS),
+
+    /**
+     * 是否拥有指定权限点（AND 语义：传数组时需全部命中）。
+     * 用法：userStore.hasPermission(Permission.WALLET_GRANT)
+     *      userStore.hasPermission([Permission.WORKSPACE_READ, Permission.WORKSPACE_WRITE])
+     */
+    hasPermission(state) {
+      const set = new Set(state.userInfo?.permissions ?? []);
+      return (perm: Permission | Permission[] | string | string[]): boolean => {
+        const list = Array.isArray(perm) ? perm : [perm];
+        return list.every(p => set.has(p));
+      };
+    },
+
+    /** OR 语义：拥有任意一个即可 */
+    hasAnyPermission(state) {
+      const set = new Set(state.userInfo?.permissions ?? []);
+      return (perms: Array<Permission | string>): boolean => perms.some(p => set.has(p));
+    },
 
     // 状态
     isLoggedIn: state => !!state.userInfo,
@@ -54,6 +78,12 @@ export const useUserStore = defineStore('user', {
       } finally {
         this.loading = false;
       }
+    },
+
+    /** 重新拉取 profile 同步 permissions（后台调权限后无需登出即可生效） */
+    async refreshProfile() {
+      const userInfo = await getCurrentUserInfo();
+      this.userInfo = userInfo;
     },
 
     // 更新用户信息
