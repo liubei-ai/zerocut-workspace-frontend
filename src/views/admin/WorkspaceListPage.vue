@@ -9,7 +9,11 @@ import { createRecharge, getWorkspaceList, syncUserFromAuthing } from '@/api/adm
 import RechargeDialog from '@/components/admin/RechargeDialog.vue';
 import RechargeResultDialog from '@/components/admin/RechargeResultDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 // 响应式数据
 const loading = ref(false);
@@ -43,29 +47,35 @@ const snackbar = ref({
   color: 'success',
 });
 
-// 表格头部配置
-const headers = [
-  { title: '工作空间', key: 'name', sortable: false, width: '160px' },
-  { title: '姓名', key: 'ownerName', sortable: false, width: '100px' },
-  { title: '手机号', key: 'ownerPhone', sortable: false, width: '140px' },
-  { title: '邮箱', key: 'ownerEmail', sortable: false, width: '180px' },
-  {
-    title: '积分余额',
-    key: 'creditsBalance',
-    sortable: false,
-    width: '100px',
-    align: 'end' as const,
-  },
-  {
-    title: '成员数量',
-    key: 'memberCount',
-    sortable: false,
-    width: '80px',
-    align: 'center' as const,
-  },
-  { title: '创建时间', key: 'createdAt', sortable: false, width: '100px' },
-  { title: '操作', key: 'actions', sortable: false, width: '180px', align: 'center' as const },
-];
+// 表格头部配置：根据权限动态过滤敏感列
+const headers = computed(() => {
+  const allHeaders = [
+    { title: '工作空间', key: 'name', sortable: false, width: '160px' },
+    { title: '姓名', key: 'ownerName', sortable: false, width: '100px' },
+    { title: '手机号', key: 'ownerPhone', sortable: false, width: '140px' },
+    { title: '邮箱', key: 'ownerEmail', sortable: false, width: '180px' },
+    {
+      title: '积分余额',
+      key: 'creditsBalance',
+      sortable: false,
+      width: '100px',
+      align: 'end' as const,
+    },
+    {
+      title: '成员数量',
+      key: 'memberCount',
+      sortable: false,
+      width: '80px',
+      align: 'center' as const,
+    },
+    { title: '创建时间', key: 'createdAt', sortable: false, width: '100px' },
+    { title: '操作', key: 'actions', sortable: false, width: '180px', align: 'center' as const },
+  ];
+  return allHeaders.filter(col => {
+    if (col.key === 'creditsBalance') return userStore.hasPermission(Permission.WALLET_READ);
+    return true;
+  });
+});
 
 // 格式化日期
 const formatDate = (dateString: string) => {
@@ -470,6 +480,7 @@ const handleSyncUser = async (workspace: WorkspaceListItem) => {
         <template #item.actions="{ item }">
           <div class="d-flex justify-center gap-2">
             <v-btn
+              v-permission="Permission.WALLET_GRANT"
               color="primary"
               variant="flat"
               size="small"

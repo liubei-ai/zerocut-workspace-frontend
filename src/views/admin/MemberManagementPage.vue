@@ -35,27 +35,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { type MemberSummary } from '@/api/memberAdminApi';
 import MemberListTable from '@/components/admin/MemberListTable.vue';
 import MemberSummaryCards from '@/components/admin/MemberSummaryCards.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 const summary = ref<MemberSummary | null>(null);
 const summaryLoading = ref(false);
 const error = ref<string | null>(null);
 
-const headerActions = [
-  {
-    key: 'grant',
-    label: '开通会员',
-    icon: 'mdi-account-plus',
-    color: 'primary',
-    variant: 'flat' as const,
-    to: { name: 'admin-members-grant' },
-  },
-];
+const headerActions = computed(() =>
+  userStore.hasPermission(Permission.WALLET_GRANT)
+    ? [
+        {
+          key: 'grant',
+          label: '开通会员',
+          icon: 'mdi-account-plus',
+          color: 'primary',
+          variant: 'flat' as const,
+          to: { name: 'admin-members-grant' },
+        },
+      ]
+    : []
+);
 
 function handleSummaryUpdated(updatedSummary: MemberSummary) {
   // Update summary when table fetches new data (to keep it in sync)

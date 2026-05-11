@@ -17,16 +17,35 @@ import {
 import WalletOverview from '@/components/admin/WalletOverview.vue';
 import ConsumptionDetailsCell from '@/components/common/ConsumptionDetailsCell.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
+import { useUserStore } from '@/stores/userStore';
 import { formatDate } from '@/utils/date';
 
 const route = useRoute();
 const workspaceId = route.params.workspaceId as string;
 const adminWorkspaceStore = useAdminWorkspaceStore();
 const currentWorkspace = computed(() => adminWorkspaceStore.currentWorkspace);
+const userStore = useUserStore();
 
 const pageLoading = ref(false);
-const tab = ref<'overview' | 'recharge' | 'consumption' | 'expired'>('overview');
+
+type TabValue = 'overview' | 'recharge' | 'consumption' | 'expired';
+
+// 按权限动态渲染的 tab 列表；OPS 没有 WALLET_READ 时这页会变空
+const visibleTabs = computed<{ value: TabValue; label: string }[]>(() => {
+  const all: { value: TabValue; label: string; perm: string }[] = [
+    { value: 'overview', label: '钱包概览', perm: Permission.WALLET_READ },
+    { value: 'recharge', label: '充值记录', perm: Permission.WALLET_RECHARGE_RECORDS_READ },
+    { value: 'consumption', label: '消费记录', perm: Permission.WALLET_READ },
+    { value: 'expired', label: '过期积分', perm: Permission.WALLET_READ },
+  ];
+  return all
+    .filter(t => userStore.hasPermission(t.perm))
+    .map(({ value, label }) => ({ value, label }));
+});
+
+const tab = ref<TabValue>(visibleTabs.value[0]?.value ?? 'overview');
 
 const walletInfo = ref<WalletInfo | undefined>(undefined);
 
@@ -319,12 +338,9 @@ onMounted(refreshAll);
       </template>
     </ResponsivePageHeader>
 
-    <v-card elevation="2" class="mb-4">
+    <v-card v-if="visibleTabs.length > 0" elevation="2" class="mb-4">
       <v-tabs v-model="tab" align-tabs="start">
-        <v-tab value="overview">钱包概览</v-tab>
-        <v-tab value="recharge">充值记录</v-tab>
-        <v-tab value="consumption">消费记录</v-tab>
-        <v-tab value="expired">过期积分</v-tab>
+        <v-tab v-for="t in visibleTabs" :key="t.value" :value="t.value">{{ t.label }}</v-tab>
       </v-tabs>
       <v-divider></v-divider>
       <v-window v-model="tab">
@@ -578,6 +594,15 @@ onMounted(refreshAll);
         </v-window-item>
       </v-window>
     </v-card>
+
+    <v-alert
+      v-else
+      type="info"
+      variant="tonal"
+      density="comfortable"
+      title="无可查看的钱包信息"
+      text="当前账号没有查看该工作空间钱包数据的权限。"
+    />
   </div>
 </template>
 

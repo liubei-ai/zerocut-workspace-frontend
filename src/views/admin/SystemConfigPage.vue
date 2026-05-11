@@ -20,8 +20,11 @@ import {
 } from '@/api/adminApi';
 import SystemConfigDialog from '@/components/admin/SystemConfigDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
+import { useUserStore } from '@/stores/userStore';
 
 const router = useRouter();
+const userStore = useUserStore();
 
 // 响应式数据
 const loading = ref(false);
@@ -305,16 +308,20 @@ onMounted(() => {
   fetchConfigs();
 });
 
-const headerPrimaryActions = computed(() => [
-  {
-    key: 'create',
-    label: '新建配置',
-    icon: 'mdi-plus',
-    color: 'primary',
-    variant: 'flat' as const,
-    onClick: openCreateDialog,
-  },
-]);
+const headerPrimaryActions = computed(() =>
+  userStore.hasPermission(Permission.SYSTEM_CONFIG_WRITE)
+    ? [
+        {
+          key: 'create',
+          label: '新建配置',
+          icon: 'mdi-plus',
+          color: 'primary',
+          variant: 'flat' as const,
+          onClick: openCreateDialog,
+        },
+      ]
+    : []
+);
 
 const headerSecondaryActions = computed(() => [
   {
@@ -515,6 +522,7 @@ const headerSecondaryActions = computed(() => [
         <template #item.actions="{ item }">
           <div class="d-flex gap-1">
             <v-btn
+              v-permission="Permission.SYSTEM_CONFIG_WRITE"
               icon="mdi-pencil"
               size="small"
               variant="text"
@@ -522,6 +530,7 @@ const headerSecondaryActions = computed(() => [
               @click="openEditDialog(item)"
             />
             <v-btn
+              v-permission="Permission.SYSTEM_CONFIG_WRITE"
               icon="mdi-delete"
               size="small"
               variant="text"

@@ -9,7 +9,11 @@ import {
   syncWorkflows,
   type WorkflowRecordItem,
 } from '@/api/adminApi';
+import { Permission } from '@/constants/permissions';
+import { useUserStore } from '@/stores/userStore';
 import { formatDate } from '@/utils/date';
+
+const userStore = useUserStore();
 
 // Tab 状态
 const activeTab = ref('records');
@@ -410,6 +414,7 @@ onMounted(() => {
             Coze 工作流列表
             <v-spacer />
             <v-btn
+              v-permission="Permission.WORKFLOW_MANAGE"
               color="primary"
               variant="outlined"
               :loading="syncingWorkflows"
@@ -465,6 +470,7 @@ onMounted(() => {
               </template>
               <template #item.actions="{ item }">
                 <v-btn
+                  v-permission="Permission.WORKFLOW_MANAGE"
                   color="primary"
                   size="small"
                   variant="tonal"

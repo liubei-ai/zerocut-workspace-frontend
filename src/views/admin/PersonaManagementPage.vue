@@ -6,6 +6,10 @@ import type { CreatePersonaParams, PersonaItem, UpdatePersonaParams } from '@/ap
 import { createPersona, deletePersona, getPersonas, updatePersona } from '@/api/adminApi';
 import PersonaDialog from '@/components/admin/PersonaDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 const loading = ref(false);
 const personas = ref<PersonaItem[]>([]);
@@ -119,16 +123,20 @@ onMounted(() => {
   fetchList();
 });
 
-const headerPrimaryActions = computed(() => [
-  {
-    key: 'create',
-    label: '新建技能',
-    icon: 'mdi-plus',
-    color: 'primary',
-    variant: 'flat' as const,
-    onClick: openCreate,
-  },
-]);
+const headerPrimaryActions = computed(() =>
+  userStore.hasPermission(Permission.PERSONA_MANAGE)
+    ? [
+        {
+          key: 'create',
+          label: '新建技能',
+          icon: 'mdi-plus',
+          color: 'primary',
+          variant: 'flat' as const,
+          onClick: openCreate,
+        },
+      ]
+    : []
+);
 
 const headerSecondaryActions = computed(() => [
   {
@@ -209,8 +217,24 @@ const headerSecondaryActions = computed(() => [
           <span>{{ formatDate(item.updatedAt) }}</span>
         </template>
         <template #item.actions="{ item }">
-          <v-btn size="small" variant="text" color="primary" @click="openEdit(item)">编辑</v-btn>
-          <v-btn size="small" variant="text" color="error" @click="openDelete(item)">删除</v-btn>
+          <v-btn
+            v-permission="Permission.PERSONA_MANAGE"
+            size="small"
+            variant="text"
+            color="primary"
+            @click="openEdit(item)"
+          >
+            编辑
+          </v-btn>
+          <v-btn
+            v-permission="Permission.PERSONA_MANAGE"
+            size="small"
+            variant="text"
+            color="error"
+            @click="openDelete(item)"
+          >
+            删除
+          </v-btn>
         </template>
         <template #expanded-row="{ columns, item }">
           <tr>

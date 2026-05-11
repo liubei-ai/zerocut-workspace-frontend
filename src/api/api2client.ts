@@ -4,7 +4,7 @@ import type { ApiError, ApiResponse } from '@/types/api';
 
 import { extractApiMessageFromPayload } from '@/utils/apiError';
 
-import { handleAuthFailure } from './helper';
+import { handleAuthFailure, handleForbidden } from './helper';
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -37,12 +37,15 @@ apiClient.interceptors.response.use(
     if (code === 200 || code === 201 || code === 0) {
       // Return the data directly for successful responses
       return { ...response, data: data };
-    } else if (code === 401 || (code === 403 && url.startsWith('/admin/'))) {
-      // Handle authentication failure
+    } else if (code === 401) {
+      // 登录态失效 → 登出
       console.warn('Authentication failed, redirecting to login page');
       handleAuthFailure();
-
-      // Still reject the promise so the calling code can handle it
+      return Promise.reject({ code, message, details });
+    } else if (code === 403 && url.startsWith('/admin/')) {
+      // 登录态有效但权限不足 → 跳 /403，保持登录态
+      console.warn('Forbidden (admin), redirecting to /403');
+      handleForbidden();
       return Promise.reject({ code, message, details });
     } else {
       // Handle other API-level errors
@@ -58,10 +61,12 @@ apiClient.interceptors.response.use(
       const extractedMessage = extractApiMessageFromPayload(responseData);
       const statusText = error.response.statusText?.trim();
 
-      // Handle HTTP 401 Unauthorized
-      if (status === 401 || (status === 403 && url.startsWith('/admin/'))) {
-        console.warn(`HTTP ${status}, redirecting to login page`);
+      if (status === 401) {
+        console.warn(`HTTP 401, redirecting to login page`);
         handleAuthFailure();
+      } else if (status === 403 && url.startsWith('/admin/')) {
+        console.warn(`HTTP 403 (admin), redirecting to /403`);
+        handleForbidden();
       }
 
       // Server responded with error status

@@ -17,6 +17,10 @@ import {
 } from '@/api/adminApi';
 import MembershipPlanDialog from '@/components/admin/MembershipPlanDialog.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import { Permission } from '@/constants/permissions';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 const loading = ref(false);
 const plans = ref<MembershipPlanItem[]>([]);
@@ -171,16 +175,20 @@ const confirmDelete = async () => {
 
 const formatDate = (s: string) => new Date(s).toLocaleString('zh-CN');
 
-const headerPrimaryActions = computed(() => [
-  {
-    key: 'create',
-    label: '新建会员商品',
-    icon: 'mdi-plus',
-    color: 'primary',
-    variant: 'flat' as const,
-    onClick: openCreate,
-  },
-]);
+const headerPrimaryActions = computed(() =>
+  userStore.hasPermission(Permission.MEMBERSHIP_PLAN_WRITE)
+    ? [
+        {
+          key: 'create',
+          label: '新建会员商品',
+          icon: 'mdi-plus',
+          color: 'primary',
+          variant: 'flat' as const,
+          onClick: openCreate,
+        },
+      ]
+    : []
+);
 
 const headerSecondaryActions = computed(() => [
   {
@@ -296,8 +304,24 @@ onMounted(() => {
         </template>
 
         <template #item.actions="{ item }">
-          <v-btn size="small" variant="text" color="primary" @click="openEdit(item)"> 编辑 </v-btn>
-          <v-btn size="small" variant="text" color="error" @click="openDelete(item)"> 删除 </v-btn>
+          <v-btn
+            v-permission="Permission.MEMBERSHIP_PLAN_WRITE"
+            size="small"
+            variant="text"
+            color="primary"
+            @click="openEdit(item)"
+          >
+            编辑
+          </v-btn>
+          <v-btn
+            v-permission="Permission.MEMBERSHIP_PLAN_WRITE"
+            size="small"
+            variant="text"
+            color="error"
+            @click="openDelete(item)"
+          >
+            删除
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
