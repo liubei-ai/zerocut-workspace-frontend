@@ -62,7 +62,6 @@ router.beforeEach(async to => {
 
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const requiresSuperAdmin = to.matched.some(record => record.meta.requiresSuperAdmin);
 
   if (requiresAuth && !userStore.isLoggedIn) {
     const userInfo = await checkAuthorization();
@@ -80,11 +79,6 @@ router.beforeEach(async to => {
   });
   if (requiredPermissions.length > 0 && !userStore.hasPermission(requiredPermissions)) {
     return { path: '/403' };
-  }
-
-  // 兼容旧的 requiresSuperAdmin meta 字段
-  if (requiresSuperAdmin && !userStore.isSuperAdmin) {
-    return '/';
   }
 
   // If user is authenticated and trying to access auth pages, redirect to dashboard

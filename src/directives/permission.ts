@@ -12,10 +12,10 @@ type PermissionValue = Permission | Permission[] | string | string[];
  * 没有权限时直接从 DOM 移除（而不是 display:none），更安全也更干净。
  *
  * 用法：
- *   <el-button v-permission="Permission.WALLET_GRANT">发放积分</el-button>
- *   <el-button v-permission="[Permission.WORKSPACE_READ, Permission.WORKSPACE_WRITE]">编辑</el-button>
+ *   <v-btn v-permission="Permission.WALLET_GRANT">发放积分</v-btn>
+ *   <v-btn v-permission="[Permission.WORKSPACE_READ, Permission.WORKSPACE_WRITE]">编辑</v-btn>
  *
- * 需要灰态 + tooltip 提示时不要用本指令，直接组合 :disabled + el-tooltip。
+ * 需要灰态 + tooltip 提示时不要用本指令，直接组合 :disabled + v-tooltip。
  */
 export const vPermission: Directive<HTMLElement, PermissionValue> = {
   mounted(el, binding) {
