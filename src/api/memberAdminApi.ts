@@ -209,12 +209,16 @@ export interface LookupResult {
 export interface GrantItem {
   workspaceId: string;
   phone: string;
+  /**
+   * 开通月数（1-12）。每个账号可独立设置。
+   * 后端默认 1；UI 这里也设为可选以兼容老调用，但建议显式传入。
+   */
+  periods?: number;
 }
 
 export interface GrantRequest {
   items: GrantItem[];
   planCode: GrantablePlanCode;
-  periods?: number;
   remark: string;
   clientRequestId: string;
 }

@@ -24,6 +24,7 @@ export const Permission = {
   MEMBER_READ: 'member.read',
   MEMBER_LOOKUP: 'member.lookup',
   MEMBER_DETAIL_READ: 'member.detail.read',
+  MEMBER_WRITE: 'member.write',
   USER_ROLE_ASSIGN: 'user.role.assign',
 
   // 钱包/积分

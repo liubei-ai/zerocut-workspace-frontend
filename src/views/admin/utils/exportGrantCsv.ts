@@ -1,6 +1,11 @@
 import moment from 'moment';
 
-import type { GrantResult, GrantResultItem, LookupResultItem } from '@/api/memberAdminApi';
+import type {
+  GrantItem,
+  GrantResult,
+  GrantResultItem,
+  LookupResultItem,
+} from '@/api/memberAdminApi';
 
 const CSV_BOM = '﻿';
 
@@ -25,12 +30,17 @@ function escapeCell(value: string | number | undefined | null): string {
 interface ExportContext {
   /** 用于把 workspaceId 反查到 workspace 名称、用户姓名（可选；缺失时留空） */
   lookupItems?: LookupResultItem[];
+  /** 用于回填每行的"开通月数"（key=phone|workspaceId） */
+  pendingItems?: GrantItem[];
 }
 
 /**
  * 生成开通会员结果 CSV 文本（含 UTF-8 BOM，兼容 Excel）。
  *
- * 列序：手机号, 用户姓名, Workspace 名称, Workspace ID, 状态, 订单号, 发放积分, 操作后总积分, 失败/跳过原因
+ * 列序：手机号, 用户姓名, Workspace 名称, Workspace ID, 开通月数, 状态, 订单号, 发放积分, 操作后总积分, 失败/跳过原因
+ *
+ * 注：「发放积分」反映本次事务内**立即入账**的积分（新开通=1 月积分；续期=0），
+ * 后续按月解锁的部分由会员订阅周期 cron 自动入账，不在本 CSV 体现。
  */
 export function buildGrantResultCsv(grantResult: GrantResult, ctx: ExportContext = {}): string {
   const header = [
@@ -38,6 +48,7 @@ export function buildGrantResultCsv(grantResult: GrantResult, ctx: ExportContext
     '用户姓名',
     'Workspace 名称',
     'Workspace ID',
+    '开通月数',
     '状态',
     '订单号',
     '发放积分',
@@ -59,16 +70,26 @@ export function buildGrantResultCsv(grantResult: GrantResult, ctx: ExportContext
     }
   }
 
+  // phone+workspaceId → periods（本批次请求侧的月数；后端 result 不带此字段）
+  const periodsIndex = new Map<string, number>();
+  if (ctx.pendingItems) {
+    for (const it of ctx.pendingItems) {
+      periodsIndex.set(`${it.phone}|${it.workspaceId}`, it.periods ?? 1);
+    }
+  }
+
   const rows: string[] = [header.map(escapeCell).join(',')];
 
   for (const r of grantResult.results) {
     const meta = lookupIndex.get(`${r.phone}|${r.workspaceId}`) ?? {};
+    const periods = periodsIndex.get(`${r.phone}|${r.workspaceId}`);
     rows.push(
       [
         r.phone,
         meta.userName ?? '',
         meta.workspaceName ?? '',
         r.workspaceId,
+        periods ?? '',
         STATUS_LABEL[r.status],
         r.orderNo ?? '',
         r.creditsGranted ?? '',

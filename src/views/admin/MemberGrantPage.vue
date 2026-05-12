@@ -96,7 +96,8 @@
             <span class="text-body-2">
               查到 <strong>{{ lookupSummary.found }}</strong> / 共
               <strong>{{ lookupSummary.total }}</strong> 人； 其中
-              <strong>{{ alreadySubscribedCount }}</strong> 人已有有效订阅； 当前勾选
+              <strong>{{ alreadySubscribedCount }}</strong>
+              人已有有效订阅（同套餐将续期，不同套餐跳过）； 当前勾选
               <strong>{{ selectedRowKeys.length }}</strong> 人
             </span>
             <span class="text-caption text-medium-emphasis">
@@ -135,20 +136,44 @@
               <span v-else>{{ item.workspaces?.[0]?.name }} ({{ item.workspaceId }})</span>
             </template>
 
+            <template #item.periods="{ item }">
+              <v-text-field
+                :model-value="periodsChoice[item.phone] ?? 1"
+                type="number"
+                :min="MIN_PERIODS"
+                :max="MAX_PERIODS"
+                density="compact"
+                variant="outlined"
+                hide-details
+                style="max-width: 88px"
+                @update:model-value="v => (periodsChoice[item.phone] = clampPeriods(v))"
+              />
+            </template>
+
             <template #item.currentSubscription="{ item }">
-              <v-chip
-                v-if="item.currentSubscription"
-                size="x-small"
-                color="warning"
-                variant="tonal"
-              >
-                已有 {{ item.currentSubscription.planCode }}
-                {{
-                  item.currentSubscription.currentPeriodEndAt
-                    ? '至 ' + item.currentSubscription.currentPeriodEndAt.slice(0, 10)
-                    : ''
-                }}
-              </v-chip>
+              <template v-if="item.currentSubscription">
+                <v-chip
+                  v-if="item.currentSubscription.planCode === planCode"
+                  size="x-small"
+                  color="info"
+                  variant="tonal"
+                >
+                  将续期 {{ item.currentSubscription.planCode }}
+                  {{
+                    item.currentSubscription.currentPeriodEndAt
+                      ? '原至 ' + item.currentSubscription.currentPeriodEndAt.slice(0, 10)
+                      : ''
+                  }}
+                </v-chip>
+                <v-chip v-else size="x-small" color="warning" variant="tonal">
+                  已有 {{ item.currentSubscription.planCode }}
+                  {{
+                    item.currentSubscription.currentPeriodEndAt
+                      ? '至 ' + item.currentSubscription.currentPeriodEndAt.slice(0, 10)
+                      : ''
+                  }}，套餐不一致将跳过
+                </v-chip>
+              </template>
               <span v-else class="text-medium-emphasis">—</span>
             </template>
 
@@ -177,9 +202,8 @@
               :disabled="pendingItems.length === 0"
               @click="onSubmitStep2"
             >
-              确认开通 {{ pendingNewGrantCount }} 人<template
-                v-if="selectedAlreadySubscribedCount > 0"
-                >（另 {{ selectedAlreadySubscribedCount }} 人已有订阅将被跳过）</template
+              确认开通 {{ pendingEffectiveCount }} 人<template v-if="selectedSkippableCount > 0"
+                >（另 {{ selectedSkippableCount }} 人因套餐不一致将跳过）</template
               >
             </v-btn>
           </div>
@@ -373,21 +397,30 @@ const foundHeaders = [
   { title: '手机号', key: 'phone', sortable: false },
   { title: '用户姓名', key: 'userName', sortable: false },
   { title: 'Workspace', key: 'workspaceId', sortable: false },
+  { title: '开通月数', key: 'periods', sortable: false, width: 120 },
   { title: '当前订阅', key: 'currentSubscription', sortable: false },
   { title: '当前积分', key: 'currentCredits', sortable: false },
 ];
 
+// 单账号开通月数下限/上限。与后端 GrantItemDto.@Max(12) 对齐；
+// 上限到年卡档位已足够覆盖运营常见的"卡时长"场景。
+const MIN_PERIODS = 1;
+const MAX_PERIODS = 12;
+
 // 多 workspace 场景下用户当前选择的 workspaceId（key=phone）
 const workspaceChoice = ref<Record<string, string>>({});
+// 每个账号本次要开通几个月（key=phone）；默认 1。
+const periodsChoice = ref<Record<string, number>>({});
 
 // v-data-table 选中行的 rowKey（这里用 phone 作为唯一键）
 const selectedRowKeys = ref<string[]>([]);
 
-// 把 foundRows 注入额外字段供模板使用（rowKey + userName + 默认 workspaceId）
+// 把 foundRows 注入额外字段供模板使用（rowKey + userName + 默认 workspaceId + periods）
 type FoundRowView = LookupResultItem & {
   rowKey: string;
   userName: string;
   workspaceId: string;
+  periods: number;
 };
 
 const foundTableRows = computed<FoundRowView[]>(() =>
@@ -399,32 +432,52 @@ const foundTableRows = computed<FoundRowView[]>(() =>
       rowKey: r.phone,
       userName: r.user?.name ?? r.phone,
       workspaceId: chosenWid,
+      periods: periodsChoice.value[r.phone] ?? 1,
     };
   })
 );
 
-// 当 lookup 结果变化，重置默认勾选 + 默认 workspace 选择
+// 当 lookup 结果变化，重置默认勾选 + 默认 workspace / periods 选择
 watch(
   lookupResult,
   newVal => {
     if (!newVal) {
       selectedRowKeys.value = [];
       workspaceChoice.value = {};
+      periodsChoice.value = {};
       return;
     }
     const phones: string[] = [];
-    const choices: Record<string, string> = {};
+    const wsChoices: Record<string, string> = {};
+    const pChoices: Record<string, number> = {};
     for (const r of newVal.results) {
       if (!r.found || !r.workspaces || r.workspaces.length === 0) continue;
       phones.push(r.phone);
       const def = r.workspaces.find(w => w.isDefault) ?? r.workspaces[0];
-      choices[r.phone] = def.workspaceId;
+      wsChoices[r.phone] = def.workspaceId;
+      pChoices[r.phone] = 1;
     }
     selectedRowKeys.value = phones;
-    workspaceChoice.value = choices;
+    workspaceChoice.value = wsChoices;
+    periodsChoice.value = pChoices;
   },
   { immediate: false }
 );
+
+function clampPeriods(raw: unknown): number {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return 1;
+  return Math.max(MIN_PERIODS, Math.min(MAX_PERIODS, Math.floor(n)));
+}
+
+// 判断某行在当前选中的 planCode 下会被后端 skip：
+// 已有有效订阅 && planCode 与本次请求不一致 → skip（不做跨套餐升级）
+// 同 planCode 的已有订阅会走"延长"路径，应记入 success 而非 skip。
+function isRowSkipped(row: FoundRowView): boolean {
+  const cur = row.currentSubscription;
+  if (!cur) return false;
+  return !!planCode.value && cur.planCode !== planCode.value;
+}
 
 const pendingItems = computed<GrantItem[]>(() => {
   const out: GrantItem[] = [];
@@ -432,13 +485,16 @@ const pendingItems = computed<GrantItem[]>(() => {
   for (const row of foundTableRows.value) {
     if (!selectedSet.has(row.rowKey)) continue;
     if (!row.workspaceId) continue;
-    out.push({ workspaceId: row.workspaceId, phone: row.phone });
+    out.push({
+      workspaceId: row.workspaceId,
+      phone: row.phone,
+      periods: clampPeriods(periodsChoice.value[row.phone] ?? 1),
+    });
   }
   return out;
 });
 
-// 已勾选行中已经存在订阅的人数 —— 提交后会被后端 skip。
-// 单独展示，避免按钮上"开通 N 人"的承诺与实际"成功 N-M 人"不一致。
+// 已勾选行中已有订阅的人数（含同/异套餐）—— 表头汇总区用
 const selectedAlreadySubscribedCount = computed(() => {
   const selectedSet = new Set(selectedRowKeys.value);
   return foundTableRows.value.filter(
@@ -446,8 +502,16 @@ const selectedAlreadySubscribedCount = computed(() => {
   ).length;
 });
 
-const pendingNewGrantCount = computed(
-  () => pendingItems.value.length - selectedAlreadySubscribedCount.value
+// 已勾选且会被后端跳过的人数（套餐不一致）—— 提交按钮文案用
+const selectedSkippableCount = computed(() => {
+  const selectedSet = new Set(selectedRowKeys.value);
+  return foundTableRows.value.filter(row => selectedSet.has(row.rowKey) && isRowSkipped(row))
+    .length;
+});
+
+// 实际会被开通/续期的人数 = 提交总数 - 会被跳过的
+const pendingEffectiveCount = computed(
+  () => pendingItems.value.length - selectedSkippableCount.value
 );
 
 // Step 3 derived state -------------------------------------------------------
@@ -556,12 +620,14 @@ async function onSubmitStep2() {
   }
 
   const submitPlanCode = planCode.value;
+  // snapshot 本次提交的 items，以便 step3 导出 CSV 时还原"开通月数"列。
+  const submittedItems = pendingItems.value.map(it => ({ ...it }));
+  lastSubmittedItems.value = submittedItems;
   grantLoading.value = true;
   try {
     const res = await grantMemberships({
-      items: pendingItems.value,
+      items: submittedItems,
       planCode: submitPlanCode,
-      periods: 1,
       remark: remark.value,
       clientRequestId: clientRequestId.value,
     });
@@ -577,10 +643,15 @@ async function onSubmitStep2() {
   }
 }
 
+// Step 2 提交时 snapshot 的 pendingItems —— 提交后 selectedRowKeys / periodsChoice 可能变化，
+// 但本批次的"开通月数"在结果 CSV 里应该是提交那一刻的值，所以这里持有副本。
+const lastSubmittedItems = ref<GrantItem[]>([]);
+
 function onExportCsv() {
   if (!grantResult.value) return;
   downloadGrantResultCsv(grantResult.value, {
     lookupItems: lookupResult.value?.results,
+    pendingItems: lastSubmittedItems.value,
   });
 }
 
@@ -590,6 +661,7 @@ function resetForNextBatch() {
   lookupResult.value = null;
   grantResult.value = null;
   clientRequestId.value = '';
+  lastSubmittedItems.value = [];
   currentStep.value = 1;
 }
 
