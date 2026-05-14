@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
 import { auth0Routes, authingRoutes } from './auth.routes';
+import { oauthRoutes } from './oauth.routes';
 import ZerocutRoutes from './zerocut.routes';
 
 const authType = import.meta.env.VITE_AUTH_MODE;
@@ -15,6 +16,7 @@ export const routes = [
     meta: {},
   },
   ...(authType === 'auth0' ? auth0Routes : authingRoutes),
+  ...oauthRoutes,
   ...ZerocutRoutes,
   ...AdminRoutes,
   {
