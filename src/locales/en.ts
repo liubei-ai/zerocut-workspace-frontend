@@ -32,6 +32,22 @@ export default {
     create: 'Create one here',
     error: 'The email / password combination is invalid',
   },
+  oauth: {
+    title: 'Authorize Application',
+    loading: 'Loading…',
+    linkInvalid: 'Invalid authorization link',
+    linkInvalidDetail:
+      'This authorization link is missing required parameters (ak or redirect_uri). Please contact the application provider.',
+    appNotFound: 'Application not found',
+    appNotFoundDetail:
+      'The requested application is not registered on the platform. Authorization cannot proceed.',
+    invalidRedirect: 'redirect_uri must start with https://',
+    requestingAccess: 'wants to access your Zerocut account',
+    currentUserLabel: 'Signed in as',
+    authorize: 'Authorize',
+    cancel: 'Cancel',
+    issueCodeFailed: 'Authorization failed',
+  },
   register: {
     title: 'Create Account',
     username: 'Username',
