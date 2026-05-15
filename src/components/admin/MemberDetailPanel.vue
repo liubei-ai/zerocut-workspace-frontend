@@ -225,7 +225,7 @@
                 <template #prepend>
                   <v-icon color="warning" size="small" class="mr-2">mdi-calendar-clock</v-icon>
                 </template>
-                <v-list-item-title class="text-body-2">下次操作时间</v-list-item-title>
+                <v-list-item-title class="text-body-2">下次申请扣费时间</v-list-item-title>
                 <v-list-item-subtitle class="text-body-2">{{
                   formatDate(detail.nextActionAt)
                 }}</v-list-item-subtitle>
@@ -385,9 +385,9 @@ function getTierColor(tier: MembershipTier): string {
   switch (tier) {
     case 'basic':
       return 'grey';
-    case 'pro':
+    case 'standard':
       return 'primary';
-    case 'enterprise':
+    case 'premium':
       return 'purple';
     default:
       return 'primary';
@@ -397,8 +397,8 @@ function getTierColor(tier: MembershipTier): string {
 function getTierLabel(tier: MembershipTier): string {
   const labels: Record<MembershipTier, string> = {
     basic: '基础版',
-    pro: '专业版',
-    enterprise: '企业版',
+    standard: '标准版',
+    premium: '高级版',
   };
   return labels[tier] || tier;
 }

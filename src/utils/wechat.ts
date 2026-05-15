@@ -21,8 +21,8 @@ type WeixinBridgeErrMsg =
 export function invokeWeixinBridgePay(params: object) {
   console.log('Invoking WeixinJSBridge with params:', params);
 
-  return new Promise<{ err_msg: WeixinBridgeErrMsg }>(resolve => {
-    function handleResult(res: { err_msg: WeixinBridgeErrMsg }) {
+  return new Promise<{ err_msg: string }>(resolve => {
+    function handleResult(res: { err_msg: string }) {
       resolve(res);
     }
 

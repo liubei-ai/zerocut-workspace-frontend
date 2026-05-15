@@ -52,7 +52,7 @@
               <template #prepend>
                 <v-icon color="warning">mdi-calendar-clock</v-icon>
               </template>
-              <v-list-item-title>下次操作时间</v-list-item-title>
+              <v-list-item-title>下次申请扣费时间</v-list-item-title>
               <v-list-item-subtitle>{{ formatDate(detail.nextActionAt) }}</v-list-item-subtitle>
             </v-list-item>
           </v-list>
