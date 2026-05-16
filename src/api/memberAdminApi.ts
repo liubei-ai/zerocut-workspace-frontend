@@ -149,6 +149,62 @@ export async function getMemberDetail(subscriptionId: number): Promise<MemberDet
 }
 
 // ============================================================
+// 单笔订单的微信支付检查 / 补发
+// ============================================================
+
+export interface PendingPeriodPreview {
+  periodId: number;
+  periodIndex: number;
+  periodStartAt: string;
+  periodEndAt: string;
+  creditsQuota: number;
+}
+
+export interface OrderPaymentCheckResult {
+  orderId: number;
+  orderNo: string;
+  localStatus: 'created' | 'processing';
+  queryOk: boolean;
+  tradeState?: string;
+  tradeStateDesc?: string;
+  wechatTransactionId?: string;
+  wechatTotalFee?: number;
+  canBackfill: boolean;
+  needsStatusFixOnly: boolean;
+  pendingPeriod?: PendingPeriodPreview;
+  message?: string;
+}
+
+export interface OrderPaymentBackfillResult {
+  orderId: number;
+  orderNo: string;
+  action: 'promoted_success' | 'status_fixed';
+  wechatTransactionId?: string;
+  grantedPeriodId?: number;
+  creditsGranted?: number;
+}
+
+/**
+ * 检查待回填订单的真实微信支付状态（不产生副作用）
+ */
+export async function checkOrderPayment(orderId: number): Promise<OrderPaymentCheckResult> {
+  const response = await apiClient.get<OrderPaymentCheckResult>(
+    `/admin/members/orders/${orderId}/payment-check`
+  );
+  return response.data;
+}
+
+/**
+ * 对已支付但本地仍为 pending 的订单执行补发
+ */
+export async function backfillOrderPayment(orderId: number): Promise<OrderPaymentBackfillResult> {
+  const response = await apiClient.post<OrderPaymentBackfillResult>(
+    `/admin/members/orders/${orderId}/payment-backfill`
+  );
+  return response.data;
+}
+
+// ============================================================
 // Admin Grant Membership (005-admin-grant-membership)
 // ============================================================
 

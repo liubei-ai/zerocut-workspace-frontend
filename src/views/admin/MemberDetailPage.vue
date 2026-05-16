@@ -53,7 +53,7 @@
       <!-- Payment History Section -->
       <v-row class="mb-4">
         <v-col cols="12">
-          <PaymentHistorySection :orders="detail.orders" />
+          <PaymentHistorySection :orders="detail.orders" @check="handleCheckOrder" />
         </v-col>
       </v-row>
 
@@ -71,6 +71,12 @@
         </v-col>
       </v-row>
     </div>
+
+    <OrderPaymentCheckDialog
+      v-model:open="checkDialogOpen"
+      :order="checkDialogOrder"
+      @refresh="loadDetail"
+    />
   </v-container>
 </template>
 
@@ -78,10 +84,15 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { getMemberDetail, type MemberDetail } from '@/api/memberAdminApi';
+import {
+  getMemberDetail,
+  type MemberDetail,
+  type SubscriptionOrderItem,
+} from '@/api/memberAdminApi';
 import CreditGrantsSection from '@/components/admin/CreditGrantsSection.vue';
 import CreditPeriodsSection from '@/components/admin/CreditPeriodsSection.vue';
 import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue';
+import OrderPaymentCheckDialog from '@/components/admin/OrderPaymentCheckDialog.vue';
 import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
 import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
 
@@ -91,6 +102,14 @@ const router = useRouter();
 const detail = ref<MemberDetail | null>(null);
 const loading = ref(false);
 const error = ref<string | null>(null);
+
+const checkDialogOpen = ref(false);
+const checkDialogOrder = ref<SubscriptionOrderItem | null>(null);
+
+function handleCheckOrder(order: SubscriptionOrderItem) {
+  checkDialogOrder.value = order;
+  checkDialogOpen.value = true;
+}
 
 const subscriptionId = computed(() => {
   const id = route.params.id;

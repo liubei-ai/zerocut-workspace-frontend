@@ -83,6 +83,21 @@
           </span>
         </template>
 
+        <!-- Actions Column -->
+        <template #item.actions="{ item }">
+          <v-btn
+            v-if="item.status === 'created' || item.status === 'processing'"
+            size="small"
+            variant="tonal"
+            color="warning"
+            prepend-icon="mdi-magnify"
+            @click="emit('check', item)"
+          >
+            检查
+          </v-btn>
+          <span v-else class="text-medium-emphasis">-</span>
+        </template>
+
         <!-- Empty state -->
         <template #no-data>
           <div class="py-4 text-center">
@@ -104,6 +119,10 @@ defineProps<{
   orders: SubscriptionOrderItem[];
 }>();
 
+const emit = defineEmits<{
+  (e: 'check', order: SubscriptionOrderItem): void;
+}>();
+
 const headers = [
   { title: '订单号', key: 'orderNo', sortable: false },
   { title: '金额', key: 'amountCents', sortable: false },
@@ -113,6 +132,7 @@ const headers = [
   { title: '计划扣款时间', key: 'scheduledAt', sortable: false },
   { title: '实际支付时间', key: 'paidAt', sortable: false },
   { title: '交易详情', key: 'details', sortable: false },
+  { title: '操作', key: 'actions', sortable: false },
 ];
 
 function formatCurrency(amountYuan: string, currency: string): string {
