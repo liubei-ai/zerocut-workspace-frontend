@@ -152,12 +152,14 @@ export async function getMemberDetail(subscriptionId: number): Promise<MemberDet
 // 单笔订单的微信支付检查 / 补发
 // ============================================================
 
-export interface PendingPeriodPreview {
-  periodId: number;
-  periodIndex: number;
-  periodStartAt: string;
-  periodEndAt: string;
+export interface GrantPreview {
+  source: 'pending_period' | 'plan_default';
+  periodId?: number;
+  periodIndex?: number;
+  periodStartAt?: string;
+  periodEndAt?: string;
   creditsQuota: number;
+  planName?: string;
 }
 
 export interface OrderPaymentCheckResult {
@@ -170,16 +172,15 @@ export interface OrderPaymentCheckResult {
   wechatTransactionId?: string;
   wechatTotalFee?: number;
   canBackfill: boolean;
-  needsStatusFixOnly: boolean;
   needsRefundMark: boolean;
-  pendingPeriod?: PendingPeriodPreview;
+  grantPreview?: GrantPreview;
   message?: string;
 }
 
 export interface OrderPaymentBackfillResult {
   orderId: number;
   orderNo: string;
-  action: 'promoted_success' | 'status_fixed' | 'marked_refunded';
+  action: 'promoted_success' | 'marked_refunded';
   wechatTransactionId?: string;
   grantedPeriodId?: number;
   creditsGranted?: number;

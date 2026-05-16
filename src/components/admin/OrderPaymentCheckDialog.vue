@@ -37,9 +37,9 @@
         <!-- Checked: branches by tradeState -->
         <template v-else-if="phase === 'checked' && checkResult">
           <!-- SUCCESS + can backfill -->
-          <template v-if="checkResult.canBackfill && checkResult.pendingPeriod">
+          <template v-if="checkResult.canBackfill">
             <v-alert type="success" variant="tonal" density="comfortable" class="mb-4">
-              <div class="font-weight-medium">微信侧已支付，可补发本周期积分</div>
+              <div class="font-weight-medium">微信侧已支付，可补发本期积分</div>
             </v-alert>
 
             <div class="info-grid">
@@ -55,23 +55,56 @@
                 <span class="info-label">微信侧金额</span>
                 <span>¥{{ (checkResult.wechatTotalFee / 100).toFixed(2) }}</span>
               </div>
-              <v-divider class="my-2" />
-              <div class="info-row">
-                <span class="info-label">待补发周期</span>
-                <span>
-                  第 {{ checkResult.pendingPeriod.periodIndex }} 期
-                  <span class="text-medium-emphasis text-caption">
-                    （{{ formatDate(checkResult.pendingPeriod.periodStartAt) }} ~
-                    {{ formatDate(checkResult.pendingPeriod.periodEndAt) }}）
+
+              <template v-if="checkResult.grantPreview">
+                <v-divider class="my-2" />
+                <div v-if="checkResult.grantPreview.periodIndex != null" class="info-row">
+                  <span class="info-label">待发放周期</span>
+                  <span>
+                    第 {{ checkResult.grantPreview.periodIndex }} 期
+                    <span
+                      v-if="
+                        checkResult.grantPreview.periodStartAt &&
+                        checkResult.grantPreview.periodEndAt
+                      "
+                      class="text-medium-emphasis text-caption"
+                    >
+                      （{{ formatDate(checkResult.grantPreview.periodStartAt) }} ~
+                      {{ formatDate(checkResult.grantPreview.periodEndAt) }}）
+                    </span>
                   </span>
-                </span>
-              </div>
-              <div class="info-row">
-                <span class="info-label">应发积分</span>
-                <span class="text-primary font-weight-medium">
-                  {{ checkResult.pendingPeriod.creditsQuota }} 积分
-                </span>
-              </div>
+                </div>
+                <div
+                  v-else-if="
+                    checkResult.grantPreview.periodStartAt && checkResult.grantPreview.periodEndAt
+                  "
+                  class="info-row"
+                >
+                  <span class="info-label">预计周期</span>
+                  <span class="text-medium-emphasis text-caption">
+                    {{ formatDate(checkResult.grantPreview.periodStartAt) }} ~
+                    {{ formatDate(checkResult.grantPreview.periodEndAt) }}
+                  </span>
+                </div>
+                <div v-if="checkResult.grantPreview.planName" class="info-row">
+                  <span class="info-label">所属计划</span>
+                  <span>{{ checkResult.grantPreview.planName }}</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">应发积分</span>
+                  <span class="text-primary font-weight-medium">
+                    {{ checkResult.grantPreview.creditsQuota }} 积分
+                    <v-chip
+                      v-if="checkResult.grantPreview.source === 'plan_default'"
+                      size="x-small"
+                      variant="outlined"
+                      class="ml-1"
+                    >
+                      按计划默认值
+                    </v-chip>
+                  </span>
+                </div>
+              </template>
             </div>
 
             <v-alert
@@ -83,31 +116,6 @@
             >
               确认补发后，周期窗口会按当前服务器时间重新锚定，与微信回调路径保持一致。
             </v-alert>
-          </template>
-
-          <!-- SUCCESS but only need status fix -->
-          <template v-else-if="checkResult.needsStatusFixOnly">
-            <v-alert type="warning" variant="tonal" density="comfortable" class="mb-4">
-              <div class="font-weight-medium mb-1">微信已支付，但当前订阅已无待发放周期</div>
-              <div class="text-body-2">
-                将仅把订单状态修正为 success，不会发放积分、不会变更订阅或周期。
-              </div>
-            </v-alert>
-
-            <div class="info-grid">
-              <div class="info-row">
-                <span class="info-label">微信交易号</span>
-                <code class="order-code">{{ checkResult.wechatTransactionId }}</code>
-              </div>
-              <div class="info-row">
-                <span class="info-label">商户订单号</span>
-                <code class="order-code">{{ checkResult.orderNo }}</code>
-              </div>
-              <div v-if="checkResult.wechatTotalFee != null" class="info-row">
-                <span class="info-label">微信侧金额</span>
-                <span>¥{{ (checkResult.wechatTotalFee / 100).toFixed(2) }}</span>
-              </div>
-            </div>
           </template>
 
           <!-- REFUND: 微信侧已退款 -->
@@ -252,17 +260,12 @@ const isOpen = computed({
 
 const canShowPrimaryButton = computed(() => {
   if (!checkResult.value || !checkResult.value.queryOk) return false;
-  return (
-    checkResult.value.canBackfill ||
-    checkResult.value.needsStatusFixOnly ||
-    checkResult.value.needsRefundMark
-  );
+  return checkResult.value.canBackfill || checkResult.value.needsRefundMark;
 });
 
 const primaryButtonLabel = computed(() => {
   if (!checkResult.value) return '';
   if (checkResult.value.canBackfill) return '确认补发';
-  if (checkResult.value.needsStatusFixOnly) return '确认修正';
   if (checkResult.value.needsRefundMark) return '确认标记退款';
   return '';
 });
@@ -299,14 +302,10 @@ async function handleBackfill() {
   phase.value = 'confirming';
   try {
     const result = await backfillOrderPayment(props.order.orderId);
-    let tip: string;
-    if (result.action === 'promoted_success') {
-      tip = `补发成功，共发放 ${result.creditsGranted ?? 0} 积分`;
-    } else if (result.action === 'marked_refunded') {
-      tip = '订单已标记为退款';
-    } else {
-      tip = '订单状态已修正为 success';
-    }
+    const tip =
+      result.action === 'marked_refunded'
+        ? '订单已标记为退款'
+        : `补发成功，共发放 ${result.creditsGranted ?? 0} 积分`;
     showToast(tip, 'success');
     emit('refresh');
     emit('update:open', false);
