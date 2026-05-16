@@ -150,6 +150,8 @@ function getStatusColor(status: OrderStatus): string {
       return 'info';
     case 'created':
       return 'grey';
+    case 'refunded':
+      return 'purple';
     default:
       return 'primary';
   }
@@ -161,6 +163,7 @@ function getStatusLabel(status: OrderStatus): string {
     processing: '处理中',
     success: '成功',
     failed: '失败',
+    refunded: '已退款',
   };
   return labels[status] || status;
 }

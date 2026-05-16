@@ -13,7 +13,7 @@ export type SubscriptionStatus =
 export type PurchaseMode = 'one_time_month' | 'one_time_year' | 'auto_monthly' | 'auto_yearly';
 export type MembershipTier = 'basic' | 'standard' | 'premium';
 export type OrderPurpose = 'initial' | 'renewal';
-export type OrderStatus = 'created' | 'processing' | 'success' | 'failed';
+export type OrderStatus = 'created' | 'processing' | 'success' | 'failed' | 'refunded';
 export type PeriodStatus = 'pending' | 'granted';
 export type MemberContractStatus = 'none' | 'signing' | 'signed' | 'terminated' | 'paid_not_signed';
 
@@ -171,6 +171,7 @@ export interface OrderPaymentCheckResult {
   wechatTotalFee?: number;
   canBackfill: boolean;
   needsStatusFixOnly: boolean;
+  needsRefundMark: boolean;
   pendingPeriod?: PendingPeriodPreview;
   message?: string;
 }
@@ -178,7 +179,7 @@ export interface OrderPaymentCheckResult {
 export interface OrderPaymentBackfillResult {
   orderId: number;
   orderNo: string;
-  action: 'promoted_success' | 'status_fixed';
+  action: 'promoted_success' | 'status_fixed' | 'marked_refunded';
   wechatTransactionId?: string;
   grantedPeriodId?: number;
   creditsGranted?: number;

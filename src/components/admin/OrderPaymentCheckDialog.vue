@@ -110,6 +110,31 @@
             </div>
           </template>
 
+          <!-- REFUND: 微信侧已退款 -->
+          <template v-else-if="checkResult.needsRefundMark">
+            <v-alert type="warning" variant="tonal" density="comfortable" class="mb-4">
+              <div class="font-weight-medium mb-1">微信侧已退款</div>
+              <div class="text-body-2">
+                将把订单状态标记为「已退款」。不会变更订阅或周期，已发放的积分流水不会回收。
+              </div>
+            </v-alert>
+
+            <div class="info-grid">
+              <div v-if="checkResult.wechatTransactionId" class="info-row">
+                <span class="info-label">微信交易号</span>
+                <code class="order-code">{{ checkResult.wechatTransactionId }}</code>
+              </div>
+              <div class="info-row">
+                <span class="info-label">商户订单号</span>
+                <code class="order-code">{{ checkResult.orderNo }}</code>
+              </div>
+              <div v-if="checkResult.wechatTotalFee != null" class="info-row">
+                <span class="info-label">微信侧金额</span>
+                <span>¥{{ (checkResult.wechatTotalFee / 100).toFixed(2) }}</span>
+              </div>
+            </div>
+          </template>
+
           <!-- NOTPAY / USERPAYING -->
           <template
             v-else-if="
@@ -227,19 +252,26 @@ const isOpen = computed({
 
 const canShowPrimaryButton = computed(() => {
   if (!checkResult.value || !checkResult.value.queryOk) return false;
-  return checkResult.value.canBackfill || checkResult.value.needsStatusFixOnly;
+  return (
+    checkResult.value.canBackfill ||
+    checkResult.value.needsStatusFixOnly ||
+    checkResult.value.needsRefundMark
+  );
 });
 
 const primaryButtonLabel = computed(() => {
   if (!checkResult.value) return '';
   if (checkResult.value.canBackfill) return '确认补发';
   if (checkResult.value.needsStatusFixOnly) return '确认修正';
+  if (checkResult.value.needsRefundMark) return '确认标记退款';
   return '';
 });
 
 const primaryButtonColor = computed(() => {
   if (!checkResult.value) return 'primary';
-  return checkResult.value.canBackfill ? 'warning' : 'primary';
+  if (checkResult.value.canBackfill) return 'warning';
+  if (checkResult.value.needsRefundMark) return 'purple';
+  return 'primary';
 });
 
 function showToast(message: string, color: 'success' | 'error' = 'success') {
@@ -267,10 +299,14 @@ async function handleBackfill() {
   phase.value = 'confirming';
   try {
     const result = await backfillOrderPayment(props.order.orderId);
-    const tip =
-      result.action === 'promoted_success'
-        ? `补发成功，共发放 ${result.creditsGranted ?? 0} 积分`
-        : '订单状态已修正为 success';
+    let tip: string;
+    if (result.action === 'promoted_success') {
+      tip = `补发成功，共发放 ${result.creditsGranted ?? 0} 积分`;
+    } else if (result.action === 'marked_refunded') {
+      tip = '订单已标记为退款';
+    } else {
+      tip = '订单状态已修正为 success';
+    }
     showToast(tip, 'success');
     emit('refresh');
     emit('update:open', false);
