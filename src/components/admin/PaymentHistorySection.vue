@@ -129,7 +129,7 @@ const headers = [
   { title: '用途', key: 'purpose', sortable: false },
   { title: '状态', key: 'status', sortable: false },
   { title: '尝试次数', key: 'attemptNo', sortable: false },
-  { title: '计划扣款时间', key: 'scheduledAt', sortable: false },
+  { title: '申请扣款时间', key: 'scheduledAt', sortable: false },
   { title: '实际支付时间', key: 'paidAt', sortable: false },
   { title: '交易详情', key: 'details', sortable: false },
   { title: '操作', key: 'actions', sortable: false },
