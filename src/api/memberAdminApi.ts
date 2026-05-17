@@ -206,6 +206,29 @@ export async function backfillOrderPayment(orderId: number): Promise<OrderPaymen
   return response.data;
 }
 
+export interface RefundOrderResult {
+  orderId: number;
+  orderNo: string;
+  refundId: string;
+  outRefundNo: string;
+  refundAmountCents: number;
+  refundedAt: string;
+}
+
+/**
+ * 对微信侧 SUCCESS 但本地仍 pending 的订单发起微信退款
+ */
+export async function refundOrderPayment(
+  orderId: number,
+  reason?: string
+): Promise<RefundOrderResult> {
+  const response = await apiClient.post<RefundOrderResult>(
+    `/admin/members/orders/${orderId}/refund`,
+    { reason }
+  );
+  return response.data;
+}
+
 // ============================================================
 // Admin Grant Membership (005-admin-grant-membership)
 // ============================================================

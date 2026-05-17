@@ -23,6 +23,55 @@
           <p class="text-body-2 text-medium-emphasis mt-3">正在补发…</p>
         </div>
 
+        <!-- Refunding -->
+        <div v-else-if="phase === 'refunding'" class="py-6 text-center">
+          <v-progress-circular indeterminate color="error" size="40" />
+          <p class="text-body-2 text-medium-emphasis mt-3">正在向微信申请退款…</p>
+        </div>
+
+        <!-- Refund confirm (内嵌二次确认) -->
+        <template v-else-if="phase === 'refund_confirm' && checkResult && order">
+          <v-alert type="error" variant="tonal" density="comfortable" class="mb-4">
+            <div class="font-weight-medium mb-1">确认对该订单发起微信退款？</div>
+            <div class="text-body-2">
+              该操作不可逆，微信受理后将把订单状态置为「已退款」。不会回收已发放的积分流水。
+            </div>
+          </v-alert>
+
+          <div class="info-grid">
+            <div class="info-row">
+              <span class="info-label">微信交易号</span>
+              <code class="order-code">{{ checkResult.wechatTransactionId }}</code>
+            </div>
+            <div class="info-row">
+              <span class="info-label">商户订单号</span>
+              <code class="order-code">{{ checkResult.orderNo }}</code>
+            </div>
+            <div class="info-row">
+              <span class="info-label">订单金额</span>
+              <span>¥{{ (order.amountCents / 100).toFixed(2) }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">退款金额</span>
+              <span class="text-error font-weight-medium">
+                ¥{{ (order.amountCents / 100).toFixed(2) }}
+                <v-chip size="x-small" variant="outlined" class="ml-1">全额</v-chip>
+              </span>
+            </div>
+          </div>
+
+          <v-text-field
+            v-model="refundReason"
+            label="退款理由（可选，最多 80 字）"
+            variant="outlined"
+            density="comfortable"
+            :counter="80"
+            :maxlength="80"
+            class="mt-4"
+            hide-details="auto"
+          />
+        </template>
+
         <!-- Query failed -->
         <v-alert
           v-else-if="phase === 'error' || (checkResult && !checkResult.queryOk)"
@@ -193,17 +242,47 @@
           重试
         </v-btn>
         <v-spacer />
-        <v-btn variant="text" @click="handleClose" :disabled="phase === 'confirming'"> 关闭 </v-btn>
-        <v-btn
-          v-if="canShowPrimaryButton"
-          :color="primaryButtonColor"
-          variant="elevated"
-          :loading="phase === 'confirming'"
-          :disabled="phase !== 'checked'"
-          @click="handleBackfill"
-        >
-          {{ primaryButtonLabel }}
-        </v-btn>
+
+        <!-- 二次确认视图：返回 + 确认退款 -->
+        <template v-if="phase === 'refund_confirm' || phase === 'refunding'">
+          <v-btn variant="text" :disabled="phase === 'refunding'" @click="cancelRefundConfirm">
+            返回
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="elevated"
+            :loading="phase === 'refunding'"
+            @click="handleRefund"
+          >
+            确认退款
+          </v-btn>
+        </template>
+
+        <!-- 普通视图 -->
+        <template v-else>
+          <v-btn variant="text" :disabled="phase === 'confirming'" @click="handleClose">
+            关闭
+          </v-btn>
+          <v-btn
+            v-if="canShowRefundButton"
+            color="error"
+            variant="outlined"
+            :disabled="phase !== 'checked'"
+            @click="enterRefundConfirm"
+          >
+            申请退款
+          </v-btn>
+          <v-btn
+            v-if="canShowPrimaryButton"
+            :color="primaryButtonColor"
+            variant="elevated"
+            :loading="phase === 'confirming'"
+            :disabled="phase !== 'checked'"
+            @click="handleBackfill"
+          >
+            {{ primaryButtonLabel }}
+          </v-btn>
+        </template>
       </v-card-actions>
     </v-card>
 
@@ -222,6 +301,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import {
   backfillOrderPayment,
   checkOrderPayment,
+  refundOrderPayment,
   type OrderPaymentCheckResult,
   type SubscriptionOrderItem,
 } from '@/api/memberAdminApi';
@@ -241,11 +321,19 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-type Phase = 'idle' | 'loading' | 'checked' | 'confirming' | 'error';
+type Phase =
+  | 'idle'
+  | 'loading'
+  | 'checked'
+  | 'confirming'
+  | 'refund_confirm'
+  | 'refunding'
+  | 'error';
 
 const phase = ref<Phase>('idle');
 const checkResult = ref<OrderPaymentCheckResult | null>(null);
 const errorMessage = ref<string>('');
+const refundReason = ref<string>('');
 
 const snackbar = reactive({
   show: false,
@@ -261,6 +349,11 @@ const isOpen = computed({
 const canShowPrimaryButton = computed(() => {
   if (!checkResult.value || !checkResult.value.queryOk) return false;
   return checkResult.value.canBackfill || checkResult.value.needsRefundMark;
+});
+
+const canShowRefundButton = computed(() => {
+  if (!checkResult.value || !checkResult.value.queryOk) return false;
+  return checkResult.value.canBackfill;
 });
 
 const primaryButtonLabel = computed(() => {
@@ -319,6 +412,32 @@ function handleClose() {
   emit('update:open', false);
 }
 
+function enterRefundConfirm() {
+  refundReason.value = '';
+  phase.value = 'refund_confirm';
+}
+
+function cancelRefundConfirm() {
+  phase.value = 'checked';
+}
+
+async function handleRefund() {
+  if (!props.order) return;
+  phase.value = 'refunding';
+  try {
+    const result = await refundOrderPayment(
+      props.order.orderId,
+      refundReason.value.trim() || undefined
+    );
+    showToast(`退款受理成功，退款单号 ${result.outRefundNo}`, 'success');
+    emit('refresh');
+    emit('update:open', false);
+  } catch (err: unknown) {
+    showToast(extractApiErrorMessage(err, '退款失败'), 'error');
+    phase.value = 'refund_confirm';
+  }
+}
+
 watch(
   () => props.open,
   async newOpen => {
@@ -328,6 +447,7 @@ watch(
       phase.value = 'idle';
       checkResult.value = null;
       errorMessage.value = '';
+      refundReason.value = '';
     }
   }
 );
