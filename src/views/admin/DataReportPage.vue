@@ -166,7 +166,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container fluid class="pa-0">
     <!-- 积分消耗来源趋势 -->
     <v-row>
       <v-col cols="12">
