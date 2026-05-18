@@ -33,6 +33,15 @@ const SOURCE_LABELS: Record<string, string> = {
   wechat_recharge: '积分套餐',
 };
 
+const SOURCE_ALIASES: Record<string, string> = {
+  wechat_subscription: 'subscription_grant',
+};
+
+function normalizeSource(source: string): string {
+  const key = source || UNKNOWN_SOURCE;
+  return SOURCE_ALIASES[key] ?? key;
+}
+
 function labelOfSource(source: string) {
   return SOURCE_LABELS[source] ?? source;
 }
@@ -40,7 +49,7 @@ function labelOfSource(source: string) {
 const pivotSources = computed<string[]>(() => {
   const set = new Set<string>();
   for (const item of items.value) {
-    set.add(item.source || UNKNOWN_SOURCE);
+    set.add(normalizeSource(item.source));
   }
   return [...set].sort((a, b) => a.localeCompare(b));
 });
@@ -48,7 +57,7 @@ const pivotSources = computed<string[]>(() => {
 const pivotRows = computed<PivotRow[]>(() => {
   const byDay = new Map<string, PivotRow>();
   for (const item of items.value) {
-    const source = item.source || UNKNOWN_SOURCE;
+    const source = normalizeSource(item.source);
     let row = byDay.get(item.day);
     if (!row) {
       row = { day: item.day, sources: {}, totalCredits: 0, totalPrice: 0 };
@@ -174,7 +183,8 @@ onMounted(() => {
           <v-card-title class="d-flex align-center">
             <v-icon start>mdi-chart-line</v-icon>
             积分消耗来源趋势
-            <v-spacer />
+          </v-card-title>
+          <v-card-subtitle class="d-flex align-center ga-2 flex-wrap pb-3">
             <v-text-field
               v-model="trendStartDate"
               type="date"
@@ -182,8 +192,7 @@ onMounted(() => {
               density="compact"
               hide-details
               variant="outlined"
-              style="max-width: 180px"
-              class="mr-2"
+              style="min-width: 150px; max-width: 200px"
             />
             <v-text-field
               v-model="trendEndDate"
@@ -192,13 +201,12 @@ onMounted(() => {
               density="compact"
               hide-details
               variant="outlined"
-              style="max-width: 180px"
-              class="mr-2"
+              style="min-width: 150px; max-width: 200px"
             />
             <v-btn color="primary" variant="tonal" :loading="trendLoading" @click="fetchTrend">
               查询
             </v-btn>
-          </v-card-title>
+          </v-card-subtitle>
           <v-card-text>
             <v-progress-linear v-if="trendLoading" indeterminate color="primary" />
             <template v-else>
@@ -206,17 +214,12 @@ onMounted(() => {
 
               <v-divider class="my-4" />
 
-              <div class="d-flex align-center mb-3">
-                <v-icon start>mdi-table</v-icon>
-                <span class="text-subtitle-1 font-weight-medium">每日明细</span>
-                <v-spacer />
-                <v-btn-toggle
-                  v-model="tableMetric"
-                  mandatory
-                  density="compact"
-                  color="primary"
-                  class="mr-2"
-                >
+              <div class="d-flex align-center ga-2 mb-3 flex-wrap">
+                <div class="d-flex align-center">
+                  <v-icon start>mdi-table</v-icon>
+                  <span class="text-subtitle-1 font-weight-medium">每日明细</span>
+                </div>
+                <v-btn-toggle v-model="tableMetric" mandatory density="compact" color="primary">
                   <v-btn value="credits" size="small">积分数</v-btn>
                   <v-btn value="price" size="small">金额（元）</v-btn>
                 </v-btn-toggle>
@@ -275,7 +278,8 @@ onMounted(() => {
           <v-card-title class="d-flex align-center">
             <v-icon start>mdi-trophy-outline</v-icon>
             工作区消耗榜 · Top 10
-            <v-spacer />
+          </v-card-title>
+          <v-card-subtitle class="d-flex align-center ga-2 flex-wrap pb-3">
             <v-text-field
               v-model="leaderboardStartDate"
               type="date"
@@ -283,8 +287,7 @@ onMounted(() => {
               density="compact"
               hide-details
               variant="outlined"
-              style="max-width: 180px"
-              class="mr-2"
+              style="min-width: 150px; max-width: 200px"
             />
             <v-text-field
               v-model="leaderboardEndDate"
@@ -293,8 +296,7 @@ onMounted(() => {
               density="compact"
               hide-details
               variant="outlined"
-              style="max-width: 180px"
-              class="mr-2"
+              style="min-width: 150px; max-width: 200px"
             />
             <v-btn
               color="primary"
@@ -304,7 +306,7 @@ onMounted(() => {
             >
               查询
             </v-btn>
-          </v-card-title>
+          </v-card-subtitle>
           <v-card-text>
             <v-progress-linear v-if="leaderboardLoading" indeterminate color="primary" />
             <v-data-table

@@ -9,29 +9,51 @@ const props = defineProps<{
 
 const metric = ref<'credits' | 'price'>('credits');
 
+const UNKNOWN_SOURCE = '未知来源';
+
+const SOURCE_LABELS: Record<string, string> = {
+  admin_give: '系统赠与',
+  admin_manual: '手动充值',
+  Newbie: '新用户赠送',
+  subscription_grant: '会员订阅',
+  wechat_recharge: '积分套餐',
+};
+
+const SOURCE_ALIASES: Record<string, string> = {
+  wechat_subscription: 'subscription_grant',
+};
+
+function normalizeSource(source: string): string {
+  const key = source || UNKNOWN_SOURCE;
+  return SOURCE_ALIASES[key] ?? key;
+}
+
 const seriesData = computed(() => {
-  const grouped = new Map<string, { day: string; credits: number; price: number }[]>();
+  const grouped = new Map<string, Map<string, { credits: number; price: number }>>();
 
   for (const item of props.items) {
-    if (!grouped.has(item.source)) {
-      grouped.set(item.source, []);
+    const key = normalizeSource(item.source);
+    let byDay = grouped.get(key);
+    if (!byDay) {
+      byDay = new Map();
+      grouped.set(key, byDay);
     }
-    grouped.get(item.source)!.push({
-      day: item.day,
-      credits: item.total_credits,
-      price: item.total_price,
+    const prev = byDay.get(item.day) ?? { credits: 0, price: 0 };
+    byDay.set(item.day, {
+      credits: prev.credits + item.total_credits,
+      price: prev.price + item.total_price,
     });
   }
 
   // 按 source 生成 series，每条线按日期升序
   const series: { name: string; data: [number, number][] }[] = [];
-  for (const [source, dataPoints] of grouped) {
-    const sorted = dataPoints.sort((a, b) => a.day.localeCompare(b.day));
+  for (const [source, byDay] of grouped) {
+    const sorted = [...byDay.entries()].sort((a, b) => a[0].localeCompare(b[0]));
     series.push({
-      name: source || '未知来源',
-      data: sorted.map(d => [
-        new Date(d.day).getTime(),
-        metric.value === 'credits' ? d.credits : d.price,
+      name: SOURCE_LABELS[source] ?? source,
+      data: sorted.map(([day, v]) => [
+        new Date(day).getTime(),
+        metric.value === 'credits' ? v.credits : v.price,
       ]),
     });
   }
