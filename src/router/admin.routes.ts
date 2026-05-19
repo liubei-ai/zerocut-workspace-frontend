@@ -158,6 +158,30 @@ const AdminRoutes: RouteRecordRaw[] = [
           permissions: [Permission.DATA_REPORT_READ],
         },
       },
+      {
+        path: 'referral/channels',
+        name: 'admin-referral-channels',
+        component: () => import('@/views/admin/ReferralChannelListPage.vue'),
+        meta: {
+          title: '推广渠道',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          permissions: [Permission.REFERRAL_READ],
+        },
+      },
+      {
+        path: 'referral/channels/:id',
+        name: 'admin-referral-channel-detail',
+        component: () => import('@/views/admin/ReferralChannelDetailPage.vue'),
+        meta: {
+          title: '渠道详情',
+          layout: 'landing',
+          category: 'Admin',
+          requiresAuth: true,
+          permissions: [Permission.REFERRAL_READ],
+        },
+      },
     ],
   },
 ];

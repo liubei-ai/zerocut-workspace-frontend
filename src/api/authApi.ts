@@ -1,8 +1,20 @@
 import { type SyncedUser } from '../types/api';
+import { getStoredRef } from '../utils/referralTracker';
 import apiClient from './api2client';
 
+function buildAttributionPayload(extra?: Record<string, unknown>) {
+  const ref = getStoredRef();
+  if (!ref) return extra;
+  return {
+    ...extra,
+    refCode: ref.code,
+    refSeenAt: ref.seenAt,
+    refLandingHost: ref.landingHost,
+  };
+}
+
 export async function syncAuthingToken(token: string, wechatIdentities) {
-  return apiClient.post<SyncedUser>('/auth/sync', wechatIdentities, {
+  return apiClient.post<SyncedUser>('/auth/sync', buildAttributionPayload(wechatIdentities), {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
@@ -12,7 +24,7 @@ export async function requestAuthingLogout() {
 }
 
 export async function syncAuth0Token(token: string) {
-  return apiClient.post<SyncedUser>('/auth0/sync', undefined, {
+  return apiClient.post<SyncedUser>('/auth0/sync', buildAttributionPayload(), {
     headers: {
       Authorization: `Bearer ${token}`,
     },

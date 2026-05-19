@@ -26,6 +26,10 @@ import { vPermission } from './directives/permission';
 import i18n from './plugins/i18n';
 import vuetify from './plugins/vuetify';
 import router from './router';
+import { captureRefFromUrl } from './utils/referralTracker';
+
+// 启动时捕获 ?ref= 推广邀请码（未注册用户 last-click 覆盖）
+captureRefFromUrl();
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);

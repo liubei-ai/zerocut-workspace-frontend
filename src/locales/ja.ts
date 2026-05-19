@@ -76,6 +76,7 @@ export default {
     adminWorkflows: 'ワークフロー',
     adminToolbox: 'ツールボックス',
     adminDataReport: 'データレポート',
+    adminReferralChannels: '紹介チャネル',
 
     // 共通アクション
     search: '検索（フォーカスするには「ctrl + /」を押します）',

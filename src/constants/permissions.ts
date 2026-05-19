@@ -47,6 +47,10 @@ export const Permission = {
 
   // 报表
   DATA_REPORT_READ: 'data_report.read',
+
+  // 推广渠道 / 邀请码归因
+  REFERRAL_READ: 'referral.read',
+  REFERRAL_WRITE: 'referral.write',
 } as const;
 
 export type Permission = (typeof Permission)[keyof typeof Permission];

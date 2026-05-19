@@ -93,6 +93,7 @@ export default {
     adminWorkflows: 'Workflows',
     adminToolbox: 'Toolbox',
     adminDataReport: 'Data Report',
+    adminReferralChannels: 'Referral Channels',
 
     // Common actions
     search: 'Search (press "ctrl + /" to focus)',

@@ -53,4 +53,10 @@ export default [
     icon: 'mdi-chart-line',
     permission: Permission.DATA_REPORT_READ,
   },
+  {
+    key: 'menu.adminReferralChannels',
+    link: '/admin/referral/channels',
+    icon: 'mdi-share-variant',
+    permission: Permission.REFERRAL_READ,
+  },
 ];
