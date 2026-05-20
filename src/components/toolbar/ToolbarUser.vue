@@ -58,6 +58,12 @@ const navs: Array<{
   //   icon: 'mdi-account-box-outline',
   // },
   {
+    title: t('menu.myApps'),
+    key: 'menu.myApps',
+    link: '/oauth-apps',
+    icon: 'mdi-shield-account-outline',
+  },
+  {
     title: t('menu.plansAndBilling'),
     key: 'menu.plansAndBilling',
     link: '/plans-and-billing',

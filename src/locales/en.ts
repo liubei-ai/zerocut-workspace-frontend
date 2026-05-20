@@ -47,6 +47,79 @@ export default {
     authorize: 'Authorize',
     cancel: 'Cancel',
     issueCodeFailed: 'Authorization failed',
+    manage: {
+      title: 'My Apps',
+      subtitle:
+        'Manage the OAuth Apps you created. Deprecating an App is irreversible — once deprecated, this App can never be recovered, and the sk cannot be rotated.',
+      empty: 'No Apps yet. Click "New App" in the top right to start.',
+      newApp: 'New App',
+      refresh: 'Refresh',
+      stats: {
+        total: 'Total Apps',
+        active: 'Active',
+        deprecated: 'Deprecated',
+      },
+      table: {
+        ak: 'ak (Public ID)',
+        name: 'Name',
+        redirectUri: 'Redirect URI',
+        sk: 'sk (Masked)',
+        status: 'Status',
+        createdAt: 'Created',
+        actions: 'Actions',
+      },
+      status: {
+        active: 'Active',
+        deprecated: 'Deprecated',
+      },
+      actions: {
+        deprecate: 'Deprecate',
+        copy: 'Copy',
+        copied: 'Copied',
+      },
+      create: {
+        title: 'New OAuth App',
+        akLabel: 'ak (Public ID)',
+        akHint: '8 alphanumeric characters; recommend matching your publish projectId',
+        akInvalid: 'ak must be exactly 8 alphanumeric characters (A-Z a-z 0-9)',
+        nameLabel: 'Name (optional)',
+        nameHint: 'Display name shown on the consent screen; defaults to "App {ak}" if empty',
+        redirectUriLabel: 'Redirect URI',
+        redirectUriHint:
+          'Must start with https:// and exactly match your published callback (including path)',
+        redirectUriInvalid: 'redirect_uri must start with https://',
+        submit: 'Create',
+        cancel: 'Cancel',
+      },
+      created: {
+        title: 'App Created Successfully',
+        warning:
+          'Save your sk now — once you close this dialog, Zerocut will never show the full sk again in any form.',
+        akLabel: 'ak (always visible)',
+        skLabel: 'sk (shown only once)',
+        confirm: "I've saved the sk",
+      },
+      deprecate: {
+        title: 'Deprecate this App?',
+        warning: 'This action is irreversible.',
+        consequences:
+          'After deprecation: all issued access_tokens become invalid immediately; this ak can never be re-registered by anyone; to continue, create a new App with a new ak.',
+        confirmHint: 'Type the full ak "{ak}" to confirm deprecation:',
+        confirmPlaceholder: 'Type ak here',
+        confirmButton: 'I understand, deprecate permanently',
+        cancel: 'Cancel',
+      },
+      errors: {
+        loadFailed: 'Failed to load App list',
+        createFailed: 'Failed to create App',
+        deprecateFailed: 'Failed to deprecate',
+      },
+      messages: {
+        createSuccess: 'App created',
+        deprecateSuccess: 'App deprecated',
+        copySuccess: 'Copied to clipboard',
+      },
+    },
   },
   register: {
     title: 'Create Account',
@@ -73,6 +146,7 @@ export default {
     dashboard: 'Dashboard',
     resourceAdmin: 'Resource Admin',
     apikeys: 'API Keys',
+    myApps: 'My Apps',
     usage: 'Usage Logs',
     wallet: 'Wallet',
     voiceClones: 'Voice Clones',

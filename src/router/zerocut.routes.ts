@@ -39,6 +39,20 @@ const zerocutRoutes = [
       import(/* webpackChunkName: "token-management" */ '@/views/zerocut/APIKeyManagementView.vue'),
   },
   {
+    path: '/oauth-apps',
+    name: 'OauthApps',
+    meta: {
+      requiresAuth: true,
+      layout: 'landing',
+      title: '我的应用',
+      category: 'ZeroCut',
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "oauth-app-management" */ '@/views/zerocut/OauthAppManagementView.vue'
+      ),
+  },
+  {
     path: '/usage',
     name: 'Usage',
     meta: {
