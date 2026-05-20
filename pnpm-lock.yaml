@@ -57,6 +57,9 @@ importers:
       core-js:
         specifier: ^3.49.0
         version: 3.49.0
+      dayjs:
+        specifier: ^1.11.20
+        version: 1.11.20
       echarts:
         specifier: ^5.5.1
         version: 5.6.0
@@ -883,6 +886,11 @@ packages:
 
   '@oxlint-tsgolint/darwin-x64@0.17.3':
     resolution: {integrity: sha512-gPBy4DS5ueCgXzko20XsNZzDe/Cxde056B+QuPLGvz05CGEAtmRfpImwnyY2lAXXjPL+SmnC/OYexu8zI12yHQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@oxlint-tsgolint/darwin-x64@0.17.4':
+    resolution: {integrity: sha512-EY2wmHWqkz72B0/ddMiAM564ZXpEuN1i7JqJJhLmDUQfiHX0/X0EqK3xlSScMCFcVicitOxbKO9oqbde3658yg==}
     cpu: [x64]
     os: [darwin]
 
@@ -2108,6 +2116,9 @@ packages:
   dargs@8.1.0:
     resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
     engines: {node: '>=12'}
+
+  dayjs@1.11.20:
+    resolution: {integrity: sha512-YbwwqR/uYpeoP4pu043q+LTDLFBLApUP6VxRihdfNTqu4ubqMlGDLd6ErXhEgsyvY0K6nCs7nggYumAN+9uEuQ==}
 
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
@@ -4553,6 +4564,9 @@ snapshots:
   '@oxlint-tsgolint/darwin-x64@0.17.3':
     optional: true
 
+  '@oxlint-tsgolint/darwin-x64@0.17.4':
+    optional: true
+
   '@oxlint-tsgolint/linux-arm64@0.17.3':
     optional: true
 
@@ -5627,6 +5641,8 @@ snapshots:
 
   dargs@8.1.0: {}
 
+  dayjs@1.11.20: {}
+
   debug@2.6.9:
     dependencies:
       ms: 2.0.0
@@ -6400,6 +6416,7 @@ snapshots:
   oxlint-tsgolint@0.17.4:
     optionalDependencies:
       '@oxlint-tsgolint/darwin-arm64': 0.17.4
+      '@oxlint-tsgolint/darwin-x64': 0.17.4
       '@oxlint-tsgolint/linux-arm64': 0.17.4
       '@oxlint-tsgolint/linux-x64': 0.17.4
       '@oxlint-tsgolint/win32-arm64': 0.17.4
