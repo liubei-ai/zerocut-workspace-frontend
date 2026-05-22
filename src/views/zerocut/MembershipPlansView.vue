@@ -99,7 +99,7 @@ function formatPrice(
   _allPlans: MembershipPlanDto[]
 ): string | PriceDisplay {
   if (plan.purchaseMode === 'auto_monthly') {
-    if (plan.firstMonthPriceYuan != null) {
+    if (membershipStore.firstMonthPromoEligible && plan.firstMonthPriceYuan != null) {
       return {
         main: t('zerocut.membership.prices.firstMonth', { price: plan.firstMonthPriceYuan }),
         monthlyEquivalent: t('zerocut.membership.prices.autoRenewal', { price: plan.priceYuan }),
@@ -321,10 +321,7 @@ async function fetchMembershipPlans() {
     loading.value = true;
     error.value = null;
 
-    const [plans] = await Promise.all([
-      getMembershipPlans(workspaceStore.currentWorkspaceId!),
-      membershipStore.refresh(),
-    ]);
+    const [plans] = await Promise.all([getMembershipPlans(), membershipStore.refresh()]);
 
     rawPlans.value = plans ?? [];
   } catch (e: unknown) {

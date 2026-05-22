@@ -98,13 +98,20 @@ export interface SubscriptionDetails {
 }
 
 /**
+ * GET /subscriptions/me 响应包装：包含当前订阅与账户级首月折扣资格。
+ * firstMonthPromoEligible 用于前端决定 UI 上是否展示首月优惠价。
+ */
+export interface SubscriptionMe {
+  subscription: SubscriptionDetails | null;
+  firstMonthPromoEligible: boolean;
+}
+
+/**
  * Get all membership plans
  * @param activeOnly - Only return active plans (default true)
  */
-export async function getMembershipPlans(workspaceId: string) {
-  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans', {
-    params: { workspaceId },
-  });
+export async function getMembershipPlans() {
+  const response = await client.get<MembershipPlanDto[]>('/subscriptions/membership-plans');
   return response.data;
 }
 
@@ -189,7 +196,7 @@ export async function getSigningSessionPureStatus(sessionId: string, workspaceId
 }
 
 export async function getCurrentSubscription(workspaceId: string) {
-  const response = await client.get<SubscriptionDetails>('/subscriptions/me', {
+  const response = await client.get<SubscriptionMe>('/subscriptions/me', {
     params: { workspaceId },
   });
   return response.data;

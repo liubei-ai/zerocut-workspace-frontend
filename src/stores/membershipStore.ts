@@ -7,6 +7,7 @@ import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 export const useMembershipStore = defineStore('membership', () => {
   const subscription = ref<SubscriptionDetails | null>(null);
+  const firstMonthPromoEligible = ref(false);
   const walletInfo = ref<WalletInfo | null>(null);
   const loading = ref(false);
   const initialized = ref(false);
@@ -46,7 +47,9 @@ export const useMembershipStore = defineStore('membership', () => {
     try {
       const workspaceId = workspaceStore.currentWorkspaceId;
       if (workspaceId) {
-        subscription.value = await getCurrentSubscription(workspaceId);
+        const me = await getCurrentSubscription(workspaceId);
+        subscription.value = me.subscription;
+        firstMonthPromoEligible.value = me.firstMonthPromoEligible;
         if (isMembershipEffectiveStatus(subscription.value?.status)) {
           walletInfo.value = await getWalletInfo(workspaceId);
         }
@@ -60,12 +63,14 @@ export const useMembershipStore = defineStore('membership', () => {
   async function refresh() {
     initialized.value = false;
     subscription.value = null;
+    firstMonthPromoEligible.value = false;
     walletInfo.value = null;
     await initialize();
   }
 
   return {
     subscription,
+    firstMonthPromoEligible,
     walletInfo,
     loading,
     initialized,

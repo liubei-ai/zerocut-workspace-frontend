@@ -187,7 +187,8 @@ watch(
       loading.value = true;
       error.value = null;
       try {
-        subscription.value = await getCurrentSubscription(props.workspaceId);
+        const me = await getCurrentSubscription(props.workspaceId);
+        subscription.value = me.subscription;
       } catch (err) {
         console.error('Failed to load subscription:', err);
         error.value =

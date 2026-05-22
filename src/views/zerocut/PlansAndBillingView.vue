@@ -113,13 +113,13 @@ async function loadData() {
   error.value = null;
 
   try {
-    const [plansResult, subscriptionResult] = await Promise.all([
-      getMembershipPlans(workspaceId.value),
+    const [plansResult, meResult] = await Promise.all([
+      getMembershipPlans(),
       getCurrentSubscription(workspaceId.value),
     ]);
 
     membershipPlans.value = plansResult ?? [];
-    subscription.value = subscriptionResult;
+    subscription.value = meResult.subscription;
   } catch (e) {
     const err = e as ApiError;
     error.value = err?.message || '加载失败，请稍后重试';

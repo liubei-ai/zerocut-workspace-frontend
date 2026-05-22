@@ -27,7 +27,12 @@
                     {{ membershipPlan?.monthlyCredits }} 积分/月
                   </v-chip>
                 </div>
-                <template v-if="membershipPlan?.firstMonthPriceYuan != null">
+                <template
+                  v-if="
+                    membershipStore.firstMonthPromoEligible &&
+                    membershipPlan?.firstMonthPriceYuan != null
+                  "
+                >
                   <div class="d-flex align-center mb-1">
                     <span class="text-h6 font-weight-bold text-primary">
                       {{
@@ -176,6 +181,7 @@ import {
   type PureSigningSessionResponse,
   type PureSigningSessionStatus,
 } from '@/api/membershipApi';
+import { useMembershipStore } from '@/stores/membershipStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { extractApiErrorMessage } from '@/utils/apiError';
@@ -202,6 +208,7 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const snackbarStore = useSnackbarStore();
 const workspaceStore = useWorkspaceStore();
+const membershipStore = useMembershipStore();
 
 const qrCodeCanvas = ref<HTMLCanvasElement>();
 const signingSession = ref<PureSigningSessionResponse | null>(null);
