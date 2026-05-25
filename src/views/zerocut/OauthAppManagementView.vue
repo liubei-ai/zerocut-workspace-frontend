@@ -77,6 +77,29 @@ const stats = computed(() => ({
   deprecated: apps.value.filter(a => a.status === OauthAppStatus.DEPRECATED).length,
 }));
 
+// ── 顶栏按钮 ─────────────────────────────────────────
+const headerPrimaryActions = computed(() => [
+  {
+    key: 'create',
+    label: t('oauth.manage.newApp'),
+    icon: 'mdi-plus',
+    color: 'primary',
+    variant: 'flat' as const,
+    onClick: openCreateDialog,
+  },
+]);
+
+const headerSecondaryActions = computed(() => [
+  {
+    key: 'refresh',
+    label: t('oauth.manage.refresh'),
+    icon: 'mdi-refresh',
+    variant: 'text' as const,
+    loading: loading.value,
+    onClick: loadApps,
+  },
+]);
+
 // ── 表格 ─────────────────────────────────────────────
 const headers = computed(() => [
   { title: t('oauth.manage.table.ak'), key: 'ak', sortable: false },
@@ -189,16 +212,12 @@ onMounted(loadApps);
 
 <template>
   <div class="oauth-app-management pa-4">
-    <ResponsivePageHeader :title="t('oauth.manage.title')" :subtitle="t('oauth.manage.subtitle')">
-      <template #actions>
-        <v-btn variant="text" :loading="loading" prepend-icon="mdi-refresh" @click="loadApps">
-          {{ t('oauth.manage.refresh') }}
-        </v-btn>
-        <v-btn color="primary" prepend-icon="mdi-plus" @click="openCreateDialog">
-          {{ t('oauth.manage.newApp') }}
-        </v-btn>
-      </template>
-    </ResponsivePageHeader>
+    <ResponsivePageHeader
+      :title="t('oauth.manage.title')"
+      :subtitle="t('oauth.manage.subtitle')"
+      :primary-actions="headerPrimaryActions"
+      :secondary-actions="headerSecondaryActions"
+    />
 
     <!-- 统计卡片 -->
     <v-row class="mt-2 mb-4">
