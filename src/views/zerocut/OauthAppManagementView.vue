@@ -11,7 +11,7 @@ import type {
 import { createMyOauthApp, deprecateOauthApp, getMyOauthApps, OauthApiError } from '@/api/oauthApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import { OauthAppStatus } from '@/types/oauth';
+import { OauthAppStatus, OauthClientType } from '@/types/oauth';
 import { formatDate } from '@/utils/date';
 
 /**
@@ -39,7 +39,14 @@ const createForm = ref<CreateOauthAppRequest>({
   ak: '',
   redirectUri: '',
   name: '',
+  clientType: OauthClientType.CONFIDENTIAL,
 });
+
+/**
+ * redirect_uri 接受 https://... 或 http://localhost(:port)?(/...)?。
+ * 与服务端 server/src/modules/oauth/dto/register-app.dto.ts REDIRECT_URI_PATTERN 一致。
+ */
+const REDIRECT_URI_PATTERN = /^(https:\/\/|http:\/\/localhost(:\d+)?(\/|$))/;
 
 const akRules = [
   (v: string) => !!v || t('oauth.manage.create.akInvalid'),
@@ -47,18 +54,21 @@ const akRules = [
 ];
 const redirectUriRules = [
   (v: string) => !!v || t('oauth.manage.create.redirectUriInvalid'),
-  (v: string) => v.startsWith('https://') || t('oauth.manage.create.redirectUriInvalid'),
+  (v: string) => REDIRECT_URI_PATTERN.test(v) || t('oauth.manage.create.redirectUriInvalid'),
 ];
 
 const createFormValid = computed(
   () =>
     /^[A-Za-z0-9]{8}$/.test(createForm.value.ak) &&
-    createForm.value.redirectUri.startsWith('https://')
+    REDIRECT_URI_PATTERN.test(createForm.value.redirectUri)
 );
 
 // ── 创建成功弹窗（一次性显示 sk）─────────────────────
 const createdDialog = ref(false);
 const createdApp = ref<CreateOauthAppResponse | null>(null);
+/** 记录刚创建那个 App 的 clientType，用于决定成功对话框是否展示 sk。 */
+const createdClientType = ref<OauthClientType>(OauthClientType.CONFIDENTIAL);
+const createdIsPublic = computed(() => createdClientType.value === OauthClientType.PUBLIC);
 
 // ── 废弃对话框 ───────────────────────────────────────
 const deprecateDialog = ref(false);
@@ -104,6 +114,7 @@ const headerSecondaryActions = computed(() => [
 const headers = computed(() => [
   { title: t('oauth.manage.table.ak'), key: 'ak', sortable: false },
   { title: t('oauth.manage.table.name'), key: 'name', sortable: false },
+  { title: t('oauth.manage.table.clientType'), key: 'clientType', sortable: false },
   { title: t('oauth.manage.table.redirectUri'), key: 'redirectUri', sortable: false },
   { title: t('oauth.manage.table.sk'), key: 'skMasked', sortable: false },
   { title: t('oauth.manage.table.status'), key: 'status', sortable: false },
@@ -132,7 +143,12 @@ async function loadApps() {
 
 // ── 创建 ────────────────────────────────────────────
 function openCreateDialog() {
-  createForm.value = { ak: '', redirectUri: '', name: '' };
+  createForm.value = {
+    ak: '',
+    redirectUri: '',
+    name: '',
+    clientType: OauthClientType.CONFIDENTIAL,
+  };
   createDialog.value = true;
 }
 
@@ -143,6 +159,7 @@ async function submitCreate() {
     const payload: CreateOauthAppRequest = {
       ak: createForm.value.ak,
       redirectUri: createForm.value.redirectUri,
+      clientType: createForm.value.clientType ?? OauthClientType.CONFIDENTIAL,
     };
     if (createForm.value.name?.trim()) {
       payload.name = createForm.value.name.trim();
@@ -150,6 +167,7 @@ async function submitCreate() {
     const res = await createMyOauthApp(payload);
     createDialog.value = false;
     createdApp.value = res;
+    createdClientType.value = payload.clientType ?? OauthClientType.CONFIDENTIAL;
     createdDialog.value = true;
     snackbarStore.showSuccessMessage(t('oauth.manage.messages.createSuccess'));
     await loadApps();
@@ -263,6 +281,19 @@ onMounted(loadApps);
         <template #[`item.ak`]="{ item }">
           <code class="text-body-2">{{ item.ak }}</code>
         </template>
+        <template #[`item.clientType`]="{ item }">
+          <v-chip
+            :color="item.clientType === OauthClientType.PUBLIC ? 'info' : 'default'"
+            size="small"
+            variant="tonal"
+          >
+            {{
+              item.clientType === OauthClientType.PUBLIC
+                ? t('oauth.manage.clientType.public')
+                : t('oauth.manage.clientType.confidential')
+            }}
+          </v-chip>
+        </template>
         <template #[`item.redirectUri`]="{ item }">
           <span class="text-caption text-medium-emphasis">{{ item.redirectUri }}</span>
         </template>
@@ -304,6 +335,37 @@ onMounted(loadApps);
       <v-card>
         <v-card-title>{{ t('oauth.manage.create.title') }}</v-card-title>
         <v-card-text>
+          <div class="text-caption text-medium-emphasis mb-2">
+            {{ t('oauth.manage.create.clientTypeLabel') }}
+          </div>
+          <v-radio-group
+            v-model="createForm.clientType"
+            density="compact"
+            hide-details
+            class="mb-4"
+          >
+            <v-radio :value="OauthClientType.CONFIDENTIAL">
+              <template #label>
+                <div>
+                  <div>{{ t('oauth.manage.clientType.confidential') }}</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('oauth.manage.clientType.confidentialHint') }}
+                  </div>
+                </div>
+              </template>
+            </v-radio>
+            <v-radio :value="OauthClientType.PUBLIC">
+              <template #label>
+                <div>
+                  <div>{{ t('oauth.manage.clientType.public') }}</div>
+                  <div class="text-caption text-medium-emphasis">
+                    {{ t('oauth.manage.clientType.publicHint') }}
+                  </div>
+                </div>
+              </template>
+            </v-radio>
+          </v-radio-group>
+
           <v-text-field
             v-model="createForm.ak"
             :label="t('oauth.manage.create.akLabel')"
@@ -355,9 +417,13 @@ onMounted(loadApps);
         </v-card-title>
         <v-card-text>
           <v-alert
-            type="warning"
+            :type="createdIsPublic ? 'info' : 'warning'"
             variant="tonal"
-            :text="t('oauth.manage.created.warning')"
+            :text="
+              createdIsPublic
+                ? t('oauth.manage.created.warningPublic')
+                : t('oauth.manage.created.warning')
+            "
             class="mb-4"
           />
 
@@ -382,31 +448,38 @@ onMounted(loadApps);
             </template>
           </v-text-field>
 
-          <div class="text-caption text-medium-emphasis mb-1">
-            {{ t('oauth.manage.created.skLabel') }}
-          </div>
-          <v-text-field
-            :model-value="createdApp?.sk ?? ''"
-            readonly
-            density="compact"
-            variant="outlined"
-            hide-details
-            class="font-mono"
-          >
-            <template #append-inner>
-              <v-btn
-                size="x-small"
-                variant="text"
-                icon="mdi-content-copy"
-                @click="createdApp && copyToClipboard(createdApp.sk)"
-              />
-            </template>
-          </v-text-field>
+          <!-- 公共客户端不展示 sk：PKCE 不需要、展示反而误导用户去保管它 -->
+          <template v-if="!createdIsPublic">
+            <div class="text-caption text-medium-emphasis mb-1">
+              {{ t('oauth.manage.created.skLabel') }}
+            </div>
+            <v-text-field
+              :model-value="createdApp?.sk ?? ''"
+              readonly
+              density="compact"
+              variant="outlined"
+              hide-details
+              class="font-mono"
+            >
+              <template #append-inner>
+                <v-btn
+                  size="x-small"
+                  variant="text"
+                  icon="mdi-content-copy"
+                  @click="createdApp && copyToClipboard(createdApp.sk)"
+                />
+              </template>
+            </v-text-field>
+          </template>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="closeCreatedDialog">
-            {{ t('oauth.manage.created.confirm') }}
+            {{
+              createdIsPublic
+                ? t('oauth.manage.created.confirmPublic')
+                : t('oauth.manage.created.confirm')
+            }}
           </v-btn>
         </v-card-actions>
       </v-card>

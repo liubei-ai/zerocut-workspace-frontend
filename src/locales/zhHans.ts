@@ -62,6 +62,7 @@ export default {
         name: '名称',
         redirectUri: '回调地址',
         sk: 'sk（脱敏）',
+        clientType: '客户端类型',
         status: '状态',
         createdAt: '创建时间',
         actions: '操作',
@@ -70,6 +71,12 @@ export default {
         active: '在用',
         deprecated: '已废弃',
       },
+      clientType: {
+        confidential: '机密客户端',
+        public: '公共客户端（PKCE）',
+        confidentialHint: '有后端服务，能安全保管 sk（如 Cloudflare Worker、App Worker）',
+        publicHint: '纯静态站 / SPA / 移动 App，无法安全保管 sk，使用 PKCE 替代',
+      },
       actions: {
         deprecate: '废弃',
         copy: '复制',
@@ -77,23 +84,28 @@ export default {
       },
       create: {
         title: '新建 OAuth App',
+        clientTypeLabel: '客户端类型（注册后不可更改）',
         akLabel: 'ak（公开标识）',
         akHint: '8 位字母数字；建议与发布时的 projectId 一致',
         akInvalid: 'ak 必须是 8 位字母数字（A-Z a-z 0-9）',
         nameLabel: '名称（可选）',
         nameHint: '展示给授权页用户看的 App 名称；留空时使用 “App {ak}”',
         redirectUriLabel: '回调地址 redirect_uri',
-        redirectUriHint: '必须以 https:// 开头，且与发布时严格一致（含 path）',
-        redirectUriInvalid: 'redirect_uri 必须以 https:// 开头',
+        redirectUriHint:
+          '必须以 https:// 开头（或 http://localhost 用于开发），且与实际调用方严格一致（含 path）',
+        redirectUriInvalid: 'redirect_uri 必须以 https:// 开头，或为 http://localhost',
         submit: '创建',
         cancel: '取消',
       },
       created: {
         title: 'App 创建成功',
         warning: '请立即保存 sk —— 离开此弹窗后 zerocut 将永远不再以任何形式展示完整 sk。',
+        warningPublic:
+          '公共客户端无需 sk，请保存好 ak 即可。下方虽然返回了 sk，但你的前端**不应**保存或使用它——所有 token 交换走 PKCE。',
         akLabel: 'ak（可随时查看）',
         skLabel: 'sk（仅本次展示）',
         confirm: '我已保存 sk',
+        confirmPublic: '我知道了',
       },
       deprecate: {
         title: '废弃此 App？',

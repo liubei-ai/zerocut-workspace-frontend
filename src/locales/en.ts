@@ -64,6 +64,7 @@ export default {
         name: 'Name',
         redirectUri: 'Redirect URI',
         sk: 'sk (Masked)',
+        clientType: 'Client Type',
         status: 'Status',
         createdAt: 'Created',
         actions: 'Actions',
@@ -72,6 +73,14 @@ export default {
         active: 'Active',
         deprecated: 'Deprecated',
       },
+      clientType: {
+        confidential: 'Confidential Client',
+        public: 'Public Client (PKCE)',
+        confidentialHint:
+          'Has a backend that can securely hold the sk (e.g. Cloudflare Worker, App Worker)',
+        publicHint:
+          'Pure static site / SPA / mobile app that cannot safely hold a sk — uses PKCE instead',
+      },
       actions: {
         deprecate: 'Deprecate',
         copy: 'Copy',
@@ -79,6 +88,7 @@ export default {
       },
       create: {
         title: 'New OAuth App',
+        clientTypeLabel: 'Client Type (cannot be changed after registration)',
         akLabel: 'ak (Public ID)',
         akHint: '8 alphanumeric characters; recommend matching your publish projectId',
         akInvalid: 'ak must be exactly 8 alphanumeric characters (A-Z a-z 0-9)',
@@ -86,8 +96,8 @@ export default {
         nameHint: 'Display name shown on the consent screen; defaults to "App {ak}" if empty',
         redirectUriLabel: 'Redirect URI',
         redirectUriHint:
-          'Must start with https:// and exactly match your published callback (including path)',
-        redirectUriInvalid: 'redirect_uri must start with https://',
+          'Must start with https:// (or http://localhost for dev), exactly matching what your client sends (including path)',
+        redirectUriInvalid: 'redirect_uri must start with https:// or be http://localhost',
         submit: 'Create',
         cancel: 'Cancel',
       },
@@ -95,9 +105,12 @@ export default {
         title: 'App Created Successfully',
         warning:
           'Save your sk now — once you close this dialog, Zerocut will never show the full sk again in any form.',
+        warningPublic:
+          'Public clients do not need a sk. Save only the ak. The sk below is returned for schema consistency but your frontend MUST NOT store or use it — all token exchanges go through PKCE.',
         akLabel: 'ak (always visible)',
         skLabel: 'sk (shown only once)',
         confirm: "I've saved the sk",
+        confirmPublic: 'Got it',
       },
       deprecate: {
         title: 'Deprecate this App?',

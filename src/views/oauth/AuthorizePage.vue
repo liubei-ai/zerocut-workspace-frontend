@@ -85,6 +85,16 @@ const errorMessage = ref('');
 const ak = computed(() => normalizeQuery(route.query.ak));
 const redirectUri = computed(() => normalizeQuery(route.query.redirect_uri));
 const state = computed(() => normalizeQuery(route.query.state) ?? '');
+/**
+ * PKCE（RFC 7636）。公共客户端必传；机密客户端可选。
+ * 本页不做格式校验，原样透传给 `/oauth/code`，由服务端 DTO 兜底
+ * （正则与 server/src/modules/oauth/dto/issue-code.dto.ts 一致）。
+ */
+const codeChallenge = computed(() => normalizeQuery(route.query.code_challenge));
+const codeChallengeMethod = computed(() => {
+  const v = normalizeQuery(route.query.code_challenge_method);
+  return v === 'S256' ? ('S256' as const) : undefined;
+});
 
 const currentUserLabel = computed(() => {
   const u = userStore.userInfo;
@@ -155,7 +165,17 @@ async function onAuthorize() {
   }
   submitting.value = true;
   try {
-    const { code } = await issueOauthCode({ ak: ak.value, redirectUri: redirectUri.value });
+    const { code } = await issueOauthCode({
+      ak: ak.value,
+      redirectUri: redirectUri.value,
+      // PKCE 透传：成对传入或一起省略（service 层会校验配对）
+      ...(codeChallenge.value && codeChallengeMethod.value
+        ? {
+            codeChallenge: codeChallenge.value,
+            codeChallengeMethod: codeChallengeMethod.value,
+          }
+        : {}),
+    });
     const sep = redirectUri.value.includes('?') ? '&' : '?';
     const target = `${redirectUri.value}${sep}code=${encodeURIComponent(code)}&state=${encodeURIComponent(state.value)}`;
     // 这里必须用 location 跳出 SPA，目标是 `*.zerocut.vip` 跨站

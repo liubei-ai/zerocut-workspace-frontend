@@ -10,10 +10,26 @@ export interface OauthAppPublic {
   name: string;
 }
 
+/**
+ * OAuth 客户端类型（RFC 6749 §2.1）。
+ * - `confidential`：默认。机密客户端，必须持有 sk。
+ * - `public`：公共客户端，走 PKCE（RFC 7636），无 sk。适用于纯静态站 / SPA。
+ *
+ * 注册后**不可更改**。要切换须废弃旧 App + 用新 ak 重新注册。
+ */
+export enum OauthClientType {
+  CONFIDENTIAL = 'confidential',
+  PUBLIC = 'public',
+}
+
 /** POST /oauth/code 请求 */
 export interface IssueCodeRequest {
   ak: string;
   redirectUri: string;
+  /** PKCE：BASE64URL(SHA256(code_verifier))，43~128 字符。带则必须同时带 codeChallengeMethod。 */
+  codeChallenge?: string;
+  /** PKCE 算法；仅支持 S256。 */
+  codeChallengeMethod?: 'S256';
 }
 
 /** POST /oauth/code 响应 */
@@ -35,9 +51,16 @@ export interface CreateOauthAppRequest {
   ak: string;
   redirectUri: string;
   name?: string;
+  /** 缺省 confidential。public 强制 PKCE。 */
+  clientType?: OauthClientType;
 }
 
-/** POST /oauth/apps 响应（创建当次一次性返回明文 sk） */
+/**
+ * POST /oauth/apps 响应（创建当次一次性返回明文 sk）。
+ *
+ * `public` 客户端的 sk 仍然返回（后端 schema 一致），但前端 **不应**展示给用户——
+ * PKCE 不依赖 sk，展示反而误导用户去保管不该保管的密钥。
+ */
 export interface CreateOauthAppResponse {
   ak: string;
   sk: string;
@@ -50,6 +73,7 @@ export interface OauthAppListItem {
   redirectUri: string;
   skMasked: string;
   status: OauthAppStatus;
+  clientType: OauthClientType;
   createdAt: string;
 }
 
