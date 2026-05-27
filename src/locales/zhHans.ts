@@ -72,10 +72,18 @@ export default {
         deprecated: '已废弃',
       },
       clientType: {
+        // 表格 chip / 简短标识（保持术语，懂行的人一眼能认）
         confidential: '机密客户端',
         public: '公共客户端（PKCE）',
-        confidentialHint: '有后端服务，能安全保管 sk（如 Cloudflare Worker、App Worker）',
-        publicHint: '纯静态站 / SPA / 移动 App，无法安全保管 sk，使用 PKCE 替代',
+        // 注册对话框 radio 主标签（业务语言，让用户基于"我的部署形态"作答而不是"我懂 OAuth 吗"）
+        confidentialLabel: '我有后端服务器 / Worker',
+        publicLabel: '我是纯前端 / 静态站 / SPA（无后端）',
+        // radio 副标题（业务解释 + 给懂行的人对照的 OAuth 术语）
+        confidentialHint: '后端能安全保管 sk · OAuth 术语：confidential client',
+        publicHint: '使用 PKCE 安全机制无需 sk · OAuth 术语：public client (PKCE)',
+        // redirect_uri = localhost 但选了机密时的软提示
+        localhostMismatchHint:
+          '检测到 redirect_uri 是 localhost。本地开发通常选「纯前端」——除非你确实在 localhost 跑了一个后端服务。',
       },
       actions: {
         deprecate: '废弃',
@@ -106,6 +114,11 @@ export default {
         skLabel: 'sk（仅本次展示）',
         confirm: '我已保存 sk',
         confirmPublic: '我知道了',
+        nextStepLabel: '下一步',
+        nextStepConfidential:
+          '在你的后端服务（Worker / 服务器等）的环境变量中保管 sk，前端代码全程不接触 sk。换 token 时由后端 POST /oauth/token 携带 ak+sk 完成。',
+        nextStepPublic:
+          '在你的前端代码初始化 PKCE 客户端，使用此 ak 完成集成。无需保存 sk —— 浏览器会在每次登录时生成一次性的 code_verifier 替代 sk。',
       },
       deprecate: {
         title: '废弃此 App？',

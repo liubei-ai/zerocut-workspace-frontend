@@ -74,12 +74,18 @@ export default {
         deprecated: 'Deprecated',
       },
       clientType: {
+        // Table chip / short tag (technical term for those who already know)
         confidential: 'Confidential Client',
         public: 'Public Client (PKCE)',
-        confidentialHint:
-          'Has a backend that can securely hold the sk (e.g. Cloudflare Worker, App Worker)',
-        publicHint:
-          'Pure static site / SPA / mobile app that cannot safely hold a sk — uses PKCE instead',
+        // Registration radio labels (plain language — "what is my deployment" not "do I know OAuth")
+        confidentialLabel: 'I have a backend server / Worker',
+        publicLabel: "I'm a pure frontend / static site / SPA (no backend)",
+        // Helper subtitle (business framing + OAuth term for the curious)
+        confidentialHint: 'Backend can safely hold the sk · OAuth term: confidential client',
+        publicHint: 'Uses PKCE — no sk needed · OAuth term: public client (PKCE)',
+        // Soft hint when redirectUri is localhost but Confidential is selected
+        localhostMismatchHint:
+          'redirect_uri points to localhost. For local dev you usually want "pure frontend" — unless you really do run a backend on localhost.',
       },
       actions: {
         deprecate: 'Deprecate',
@@ -111,6 +117,11 @@ export default {
         skLabel: 'sk (shown only once)',
         confirm: "I've saved the sk",
         confirmPublic: 'Got it',
+        nextStepLabel: 'Next step',
+        nextStepConfidential:
+          'Store the sk in your backend (Worker / server) env variables. Frontend code never touches sk. Your backend POSTs to /oauth/token with ak+sk to exchange the code.',
+        nextStepPublic:
+          'Initialize a PKCE client in your frontend using this ak. No sk needed — the browser generates a one-time code_verifier on each login.',
       },
       deprecate: {
         title: 'Deprecate this App?',

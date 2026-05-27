@@ -63,6 +63,17 @@ const createFormValid = computed(
     REDIRECT_URI_PATTERN.test(createForm.value.redirectUri)
 );
 
+/**
+ * 软提示：redirect_uri 看起来是本地开发地址但选了机密客户端。
+ * 大多数本地开发场景是纯前端调试，选机密大概率搞错。
+ * 这是软提示，不阻断提交——用户确实在 localhost 跑后端是合理场景。
+ */
+const showLocalhostMismatchHint = computed(
+  () =>
+    createForm.value.clientType === OauthClientType.CONFIDENTIAL &&
+    /^http:\/\/localhost(:\d+)?(\/|$)/.test(createForm.value.redirectUri)
+);
+
 // ── 创建成功弹窗（一次性显示 sk）─────────────────────
 const createdDialog = ref(false);
 const createdApp = ref<CreateOauthAppResponse | null>(null);
@@ -342,12 +353,12 @@ onMounted(loadApps);
             v-model="createForm.clientType"
             density="compact"
             hide-details
-            class="mb-4"
+            class="mb-2"
           >
             <v-radio :value="OauthClientType.CONFIDENTIAL">
               <template #label>
                 <div>
-                  <div>{{ t('oauth.manage.clientType.confidential') }}</div>
+                  <div>{{ t('oauth.manage.clientType.confidentialLabel') }}</div>
                   <div class="text-caption text-medium-emphasis">
                     {{ t('oauth.manage.clientType.confidentialHint') }}
                   </div>
@@ -357,7 +368,7 @@ onMounted(loadApps);
             <v-radio :value="OauthClientType.PUBLIC">
               <template #label>
                 <div>
-                  <div>{{ t('oauth.manage.clientType.public') }}</div>
+                  <div>{{ t('oauth.manage.clientType.publicLabel') }}</div>
                   <div class="text-caption text-medium-emphasis">
                     {{ t('oauth.manage.clientType.publicHint') }}
                   </div>
@@ -365,6 +376,17 @@ onMounted(loadApps);
               </template>
             </v-radio>
           </v-radio-group>
+
+          <!-- 软提示：redirect_uri 是 localhost 但选了机密客户端 → 大概率搞错 -->
+          <v-alert
+            v-if="showLocalhostMismatchHint"
+            type="info"
+            variant="tonal"
+            density="compact"
+            :text="t('oauth.manage.clientType.localhostMismatchHint')"
+            class="mb-4"
+          />
+          <div v-else class="mb-4" />
 
           <v-text-field
             v-model="createForm.ak"
@@ -459,7 +481,7 @@ onMounted(loadApps);
               density="compact"
               variant="outlined"
               hide-details
-              class="font-mono"
+              class="mb-4 font-mono"
             >
               <template #append-inner>
                 <v-btn
@@ -471,6 +493,18 @@ onMounted(loadApps);
               </template>
             </v-text-field>
           </template>
+
+          <!-- 下一步：按 clientType 给不同集成指引 -->
+          <div class="text-caption text-medium-emphasis mb-1">
+            {{ t('oauth.manage.created.nextStepLabel') }}
+          </div>
+          <div class="text-body-2">
+            {{
+              createdIsPublic
+                ? t('oauth.manage.created.nextStepPublic')
+                : t('oauth.manage.created.nextStepConfidential')
+            }}
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
