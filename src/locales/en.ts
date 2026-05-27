@@ -41,7 +41,7 @@ export default {
     appNotFound: 'Application not found',
     appNotFoundDetail:
       'The requested application is not registered on the platform. Authorization cannot proceed.',
-    invalidRedirect: 'redirect_uri must start with https://',
+    invalidRedirect: 'redirect_uri must start with https:// or be http://localhost(:port)?',
     requestingAccess: 'wants to access your Zerocut account',
     currentUserLabel: 'Signed in as',
     authorize: 'Authorize',

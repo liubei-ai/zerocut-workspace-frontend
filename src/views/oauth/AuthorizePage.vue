@@ -107,6 +107,16 @@ function normalizeQuery(v: unknown): string | undefined {
   return undefined;
 }
 
+/**
+ * 允许 https://... 或 http://localhost(:port)?(/...)?。
+ * 与服务端 server/src/modules/oauth/dto/register-app.dto.ts REDIRECT_URI_PATTERN 一致。
+ *
+ * 安全性：localhost 只解析到本机，远程攻击者无法借此把用户重定向到攻击者控制的地址；
+ * 这是 RFC 8252（Native Apps OAuth）推荐做法。其余 http:// 仍然拒绝，防止
+ * 开放重定向（open redirect）攻击。
+ */
+const REDIRECT_URI_PATTERN = /^(https:\/\/|http:\/\/localhost(:\d+)?(\/|$))/;
+
 /** 同站路径白名单（FR-019），只允许 `/...`，禁掉 `//` 和 `/\\`。 */
 function isSafeRedirect(value: unknown): value is string {
   return typeof value === 'string' && /^\/(?!\/|\\)/.test(value);
@@ -123,7 +133,7 @@ onMounted(async () => {
     status.value = 'invalid';
     return;
   }
-  if (!redirectUri.value.startsWith('https://')) {
+  if (!REDIRECT_URI_PATTERN.test(redirectUri.value)) {
     status.value = 'invalid';
     invalidReason.value = t('oauth.invalidRedirect');
     return;
@@ -159,7 +169,7 @@ onMounted(async () => {
 
 async function onAuthorize() {
   if (!ak.value || !redirectUri.value) return;
-  if (!redirectUri.value.startsWith('https://')) {
+  if (!REDIRECT_URI_PATTERN.test(redirectUri.value)) {
     showSnackbar(t('oauth.invalidRedirect'));
     return;
   }

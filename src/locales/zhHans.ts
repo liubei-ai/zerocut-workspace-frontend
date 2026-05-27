@@ -40,7 +40,7 @@ export default {
     linkInvalidDetail: '该授权链接缺少必要参数（ak 或 redirect_uri），请联系应用提供方。',
     appNotFound: '应用不存在',
     appNotFoundDetail: '指定的应用尚未在平台注册，无法继续授权。',
-    invalidRedirect: 'redirect_uri 必须以 https:// 开头',
+    invalidRedirect: 'redirect_uri 必须以 https:// 开头，或为 http://localhost(:port)?',
     requestingAccess: '希望访问您的 Zerocut 账号',
     currentUserLabel: '当前登录',
     authorize: '授权',
