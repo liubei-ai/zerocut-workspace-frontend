@@ -56,10 +56,19 @@ function toOauthError(error: unknown, fallback: string): OauthApiError {
   return new OauthApiError(undefined, fallback);
 }
 
-/** GET /oauth/apps/:ak —— 公开查询 App 展示信息。 */
+/**
+ * GET /oauth/apps/:ak —— 公开查询 App 展示信息。
+ *
+ * 该端点服务端 CORS 返回 `Access-Control-Allow-Origin: *`（公共端点，禁 cookie），
+ * 浏览器规范禁止 `*` 与 `withCredentials: true` 共存，因此这里必须显式关掉凭证，
+ * 否则在跨域调用（如 workspace.zerocut.cn → api2.zerocut.cn）会被 CORS 直接拦截。
+ */
 export async function getOauthApp(ak: string): Promise<OauthAppPublic> {
   try {
-    const response = await oauthClient.get<OauthAppPublic>(`/oauth/apps/${encodeURIComponent(ak)}`);
+    const response = await oauthClient.get<OauthAppPublic>(
+      `/oauth/apps/${encodeURIComponent(ak)}`,
+      { withCredentials: false }
+    );
     return response.data;
   } catch (error) {
     throw toOauthError(error, '应用查询失败');
