@@ -27,6 +27,16 @@ export interface TransactionItem {
   paidAt?: string;
   creditsValidityDays?: number;
   remainingCredits?: number | string; // 剩余积分数量（前端显示规则在视图中处理）
+  status?: string; // 充值记录状态：success / refunded 等
+  rechargeRecordId?: number; // 关联 RechargeRecord 主键，管理端退款接口需要
+}
+
+// 充值积分清零响应
+export interface RefundRechargeResponse {
+  rechargeRecordId: number;
+  orderNo: string;
+  refundedCredits: number;
+  status: string;
 }
 /**
  * 获取钱包信息
@@ -133,6 +143,17 @@ export async function getWorkspaceConsumptionRecords(
   const response = await client.get<PaginationResponse<CreditsConsumptionItem>>(
     `/wallet/credits/consumption/records`,
     { params: { ...params, workspaceId } }
+  );
+  return response.data;
+}
+
+/**
+ * 充值记录积分清零（管理员；扣减剩余可用积分并标记为已退款）
+ */
+export async function refundWorkspaceRecharge(rechargeRecordId: number, reason: string) {
+  const response = await client.post<RefundRechargeResponse>(
+    `/admin/recharge/${rechargeRecordId}/refund`,
+    { reason }
   );
   return response.data;
 }

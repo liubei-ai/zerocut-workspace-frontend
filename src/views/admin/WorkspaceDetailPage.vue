@@ -7,6 +7,7 @@ import {
   getWalletInfo,
   getWalletRechargeRecords,
   getWorkspaceConsumptionRecords,
+  refundWorkspaceRecharge,
   type CreditsConsumptionItem,
   type ExpiredCreditItem,
   type ExpiredCreditsResponse,
@@ -19,6 +20,7 @@ import ConsumptionDetailsCell from '@/components/common/ConsumptionDetailsCell.v
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { Permission } from '@/constants/permissions';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useUserStore } from '@/stores/userStore';
 import { formatDate } from '@/utils/date';
 
@@ -27,6 +29,9 @@ const workspaceId = route.params.workspaceId as string;
 const adminWorkspaceStore = useAdminWorkspaceStore();
 const currentWorkspace = computed(() => adminWorkspaceStore.currentWorkspace);
 const userStore = useUserStore();
+const snackbar = useSnackbarStore();
+
+const canRefundRecharge = computed(() => userStore.hasPermission(Permission.WALLET_GRANT));
 
 const pageLoading = ref(false);
 
@@ -163,6 +168,54 @@ function shouldShowValidity(item: TransactionItem) {
 
 async function fetchWallet() {
   walletInfo.value = await getWalletInfo(workspaceId);
+}
+
+// 充值积分清零（退款）弹窗状态
+const refundDialog = ref<{
+  show: boolean;
+  loading: boolean;
+  target: TransactionItem | null;
+  reason: string;
+}>({ show: false, loading: false, target: null, reason: '' });
+
+function openRefundDialog(item: TransactionItem) {
+  refundDialog.value = {
+    show: true,
+    loading: false,
+    target: item,
+    reason: '',
+  };
+}
+
+function closeRefundDialog() {
+  if (refundDialog.value.loading) return;
+  refundDialog.value.show = false;
+}
+
+async function confirmRefund() {
+  const target = refundDialog.value.target;
+  const reason = refundDialog.value.reason.trim();
+  if (!target?.rechargeRecordId) {
+    snackbar.showErrorMessage('该记录缺少充值记录ID，无法清零');
+    return;
+  }
+  if (!reason) {
+    snackbar.showErrorMessage('请填写退款原因');
+    return;
+  }
+  refundDialog.value.loading = true;
+  try {
+    const res = await refundWorkspaceRecharge(target.rechargeRecordId, reason);
+    snackbar.showSuccessMessage(`积分清零成功，扣减 ${res.refundedCredits} 积分`);
+    refundDialog.value.show = false;
+    await Promise.all([fetchWallet(), fetchRecharge()]);
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { message?: string } }; message?: string };
+    const msg = err?.response?.data?.message || err?.message || '未知错误';
+    snackbar.showErrorMessage(`积分清零失败：${msg}`);
+  } finally {
+    refundDialog.value.loading = false;
+  }
 }
 
 async function fetchRecharge() {
@@ -361,7 +414,9 @@ onMounted(refreshAll);
                 { title: '剩余积分', key: 'remainingCredits', sortable: true },
                 { title: '剩余有效期', key: 'validity', sortable: false },
                 { title: '支付方式', key: 'paymentMethod', sortable: false },
+                { title: '状态', key: 'status', sortable: false },
                 { title: '订单号', key: 'orderNo', sortable: false },
+                { title: '操作', key: 'actions', sortable: false, align: 'end' },
               ]"
               :items="rechargeItems"
               :loading="rechargeLoading"
@@ -397,9 +452,35 @@ onMounted(refreshAll);
                 </div>
                 <span v-else class="text-medium-emphasis">-</span>
               </template>
+              <template #item.status="{ item }">
+                <v-chip v-if="item.status === 'refunded'" color="error" size="small" variant="flat"
+                  >已退款</v-chip
+                >
+                <v-chip
+                  v-else-if="item.status === 'success' || !item.status"
+                  color="success"
+                  size="small"
+                  variant="tonal"
+                  >已成功</v-chip
+                >
+                <v-chip v-else color="grey" size="small" variant="tonal">{{ item.status }}</v-chip>
+              </template>
               <template #item.orderNo="{ item }"
                 ><code class="text-caption">{{ item.orderNo }}</code></template
               >
+              <template #item.actions="{ item }">
+                <v-btn
+                  v-if="canRefundRecharge && item.status === 'success' && item.rechargeRecordId"
+                  color="error"
+                  variant="outlined"
+                  size="small"
+                  prepend-icon="mdi-cash-refund"
+                  @click="openRefundDialog(item)"
+                >
+                  积分清零
+                </v-btn>
+                <span v-else class="text-medium-emphasis text-caption">-</span>
+              </template>
             </v-data-table-server>
           </v-card>
         </v-window-item>
@@ -603,6 +684,62 @@ onMounted(refreshAll);
       title="无可查看的钱包信息"
       text="当前账号没有查看该工作空间钱包数据的权限。"
     />
+
+    <v-dialog v-model="refundDialog.show" max-width="520" :persistent="refundDialog.loading">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon class="mr-2" color="error">mdi-cash-refund</v-icon>
+          确认积分清零
+        </v-card-title>
+        <v-card-text>
+          <v-alert
+            type="warning"
+            variant="tonal"
+            density="comfortable"
+            class="mb-4"
+            text="将从账户余额扣减该笔充值的「剩余可用积分」，并把该充值记录标记为已退款。已消费部分不会追回，操作不可撤销。"
+          />
+          <div v-if="refundDialog.target" class="text-body-2 mb-3">
+            <div>
+              订单号：<code class="text-caption">{{ refundDialog.target.orderNo }}</code>
+            </div>
+            <div>原积分：{{ refundDialog.target.creditsAmount }}</div>
+            <div>
+              剩余可用积分：
+              <span class="font-weight-medium text-error">
+                {{ refundDialog.target.remainingCredits ?? '-' }}
+              </span>
+            </div>
+          </div>
+          <v-textarea
+            v-model="refundDialog.reason"
+            label="退款原因（必填）"
+            variant="outlined"
+            density="comfortable"
+            rows="3"
+            counter="500"
+            maxlength="500"
+            :disabled="refundDialog.loading"
+            autofocus
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" :disabled="refundDialog.loading" @click="closeRefundDialog">
+            取消
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="flat"
+            :loading="refundDialog.loading"
+            :disabled="!refundDialog.reason.trim()"
+            @click="confirmRefund"
+          >
+            确认清零
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
