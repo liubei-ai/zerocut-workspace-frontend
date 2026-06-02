@@ -332,10 +332,17 @@ export default {
             standard: 'Up to 1000 images or 800s video (default model)',
             premium: 'Up to 3125 images or 2500s video (default model)',
           },
+          seedanceVideo: {
+            basic: 'Up to 100s Seedance 2.0 video',
+            standard: 'Up to 400s Seedance 2.0 video',
+            premium: 'Up to 1000s Seedance 2.0 video',
+          },
           universal: {
-            allModels: 'Access to all models',
+            allModels: 'Universal credits, access to all major LLMs',
             hdVideo: 'HD video generation',
+            speedPriority: 'Member-exclusive fast lane, no queue',
             noWatermark: 'Watermark-free output',
+            aiToolkit: 'One-click film, Agent mode, smart storyboard',
           },
         },
         notes: {

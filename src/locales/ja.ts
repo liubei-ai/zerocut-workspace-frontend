@@ -221,10 +221,17 @@ export default {
             standard: '最大 1000 枚の画像、または 800 秒の動画（デフォルトモデル）',
             premium: '最大 3125 枚の画像、または 2500 秒の動画（デフォルトモデル）',
           },
+          seedanceVideo: {
+            basic: '最大 100 秒の Seedance 2.0 動画を生成可能',
+            standard: '最大 400 秒の Seedance 2.0 動画を生成可能',
+            premium: '最大 1000 秒の Seedance 2.0 動画を生成可能',
+          },
           universal: {
-            allModels: 'すべてのモデルを利用可能',
+            allModels: 'クレジット共通、主要な大規模モデルを利用可能',
             hdVideo: '高画質動画の生成',
+            speedPriority: '会員専用の優先処理、待ち時間なし',
             noWatermark: '透かしなし',
+            aiToolkit: 'ワンクリック動画生成、Agent モード、スマート絵コンテ',
           },
         },
         notes: {

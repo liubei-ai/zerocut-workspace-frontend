@@ -327,10 +327,17 @@ export default {
             standard: '最多可生成 1000 张图片或最多生成 800 秒视频（以默认模型计算）',
             premium: '最多可生成 3125 张图片或最多生成 2500 秒视频（以默认模型计算）',
           },
+          seedanceVideo: {
+            basic: '可生成 100 秒 Seedance2.0 视频',
+            standard: '可生成 400 秒 Seedance2.0 视频',
+            premium: '可生成 1000 秒 Seedance2.0 视频',
+          },
           universal: {
-            allModels: '所有模型均可使用',
+            allModels: '积分通用，可使用多家主流大模型',
             hdVideo: '生成高清视频',
+            speedPriority: '会员专享加速，不排队',
             noWatermark: '没有水印',
+            aiToolkit: '一键成片、Agent 模式、智能分镜',
           },
         },
         notes: {
