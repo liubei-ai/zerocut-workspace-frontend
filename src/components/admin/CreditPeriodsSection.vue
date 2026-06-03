@@ -82,6 +82,21 @@
           </span>
         </template>
 
+        <!-- Actions Column -->
+        <template #item.actions="{ item }">
+          <v-btn
+            v-if="canRefund && item.status === 'granted'"
+            color="error"
+            variant="outlined"
+            size="small"
+            prepend-icon="mdi-cash-refund"
+            @click="emit('refund', item)"
+          >
+            积分清零
+          </v-btn>
+          <span v-else class="text-medium-emphasis text-caption">-</span>
+        </template>
+
         <!-- Empty state -->
         <template #no-data>
           <div class="py-4 text-center">
@@ -129,8 +144,16 @@ import type { CreditPeriodItem, PeriodStatus } from '@/api/memberAdminApi';
 
 import { formatDate } from '@/utils/date';
 
-const props = defineProps<{
-  creditPeriods: CreditPeriodItem[];
+const props = withDefaults(
+  defineProps<{
+    creditPeriods: CreditPeriodItem[];
+    canRefund?: boolean;
+  }>(),
+  { canRefund: false }
+);
+
+const emit = defineEmits<{
+  refund: [item: CreditPeriodItem];
 }>();
 
 const headers = [
@@ -142,7 +165,10 @@ const headers = [
   { title: '使用进度', key: 'progress', sortable: false },
   { title: '状态', key: 'status', sortable: false },
   { title: '发放时间', key: 'grantedAt', sortable: false },
+  { title: '操作', key: 'actions', sortable: false, align: 'end' as const },
 ];
+
+const canRefund = computed(() => props.canRefund);
 
 // Summary calculations
 const totalQuota = computed(() =>
@@ -193,6 +219,8 @@ function getStatusColor(status: PeriodStatus): string {
       return 'success';
     case 'pending':
       return 'grey';
+    case 'revoked':
+      return 'error';
     default:
       return 'primary';
   }
@@ -202,6 +230,7 @@ function getStatusLabel(status: PeriodStatus): string {
   const labels: Record<PeriodStatus, string> = {
     pending: '待发放',
     granted: '已发放',
+    revoked: '已撤销',
   };
   return labels[status] || status;
 }

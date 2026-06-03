@@ -14,7 +14,7 @@ export type PurchaseMode = 'one_time_month' | 'one_time_year' | 'auto_monthly' |
 export type MembershipTier = 'basic' | 'standard' | 'premium';
 export type OrderPurpose = 'initial' | 'renewal';
 export type OrderStatus = 'created' | 'processing' | 'success' | 'failed' | 'refunded';
-export type PeriodStatus = 'pending' | 'granted';
+export type PeriodStatus = 'pending' | 'granted' | 'revoked';
 export type MemberContractStatus = 'none' | 'signing' | 'signed' | 'terminated' | 'paid_not_signed';
 
 // Member Summary
@@ -224,6 +224,32 @@ export async function refundOrderPayment(
 ): Promise<RefundOrderResult> {
   const response = await apiClient.post<RefundOrderResult>(
     `/admin/members/orders/${orderId}/refund`,
+    { reason }
+  );
+  return response.data;
+}
+
+// ============================================================
+// 订阅周期积分清零
+// ============================================================
+
+export interface RefundPeriodResult {
+  subscriptionId: number;
+  periodId: number;
+  refundedCredits: number;
+  status: PeriodStatus;
+}
+
+/**
+ * 订阅周期积分清零（按剩余 remainingAmount 扣减，周期标记为 revoked）
+ */
+export async function refundSubscriptionPeriod(
+  subscriptionId: number,
+  periodId: number,
+  reason: string
+): Promise<RefundPeriodResult> {
+  const response = await apiClient.post<RefundPeriodResult>(
+    `/admin/members/${subscriptionId}/periods/${periodId}/refund`,
     { reason }
   );
   return response.data;

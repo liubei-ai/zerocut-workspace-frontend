@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { refundSubscriptionPeriod } from '@/api/memberAdminApi';
 import {
   getExpiredCredits,
   getWalletInfo,
@@ -166,6 +167,18 @@ function shouldShowValidity(item: TransactionItem) {
   return (item.remainingCredits ?? 0) > 0;
 }
 
+// 是否展示该行的「积分清零」按钮
+function canRefundItem(item: TransactionItem): boolean {
+  if (!canRefundRecharge.value) return false;
+  if (item.status !== 'success') return false;
+  const isSubscription = !!(item.subscriptionId && item.periodId);
+  const isRecharge = !!item.rechargeRecordId;
+  if (!isSubscription && !isRecharge) return false;
+  // 会员订阅积分过期后会自动清零，无需再手动清零
+  if (isSubscription && calculateRemainingValidity(item)?.expired) return false;
+  return true;
+}
+
 async function fetchWallet() {
   walletInfo.value = await getWalletInfo(workspaceId);
 }
@@ -195,18 +208,28 @@ function closeRefundDialog() {
 async function confirmRefund() {
   const target = refundDialog.value.target;
   const reason = refundDialog.value.reason.trim();
-  if (!target?.rechargeRecordId) {
-    snackbar.showErrorMessage('该记录缺少充值记录ID，无法清零');
-    return;
-  }
   if (!reason) {
     snackbar.showErrorMessage('请填写退款原因');
     return;
   }
   refundDialog.value.loading = true;
   try {
-    const res = await refundWorkspaceRecharge(target.rechargeRecordId, reason);
-    snackbar.showSuccessMessage(`积分清零成功，扣减 ${res.refundedCredits} 积分`);
+    let refundedCredits: number;
+    if (target?.rechargeRecordId) {
+      // 普通充值：按充值记录退款
+      ({ refundedCredits } = await refundWorkspaceRecharge(target.rechargeRecordId, reason));
+    } else if (target?.subscriptionId && target?.periodId) {
+      // 会员订阅发放：按订阅周期退款
+      ({ refundedCredits } = await refundSubscriptionPeriod(
+        target.subscriptionId,
+        target.periodId,
+        reason
+      ));
+    } else {
+      snackbar.showErrorMessage('该记录无法定位清零目标');
+      return;
+    }
+    snackbar.showSuccessMessage(`积分清零成功，扣减 ${refundedCredits} 积分`);
     refundDialog.value.show = false;
     await Promise.all([fetchWallet(), fetchRecharge()]);
   } catch (e: unknown) {
@@ -470,7 +493,7 @@ onMounted(refreshAll);
               >
               <template #item.actions="{ item }">
                 <v-btn
-                  v-if="canRefundRecharge && item.status === 'success' && item.rechargeRecordId"
+                  v-if="canRefundItem(item)"
                   color="error"
                   variant="outlined"
                   size="small"

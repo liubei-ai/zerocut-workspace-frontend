@@ -29,6 +29,8 @@ export interface TransactionItem {
   remainingCredits?: number | string; // 剩余积分数量（前端显示规则在视图中处理）
   status?: string; // 充值记录状态：success / refunded 等
   rechargeRecordId?: number; // 关联 RechargeRecord 主键，管理端退款接口需要
+  subscriptionId?: number; // 订阅行：所属订阅ID（用于周期积分清零）
+  periodId?: number; // 订阅行：所属周期ID（用于周期积分清零）
 }
 
 // 充值积分清零响应

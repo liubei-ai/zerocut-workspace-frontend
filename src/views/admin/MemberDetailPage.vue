@@ -67,7 +67,11 @@
       <!-- Credit Periods Section -->
       <v-row class="mb-4">
         <v-col cols="12">
-          <CreditPeriodsSection :credit-periods="detail.creditPeriods" />
+          <CreditPeriodsSection
+            :credit-periods="detail.creditPeriods"
+            :can-refund="canRefundPeriod"
+            @refund="openRefundDialog"
+          />
         </v-col>
       </v-row>
     </div>
@@ -77,6 +81,60 @@
       :order="checkDialogOrder"
       @refresh="loadDetail"
     />
+
+    <v-dialog v-model="refundDialog.show" max-width="520" :persistent="refundDialog.loading">
+      <v-card>
+        <v-card-title class="d-flex align-center">
+          <v-icon class="mr-2" color="error">mdi-cash-refund</v-icon>
+          确认周期积分清零
+        </v-card-title>
+        <v-card-text>
+          <v-alert
+            type="warning"
+            variant="tonal"
+            density="comfortable"
+            class="mb-4"
+            text="将从账户余额扣减该周期「剩余可用积分」，并把周期标记为已撤销。已消费部分不会追回，操作不可撤销，订阅本身不会被取消。"
+          />
+          <div v-if="refundDialog.target" class="text-body-2 mb-3">
+            <div>周期：周期 {{ refundDialog.target.periodIndex }}</div>
+            <div>配额：{{ refundDialog.target.creditsQuota.toLocaleString('zh-CN') }}</div>
+            <div>
+              剩余可用积分：
+              <span class="font-weight-medium text-error">
+                {{ refundDialog.target.creditsRemaining.toLocaleString('zh-CN') }}
+              </span>
+            </div>
+          </div>
+          <v-textarea
+            v-model="refundDialog.reason"
+            label="退款原因（必填）"
+            variant="outlined"
+            density="comfortable"
+            rows="3"
+            counter="500"
+            maxlength="500"
+            :disabled="refundDialog.loading"
+            autofocus
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn variant="text" :disabled="refundDialog.loading" @click="closeRefundDialog">
+            取消
+          </v-btn>
+          <v-btn
+            color="error"
+            variant="flat"
+            :loading="refundDialog.loading"
+            :disabled="!refundDialog.reason.trim()"
+            @click="confirmRefundPeriod"
+          >
+            确认清零
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -86,6 +144,8 @@ import { useRoute, useRouter } from 'vue-router';
 
 import {
   getMemberDetail,
+  refundSubscriptionPeriod,
+  type CreditPeriodItem,
   type MemberDetail,
   type SubscriptionOrderItem,
 } from '@/api/memberAdminApi';
@@ -95,6 +155,9 @@ import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue'
 import OrderPaymentCheckDialog from '@/components/admin/OrderPaymentCheckDialog.vue';
 import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
 import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
+import { Permission } from '@/constants/permissions';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import { useUserStore } from '@/stores/userStore';
 
 const route = useRoute();
 const router = useRouter();
@@ -109,6 +172,53 @@ const checkDialogOrder = ref<SubscriptionOrderItem | null>(null);
 function handleCheckOrder(order: SubscriptionOrderItem) {
   checkDialogOrder.value = order;
   checkDialogOpen.value = true;
+}
+
+const userStore = useUserStore();
+const snackbar = useSnackbarStore();
+const canRefundPeriod = computed(() => userStore.hasPermission(Permission.WALLET_GRANT));
+
+// 积分清零弹窗
+const refundDialog = ref<{
+  show: boolean;
+  loading: boolean;
+  target: CreditPeriodItem | null;
+  reason: string;
+}>({ show: false, loading: false, target: null, reason: '' });
+
+function openRefundDialog(item: CreditPeriodItem) {
+  refundDialog.value = { show: true, loading: false, target: item, reason: '' };
+}
+
+function closeRefundDialog() {
+  if (refundDialog.value.loading) return;
+  refundDialog.value.show = false;
+}
+
+async function confirmRefundPeriod() {
+  const target = refundDialog.value.target;
+  const reason = refundDialog.value.reason.trim();
+  if (!target || !subscriptionId.value) {
+    snackbar.showErrorMessage('缺少周期或订阅ID，无法清零');
+    return;
+  }
+  if (!reason) {
+    snackbar.showErrorMessage('请填写退款原因');
+    return;
+  }
+  refundDialog.value.loading = true;
+  try {
+    const res = await refundSubscriptionPeriod(subscriptionId.value, target.periodId, reason);
+    snackbar.showSuccessMessage(`周期积分清零成功，扣减 ${res.refundedCredits} 积分`);
+    refundDialog.value.show = false;
+    await loadDetail();
+  } catch (e: unknown) {
+    const err = e as { response?: { data?: { message?: string } }; message?: string };
+    const msg = err?.response?.data?.message || err?.message || '未知错误';
+    snackbar.showErrorMessage(`周期积分清零失败：${msg}`);
+  } finally {
+    refundDialog.value.loading = false;
+  }
 }
 
 const subscriptionId = computed(() => {
