@@ -174,8 +174,8 @@ function canRefundItem(item: TransactionItem): boolean {
   const isSubscription = !!(item.subscriptionId && item.periodId);
   const isRecharge = !!item.rechargeRecordId;
   if (!isSubscription && !isRecharge) return false;
-  // 会员订阅积分过期后会自动清零，无需再手动清零
-  if (isSubscription && calculateRemainingValidity(item)?.expired) return false;
+  // 积分过期后会自动清零，无需再手动清零（适用于充值、赠送、会员订阅等所有类型）
+  if (calculateRemainingValidity(item)?.expired) return false;
   return true;
 }
 
