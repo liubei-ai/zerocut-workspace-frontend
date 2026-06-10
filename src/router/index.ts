@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import { useSubAccountStore } from '../stores/subAccountStore';
 import { useUserStore } from '../stores/userStore';
 import AdminRoutes from './admin.routes';
 import { auth0Routes, authingRoutes } from './auth.routes';
 import { oauthRoutes } from './oauth.routes';
+import subAccountRoutes from './sub-account.routes';
 import ZerocutRoutes from './zerocut.routes';
 
 const authType = import.meta.env.VITE_AUTH_MODE;
@@ -17,6 +19,7 @@ export const routes = [
   },
   ...(authType === 'auth0' ? auth0Routes : authingRoutes),
   ...oauthRoutes,
+  ...subAccountRoutes,
   ...ZerocutRoutes,
   ...AdminRoutes,
   {
@@ -61,6 +64,16 @@ async function checkAuthorization() {
 // Global navigation guard for authentication
 router.beforeEach(async to => {
   const userStore = useUserStore();
+
+  // 子账号路由：与主站登录态隔离，未登录则跳子账号登录页（不跳主站登录）
+  const requiresSubAccount = to.matched.some(record => record.meta.requiresSubAccount);
+  if (requiresSubAccount) {
+    const subAccountStore = useSubAccountStore();
+    if (!subAccountStore.isLoggedIn) {
+      return { name: 'sub-account-login', query: { redirect: to.fullPath } };
+    }
+    return true;
+  }
 
   // Check if route requires authentication
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

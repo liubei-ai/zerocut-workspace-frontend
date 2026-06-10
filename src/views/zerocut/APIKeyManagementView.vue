@@ -37,7 +37,8 @@ const createdTokenKey = ref<string>('');
 const editForm = ref({
   name: '',
   expiresAt: '',
-  creditsLimit: '',
+  availableBalance: '',
+  rate: '', // 只读展示，不参与提交
 });
 
 // OTT state
@@ -55,7 +56,28 @@ let countdownTimer: NodeJS.Timeout | null = null;
 const newToken = ref({
   name: '',
   expiresAt: '',
-  creditsLimit: '',
+  availableBalance: '',
+  rate: '1',
+});
+
+// 积分上限（只读，自动计算）= round(可用余额 × 20 ÷ 费率)；余额为空表示不限额
+const computeCreditsLimit = (balanceStr: string, rateStr: string): number | null => {
+  const balance = Number.parseFloat(balanceStr);
+  const rate = Number.parseFloat(rateStr);
+  if (!balanceStr || !(balance > 0) || !(rate > 0)) {
+    return null;
+  }
+  return Math.round((balance * 20) / rate);
+};
+
+const createCreditsLimitDisplay = computed(() => {
+  const limit = computeCreditsLimit(newToken.value.availableBalance, newToken.value.rate);
+  return limit == null ? t('zerocut.apikeys.limit.unlimited') : limit.toLocaleString();
+});
+
+const editCreditsLimitDisplay = computed(() => {
+  const limit = computeCreditsLimit(editForm.value.availableBalance, editForm.value.rate);
+  return limit == null ? t('zerocut.apikeys.limit.unlimited') : limit.toLocaleString();
 });
 
 const headerPrimaryActions = computed(() => [
@@ -140,12 +162,15 @@ const createToken = async () => {
 
   creating.value = true;
   try {
-    const parsedCreateLimit = Number.parseInt(newToken.value.creditsLimit, 10);
-    if (
-      newToken.value.creditsLimit &&
-      (!Number.isInteger(parsedCreateLimit) || parsedCreateLimit < 1)
-    ) {
-      showError(t('zerocut.apikeys.errors.invalidLimit'));
+    const parsedRate = Number.parseFloat(newToken.value.rate);
+    if (!(parsedRate > 0)) {
+      showError(t('zerocut.apikeys.errors.invalidRate'));
+      return;
+    }
+
+    const parsedBalance = Number.parseFloat(newToken.value.availableBalance);
+    if (newToken.value.availableBalance && !(parsedBalance > 0)) {
+      showError(t('zerocut.apikeys.errors.invalidBalance'));
       return;
     }
 
@@ -154,7 +179,8 @@ const createToken = async () => {
       expiresAt: newToken.value.expiresAt
         ? new Date(newToken.value.expiresAt).toISOString()
         : undefined,
-      creditsLimit: newToken.value.creditsLimit ? parsedCreateLimit : undefined,
+      availableBalance: newToken.value.availableBalance ? parsedBalance : undefined,
+      rate: parsedRate,
     };
 
     const apiKeyInfo = await createApiKey(workspaceId, request);
@@ -203,7 +229,8 @@ const resetForm = () => {
   newToken.value = {
     name: '',
     expiresAt: '',
-    creditsLimit: '',
+    availableBalance: '',
+    rate: '1',
   };
 };
 
@@ -216,8 +243,9 @@ const openEditTokenDialog = (token: ApiKey) => {
   selectedToken.value = token;
   editForm.value.name = token.name || '';
   editForm.value.expiresAt = formatDateInput(token.expiresAt);
-  editForm.value.creditsLimit =
-    token.creditsLimit == null ? '' : String(Math.trunc(token.creditsLimit));
+  editForm.value.availableBalance =
+    token.availableBalance == null ? '' : String(token.availableBalance);
+  editForm.value.rate = String(token.rate);
   editTokenDialog.value = true;
 };
 
@@ -236,9 +264,9 @@ const saveTokenEdits = async () => {
     return;
   }
 
-  const nextLimit = Number.parseInt(editForm.value.creditsLimit, 10);
-  if (!Number.isInteger(nextLimit) || nextLimit < 0) {
-    showError(t('zerocut.apikeys.errors.invalidLimit'));
+  const parsedBalance = Number.parseFloat(editForm.value.availableBalance);
+  if (editForm.value.availableBalance && !(parsedBalance > 0)) {
+    showError(t('zerocut.apikeys.errors.invalidBalance'));
     return;
   }
 
@@ -246,7 +274,7 @@ const saveTokenEdits = async () => {
   try {
     const payload: UpdateApiKeyRequest = {
       name: trimmedName,
-      creditsLimit: nextLimit,
+      availableBalance: editForm.value.availableBalance ? parsedBalance : undefined,
       expiresAt: editForm.value.expiresAt ? new Date(editForm.value.expiresAt).toISOString() : null,
     };
     await updateApiKey(workspaceId, selectedToken.value.id, payload);
@@ -458,25 +486,37 @@ const getStatusColor = (status: string) => {
 const formatCredits = (value: number | null | undefined) =>
   value == null ? '--' : Math.max(0, Number(value)).toLocaleString();
 
+// 金额（两位小数）展示
+const formatMoney = (value: number | null | undefined) =>
+  value == null
+    ? '--'
+    : Math.max(0, Number(value)).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+// 已消耗金额 = 消耗积分 × 费率 ÷ 20
+const getConsumedAmount = (token: ApiKey) =>
+  (Number(token.creditsConsumed) * Number(token.rate)) / 20;
+
 const getLimitLabel = (token: ApiKey | null) => {
   if (!token) return '--';
-  return token.creditsLimit == null
+  return token.availableBalance == null
     ? t('zerocut.apikeys.limit.unlimited')
-    : formatCredits(token.creditsLimit);
+    : formatMoney(token.availableBalance);
 };
 
 const getConsumedLabel = (token: ApiKey | null) => {
   if (!token) return '--';
-  return formatCredits(token.creditsConsumed);
+  return formatMoney(getConsumedAmount(token));
 };
 
 const getRemainingLabel = (token: ApiKey | null) => {
   if (!token) return '--';
-  if (token.creditsLimit == null) {
+  if (token.availableBalance == null) {
     return t('zerocut.apikeys.limit.unlimited');
   }
-  const remaining = Math.max(0, token.creditsLimit - token.creditsConsumed);
-  return remaining.toLocaleString();
+  return formatMoney(token.remainingBalance ?? 0);
 };
 
 const getRemainingPercent = (token: ApiKey) => {
@@ -771,11 +811,33 @@ const formatRelativeExpire = (dateString: string | null | undefined) => {
             ></v-text-field>
 
             <v-text-field
-              v-model="newToken.creditsLimit"
-              :label="t('zerocut.apikeys.dialog.create.limitLabel')"
+              v-model="newToken.availableBalance"
+              :label="t('zerocut.apikeys.dialog.create.balanceLabel')"
               type="number"
-              min="1"
-              :hint="t('zerocut.apikeys.dialog.create.limitHint')"
+              min="0"
+              step="0.01"
+              :hint="t('zerocut.apikeys.dialog.create.balanceHint')"
+              persistent-hint
+              class="mb-4"
+            ></v-text-field>
+
+            <v-text-field
+              v-model="newToken.rate"
+              :label="t('zerocut.apikeys.dialog.create.rateLabel')"
+              type="number"
+              min="0"
+              step="0.01"
+              :hint="t('zerocut.apikeys.dialog.create.rateHint')"
+              persistent-hint
+              class="mb-4"
+            ></v-text-field>
+
+            <v-text-field
+              :model-value="createCreditsLimitDisplay"
+              :label="t('zerocut.apikeys.dialog.create.limitComputedLabel')"
+              readonly
+              disabled
+              :hint="t('zerocut.apikeys.dialog.create.limitComputedHint')"
               persistent-hint
               class="mb-2"
             ></v-text-field>
@@ -832,15 +894,39 @@ const formatRelativeExpire = (dateString: string | null | undefined) => {
           ></v-text-field>
 
           <div class="text-caption text-medium-emphasis mb-4">
-            {{ t('zerocut.apikeys.dialog.edit.limitHint') }}
+            {{ t('zerocut.apikeys.dialog.edit.balanceHint') }}
           </div>
 
           <v-text-field
-            v-model="editForm.creditsLimit"
-            :label="t('zerocut.apikeys.dialog.edit.limitLabel')"
+            v-model="editForm.availableBalance"
+            :label="t('zerocut.apikeys.dialog.edit.balanceLabel')"
             type="number"
             min="0"
+            step="0.01"
             variant="outlined"
+            class="mb-3"
+          ></v-text-field>
+
+          <v-text-field
+            v-model="editForm.rate"
+            :label="t('zerocut.apikeys.dialog.edit.rateLabel')"
+            type="number"
+            readonly
+            disabled
+            variant="outlined"
+            :hint="t('zerocut.apikeys.dialog.edit.rateReadonlyHint')"
+            persistent-hint
+            class="mb-3"
+          ></v-text-field>
+
+          <v-text-field
+            :model-value="editCreditsLimitDisplay"
+            :label="t('zerocut.apikeys.dialog.edit.limitComputedLabel')"
+            readonly
+            disabled
+            variant="outlined"
+            :hint="t('zerocut.apikeys.dialog.edit.limitComputedHint')"
+            persistent-hint
           ></v-text-field>
         </v-card-text>
 

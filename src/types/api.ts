@@ -72,6 +72,9 @@ export interface ApiKey {
   status: string;
   lastUsedAt: string | null; // 最后使用时间
   expiresAt: string | null; // 过期时间
+  rate: number; // 费率
+  availableBalance?: number | null; // 可用余额（金额，派生；不限额时为 null）
+  remainingBalance?: number | null; // 剩余可用余额（金额，派生；不限额时为 null）
   creditsLimit: number | null;
   creditsConsumed: number;
   remainingCredits?: number | null;
@@ -201,13 +204,14 @@ export interface ProjectRecordsResponse extends PaginationResponse<VideoWorkflow
 export interface CreateApiKeyRequest {
   name: string;
   expiresAt?: string;
-  creditsLimit?: number;
+  availableBalance?: number; // 可用余额（金额），留空=不限额
+  rate: number; // 费率（>0，最多两位小数）
 }
 
 export interface UpdateApiKeyRequest {
   name?: string;
   expiresAt?: string | null;
-  creditsLimit?: number;
+  availableBalance?: number; // 费率只读，仅可改余额；后端用既有费率重算
 }
 
 // Consumption Record Types
@@ -224,6 +228,29 @@ export interface ConsumptionRecord {
   creditsAmount: number;
   apiKeyId?: string;
   createdAt: string;
+}
+
+// 按 ApiKey / 子账号查询的金额化消费记录
+export interface AmountConsumptionRecord {
+  id: number;
+  transactionId: string;
+  amount: number; // 金额（两位小数）
+  prompt?: string;
+  displayDetails?: {
+    reason?: string;
+    urls?: string[];
+    prompt?: string;
+  };
+  apiKeyId?: string;
+  createdAt: string;
+}
+
+// 子账号会话信息
+export interface SubAccountSessionInfo {
+  workspaceId: string; // 16 位字符串工作空间标识符
+  apiKeyMasked: string;
+  scope: string;
+  expiresAt: string;
 }
 
 export interface VoiceClone {
