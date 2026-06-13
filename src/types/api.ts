@@ -224,22 +224,21 @@ export interface ConsumptionRecord {
     reason?: string;
     urls?: string[];
     prompt?: string;
+    outputTokens?: number;
   };
   creditsAmount: number;
   apiKeyId?: string;
   createdAt: string;
 }
 
-// 按 ApiKey / 子账号查询的金额化消费记录
+// 按 ApiKey / 子账号查询的金额化消费记录（最小安全子集：不含 prompt、urls）
 export interface AmountConsumptionRecord {
   id: number;
   transactionId: string;
   amount: number; // 金额（两位小数）
-  prompt?: string;
   displayDetails?: {
     reason?: string;
-    urls?: string[];
-    prompt?: string;
+    outputTokens?: number;
   };
   apiKeyId?: string;
   createdAt: string;

@@ -134,6 +134,10 @@ onMounted(load);
           <span v-if="record.displayDetails?.reason" class="text-caption">
             · {{ record.displayDetails.reason }}
           </span>
+          <span v-if="record.displayDetails?.outputTokens != null" class="text-caption">
+            · {{ t('zerocut.subAccount.consumption.outputTokens') }}:
+            {{ record.displayDetails.outputTokens.toLocaleString() }}
+          </span>
         </template>
       </v-list-item>
     </v-list>

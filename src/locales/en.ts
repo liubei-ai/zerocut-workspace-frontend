@@ -770,6 +770,7 @@ export default {
         search: 'Search',
         reset: 'Reset',
         empty: 'No consumption records',
+        outputTokens: 'Output tokens',
         columns: {
           createdAt: 'Time',
           amount: 'Amount',

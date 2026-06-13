@@ -651,6 +651,7 @@ export default {
         search: '検索',
         reset: 'リセット',
         empty: '消費記録がありません',
+        outputTokens: '出力トークン',
         columns: {
           createdAt: '時刻',
           amount: '金額',

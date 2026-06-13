@@ -760,6 +760,7 @@ export default {
         search: '查询',
         reset: '重置',
         empty: '暂无消费记录',
+        outputTokens: '输出 tokens',
         columns: {
           createdAt: '时间',
           amount: '金额',
