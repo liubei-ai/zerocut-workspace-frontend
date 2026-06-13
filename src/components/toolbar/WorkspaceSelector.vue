@@ -32,6 +32,20 @@ const handleRefresh = () => {
   workspaceStore.loadWorkspaces();
 };
 
+// 复制 workspaceId（16 位字符串），复制成功后短暂展示对勾
+const copiedId = ref<string | null>(null);
+const copyWorkspaceId = async (id: string) => {
+  try {
+    await navigator.clipboard.writeText(id);
+    copiedId.value = id;
+    setTimeout(() => {
+      if (copiedId.value === id) copiedId.value = null;
+    }, 1500);
+  } catch {
+    // 复制失败（非安全上下文等）静默忽略
+  }
+};
+
 // 组件挂载时加载数据
 onMounted(() => {
   if (workspaces.value.length === 0) {
@@ -130,8 +144,16 @@ onMounted(() => {
               {{ workspace.name }}
             </v-list-item-title>
 
-            <v-list-item-subtitle class="text-caption">
-              {{ workspace.description || '暂无描述' }}
+            <v-list-item-subtitle class="d-flex align-center text-caption">
+              <span class="workspace-id">{{ workspace.workspaceId }}</span>
+              <v-btn
+                :icon="copiedId === workspace.workspaceId ? 'mdi-check' : 'mdi-content-copy'"
+                :color="copiedId === workspace.workspaceId ? 'success' : undefined"
+                size="x-small"
+                variant="text"
+                class="copy-btn ml-1"
+                @click.stop="copyWorkspaceId(workspace.workspaceId)"
+              ></v-btn>
             </v-list-item-subtitle>
 
             <template v-slot:append>
@@ -168,15 +190,6 @@ onMounted(() => {
         <!-- 菜单底部 -->
         <v-divider></v-divider>
         <v-card-actions class="pa-2">
-          <v-btn
-            variant="text"
-            size="small"
-            prepend-icon="mdi-cog"
-            @click="menuOpen = false"
-            to="/workspace/settings"
-          >
-            工作空间设置
-          </v-btn>
           <v-spacer></v-spacer>
           <v-btn variant="text" size="small" @click="menuOpen = false"> 关闭 </v-btn>
         </v-card-actions>
@@ -202,6 +215,17 @@ onMounted(() => {
   .workspace-item {
     &:hover {
       background-color: rgba(var(--v-theme-primary), 0.04);
+    }
+
+    .workspace-id {
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      flex: 0 0 auto;
     }
   }
 }

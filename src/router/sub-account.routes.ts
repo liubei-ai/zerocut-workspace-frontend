@@ -20,6 +20,7 @@ const subAccountRoutes = [
       layout: 'auth',
       title: '消费记录',
       requiresSubAccount: true,
+      wide: true,
     },
   },
 ];
