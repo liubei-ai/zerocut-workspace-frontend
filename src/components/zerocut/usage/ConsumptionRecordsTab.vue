@@ -244,10 +244,17 @@ onMounted(() => {
             sortable: false,
           },
           {
+            title: t('zerocut.usage.table.columns.outputTokens'),
+            key: 'outputTokens',
+            sortable: false,
+            align: 'end',
+          },
+          {
             title: t('zerocut.usage.table.columns.transactionId'),
             key: 'transactionId',
             sortable: false,
           },
+          { title: t('zerocut.usage.table.columns.taskId'), key: 'taskId', sortable: false },
           { title: t('zerocut.usage.table.columns.apiKeyId'), key: 'apiKeyId', sortable: false },
         ]"
         :items="usageLogs"
@@ -287,6 +294,18 @@ onMounted(() => {
             :no-prompt-text="t('zerocut.usage.details.noPrompt')"
             :empty-text="t('common.unknown')"
           />
+        </template>
+
+        <template #item.outputTokens="{ item }">
+          {{
+            item.displayDetails?.outputTokens != null
+              ? item.displayDetails.outputTokens.toLocaleString()
+              : '-'
+          }}
+        </template>
+
+        <template #item.taskId="{ item }">
+          <code class="text-caption">{{ item.displayDetails?.taskId ?? '-' }}</code>
         </template>
 
         <template #item.apiKeyId="{ item }">

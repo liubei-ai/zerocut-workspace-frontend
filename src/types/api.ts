@@ -225,6 +225,7 @@ export interface ConsumptionRecord {
     urls?: string[];
     prompt?: string;
     outputTokens?: number;
+    taskId?: string;
   };
   creditsAmount: number;
   apiKeyId?: string;
