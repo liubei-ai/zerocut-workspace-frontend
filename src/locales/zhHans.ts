@@ -773,6 +773,7 @@ export default {
         export: '导出 CSV',
         empty: '暂无消费记录',
         outputTokens: '输出 tokens',
+        duration: '时长(秒)',
         columns: {
           createdAt: '时间',
           amount: '金额',

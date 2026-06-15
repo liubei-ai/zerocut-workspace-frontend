@@ -240,6 +240,7 @@ export interface AmountConsumptionRecord {
   displayDetails?: {
     reason?: string;
     outputTokens?: number;
+    duration?: number; // 时长（秒）：音视频/超分有，图片没有
   };
   apiKeyId?: string;
   createdAt: string;

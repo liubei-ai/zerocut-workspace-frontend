@@ -664,6 +664,7 @@ export default {
         export: 'CSV エクスポート',
         empty: '消費記録がありません',
         outputTokens: '出力トークン',
+        duration: '長さ(秒)',
         columns: {
           createdAt: '時刻',
           amount: '金額',

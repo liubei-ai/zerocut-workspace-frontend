@@ -783,6 +783,7 @@ export default {
         export: 'Export CSV',
         empty: 'No consumption records',
         outputTokens: 'Output tokens',
+        duration: 'Duration (s)',
         columns: {
           createdAt: 'Time',
           amount: 'Amount',

@@ -53,6 +53,11 @@ const headers = () => [
     key: 'outputTokens',
     align: 'end' as const,
   },
+  {
+    title: t('zerocut.subAccount.consumption.duration'),
+    key: 'duration',
+    align: 'end' as const,
+  },
   { title: t('zerocut.subAccount.consumption.columns.transactionId'), key: 'transactionId' },
 ];
 
@@ -135,6 +140,7 @@ const exportCsv = async () => {
       t('zerocut.subAccount.consumption.columns.amount'),
       t('zerocut.subAccount.consumption.columns.detail'),
       t('zerocut.subAccount.consumption.outputTokens'),
+      t('zerocut.subAccount.consumption.duration'),
       t('zerocut.subAccount.consumption.columns.transactionId'),
     ];
     const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
@@ -146,6 +152,7 @@ const exportCsv = async () => {
           r.amount,
           r.displayDetails?.reason ?? '',
           r.displayDetails?.outputTokens ?? '',
+          r.displayDetails?.duration ?? '',
           r.transactionId,
         ]
           .map(esc)
@@ -276,6 +283,9 @@ onMounted(() => {
             ? item.displayDetails.outputTokens.toLocaleString()
             : '-'
         }}
+      </template>
+      <template #[`item.duration`]="{ item }">
+        {{ item.displayDetails?.duration != null ? `${item.displayDetails.duration}s` : '-' }}
       </template>
     </v-data-table>
   </div>
