@@ -30,11 +30,16 @@ export const useWorkspaceStore = defineStore('workspace', {
       try {
         const workspaces = await getWorkspaces();
 
-        // 如果没有当前工作空间，设置第一个为当前工作空间
         this.workspaces = workspaces;
-        if (!this.currentWorkspace && this.workspaces.length > 0) {
-          this.currentWorkspace = this.workspaces[0];
-        }
+
+        // localStorage 中的最近选择不代表当前账号仍有访问权限；必须以服务端返回的
+        // 活跃成员列表为准，并替换成最新对象（角色/名称等可能已经变更）。
+        const activeWorkspaces = workspaces.filter(workspace => workspace.isActive);
+        const currentWorkspaceId = this.currentWorkspace?.workspaceId;
+        this.currentWorkspace =
+          activeWorkspaces.find(workspace => workspace.workspaceId === currentWorkspaceId) ??
+          activeWorkspaces[0] ??
+          null;
       } catch (error) {
         this.error = error.message || '加载工作空间数据失败';
         console.error('Failed to load workspace data:', error);

@@ -4,7 +4,16 @@ import type { ApiError, ApiResponse } from '@/types/api';
 
 import { extractApiMessageFromPayload } from '@/utils/apiError';
 
-import { handleAuthFailure, handleForbidden } from './helper';
+import { handleAuthFailure, handleForbidden, handleWorkspaceAccessDenied } from './helper';
+
+const WORKSPACE_ACCESS_DENIED = 'WORKSPACE_ACCESS_DENIED';
+
+const isWorkspaceAccessDenied = (payload: unknown): boolean => {
+  if (typeof payload !== 'object' || payload === null || !('errorCode' in payload)) {
+    return false;
+  }
+  return (payload as { errorCode?: unknown }).errorCode === WORKSPACE_ACCESS_DENIED;
+};
 
 // Create axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -29,7 +38,7 @@ apiClient.interceptors.request.use(
 
 // Response interceptor - Handle unified ApiResponse structure
 apiClient.interceptors.response.use(
-  (response: AxiosResponse<ApiResponse>) => {
+  async (response: AxiosResponse<ApiResponse>) => {
     const { code, message, data, details } = response.data;
     const url = response.config.url || '';
 
@@ -42,6 +51,9 @@ apiClient.interceptors.response.use(
       console.warn('Authentication failed, redirecting to login page');
       handleAuthFailure();
       return Promise.reject({ code, message, details });
+    } else if (code === 403 && isWorkspaceAccessDenied(response.data)) {
+      await handleWorkspaceAccessDenied();
+      return Promise.reject({ code, message, details, errorCode: WORKSPACE_ACCESS_DENIED });
     } else if (code === 403 && url.startsWith('/admin/')) {
       // 登录态有效但权限不足 → 跳 /403，保持登录态
       console.warn('Forbidden (admin), redirecting to /403');
@@ -52,7 +64,7 @@ apiClient.interceptors.response.use(
       return Promise.reject({ code, message, details });
     }
   },
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     // Handle HTTP-level errors
     if (error.response) {
       const status = error.response.status;
@@ -64,6 +76,8 @@ apiClient.interceptors.response.use(
       if (status === 401) {
         console.warn(`HTTP 401, redirecting to login page`);
         handleAuthFailure();
+      } else if (status === 403 && isWorkspaceAccessDenied(responseData)) {
+        await handleWorkspaceAccessDenied();
       } else if (status === 403 && url.startsWith('/admin/')) {
         console.warn(`HTTP 403 (admin), redirecting to /403`);
         handleForbidden();
@@ -74,6 +88,7 @@ apiClient.interceptors.response.use(
         code: status,
         message: extractedMessage || statusText || error.message || 'Request failed',
         details: responseData,
+        errorCode: isWorkspaceAccessDenied(responseData) ? WORKSPACE_ACCESS_DENIED : null,
       };
       return Promise.reject(apiError);
     } else if (error.request) {

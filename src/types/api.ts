@@ -6,6 +6,7 @@ export interface ApiResponse<T = any> {
   data: T;
   path?: string;
   details?: unknown;
+  errorCode?: string | null;
 }
 
 export interface Pagination {
@@ -36,6 +37,7 @@ export interface ApiError {
   code: number;
   message: string;
   details?: unknown;
+  errorCode?: string | null;
 }
 
 // Workspace Types

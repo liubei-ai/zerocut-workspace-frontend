@@ -45,8 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
     userStore.updateUserInfo(rest);
 
     await sleep(100);
-    const workspaceStore = useWorkspaceStore();
-    workspaceStore.loadWorkspaces();
+    await workspaceStore.loadWorkspaces();
 
     // 处理新用户积分奖励记录
     if (record) {
