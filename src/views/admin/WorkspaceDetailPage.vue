@@ -668,12 +668,7 @@ onMounted(() => loadPage());
         </v-window-item>
         <v-window-item value="usage">
           <div class="pa-4">
-            <UsageRecordsTab
-              ref="usageRecordsTab"
-              :workspace-id="workspaceId"
-              project-detail-route-name="admin-workspace-usage-project-detail"
-              :project-detail-route-params="{ workspaceId }"
-            />
+            <UsageRecordsTab ref="usageRecordsTab" mode="records" :workspace-id="workspaceId" />
           </div>
         </v-window-item>
         <v-window-item value="expired">

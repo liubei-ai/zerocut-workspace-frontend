@@ -178,6 +178,7 @@ export interface ProjectOverviewItem {
 
 export interface VideoWorkflowRecordItem {
   id: number;
+  projectId?: number;
   type: string;
   status: string;
   param?: Record<string, any> | null;

@@ -2,6 +2,7 @@ import type {
   PaginationResponse,
   ProjectOverviewItem,
   ProjectRecordsResponse,
+  VideoWorkflowRecordItem,
   VideoWorkflowSource,
 } from '@/types/api';
 
@@ -17,6 +18,21 @@ export async function listVideoProjects(
 ): Promise<PaginationResponse<ProjectOverviewItem>> {
   const response = await client.get<PaginationResponse<ProjectOverviewItem>>(
     `/workspaces/${workspaceId}/video-projects`,
+    { params }
+  );
+  return response.data;
+}
+
+export async function listVideoWorkflowRecords(
+  workspaceId: string,
+  params: {
+    source: VideoWorkflowSource;
+    page?: number;
+    limit?: number;
+  }
+): Promise<PaginationResponse<VideoWorkflowRecordItem>> {
+  const response = await client.get<PaginationResponse<VideoWorkflowRecordItem>>(
+    `/workspaces/${workspaceId}/video-workflow-records`,
     { params }
   );
   return response.data;

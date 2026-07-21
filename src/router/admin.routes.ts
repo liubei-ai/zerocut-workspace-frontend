@@ -87,26 +87,6 @@ const AdminRoutes: RouteRecordRaw[] = [
         },
       },
       {
-        path: 'workspaces/:workspaceId/detail/usage/project/:projectId',
-        name: 'admin-workspace-usage-project-detail',
-        component: () => import('@/views/zerocut/ProjectUsageDetailView.vue'),
-        props: route => ({
-          workspaceId: String(route.params.workspaceId),
-          backRoute: {
-            name: 'admin-workspace-detail',
-            params: { workspaceId: String(route.params.workspaceId) },
-            query: { tab: 'usage' },
-          },
-        }),
-        meta: {
-          title: '项目使用详情',
-          layout: 'landing',
-          category: 'Admin',
-          requiresAuth: true,
-          permissions: [Permission.WORKSPACE_READ],
-        },
-      },
-      {
         path: 'system-config',
         name: 'admin-system-config',
         component: () => import('@/views/admin/SystemConfigPage.vue'),
