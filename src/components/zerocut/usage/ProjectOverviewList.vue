@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -9,11 +9,23 @@ import { listVideoProjects } from '@/api/videoWorkflowApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
 
-const props = defineProps<{ source: VideoWorkflowSource }>();
+interface Props {
+  source: VideoWorkflowSource;
+  workspaceId?: string;
+  projectDetailRouteName?: string;
+  projectDetailRouteParams?: Record<string, string>;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  workspaceId: undefined,
+  projectDetailRouteName: 'UsageProjectDetail',
+  projectDetailRouteParams: () => ({}),
+});
 
 const { t } = useI18n();
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
+const resolvedWorkspaceId = computed(() => props.workspaceId || workspaceStore.currentWorkspaceId);
 
 const loading = ref(false);
 const error = ref('');
@@ -21,7 +33,7 @@ const items = ref<ProjectOverviewItem[]>([]);
 const pagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 });
 
 const fetchProjects = async () => {
-  const workspaceId = workspaceStore.currentWorkspaceId;
+  const workspaceId = resolvedWorkspaceId.value;
   if (!workspaceId) return;
   try {
     loading.value = true;
@@ -49,23 +61,22 @@ const fetchProjects = async () => {
 
 const onRowClick = (_e: unknown, { item }: { item: ProjectOverviewItem }) => {
   router.push({
-    name: 'UsageProjectDetail',
-    params: { projectId: String(item.id) },
+    name: props.projectDetailRouteName,
+    params: { ...props.projectDetailRouteParams, projectId: String(item.id) },
     query: { source: props.source },
   });
 };
 
 const formatCredits = (n: number) => Number(n || 0).toLocaleString();
 
-watch(
-  () => props.source,
-  () => {
-    pagination.value.page = 1;
-    fetchProjects();
-  }
-);
+watch([() => props.source, resolvedWorkspaceId], () => {
+  pagination.value.page = 1;
+  fetchProjects();
+});
 
 onMounted(fetchProjects);
+
+defineExpose({ refresh: fetchProjects });
 </script>
 
 <template>

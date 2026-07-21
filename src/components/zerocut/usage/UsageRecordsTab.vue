@@ -6,8 +6,23 @@ import type { VideoWorkflowSource } from '@/types/api';
 
 import ProjectOverviewList from './ProjectOverviewList.vue';
 
+interface Props {
+  workspaceId?: string;
+  projectDetailRouteName?: string;
+  projectDetailRouteParams?: Record<string, string>;
+}
+
+const props = defineProps<Props>();
+
 const { t } = useI18n();
 const source = ref<VideoWorkflowSource>('workflow');
+const projectOverviewList = ref<InstanceType<typeof ProjectOverviewList> | null>(null);
+
+const refresh = async () => {
+  await projectOverviewList.value?.refresh();
+};
+
+defineExpose({ refresh });
 </script>
 
 <template>
@@ -17,6 +32,12 @@ const source = ref<VideoWorkflowSource>('workflow');
       <v-tab value="api">{{ t('zerocut.usage.records.source.api') }}</v-tab>
     </v-tabs>
 
-    <ProjectOverviewList :source="source" />
+    <ProjectOverviewList
+      ref="projectOverviewList"
+      :source="source"
+      :workspace-id="props.workspaceId"
+      :project-detail-route-name="props.projectDetailRouteName"
+      :project-detail-route-params="props.projectDetailRouteParams"
+    />
   </div>
 </template>

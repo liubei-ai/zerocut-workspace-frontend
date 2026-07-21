@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import { refundSubscriptionPeriod } from '@/api/memberAdminApi';
 import {
@@ -19,6 +19,7 @@ import {
 import WalletOverview from '@/components/admin/WalletOverview.vue';
 import ConsumptionDetailsCell from '@/components/common/ConsumptionDetailsCell.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
+import UsageRecordsTab from '@/components/zerocut/usage/UsageRecordsTab.vue';
 import { Permission } from '@/constants/permissions';
 import { useAdminWorkspaceStore } from '@/stores/adminWorkspaceStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
@@ -26,7 +27,8 @@ import { useUserStore } from '@/stores/userStore';
 import { formatDate } from '@/utils/date';
 
 const route = useRoute();
-const workspaceId = route.params.workspaceId as string;
+const router = useRouter();
+const workspaceId = computed(() => String(route.params.workspaceId));
 const adminWorkspaceStore = useAdminWorkspaceStore();
 const currentWorkspace = computed(() => adminWorkspaceStore.currentWorkspace);
 const userStore = useUserStore();
@@ -36,14 +38,15 @@ const canRefundRecharge = computed(() => userStore.hasPermission(Permission.WALL
 
 const pageLoading = ref(false);
 
-type TabValue = 'overview' | 'recharge' | 'consumption' | 'expired';
+type TabValue = 'overview' | 'recharge' | 'consumption' | 'usage' | 'expired';
 
-// 按权限动态渲染的 tab 列表；OPS 没有 WALLET_READ 时这页会变空
+// 按权限动态渲染的 tab 列表
 const visibleTabs = computed<{ value: TabValue; label: string }[]>(() => {
   const all: { value: TabValue; label: string; perm: string }[] = [
     { value: 'overview', label: '钱包概览', perm: Permission.WALLET_READ },
     { value: 'recharge', label: '充值记录', perm: Permission.WALLET_RECHARGE_RECORDS_READ },
     { value: 'consumption', label: '消费记录', perm: Permission.WALLET_READ },
+    { value: 'usage', label: '使用日志', perm: Permission.WORKSPACE_READ },
     { value: 'expired', label: '过期积分', perm: Permission.WALLET_READ },
   ];
   return all
@@ -51,7 +54,15 @@ const visibleTabs = computed<{ value: TabValue; label: string }[]>(() => {
     .map(({ value, label }) => ({ value, label }));
 });
 
-const tab = ref<TabValue>(visibleTabs.value[0]?.value ?? 'overview');
+function getVisibleTab(value: unknown): TabValue | undefined {
+  if (typeof value !== 'string') return undefined;
+  return visibleTabs.value.some(item => item.value === value) ? (value as TabValue) : undefined;
+}
+
+const tab = ref<TabValue>(
+  getVisibleTab(route.query.tab) ?? visibleTabs.value[0]?.value ?? 'overview'
+);
+const usageRecordsTab = ref<InstanceType<typeof UsageRecordsTab> | null>(null);
 
 const walletInfo = ref<WalletInfo | undefined>(undefined);
 
@@ -180,7 +191,7 @@ function canRefundItem(item: TransactionItem): boolean {
 }
 
 async function fetchWallet() {
-  walletInfo.value = await getWalletInfo(workspaceId);
+  walletInfo.value = await getWalletInfo(workspaceId.value);
 }
 
 // 充值积分清零（退款）弹窗状态
@@ -245,7 +256,7 @@ async function fetchRecharge() {
   rechargeLoading.value = true;
   try {
     const res = await getWalletRechargeRecords({
-      workspaceId,
+      workspaceId: workspaceId.value,
       page: rechargePagination.value.page,
       limit: rechargePagination.value.limit,
     });
@@ -270,7 +281,7 @@ async function fetchConsumption() {
       startDate: consumptionFilters.value.startDate || undefined,
       endDate: consumptionFilters.value.endDate || undefined,
     };
-    const res = await getWorkspaceConsumptionRecords(workspaceId, params);
+    const res = await getWorkspaceConsumptionRecords(workspaceId.value, params);
     consumptionItems.value = res.list;
     consumptionPagination.value = {
       page: res.page,
@@ -287,7 +298,7 @@ async function fetchExpired() {
   expiredLoading.value = true;
   try {
     const res: ExpiredCreditsResponse = await getExpiredCredits({
-      workspaceId,
+      workspaceId: workspaceId.value,
       page: expiredPagination.value.page,
       limit: expiredPagination.value.limit,
       paymentMethod: expiredFilter.value.paymentMethod || undefined,
@@ -300,13 +311,28 @@ async function fetchExpired() {
   }
 }
 
-async function refreshAll() {
+async function loadPage(includeUsage = false) {
   pageLoading.value = true;
   try {
-    await Promise.all([fetchWallet(), fetchRecharge(), fetchConsumption(), fetchExpired()]);
+    const requests: Promise<unknown>[] = [];
+    if (userStore.hasPermission(Permission.WALLET_READ)) {
+      requests.push(fetchWallet(), fetchConsumption(), fetchExpired());
+    }
+    if (userStore.hasPermission(Permission.WALLET_RECHARGE_RECORDS_READ)) {
+      requests.push(fetchRecharge());
+    }
+    if (includeUsage && userStore.hasPermission(Permission.WORKSPACE_READ)) {
+      const usageRefresh = usageRecordsTab.value?.refresh();
+      if (usageRefresh) requests.push(usageRefresh);
+    }
+    await Promise.all(requests);
   } finally {
     pageLoading.value = false;
   }
+}
+
+function refreshAll() {
+  return loadPage(true);
 }
 
 function handleRechargePageChange(page: number) {
@@ -355,20 +381,39 @@ watch(
       rechargePagination.value.page = 1;
       consumptionPagination.value.page = 1;
       expiredPagination.value.page = 1;
-      refreshAll();
+      loadPage();
     }
   }
 );
 
+watch(tab, value => {
+  if (route.query.tab === value) return;
+  router.replace({ query: { ...route.query, tab: value } });
+});
+
+watch(
+  () => route.query.tab,
+  value => {
+    const requestedTab = getVisibleTab(value);
+    if (requestedTab && requestedTab !== tab.value) tab.value = requestedTab;
+  }
+);
+
+watch(visibleTabs, tabs => {
+  if (tabs.some(item => item.value === tab.value)) return;
+  tab.value = getVisibleTab(route.query.tab) ?? tabs[0]?.value ?? 'overview';
+});
+
 watch(
   () => expiredFilter.value.paymentMethod,
   () => {
+    if (!userStore.hasPermission(Permission.WALLET_READ)) return;
     expiredPagination.value.page = 1;
     fetchExpired();
   }
 );
 
-onMounted(refreshAll);
+onMounted(() => loadPage());
 </script>
 
 <template>
@@ -621,6 +666,16 @@ onMounted(refreshAll);
             </v-data-table-server>
           </v-card>
         </v-window-item>
+        <v-window-item value="usage">
+          <div class="pa-4">
+            <UsageRecordsTab
+              ref="usageRecordsTab"
+              :workspace-id="workspaceId"
+              project-detail-route-name="admin-workspace-usage-project-detail"
+              :project-detail-route-params="{ workspaceId }"
+            />
+          </div>
+        </v-window-item>
         <v-window-item value="expired">
           <v-card flat>
             <v-card-text>
@@ -704,8 +759,8 @@ onMounted(refreshAll);
       type="info"
       variant="tonal"
       density="comfortable"
-      title="无可查看的钱包信息"
-      text="当前账号没有查看该工作空间钱包数据的权限。"
+      title="无可查看的工作区信息"
+      text="当前账号没有查看该工作空间数据的权限。"
     />
 
     <v-dialog v-model="refundDialog.show" max-width="520" :persistent="refundDialog.loading">

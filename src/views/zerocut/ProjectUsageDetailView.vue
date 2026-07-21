@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { RouteLocationRaw } from 'vue-router';
+
 import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
@@ -17,10 +19,16 @@ const router = useRouter();
 const { t } = useI18n();
 const workspaceStore = useWorkspaceStore();
 
+const props = defineProps<{
+  workspaceId?: string;
+  backRoute?: RouteLocationRaw;
+}>();
+
 const projectId = computed(() => Number(route.params.projectId));
 const source = computed<VideoWorkflowSource>(() =>
   route.query.source === 'api' ? 'api' : 'workflow'
 );
+const resolvedWorkspaceId = computed(() => props.workspaceId || workspaceStore.currentWorkspaceId);
 
 const loading = ref(false);
 const error = ref('');
@@ -56,7 +64,7 @@ const consumptionUrls = computed<string[]>(() => {
 });
 
 const fetchRecords = async () => {
-  const workspaceId = workspaceStore.currentWorkspaceId;
+  const workspaceId = resolvedWorkspaceId.value;
   if (!workspaceId || !projectId.value) return;
   try {
     loading.value = true;
@@ -89,7 +97,7 @@ const openDetail = (record: VideoWorkflowRecordItem) => {
 };
 
 const openConsumption = async (transactionId: string) => {
-  const workspaceId = workspaceStore.currentWorkspaceId;
+  const workspaceId = resolvedWorkspaceId.value;
   if (!workspaceId || !transactionId) return;
   consumptionItem.value = null;
   consumptionError.value = '';
@@ -123,7 +131,7 @@ const statusColor = (status: string) => {
   return undefined;
 };
 
-watch([projectId, source], () => {
+watch([projectId, source, resolvedWorkspaceId], () => {
   pagination.value.page = 1;
   fetchRecords();
 });
@@ -131,7 +139,7 @@ watch([projectId, source], () => {
 onMounted(fetchRecords);
 
 const goBack = () => {
-  router.push({ path: '/usage', query: { tab: 'usage' } });
+  router.push(props.backRoute ?? { path: '/usage', query: { tab: 'usage' } });
 };
 </script>
 
