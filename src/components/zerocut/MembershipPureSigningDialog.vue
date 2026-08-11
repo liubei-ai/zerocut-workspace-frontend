@@ -186,6 +186,7 @@ import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { extractApiErrorMessage } from '@/utils/apiError';
 import { isMobile } from '@/utils/common';
+import { createLatestRequestGuard, createSerialTaskQueue } from '@/utils/latestRequestGuard';
 import { isWeiXin } from '@/utils/wechat';
 
 interface Props {
@@ -221,6 +222,8 @@ const countdown = ref<number>(0);
 const errorMessage = ref('');
 const sessionCreatedAt = ref<Date | null>(null);
 const isMobileDevice = computed(() => typeof navigator !== 'undefined' && isMobile());
+const createRequestGuard = createLatestRequestGuard();
+const createRequestQueue = createSerialTaskQueue();
 
 const isOpen = computed({
   get: () => props.open,
@@ -351,9 +354,26 @@ const resetState = () => {
   stopCountdown();
 };
 
+const invalidateCreateRequest = () => {
+  createRequestGuard.invalidate();
+};
+
+const closeStaleSigningSession = async (sessionId: string, workspaceId: string) => {
+  try {
+    await closeSigningSession(sessionId, workspaceId);
+  } catch {
+    console.warn(`关闭过期签约会话失败: ${sessionId}`);
+  }
+};
+
 const createSession = async () => {
-  if (!props.membershipPlan) return;
-  if (!workspaceStore.currentWorkspaceId) {
+  const membershipPlan = props.membershipPlan;
+  const workspaceId = workspaceStore.currentWorkspaceId;
+  const displayAccountName = workspaceStore.currentWorkspaceName || undefined;
+  const requestGeneration = createRequestGuard.begin();
+
+  if (!membershipPlan) return;
+  if (!workspaceId) {
     uiStatus.value = 'failed';
     errorMessage.value = '请先选择工作空间';
     snackbarStore.showErrorMessage('请先选择工作空间');
@@ -362,40 +382,55 @@ const createSession = async () => {
 
   uiStatus.value = 'creating';
   errorMessage.value = '';
-  try {
-    const session = await createSigningSessionPure({
-      workspaceId: workspaceStore.currentWorkspaceId,
-      planCode: props.membershipPlan.code,
-      displayAccountName: workspaceStore.currentWorkspaceName || undefined,
-    });
-    signingSession.value = session;
-    sessionCreatedAt.value = new Date(session.createdAt);
-    uiStatus.value = 'pending';
-
-    if (isWeiXin()) {
-      window.location.href = session.entrustwebUrl;
-      startCountdown(session.expiresAt);
-      startPolling();
+  return createRequestQueue.run(async () => {
+    if (!createRequestGuard.isCurrent(requestGeneration) || !props.open) {
       return;
     }
+    try {
+      const session = await createSigningSessionPure({
+        workspaceId,
+        planCode: membershipPlan.code,
+        displayAccountName,
+      });
 
-    await nextTick();
-    await generateQRCode(session.entrustwebUrl);
-    startCountdown(session.expiresAt);
-    startPolling();
-  } catch (error: unknown) {
-    uiStatus.value = 'failed';
-    const message = extractApiErrorMessage(error, '创建签约会话失败');
-    errorMessage.value = message;
-    console.error('[MembershipPureSigningDialog] signing-sessions-pure failed', {
-      message,
-      error,
-    });
-    snackbarStore.showErrorMessage(message);
-  }
+      if (!createRequestGuard.isCurrent(requestGeneration) || !props.open) {
+        await closeStaleSigningSession(session.signingSessionId, workspaceId);
+        return;
+      }
+
+      signingSession.value = session;
+      sessionCreatedAt.value = new Date(session.createdAt);
+      uiStatus.value = 'pending';
+
+      if (isWeiXin()) {
+        window.location.href = session.entrustwebUrl;
+        startCountdown(session.expiresAt);
+        startPolling();
+        return;
+      }
+
+      await nextTick();
+      await generateQRCode(session.entrustwebUrl);
+      startCountdown(session.expiresAt);
+      startPolling();
+    } catch (error: unknown) {
+      if (!createRequestGuard.isCurrent(requestGeneration) || !props.open) {
+        return;
+      }
+      uiStatus.value = 'failed';
+      const message = extractApiErrorMessage(error, '创建签约会话失败');
+      errorMessage.value = message;
+      console.error('[MembershipPureSigningDialog] signing-sessions-pure failed', {
+        message,
+        error,
+      });
+      snackbarStore.showErrorMessage(message);
+    }
+  });
 };
 
 const handleCancel = async () => {
+  invalidateCreateRequest();
   stopPolling();
   stopCountdown();
 
@@ -417,6 +452,7 @@ const handleCancel = async () => {
 };
 
 const handleClose = async () => {
+  invalidateCreateRequest();
   stopPolling();
   stopCountdown();
 
@@ -438,6 +474,7 @@ const handleClose = async () => {
 
 const handleRetry = () => {
   void (async () => {
+    invalidateCreateRequest();
     const sessionId = signingSession.value?.signingSessionId;
     if (sessionId) {
       try {
@@ -458,6 +495,7 @@ watch(
       resetState();
       void createSession();
     } else if (!newOpen) {
+      invalidateCreateRequest();
       stopPolling();
       stopCountdown();
     }
@@ -465,6 +503,7 @@ watch(
 );
 
 onUnmounted(() => {
+  invalidateCreateRequest();
   stopPolling();
   stopCountdown();
 });
