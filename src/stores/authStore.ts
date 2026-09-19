@@ -5,6 +5,7 @@ import type { RechargeRecord } from '@/types/api';
 
 import router from '@/router';
 import { sleep } from '@/utils/common';
+import { singleFlight } from '@/utils/singleFlight';
 
 import {
   requestAuth0Logout,
@@ -29,30 +30,31 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Handle Authing login success
    */
-  const setAuthToken = async (
-    token: string,
-    wechatIdentities?: { openid?: string; unionid?: string }
-  ) => {
-    let response;
-    if (authType === 'authing') {
-      response = await syncAuthingToken(token, wechatIdentities);
-    } else if (authType === 'auth0') {
-      response = await syncAuth0Token(token);
+  const setAuthToken = singleFlight(
+    async (token: string, wechatIdentities?: { openid?: string; unionid?: string }) => {
+      let response;
+      if (authType === 'authing') {
+        response = await syncAuthingToken(token, wechatIdentities);
+      } else if (authType === 'auth0') {
+        response = await syncAuth0Token(token);
+      } else {
+        throw new Error('Unsupported authentication mode');
+      }
+
+      error.value = null;
+      const { newbieCreditsRecord: record, ...rest } = response.data;
+      userStore.updateUserInfo(rest);
+
+      await sleep(100);
+      await workspaceStore.loadWorkspaces();
+
+      // 处理新用户积分奖励记录
+      if (record) {
+        newbieCreditsRecord.value = record;
+        console.log('新用户获得积分奖励:', record);
+      }
     }
-
-    error.value = null;
-    const { newbieCreditsRecord: record, ...rest } = response.data;
-    userStore.updateUserInfo(rest);
-
-    await sleep(100);
-    await workspaceStore.loadWorkspaces();
-
-    // 处理新用户积分奖励记录
-    if (record) {
-      newbieCreditsRecord.value = record;
-      console.log('新用户获得积分奖励:', record);
-    }
-  };
+  );
 
   /**
    * Logout user

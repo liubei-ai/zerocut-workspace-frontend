@@ -18,10 +18,11 @@
 import type { User } from '@authing/guard-vue3';
 
 import { useGuard } from '@authing/guard-vue3';
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/authStore';
+import { subscribeGuardEvent } from '@/utils/guardEvents';
 
 const route = useRoute();
 const router = useRouter();
@@ -39,7 +40,7 @@ function isSafeRedirect(value: unknown): value is string {
 }
 
 // 处理登录成功
-guard.on('login', async (authingUser: User) => {
+const unsubscribeLogin = subscribeGuardEvent(guard, 'login', async (authingUser: User) => {
   try {
     if (authingUser) {
       await authStore.setAuthToken(authingUser.token as string);
@@ -57,10 +58,20 @@ guard.on('login', async (authingUser: User) => {
 });
 
 // 处理登录错误
-guard.on('login-error', error => {
-  console.error('登录失败:', error);
-  error.value = error.message || '登录失败，请重试';
-  showError.value = true;
+const unsubscribeError = subscribeGuardEvent(
+  guard,
+  'login-error',
+  (loginError: { message?: string }) => {
+    console.error('登录失败:', loginError);
+    error.value = loginError.message || '登录失败，请重试';
+    showError.value = true;
+  }
+);
+
+onUnmounted(() => {
+  unsubscribeLogin();
+  unsubscribeError();
+  guard.unmount();
 });
 
 onMounted(() => {
