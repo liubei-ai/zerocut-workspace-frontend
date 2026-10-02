@@ -1,5 +1,10 @@
 export default {
   membershipUpgrade: {
+    amountDue: '今回の支払額',
+    activePeriod: '会員有効期間',
+    creditExpiryDetails: '既存ポイントの有効期限を見る',
+    done: '完了',
+
     upgradeAction: '会員プランをアップグレード',
     previewAction: 'アップグレードをプレビュー',
     previewOnlyNotice:

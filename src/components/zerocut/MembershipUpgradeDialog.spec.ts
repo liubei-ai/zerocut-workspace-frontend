@@ -35,7 +35,7 @@ describe('upgrade confirmation and progress', () => {
   it('shows full cost, independent credits/expiry and requires explicit consent', async () => {
     const w = create({ quote });
     expect(w.text()).toContain('200.00');
-    expect(w.text()).toContain('2100');
+    expect(w.text()).toContain('2,100');
     expect(w.text()).toContain('2026');
     expect(w.get('[data-test=confirm]').attributes('disabled')).toBeDefined();
     await w.get('input[type=checkbox]').setValue(true);

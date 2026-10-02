@@ -1,5 +1,10 @@
 export default {
   membershipUpgrade: {
+    amountDue: '本次应付',
+    activePeriod: '会员有效期',
+    creditExpiryDetails: '查看旧积分到期明细',
+    done: '完成',
+
     upgradeAction: '升级会员',
     previewAction: '升级预览',
     previewOnlyNotice: '当前为本地预览，暂未开放实际升级，不会创建订单或取消续费。',

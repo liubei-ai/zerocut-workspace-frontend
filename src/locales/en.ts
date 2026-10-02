@@ -1,5 +1,10 @@
 export default {
   membershipUpgrade: {
+    amountDue: 'Amount due',
+    activePeriod: 'Membership period',
+    creditExpiryDetails: 'View existing credit expiry',
+    done: 'Done',
+
     upgradeAction: 'Upgrade membership',
     previewAction: 'Preview upgrade',
     previewOnlyNotice:
