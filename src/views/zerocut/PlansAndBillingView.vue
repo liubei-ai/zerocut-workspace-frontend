@@ -14,6 +14,7 @@ import {
 } from '@/api/membershipApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useMembershipStore } from '@/stores/membershipStore';
+import { useMembershipUpgradeStore } from '@/stores/membershipUpgradeStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
@@ -24,6 +25,7 @@ const { t } = useI18n();
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
 
+const upgradeStore = useMembershipUpgradeStore();
 const cancelDialogOpen = ref(false);
 const cancelling = ref(false);
 const cancelReason = ref('');
@@ -63,6 +65,11 @@ const billingModeText = computed(() => {
 
 const statusChip = computed(() => {
   const status = subscription.value?.status;
+  if (
+    subscription.value?.currentPeriodEndAt &&
+    new Date(subscription.value.currentPeriodEndAt) <= new Date()
+  )
+    return { color: 'default', text: t('membershipUpgrade.expiredMembership') };
   if (status === 'active') {
     return { color: 'success', text: t('zerocut.plansAndBilling.status.active') };
   }
@@ -94,7 +101,12 @@ const currentPeriodEndText = computed(() => {
 
 const canCancel = computed(() => {
   if (!subscription.value) return false;
-  return subscription.value.status === 'active' || subscription.value.status === 'past_due';
+  return (
+    subscription.value.autoRenew &&
+    ['active', 'past_due'].includes(subscription.value.status) &&
+    (!subscription.value.currentPeriodEndAt ||
+      new Date(subscription.value.currentPeriodEndAt) > new Date())
+  );
 });
 
 function openCancelDialog() {
@@ -102,7 +114,9 @@ function openCancelDialog() {
   cancelDialogOpen.value = true;
 }
 
+let loadGeneration = 0;
 async function loadData() {
+  const generation = ++loadGeneration;
   if (!workspaceId.value) {
     error.value = '缺少工作空间信息，请刷新页面后重试';
     subscription.value = null;
@@ -116,8 +130,10 @@ async function loadData() {
     const [plansResult, meResult] = await Promise.all([
       getMembershipPlans(),
       getCurrentSubscription(workspaceId.value),
+      upgradeStore.load(workspaceId.value),
     ]);
 
+    if (generation !== loadGeneration) return;
     membershipPlans.value = plansResult ?? [];
     subscription.value = meResult.subscription;
   } catch (e) {
@@ -125,7 +141,7 @@ async function loadData() {
     error.value = err?.message || '加载失败，请稍后重试';
     subscription.value = null;
   } finally {
-    loading.value = false;
+    if (generation === loadGeneration) loading.value = false;
   }
 }
 
@@ -166,6 +182,10 @@ watch(
 
 <template>
   <div>
+    <v-alert v-if="upgradeStore.operation && !upgradeStore.operation.closedAt" type="info"
+      ><router-link to="/membership">{{ t('membershipUpgrade.resume') }}</router-link>
+      <p>{{ t(`membershipUpgrade.states.${upgradeStore.operation.state}`) }}</p></v-alert
+    >
     <ResponsivePageHeader
       :title="t('zerocut.plansAndBilling.title')"
       :subtitle="t('zerocut.plansAndBilling.subtitle')"

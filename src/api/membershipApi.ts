@@ -82,6 +82,11 @@ export type SubscriptionStatus =
   | 'expired';
 
 export interface SubscriptionDetails {
+  availableCreditBatches?: Array<{
+    transactionId: string;
+    remainingCredits: string;
+    expiresAt: string | null;
+  }>;
   subscriptionId: number;
   planCode: string;
   tier: 'basic' | 'standard' | 'premium';

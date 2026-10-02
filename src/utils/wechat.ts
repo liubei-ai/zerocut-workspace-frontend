@@ -19,8 +19,6 @@ type WeixinBridgeErrMsg =
 
 /** 调用微信收银台，自动等待 WeixinJSBridgeReady */
 export function invokeWeixinBridgePay(params: object) {
-  console.log('Invoking WeixinJSBridge with params:', params);
-
   return new Promise<{ err_msg: string }>(resolve => {
     function handleResult(res: { err_msg: string }) {
       resolve(res);

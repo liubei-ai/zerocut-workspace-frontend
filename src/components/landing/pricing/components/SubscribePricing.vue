@@ -27,6 +27,7 @@ export interface SubscriptionPlan {
   isCurrentSubscription?: boolean; // Flag to indicate if this is the current active subscription
   isDisabled?: boolean; // Whether subscribe action is blocked
   disabledReason?: string; // Reason shown when subscribe action is blocked
+  actionLabel?: string; // Optional label for upgrade or preview actions
 }
 
 const { t } = useI18n();
@@ -149,7 +150,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                       :title="plan.disabledReason"
                       @click="onSubscribe(plan)"
                     >
-                      {{ t('zerocut.membership.actions.subscribe') }}
+                      {{ plan.actionLabel ?? t('zerocut.membership.actions.subscribe') }}
                     </v-btn>
                     <div
                       v-if="plan.isDisabled && plan.disabledReason"
@@ -252,7 +253,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                     :title="plan.disabledReason"
                     @click="onSubscribe(plan)"
                   >
-                    {{ t('zerocut.membership.actions.subscribe') }}
+                    {{ plan.actionLabel ?? t('zerocut.membership.actions.subscribe') }}
                   </v-btn>
                   <div
                     v-if="plan.isDisabled && plan.disabledReason"

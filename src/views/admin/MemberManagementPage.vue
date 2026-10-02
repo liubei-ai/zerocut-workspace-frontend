@@ -31,6 +31,7 @@
     >
       {{ error }}
     </v-alert>
+    <MembershipUpgradePanel />
   </v-container>
 </template>
 
@@ -39,6 +40,7 @@ import { computed, ref } from 'vue';
 
 import { type MemberSummary } from '@/api/memberAdminApi';
 import MemberListTable from '@/components/admin/MemberListTable.vue';
+import MembershipUpgradePanel from '@/components/admin/MembershipUpgradePanel.vue';
 import MemberSummaryCards from '@/components/admin/MemberSummaryCards.vue';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { Permission } from '@/constants/permissions';

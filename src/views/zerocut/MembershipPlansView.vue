@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -16,13 +16,66 @@ import MembershipPaymentDialog, {
   OrderInfo,
 } from '@/components/zerocut/MembershipPaymentDialog.vue';
 import MembershipPureSigningDialog from '@/components/zerocut/MembershipPureSigningDialog.vue';
+import MembershipUpgradeDialog from '@/components/zerocut/MembershipUpgradeDialog.vue';
 import SubscriptionSuccessDialog from '@/components/zerocut/SubscriptionSuccessDialog.vue';
 import { useMembershipStore } from '@/stores/membershipStore';
+import { useMembershipUpgradeStore } from '@/stores/membershipUpgradeStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
 
+const upgradeStore = useMembershipUpgradeStore();
+const upgradeOpen = ref(false);
+const selectedUpgradeCode = ref('');
+const upgradeNotice = ref('');
+function upgradeAvailable(code: string) {
+  return (
+    upgradeStore.options?.options.some(
+      option => option.targetPlan.code === code && option.available
+    ) ?? false
+  );
+}
+function upgradeOption(code: string) {
+  return upgradeStore.options?.options.find(option => option.targetPlan.code === code);
+}
+function upgradePreviewAvailable(code: string) {
+  return (
+    upgradeStore.options?.options.some(
+      option => option.targetPlan.code === code && option.previewOnly
+    ) ?? false
+  );
+}
+async function openUpgrade(code: string) {
+  selectedUpgradeCode.value = code;
+  upgradeNotice.value = '';
+  upgradeStore.error = '';
+  upgradeOpen.value = true;
+  if (upgradeStore.operation && !upgradeStore.operation.closedAt) return;
+  await upgradeStore.getQuote(code);
+}
+function showUpgradeNotice(code: string, reasonCode: string) {
+  selectedUpgradeCode.value = code;
+  upgradeStore.closeView();
+  upgradeStore.error = '';
+  upgradeNotice.value = t(`membershipUpgrade.${reasonCode}`);
+  upgradeOpen.value = true;
+}
+async function confirmUpgrade() {
+  if (upgradeStore.operation?.state === 'RECONFIRM_REQUIRED' && upgradeStore.quote) {
+    await upgradeStore.continueUpgrade({ action: 'confirm_quote', quoteId: upgradeStore.quote.id });
+  } else await upgradeStore.confirm();
+}
+function closeUpgrade() {
+  upgradeOpen.value = false;
+  upgradeNotice.value = '';
+  upgradeStore.closeView();
+}
+function requoteUpgrade() {
+  return upgradeStore.getQuote(
+    upgradeStore.operation?.targetPlan.code ?? selectedUpgradeCode.value
+  );
+}
 const loading = ref(false);
 const rawPlans = ref<MembershipPlanDto[]>([]);
 const error = ref<string | null>(null);
@@ -227,6 +280,12 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
   const filtered = rawPlans.value.filter(p => allowedModes.includes(p.purchaseMode));
 
   return filtered.map(plan => {
+    const option = upgradeOption(plan.code);
+    const subscription = membershipStore.subscription;
+    const currentPlan =
+      subscription !== null &&
+      subscription.planCode === plan.code &&
+      membershipStore.isMembershipEffectiveStatus(subscription.status);
     const basePrice = formatPrice(plan, rawPlans.value);
     const discountLabel = getDiscountLabelByUnitPricePer100(plan);
 
@@ -245,12 +304,21 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
       features: formatPlanFeatures(plan),
       productId: plan.code,
       // Mark as current subscription if matches planCode and membership is still effective
-      isCurrentSubscription:
-        membershipStore.subscription !== null &&
-        membershipStore.subscription.planCode === plan.code &&
-        membershipStore.isMembershipEffectiveStatus(membershipStore.subscription.status),
-      isDisabled: isPurchaseBlocked.value,
-      disabledReason: purchaseBlockedReason.value ?? undefined,
+      isCurrentSubscription: currentPlan,
+      isDisabled:
+        hasEffectiveMembership.value && option !== undefined && option.classification !== 'allowed',
+      actionLabel: upgradeAvailable(plan.code)
+        ? t('membershipUpgrade.upgradeAction')
+        : upgradePreviewAvailable(plan.code)
+          ? t('membershipUpgrade.previewAction')
+          : hasEffectiveMembership.value && !currentPlan
+            ? t('membershipUpgrade.upgradeAction')
+            : undefined,
+      disabledReason: hasEffectiveMembership.value
+        ? option?.reasonCode
+          ? t(`membershipUpgrade.${option.reasonCode}`)
+          : undefined
+        : undefined,
     };
   });
 });
@@ -272,7 +340,7 @@ const statusBarState = computed<'none' | 'expired' | 'active'>(() => {
 
 const showCanceledNotice = computed(() => membershipStore.subscription?.status === 'canceled');
 
-const isPurchaseBlocked = computed(() => {
+const hasEffectiveMembership = computed(() => {
   const sub = membershipStore.subscription;
   if (!sub) return false;
   return sub.status !== 'expired';
@@ -286,16 +354,6 @@ const formattedExpiryDate = computed(() => {
     month: '2-digit',
     day: '2-digit',
   });
-});
-
-const purchaseBlockedReason = computed(() => {
-  if (!isPurchaseBlocked.value) return null;
-  if (formattedExpiryDate.value) {
-    return t('zerocut.membership.actions.purchaseBlockedUntil', {
-      date: formattedExpiryDate.value,
-    });
-  }
-  return t('zerocut.membership.actions.purchaseBlocked');
 });
 
 const statusBarClass = computed(() => ({
@@ -321,7 +379,13 @@ async function fetchMembershipPlans() {
     loading.value = true;
     error.value = null;
 
-    const [plans] = await Promise.all([getMembershipPlans(), membershipStore.refresh()]);
+    const [plans] = await Promise.all([
+      getMembershipPlans(),
+      membershipStore.refresh(),
+      workspaceStore.currentWorkspaceId
+        ? upgradeStore.load(workspaceStore.currentWorkspaceId)
+        : Promise.resolve(),
+    ]);
 
     rawPlans.value = plans ?? [];
   } catch (e: unknown) {
@@ -348,10 +412,26 @@ function handleSubscribe(productId: string, planName: string) {
     return;
   }
 
-  if (isPurchaseBlocked.value) {
-    snackbarStore.showWarningMessage(
-      purchaseBlockedReason.value || t('zerocut.membership.actions.purchaseBlocked')
-    );
+  if (upgradeStore.operation && !upgradeStore.operation.closedAt) {
+    upgradeOpen.value = true;
+    return;
+  }
+  if (upgradeAvailable(productId)) {
+    void openUpgrade(productId);
+    return;
+  }
+  if (upgradePreviewAvailable(productId)) {
+    showUpgradeNotice(productId, 'previewOnlyNotice');
+    return;
+  }
+  if (hasEffectiveMembership.value) {
+    const option = upgradeOption(productId);
+    const reasonCode = option?.reasonCode ?? 'UPGRADE_DISABLED';
+    if (!option || option.classification === 'allowed') {
+      showUpgradeNotice(productId, reasonCode);
+    } else {
+      snackbarStore.showWarningMessage(t(`membershipUpgrade.${reasonCode}`));
+    }
     return;
   }
 
@@ -449,10 +529,25 @@ function handleSubscriptionSuccessClose() {
 }
 
 onMounted(fetchMembershipPlans);
+watch(
+  () => workspaceStore.currentWorkspaceId,
+  id => {
+    upgradeOpen.value = false;
+    upgradeStore.switchWorkspace(id ?? '');
+    if (id) void fetchMembershipPlans();
+  }
+);
+onBeforeUnmount(() => upgradeStore.stop());
 </script>
 
 <template>
   <v-container fluid class="pa-0">
+    <v-btn
+      v-if="upgradeStore.operation && !upgradeStore.operation.closedAt"
+      class="mb-4"
+      @click="upgradeOpen = true"
+      >{{ t('membershipUpgrade.resume') }}</v-btn
+    >
     <!-- Membership Status Bar -->
     <v-card class="membership-status-bar mb-4" :class="statusBarClass" variant="flat">
       <v-card-text class="membership-status-content px-5 py-3">
@@ -650,6 +745,22 @@ onMounted(fetchMembershipPlans);
       </div>
     </v-card>
 
+    <MembershipUpgradeDialog
+      :open="upgradeOpen"
+      :quote="upgradeStore.quote"
+      :operation="upgradeStore.operation"
+      :busy="upgradeStore.busy"
+      :error="upgradeStore.error"
+      :notice="upgradeNotice"
+      :target-plan-code="selectedUpgradeCode"
+      @close="closeUpgrade"
+      @confirm="confirmUpgrade"
+      @prepare="upgradeStore.continueUpgrade({ action: 'prepare' })"
+      @retry="upgradeStore.continueUpgrade({ action: 'retry' })"
+      @requote="requoteUpgrade"
+      @abandon="upgradeStore.abandon()"
+      @paid-return="upgradeStore.poll()"
+    />
     <MembershipPaymentDialog
       v-model:open="membershipPaymentOpen"
       :membership-plan="selectedPlanForPayment"
