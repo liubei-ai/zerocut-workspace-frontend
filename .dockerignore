@@ -1,2 +1,15 @@
 node_modules
 npm-debug.log
+
+.git/
+Dockerfile*
+.dockerignore
+dist/
+coverage/
+*.log*
+.env*
+# Existing public build-mode configuration remains part of frontend builds.
+!.env.pro
+!.env.railway
+*.tmp
+.DS_Store

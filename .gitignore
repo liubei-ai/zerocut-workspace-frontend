@@ -31,3 +31,11 @@ yarn.lock
 
 # Local Certificate
 cert
+# Local configuration and generated artifacts
+.env*
+!.env.template
+build/
+coverage/
+*.log
+*.tmp
+Thumbs.db
