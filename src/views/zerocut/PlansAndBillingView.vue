@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -14,9 +14,14 @@ import {
 } from '@/api/membershipApi';
 import ResponsivePageHeader from '@/components/common/ResponsivePageHeader.vue';
 import { useMembershipStore } from '@/stores/membershipStore';
+import { useMembershipUpgradeStore } from '@/stores/membershipUpgradeStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
+import {
+  canCancelMembershipRenewal,
+  hasMembershipEntitlement,
+} from '@/utils/membershipEntitlement';
 
 const snackbarStore = useSnackbarStore();
 const membershipStore = useMembershipStore();
@@ -24,6 +29,7 @@ const { t } = useI18n();
 const router = useRouter();
 const workspaceStore = useWorkspaceStore();
 
+const upgradeStore = useMembershipUpgradeStore();
 const cancelDialogOpen = ref(false);
 const cancelling = ref(false);
 const cancelReason = ref('');
@@ -52,6 +58,9 @@ const planName = computed(() => {
 
 const billingModeText = computed(() => {
   if (!subscription.value) return '';
+  if (subscription.value.purchaseMode === 'one_time_year') {
+    return t('zerocut.membership.priceList.headers.oneTimeYear');
+  }
   if (subscription.value.purchaseMode === 'auto_yearly') {
     return t('zerocut.membership.priceList.headers.autoYearly');
   }
@@ -63,6 +72,8 @@ const billingModeText = computed(() => {
 
 const statusChip = computed(() => {
   const status = subscription.value?.status;
+  if (subscription.value && !hasMembershipEntitlement(subscription.value))
+    return { color: 'default', text: t('membershipUpgrade.entitlementExpired') };
   if (status === 'active') {
     return { color: 'success', text: t('zerocut.plansAndBilling.status.active') };
   }
@@ -92,9 +103,22 @@ const currentPeriodEndText = computed(() => {
   return formatDate(subscription.value.currentPeriodEndAt);
 });
 
-const canCancel = computed(() => {
-  if (!subscription.value) return false;
-  return subscription.value.status === 'active' || subscription.value.status === 'past_due';
+const entitlementEndText = computed(() => {
+  const current = subscription.value;
+  if (!current) return '-';
+  const yearly = ['auto_yearly', 'one_time_year'].includes(current.purchaseMode);
+  const end =
+    current.entitlementEndsAt ?? (yearly ? current.termEndAt : current.currentPeriodEndAt);
+  return end ? formatDate(end) : '-';
+});
+
+const canCancel = computed(() => canCancelMembershipRenewal(subscription.value));
+const renewalNotice = computed(() => {
+  if (!subscription.value?.autoRenew) return null;
+  const lifecycle = subscription.value.lifecycleStatus ?? subscription.value.status;
+  return lifecycle === 'past_due'
+    ? t('membershipUpgrade.renewalRetrying')
+    : t('membershipUpgrade.renewalAuthorized');
 });
 
 function openCancelDialog() {
@@ -102,7 +126,9 @@ function openCancelDialog() {
   cancelDialogOpen.value = true;
 }
 
+let loadGeneration = 0;
 async function loadData() {
+  const generation = ++loadGeneration;
   if (!workspaceId.value) {
     error.value = '缺少工作空间信息，请刷新页面后重试';
     subscription.value = null;
@@ -116,8 +142,10 @@ async function loadData() {
     const [plansResult, meResult] = await Promise.all([
       getMembershipPlans(),
       getCurrentSubscription(workspaceId.value),
+      upgradeStore.load(workspaceId.value),
     ]);
 
+    if (generation !== loadGeneration) return;
     membershipPlans.value = plansResult ?? [];
     subscription.value = meResult.subscription;
   } catch (e) {
@@ -125,26 +153,35 @@ async function loadData() {
     error.value = err?.message || '加载失败，请稍后重试';
     subscription.value = null;
   } finally {
-    loading.value = false;
+    if (generation === loadGeneration) loading.value = false;
   }
 }
 
 async function confirmCancel() {
   if (!subscription.value || !workspaceId.value) return;
 
+  const cancelWorkspaceId = workspaceId.value;
+  const cancelSubscriptionId = subscription.value.subscriptionId;
+  const generation = loadGeneration;
+
   try {
     cancelling.value = true;
     const updated = await cancelSubscription({
-      workspaceId: workspaceId.value,
-      subscriptionId: subscription.value.subscriptionId,
+      workspaceId: cancelWorkspaceId,
+      subscriptionId: cancelSubscriptionId,
       reason: cancelReason.value.trim() ? cancelReason.value.trim() : undefined,
     });
 
+    if (workspaceId.value !== cancelWorkspaceId || generation !== loadGeneration) return;
     subscription.value = updated;
-    membershipStore.refresh();
+    void membershipStore.refresh().catch(() => {
+      if (workspaceId.value === cancelWorkspaceId && generation === loadGeneration)
+        snackbarStore.showErrorMessage(t('membershipUpgrade.membershipSyncFailed'));
+    });
     snackbarStore.showSuccessMessage(t('zerocut.plansAndBilling.messages.cancelSuccess'));
     cancelDialogOpen.value = false;
   } catch (e) {
+    if (workspaceId.value !== cancelWorkspaceId || generation !== loadGeneration) return;
     const err = e as ApiError;
     snackbarStore.showErrorMessage(err?.message || '取消失败，请稍后重试');
   } finally {
@@ -158,14 +195,25 @@ onMounted(() => {
 
 watch(
   () => workspaceId.value,
-  () => {
+  id => {
+    cancelDialogOpen.value = false;
+    upgradeStore.switchWorkspace(id ?? '');
     loadData();
-  }
+  },
+  { flush: 'sync' }
 );
+onBeforeUnmount(() => {
+  loadGeneration++;
+  upgradeStore.stop();
+});
 </script>
 
 <template>
   <div>
+    <v-alert v-if="upgradeStore.operation && !upgradeStore.operation.closedAt" type="info"
+      ><router-link to="/membership">{{ t('membershipUpgrade.resume') }}</router-link>
+      <p>{{ t(`membershipUpgrade.states.${upgradeStore.operation.state}`) }}</p></v-alert
+    >
     <ResponsivePageHeader
       :title="t('zerocut.plansAndBilling.title')"
       :subtitle="t('zerocut.plansAndBilling.subtitle')"
@@ -183,6 +231,9 @@ watch(
             </v-chip>
           </v-card-title>
           <v-card-text>
+            <v-alert v-if="renewalNotice" variant="tonal" type="warning" class="mb-4">{{
+              renewalNotice
+            }}</v-alert>
             <v-alert v-if="workspaceName" variant="tonal" type="info" class="mb-4">
               <div class="text-body-2">当前工作空间：{{ workspaceName }}</div>
             </v-alert>
@@ -247,6 +298,12 @@ watch(
                   <span class="font-weight-medium">{{ currentPeriodEndText }}</span>
                 </v-list-item-title>
               </v-list-item>
+              <v-list-item class="px-0">
+                <v-list-item-title class="text-body-2">
+                  {{ t('membershipUpgrade.entitlementEndsAt') }}：
+                  <span class="font-weight-medium">{{ entitlementEndText }}</span>
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-card-text>
         </v-card>
@@ -308,7 +365,7 @@ watch(
             v-if="subscription?.currentPeriodEndAt"
             class="text-body-2 text-medium-emphasis mt-2"
           >
-            取消后仍可使用至：{{ currentPeriodEndText }}
+            {{ t('membershipUpgrade.entitlementEndsAt') }}：{{ entitlementEndText }}
           </div>
         </v-card-text>
         <v-card-actions>

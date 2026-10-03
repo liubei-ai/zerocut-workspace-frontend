@@ -11,6 +11,7 @@ import vuetify from 'vite-plugin-vuetify';
 
 // https://vitejs.dev/config/
 export default {
+  test: { server: { deps: { inline: ['vuetify'] } } },
   staged: {
     '*.{js,mjs,cjs,ts,vue}': ['vp lint --fix --quiet', 'vp fmt'],
     '*.{scss,css,md,json}': ['vp fmt'],

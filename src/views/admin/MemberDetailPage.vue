@@ -135,6 +135,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <MembershipUpgradePanel v-if="detail" :account-id="String(detail.accountId)" />
   </v-container>
 </template>
 
@@ -152,6 +153,7 @@ import {
 import CreditGrantsSection from '@/components/admin/CreditGrantsSection.vue';
 import CreditPeriodsSection from '@/components/admin/CreditPeriodsSection.vue';
 import LifecycleDatesSection from '@/components/admin/LifecycleDatesSection.vue';
+import MembershipUpgradePanel from '@/components/admin/MembershipUpgradePanel.vue';
 import OrderPaymentCheckDialog from '@/components/admin/OrderPaymentCheckDialog.vue';
 import PaymentHistorySection from '@/components/admin/PaymentHistorySection.vue';
 import SubscriptionOverviewSection from '@/components/admin/SubscriptionOverviewSection.vue';
