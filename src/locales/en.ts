@@ -1,5 +1,21 @@
 export default {
   membershipUpgrade: {
+    queueDescription: 'Review upgrade status, verify payments and follow up on order issues.',
+    queueRecords: 'Upgrade records',
+    queueLoading: 'Loading upgrade records…',
+    queueEmpty: 'No upgrades match these filters.',
+    selectRecord: 'Select an upgrade record',
+    selectRecordHint:
+      'Review payment and delivery status, then record progress and supporting evidence.',
+    account: 'Account',
+    operationId: 'Upgrade ID',
+    deliveryStatus: 'Membership & credit delivery',
+    renewalStatus: 'Renewal arrangement',
+    processingDetails: 'Handling & follow-up',
+    orderHandling: 'Order handling',
+    chooseOrder: 'Choose a related order',
+    notificationRecord: 'Notification record',
+    auditEmpty: 'No audit events yet.',
     unresolvedOnly: 'Unresolved orders only',
     unresolvedOrders: 'Unresolved orders',
     renewalIssues: 'Renewal order issues',

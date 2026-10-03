@@ -30,3 +30,15 @@
 | ![会员同步失败](images/membership-upgrade-sync-retry.png) | ![会员同步成功](images/membership-upgrade-sync-completed.png) |
 
 管理端显示按订单关联的续费问题，支持未解决筛选、原订单对账以及带凭证的线下处理结果。服务器校验订单所属升级与账户，原升级已关闭也可处理续费问题；本次没有新增自动退款。
+
+## 处理队列样式优化
+
+处理队列采用列表与详情分栏，使用本地化套餐名称和状态标签。付款、交付、续费与处理期限集中展示；处理原因、用户进度、订单结果和实际通知证据分组排列，审计记录按时间线展示。窄屏按容器宽度切换为单栏，控件支持键盘焦点及暗色主题。
+
+验证：处理面板现有 3 项权限、筛选和幂等操作测试通过；`vp check` 0 errors / 103 既存 warnings；生产构建通过。独立 Chromium 使用示例数据检查 1440 px 桌面、390 px 手机、明暗主题及中英日文，横向溢出与页面错误均为 0；筛选、选中记录和线下结果字段切换正常，浏览器验证未提交管理动作。
+
+- [桌面处理队列](membership-upgrade/admin-queue-desktop.png)
+- [桌面暗色主题](membership-upgrade/admin-queue-dark.png)
+- [手机队列](membership-upgrade/admin-queue-mobile.png)
+- [手机暗色主题](membership-upgrade/admin-queue-mobile-dark.png)
+- [手机处理详情](membership-upgrade/admin-queue-mobile-detail.png)
