@@ -42,3 +42,11 @@
 - [手机队列](membership-upgrade/admin-queue-mobile.png)
 - [手机暗色主题](membership-upgrade/admin-queue-mobile-dark.png)
 - [手机处理详情](membership-upgrade/admin-queue-mobile-detail.png)
+
+## 年付升级入口修正
+
+继续不支持有效月付会员升级到年付。年付卡片显示禁用的“暂不支持升级”按钮与原因；即使后端缺少年付选项或错误返回可升级，页面及点击处理函数也阻止进入报价、付款或签约。无有效会员或会员已到期时，保留普通年付购买入口。补齐中英日文按钮文案，后端规则保持不变。
+
+验证：会员页 19 项 Vitest 通过，包含两种月付来源、两种年付目标、缺少或错误的升级选项及到期后的普通购买；后端现有资格规则 38 项 Jest 通过。`vp check` 0 errors / 103 既存 warnings，生产构建通过。隔离 Chromium 挂载实际会员页面，分别验证按月支付和连续包月账户的三个年付按钮均禁用，报价调用、写入请求及页面错误均为 0；未发起真实付款。
+
+- [年付升级禁用状态](membership-upgrade/annual-upgrade-unavailable.png)

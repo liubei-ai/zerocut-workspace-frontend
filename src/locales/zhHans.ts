@@ -1,5 +1,6 @@
 export default {
   membershipUpgrade: {
+    upgradeUnavailable: '暂不支持升级',
     queueDescription: '查看升级状态、核对付款并跟进异常订单',
     queueRecords: '升级记录',
     queueLoading: '正在加载升级记录…',

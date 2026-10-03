@@ -1,5 +1,6 @@
 export default {
   membershipUpgrade: {
+    upgradeUnavailable: 'Upgrade unavailable',
     queueDescription: 'Review upgrade status, verify payments and follow up on order issues.',
     queueRecords: 'Upgrade records',
     queueLoading: 'Loading upgrade records…',

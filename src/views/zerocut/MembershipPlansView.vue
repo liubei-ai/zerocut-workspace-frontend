@@ -29,6 +29,13 @@ const upgradeStore = useMembershipUpgradeStore();
 const upgradeOpen = ref(false);
 const selectedUpgradeCode = ref('');
 const upgradeNotice = ref('');
+function annualUpgradeBlocked(plan: MembershipPlanDto) {
+  return (
+    hasEffectiveMembership.value &&
+    membershipStore.subscription?.planCode !== plan.code &&
+    (plan.purchaseMode === 'auto_yearly' || plan.purchaseMode === 'one_time_year')
+  );
+}
 function upgradeAvailable(code: string) {
   return (
     upgradeStore.options?.options.some(
@@ -281,6 +288,7 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
 
   return filtered.map(plan => {
     const option = upgradeOption(plan.code);
+    const annualBlocked = annualUpgradeBlocked(plan);
     const subscription = membershipStore.subscription;
     const currentPlan =
       subscription !== null &&
@@ -306,19 +314,26 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
       // Mark as current subscription if matches planCode and membership is still effective
       isCurrentSubscription: currentPlan,
       isDisabled:
-        hasEffectiveMembership.value && option !== undefined && option.classification !== 'allowed',
-      actionLabel: upgradeAvailable(plan.code)
-        ? t('membershipUpgrade.upgradeAction')
-        : upgradePreviewAvailable(plan.code)
-          ? t('membershipUpgrade.previewAction')
-          : hasEffectiveMembership.value && !currentPlan
-            ? t('membershipUpgrade.upgradeAction')
-            : undefined,
-      disabledReason: hasEffectiveMembership.value
-        ? option?.reasonCode
-          ? t(`membershipUpgrade.${option.reasonCode}`)
-          : undefined
-        : undefined,
+        annualBlocked ||
+        (hasEffectiveMembership.value &&
+          option !== undefined &&
+          option.classification !== 'allowed'),
+      actionLabel: annualBlocked
+        ? t('membershipUpgrade.upgradeUnavailable')
+        : upgradeAvailable(plan.code)
+          ? t('membershipUpgrade.upgradeAction')
+          : upgradePreviewAvailable(plan.code)
+            ? t('membershipUpgrade.previewAction')
+            : hasEffectiveMembership.value && !currentPlan
+              ? t('membershipUpgrade.upgradeAction')
+              : undefined,
+      disabledReason: annualBlocked
+        ? t('membershipUpgrade.ANNUAL_NOT_SUPPORTED')
+        : hasEffectiveMembership.value
+          ? option?.reasonCode
+            ? t(`membershipUpgrade.${option.reasonCode}`)
+            : undefined
+          : undefined,
     };
   });
 });
@@ -412,6 +427,10 @@ function handleSubscribe(productId: string, planName: string) {
     return;
   }
 
+  if (annualUpgradeBlocked(plan)) {
+    snackbarStore.showWarningMessage(t('membershipUpgrade.ANNUAL_NOT_SUPPORTED'));
+    return;
+  }
   if (upgradeStore.operation && !upgradeStore.operation.closedAt) {
     upgradeOpen.value = true;
     return;

@@ -1,5 +1,6 @@
 export default {
   membershipUpgrade: {
+    upgradeUnavailable: 'アップグレード対象外',
     queueDescription: 'アップグレード状況と支払いを確認し、注文の問題に対応します。',
     queueRecords: 'アップグレード履歴',
     queueLoading: '履歴を読み込み中…',
