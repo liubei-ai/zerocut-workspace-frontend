@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -174,10 +174,13 @@ onMounted(() => {
 
 watch(
   () => workspaceId.value,
-  () => {
+  id => {
+    upgradeStore.switchWorkspace(id ?? '');
     loadData();
-  }
+  },
+  { flush: 'sync' }
 );
+onBeforeUnmount(() => upgradeStore.stop());
 </script>
 
 <template>

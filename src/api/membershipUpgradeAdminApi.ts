@@ -7,7 +7,15 @@ import type {
 import client from './api2client';
 const base = '/admin/subscription-upgrades';
 export const membershipUpgradeAdminApi = {
-  async list(params: { cursor?: string; limit?: number; state?: string; accountId?: string } = {}) {
+  async list(
+    params: {
+      cursor?: string;
+      limit?: number;
+      state?: string;
+      accountId?: string;
+      hasUnresolvedIssue?: string;
+    } = {}
+  ) {
     return (await client.get<UpgradeAdminList>(base, { params })).data;
   },
   async detail(id: string, auditCursor?: string) {

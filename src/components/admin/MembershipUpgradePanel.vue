@@ -23,6 +23,10 @@ const items = ref<UpgradeAdminUpgradeSummary[]>([]),
   cursor = ref<string | null>(null),
   busy = ref(false),
   error = ref('');
+const unresolvedOnly = ref(false);
+const selectedOrder = ref('');
+const offlineResolution = ref<UpgradeAdminAction['resolution']>();
+const resolutionEvidence = ref('');
 const state = ref<UpgradeUpgrade['state'] | ''>('');
 const states: UpgradeUpgrade['state'][] = [
   'WAITING_SOURCE_PAYMENT',
@@ -42,6 +46,7 @@ const states: UpgradeUpgrade['state'][] = [
 ];
 const filters = () => ({
   ...(props.accountId ? { accountId: props.accountId } : {}),
+  ...(unresolvedOnly.value ? { hasUnresolvedIssue: 'true' } : {}),
   ...(state.value ? { state: state.value } : {}),
 });
 const reason = ref(''),
@@ -87,7 +92,12 @@ async function open(id: string) {
   const v = generation;
   await run(async () => {
     const r = await api.detail(id);
-    if (v === generation) detail.value = r;
+    if (v === generation) {
+      detail.value = r;
+      selectedOrder.value = '';
+      offlineResolution.value = undefined;
+      resolutionEvidence.value = '';
+    }
   });
 }
 async function moreAudit() {
@@ -110,6 +120,10 @@ async function act(action: UpgradeAdminAction['action']) {
     const body: UpgradeAdminAction = {
       action,
       reason: reason.value,
+      ...(selectedOrder.value ? { orderId: selectedOrder.value } : {}),
+      ...(action === 'record_progress' && offlineResolution.value
+        ? { resolution: offlineResolution.value, resolutionEvidence: resolutionEvidence.value }
+        : {}),
       ...(progress.value ? { userVisibleProgress: progress.value } : {}),
       ...(channel.value ? { notificationChannel: channel.value } : {}),
       ...(evidence.value ? { notificationEvidence: evidence.value } : {}),
@@ -129,12 +143,15 @@ async function act(action: UpgradeAdminAction['action']) {
   });
 }
 watch(
-  () => [visible.value, props.accountId, state.value],
+  () => [visible.value, props.accountId, state.value, unresolvedOnly.value],
   () => {
     generation++;
     busy.value = false;
     items.value = [];
     detail.value = null;
+    selectedOrder.value = '';
+    offlineResolution.value = undefined;
+    resolutionEvidence.value = '';
     if (visible.value) void load();
   },
   { immediate: true }
@@ -152,6 +169,11 @@ watch(
         </option>
       </select></label
     >
+    <label
+      ><input v-model="unresolvedOnly" type="checkbox" />{{
+        t('membershipUpgrade.unresolvedOnly')
+      }}</label
+    >
     <button :disabled="busy" @click="load()">{{ t('membershipUpgrade.refresh') }}</button>
     <p v-if="error" role="alert">{{ error }}</p>
     <ul>
@@ -160,6 +182,9 @@ watch(
           {{ item.accountId }} · {{ item.upgrade.targetPlan.code }} ·
           {{ t(`membershipUpgrade.states.${item.upgrade.state}`) }}
         </button>
+        <span v-if="item.unresolvedOrderCount">
+          · {{ t('membershipUpgrade.unresolvedOrders') }}: {{ item.unresolvedOrderCount }}</span
+        >
         · {{ t('membershipUpgrade.owner') }}: {{ item.caseOwner?.displayName ?? '—' }} ·
         {{ date(item.upgrade.support.userUpdateDueAt) }}
       </li>
@@ -191,6 +216,17 @@ watch(
         <dt>{{ t('membershipUpgrade.deadline') }}</dt>
         <dd>{{ date(detail.upgrade.support.userUpdateDueAt) }}</dd>
       </dl>
+      <h4 v-if="detail.renewalIssues?.length">{{ t('membershipUpgrade.renewalIssues') }}</h4>
+      <ul>
+        <li v-for="issue in detail.renewalIssues ?? []" :key="issue.orderId">
+          {{ issue.orderNo }} · {{ date(issue.periodStartAt) }} — {{ date(issue.periodEndAt) }} ·
+          {{ issue.errorCode }} · {{ t(`membershipUpgrade.issueStates.${issue.state}`) }}
+          <p>
+            {{ t('membershipUpgrade.manualDeadline') }}: {{ date(issue.manualReviewAt) }} ·
+            {{ t('membershipUpgrade.deadline') }}: {{ date(issue.userUpdateDueAt) }}
+          </p>
+        </li>
+      </ul>
       <form v-if="user.hasPermission(Permission.WALLET_GRANT)" @submit.prevent>
         <label
           >{{ t('membershipUpgrade.reason')
@@ -198,6 +234,33 @@ watch(
         ><label
           >{{ t('membershipUpgrade.progress') }}<textarea v-model="progress" maxlength="2000" />
         </label>
+        <label v-if="detail.renewalIssues?.length"
+          >{{ t('membershipUpgrade.relatedOrder') }}
+          <select v-model="selectedOrder">
+            <option value="">—</option>
+            <option
+              v-for="issue in detail.renewalIssues"
+              :key="issue.orderId"
+              :value="issue.orderId"
+            >
+              {{ issue.orderNo }}
+            </option>
+          </select>
+        </label>
+        <label v-if="selectedOrder"
+          >{{ t('membershipUpgrade.offlineResolution')
+          }}<select v-model="offlineResolution">
+            <option :value="undefined">—</option>
+            <option value="compensated_offline">
+              {{ t('membershipUpgrade.compensatedOffline') }}
+            </option>
+            <option value="refunded_offline">{{ t('membershipUpgrade.refundedOffline') }}</option>
+          </select></label
+        >
+        <label v-if="selectedOrder && offlineResolution"
+          >{{ t('membershipUpgrade.resolutionEvidence')
+          }}<input v-model="resolutionEvidence" maxlength="500"
+        /></label>
         <p>{{ t('membershipUpgrade.notificationHint') }}</p>
         <label>{{ t('membershipUpgrade.channel') }}<input v-model="channel" maxlength="80" /></label
         ><label
@@ -209,6 +272,10 @@ watch(
           :key="action"
           :disabled="
             busy ||
+            (action === 'reconcile_order' && !selectedOrder) ||
+            (action === 'record_progress' &&
+              Boolean(offlineResolution) &&
+              (!selectedOrder || !resolutionEvidence.trim())) ||
             !reason.trim() ||
             Boolean(channel) !== Boolean(evidence) ||
             (Boolean(channel) && !progress)

@@ -144,4 +144,66 @@ describe('membership upgrade session recovery', () => {
     expect(s.terminal).toBe(true);
     s.stop();
   });
+  it('retries rights synchronization after terminal completion without making payment requests', async () => {
+    const completed = {
+      id: 'op',
+      version: 1,
+      state: 'COMPLETED',
+      fulfillment: { state: 'committed' },
+      renewal: { state: 'ready' },
+      nextAction: { type: 'NONE' },
+      closedAt: '2026-10-03T00:00:00Z',
+    };
+    vi.mocked(membershipUpgradeApi.active).mockResolvedValue(completed as never);
+    mocks.refresh.mockRejectedValueOnce(new Error('offline')).mockResolvedValue(undefined);
+    const s = useMembershipUpgradeStore();
+    await s.load('workspace');
+    expect(s.terminal).toBe(true);
+    expect(s.benefitsState).toBe('failed');
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(mocks.refresh).toHaveBeenCalledTimes(2);
+    expect(s.benefitsState).toBe('synced');
+    expect(membershipUpgradeApi.create).not.toHaveBeenCalled();
+    expect(membershipUpgradeApi.continue).not.toHaveBeenCalled();
+    s.stop();
+  });
+  it('cancels synchronization retry when stopped or switched to another workspace', async () => {
+    const completed = {
+      id: 'op',
+      version: 1,
+      state: 'COMPLETED',
+      fulfillment: { state: 'committed' },
+      renewal: { state: 'ready' },
+      nextAction: { type: 'NONE' },
+      closedAt: '2026-10-03T00:00:00Z',
+    };
+    vi.mocked(membershipUpgradeApi.active).mockResolvedValue(completed as never);
+    mocks.refresh.mockRejectedValueOnce(new Error('offline'));
+    const s = useMembershipUpgradeStore();
+    await s.load('workspace');
+    s.switchWorkspace('next');
+    await vi.advanceTimersByTimeAsync(30000);
+    expect(mocks.refresh).toHaveBeenCalledTimes(1);
+    expect(s.operation).toBeNull();
+    s.stop();
+  });
+  it('manual synchronization retries only membership data', async () => {
+    vi.mocked(membershipUpgradeApi.active).mockResolvedValue({
+      id: 'op',
+      version: 1,
+      state: 'COMPLETED',
+      fulfillment: { state: 'committed' },
+      renewal: { state: 'ready' },
+      nextAction: { type: 'NONE' },
+      closedAt: '2026-10-03T00:00:00Z',
+    } as never);
+    mocks.refresh.mockRejectedValueOnce(new Error('offline')).mockResolvedValue(undefined);
+    const s = useMembershipUpgradeStore();
+    await s.load('workspace');
+    await s.syncBenefits();
+    await vi.advanceTimersByTimeAsync(30000);
+    expect(mocks.refresh).toHaveBeenCalledTimes(2);
+    expect(membershipUpgradeApi.continue).not.toHaveBeenCalled();
+    s.stop();
+  });
 });

@@ -1,5 +1,20 @@
 export default {
   membershipUpgrade: {
+    unresolvedOnly: '未解決の注文のみ',
+    unresolvedOrders: '未解決の注文',
+    renewalIssues: '更新注文の問題',
+    relatedOrder: '関連注文',
+    offlineResolution: 'オフライン処理結果',
+    compensatedOffline: '補償済み',
+    refundedOffline: '返金済み',
+    resolutionEvidence: '処理証跡',
+    reconcile_order: 'この注文を再確認',
+    issueStates: { pending: '処理待ち', review: '要確認', resolved: '解決済み' },
+    benefitsSync: {
+      syncing: 'アップグレードが完了しました。会員情報を同期しています…',
+      failed: 'アップグレードが完了しました。会員情報の同期を自動で再試行します。',
+      retry: '再同期',
+    },
     amountDue: '今回の支払額',
     activePeriod: '会員有効期間',
     creditExpiryDetails: '既存ポイントの有効期限を見る',

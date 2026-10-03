@@ -12,6 +12,7 @@ const props = defineProps<{
   operation?: UpgradeUpgrade | null;
   busy?: boolean;
   error?: string;
+  benefitsState?: 'idle' | 'syncing' | 'failed' | 'synced';
   notice?: string;
   targetPlanCode?: string;
 }>();
@@ -23,6 +24,7 @@ const emit = defineEmits<{
   requote: [];
   abandon: [];
   paidReturn: [];
+  syncBenefits: [];
 }>();
 const { t, locale } = useI18n();
 const consent = ref(false),
@@ -192,6 +194,20 @@ function keydown(event: KeyboardEvent) {
         </button>
       </header>
       <div class="upgrade-body">
+        <div
+          v-if="
+            operation?.fulfillment.state === 'committed' &&
+            ['syncing', 'failed'].includes(benefitsState ?? '')
+          "
+          class="upgrade-alert"
+          role="status"
+          data-test="benefits-sync"
+        >
+          <p>{{ t(`membershipUpgrade.benefitsSync.${benefitsState}`) }}</p>
+          <button v-if="benefitsState === 'failed'" type="button" @click="emit('syncBenefits')">
+            {{ t('membershipUpgrade.benefitsSync.retry') }}
+          </button>
+        </div>
         <p v-if="error" class="upgrade-alert is-error" role="alert">{{ error }}</p>
         <div v-if="!quote && !operation" class="upgrade-empty">
           <p v-if="targetPlanCode" class="upgrade-eyebrow">

@@ -535,7 +535,8 @@ watch(
     upgradeOpen.value = false;
     upgradeStore.switchWorkspace(id ?? '');
     if (id) void fetchMembershipPlans();
-  }
+  },
+  { flush: 'sync' }
 );
 onBeforeUnmount(() => upgradeStore.stop());
 </script>
@@ -751,6 +752,8 @@ onBeforeUnmount(() => upgradeStore.stop());
       :operation="upgradeStore.operation"
       :busy="upgradeStore.busy"
       :error="upgradeStore.error"
+      :benefits-state="upgradeStore.benefitsState"
+      @sync-benefits="upgradeStore.syncBenefits()"
       :notice="upgradeNotice"
       :target-plan-code="selectedUpgradeCode"
       @close="closeUpgrade"

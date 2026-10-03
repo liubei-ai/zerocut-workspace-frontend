@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 import { getWalletInfo, type WalletInfo } from '@/api/walletApi';
@@ -11,6 +11,22 @@ export const useMembershipStore = defineStore('membership', () => {
   const walletInfo = ref<WalletInfo | null>(null);
   const loading = ref(false);
   const initialized = ref(false);
+  const workspaceStore = useWorkspaceStore();
+  let generation = 0;
+  let inFlight: Promise<void> | undefined;
+  watch(
+    () => workspaceStore.currentWorkspaceId,
+    () => {
+      generation++;
+      inFlight = undefined;
+      subscription.value = null;
+      walletInfo.value = null;
+      firstMonthPromoEligible.value = false;
+      initialized.value = false;
+      loading.value = false;
+    },
+    { flush: 'sync' }
+  );
 
   const effectiveMembershipStatuses = new Set<SubscriptionDetails['status']>([
     'active',
@@ -38,34 +54,38 @@ export const useMembershipStore = defineStore('membership', () => {
     subscription.value ? `zerocut.membership.tiers.${subscription.value.tier}` : null
   );
 
-  async function initialize() {
-    if (initialized.value) return;
-    if (loading.value) return;
-
-    const workspaceStore = useWorkspaceStore();
+  function fetchMembership() {
+    if (inFlight) return inFlight;
+    const workspaceId = workspaceStore.currentWorkspaceId;
+    const version = generation;
+    if (!workspaceId) return Promise.resolve();
     loading.value = true;
-    try {
-      const workspaceId = workspaceStore.currentWorkspaceId;
-      if (workspaceId) {
+    const request = (async () => {
+      try {
         const me = await getCurrentSubscription(workspaceId);
+        const wallet = isMembershipEffectiveStatus(me.subscription?.status)
+          ? await getWalletInfo(workspaceId)
+          : null;
+        if (version !== generation || workspaceId !== workspaceStore.currentWorkspaceId) return;
         subscription.value = me.subscription;
         firstMonthPromoEligible.value = me.firstMonthPromoEligible;
-        if (isMembershipEffectiveStatus(subscription.value?.status)) {
-          walletInfo.value = await getWalletInfo(workspaceId);
+        walletInfo.value = wallet;
+        initialized.value = true;
+      } finally {
+        if (version === generation) {
+          loading.value = false;
+          inFlight = undefined;
         }
       }
-    } finally {
-      loading.value = false;
-      initialized.value = true;
-    }
+    })();
+    inFlight = request;
+    return request;
   }
-
-  async function refresh() {
-    initialized.value = false;
-    subscription.value = null;
-    firstMonthPromoEligible.value = false;
-    walletInfo.value = null;
-    await initialize();
+  function initialize() {
+    return initialized.value ? Promise.resolve() : fetchMembership();
+  }
+  function refresh() {
+    return fetchMembership();
   }
 
   return {

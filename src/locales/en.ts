@@ -1,5 +1,21 @@
 export default {
   membershipUpgrade: {
+    unresolvedOnly: 'Unresolved orders only',
+    unresolvedOrders: 'Unresolved orders',
+    renewalIssues: 'Renewal order issues',
+    relatedOrder: 'Related order',
+    offlineResolution: 'Offline resolution',
+    compensatedOffline: 'Compensated offline',
+    refundedOffline: 'Refunded offline',
+    resolutionEvidence: 'Resolution evidence',
+    reconcile_order: 'Reconcile this order',
+    issueStates: { pending: 'Pending', review: 'Needs review', resolved: 'Resolved' },
+    benefitsSync: {
+      syncing: 'Upgrade completed. Syncing membership information…',
+      failed:
+        'Upgrade completed. Membership information could not be synced. We will retry automatically.',
+      retry: 'Sync again',
+    },
     amountDue: 'Amount due',
     activePeriod: 'Membership period',
     creditExpiryDetails: 'View existing credit expiry',

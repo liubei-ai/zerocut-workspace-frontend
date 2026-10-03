@@ -18,14 +18,73 @@ export const useMembershipUpgradeStore = defineStore('membershipUpgrade', () => 
     quote = ref<UpgradeQuote | null>(null),
     operation = ref<UpgradeUpgrade | null>(null),
     busy = ref(false),
-    error = ref('');
+    error = ref(''),
+    benefitsState = ref<'idle' | 'syncing' | 'failed' | 'synced'>('idle');
   const terminal = computed(() => !!operation.value?.closedAt);
   let generation = 0,
     timer: ReturnType<typeof setTimeout> | undefined,
     refreshMarker = '';
-  function stop() {
+  let syncTimer: ReturnType<typeof setTimeout> | undefined;
+  let syncPromise: Promise<void> | undefined;
+  let syncAttempt = 0;
+  function clearPoll() {
     if (timer) clearTimeout(timer);
     timer = undefined;
+  }
+  function stop() {
+    generation++;
+    clearPoll();
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = undefined;
+    syncPromise = undefined;
+    busy.value = false;
+  }
+  async function syncBenefits() {
+    const value = operation.value;
+    if (!value || value.fulfillment.state !== 'committed') return;
+    const marker = `${value.id}:${value.fulfillment.state}:${value.renewal.state}`;
+    if (marker === refreshMarker) return;
+    if (syncPromise) return syncPromise;
+    const version = generation;
+    if (syncTimer) clearTimeout(syncTimer);
+    syncTimer = undefined;
+    benefitsState.value = 'syncing';
+    syncPromise = (async () => {
+      try {
+        await useMembershipStore().refresh();
+        if (version !== generation) return;
+        const current = operation.value;
+        if (
+          !current ||
+          `${current.id}:${current.fulfillment.state}:${current.renewal.state}` !== marker
+        )
+          return;
+        refreshMarker = marker;
+        benefitsState.value = 'synced';
+        syncAttempt = 0;
+      } catch {
+        if (version !== generation) return;
+        benefitsState.value = 'failed';
+        const delay = [3000, 10000, 30000][Math.min(syncAttempt++, 2)];
+        syncTimer = setTimeout(() => {
+          void syncBenefits();
+        }, delay);
+      } finally {
+        if (version === generation) {
+          syncPromise = undefined;
+          const current = operation.value;
+          if (
+            current?.fulfillment.state === 'committed' &&
+            benefitsState.value === 'syncing' &&
+            `${current.id}:${current.fulfillment.state}:${current.renewal.state}` !== refreshMarker
+          )
+            syncTimer = setTimeout(() => {
+              void syncBenefits();
+            }, 0);
+        }
+      }
+    })();
+    return syncPromise;
   }
   function switchWorkspace(id: string) {
     if (workspaceId.value === id) return;
@@ -37,6 +96,8 @@ export const useMembershipUpgradeStore = defineStore('membershipUpgrade', () => 
     options.value = null;
     error.value = '';
     refreshMarker = '';
+    benefitsState.value = 'idle';
+    syncAttempt = 0;
     busy.value = false;
   }
   function requestKey(action: string, body: unknown) {
@@ -52,14 +113,10 @@ export const useMembershipUpgradeStore = defineStore('membershipUpgrade', () => 
     operation.value = value;
     if (value) {
       sessionStorage.setItem(`membership-upgrade:last:${workspaceId.value}`, value.id);
-      const marker = `${value.id}:${value.fulfillment.state}:${value.renewal.state}`;
-      if (value.fulfillment.state === 'committed' && marker !== refreshMarker) {
-        refreshMarker = marker;
-        await useMembershipStore().refresh();
-      }
+      await syncBenefits();
     }
     if (version !== generation) return;
-    stop();
+    clearPoll();
     if (value && !value.closedAt)
       timer = setTimeout(
         () => {
@@ -169,7 +226,7 @@ export const useMembershipUpgradeStore = defineStore('membershipUpgrade', () => 
       await accept(await membershipUpgradeApi.detail(ws, id), v);
     } catch {
       if (v === generation) {
-        stop();
+        clearPoll();
         timer = setTimeout(() => {
           void poll();
         }, 5000);
@@ -187,6 +244,8 @@ export const useMembershipUpgradeStore = defineStore('membershipUpgrade', () => 
     busy,
     error,
     terminal,
+    benefitsState,
+    syncBenefits,
     load,
     getQuote,
     confirm,

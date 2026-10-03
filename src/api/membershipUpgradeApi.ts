@@ -187,7 +187,10 @@ export type UpgradeAdminList = {
   nextCursor: string | null;
 };
 export type UpgradeAdminAction = {
-  action: 'reconcile' | 'record_progress' | 'refund_undelivered';
+  action: 'reconcile' | 'record_progress' | 'refund_undelivered' | 'reconcile_order';
+  orderId?: string;
+  resolution?: 'compensated_offline' | 'refunded_offline';
+  resolutionEvidence?: string;
   reason: string;
   userVisibleProgress?: string;
   notificationChannel?: string;
@@ -230,18 +233,24 @@ export type UpgradeAdminUpgradeAuditEvent = {
   notification: UpgradeAdminUpgradeNotification | null;
 };
 export type UpgradeAdminUpgradeSummary = {
+  unresolvedOrderCount?: number;
   upgrade: UpgradeUpgrade;
   accountId: string;
   workspaceId: string;
   caseOwner: UpgradeAdminUpgradeCaseOwner | null;
-  allowedAdminActions: Array<'reconcile' | 'record_progress' | 'refund_undelivered'>;
+  allowedAdminActions: Array<
+    'reconcile' | 'record_progress' | 'refund_undelivered' | 'reconcile_order'
+  >;
 };
 export type UpgradeAdminUpgradeDetail = {
+  renewalIssues?: Array<UpgradeRenewalIssue>;
   upgrade: UpgradeUpgrade;
   accountId: string;
   workspaceId: string;
   caseOwner: UpgradeAdminUpgradeCaseOwner | null;
-  allowedAdminActions: Array<'reconcile' | 'record_progress' | 'refund_undelivered'>;
+  allowedAdminActions: Array<
+    'reconcile' | 'record_progress' | 'refund_undelivered' | 'reconcile_order'
+  >;
   auditEvents: Array<UpgradeAdminUpgradeAuditEvent>;
   auditNextCursor: string | null;
 };
@@ -310,4 +319,16 @@ export const membershipUpgradeApi = {
       )
     ).data;
   },
+};
+
+export type UpgradeRenewalIssue = {
+  orderId: string;
+  orderNo: string;
+  periodStartAt: string | null;
+  periodEndAt: string | null;
+  errorCode: string | null;
+  state: 'pending' | 'review' | 'resolved';
+  firstFailureAt: string | null;
+  manualReviewAt: string | null;
+  userUpdateDueAt: string | null;
 };

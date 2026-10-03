@@ -1,5 +1,20 @@
 export default {
   membershipUpgrade: {
+    unresolvedOnly: '只看未解决订单',
+    unresolvedOrders: '未解决订单',
+    renewalIssues: '续费订单问题',
+    relatedOrder: '关联订单',
+    offlineResolution: '线下处理结果',
+    compensatedOffline: '已线下补偿',
+    refundedOffline: '已线下退款',
+    resolutionEvidence: '处理凭证',
+    reconcile_order: '恢复此订单',
+    issueStates: { pending: '待处理', review: '需人工处理', resolved: '已解决' },
+    benefitsSync: {
+      syncing: '会员升级已完成，正在同步会员信息…',
+      failed: '会员升级已完成，会员信息暂未同步，将自动重试。',
+      retry: '重新同步',
+    },
     amountDue: '本次应付',
     activePeriod: '会员有效期',
     creditExpiryDetails: '查看旧积分到期明细',

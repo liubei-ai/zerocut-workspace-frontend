@@ -8,6 +8,8 @@ import zhHans from '@/locales/zhHans';
 import PlansAndBillingView from './PlansAndBillingView.vue';
 const mocks = vi.hoisted(() => ({
   subscription: {},
+  stop: vi.fn(),
+  switchWorkspace: vi.fn(),
   push: vi.fn(),
   cancel: vi.fn(),
   load: vi.fn().mockResolvedValue(undefined),
@@ -19,7 +21,12 @@ vi.mock('@/api/membershipApi', () => ({
   cancelSubscription: mocks.cancel,
 }));
 vi.mock('@/stores/membershipUpgradeStore', () => ({
-  useMembershipUpgradeStore: () => ({ load: mocks.load, operation: null }),
+  useMembershipUpgradeStore: () => ({
+    load: mocks.load,
+    operation: null,
+    stop: mocks.stop,
+    switchWorkspace: mocks.switchWorkspace,
+  }),
 }));
 vi.mock('@/stores/membershipStore', () => ({
   useMembershipStore: () => ({ refresh: async () => undefined }),
@@ -79,5 +86,6 @@ describe('billing membership upgrade entry semantics', () => {
       expect(mocks.push).toHaveBeenCalledWith('/membership');
       expect(mocks.cancel).not.toHaveBeenCalled();
       w.unmount();
+      expect(mocks.stop).toHaveBeenCalledTimes(1);
     });
 });

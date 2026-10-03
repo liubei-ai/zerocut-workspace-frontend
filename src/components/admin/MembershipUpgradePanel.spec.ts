@@ -77,7 +77,7 @@ describe('administrative recovery panel', () => {
     await w.get('li button').trigger('click');
     await flushPromises();
     const fields = w.findAll('textarea'),
-      inputs = w.findAll('input');
+      inputs = w.findAll('form input');
     await fields[0].setValue('Checking');
     await fields[1].setValue('Payment check pending');
     await inputs[0].setValue('test-channel');
