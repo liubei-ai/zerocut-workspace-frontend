@@ -322,6 +322,7 @@ export const membershipUpgradeApi = {
 };
 
 export type UpgradeRenewalIssue = {
+  orderOrigin?: 'source' | 'target';
   orderId: string;
   orderNo: string;
   periodStartAt: string | null;

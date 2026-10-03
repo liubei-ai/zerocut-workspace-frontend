@@ -357,6 +357,13 @@ watch(
           <ul class="issue-list">
             <li v-for="issue in detail.renewalIssues" :key="issue.orderId" class="issue-card">
               <div class="issue-header">
+                <span>{{
+                  t(
+                    issue.orderOrigin === 'source'
+                      ? 'membershipUpgrade.sourceOrder'
+                      : 'membershipUpgrade.targetOrder'
+                  )
+                }}</span>
                 <code>{{ issue.orderNo }}</code
                 ><span class="status-badge" :class="tone(issue.state)">{{
                   t(`membershipUpgrade.issueStates.${issue.state}`)

@@ -22,6 +22,10 @@ import { useMembershipStore } from '@/stores/membershipStore';
 import { useMembershipUpgradeStore } from '@/stores/membershipUpgradeStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import {
+  canCancelMembershipRenewal,
+  hasMembershipEntitlement,
+} from '@/utils/membershipEntitlement';
 
 type Cycle = 'monthly' | 'yearly' | 'one_time_month' | 'one_time_year';
 
@@ -302,7 +306,7 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
     const currentPlan =
       subscription !== null &&
       subscription.planCode === plan.code &&
-      membershipStore.isMembershipEffectiveStatus(subscription.status);
+      hasMembershipEntitlement(subscription);
     const basePrice = formatPrice(plan, rawPlans.value);
     const discountLabel = getDiscountLabelByUnitPricePer100(plan);
 
@@ -324,6 +328,7 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
       isCurrentSubscription: currentPlan,
       showAction: !hasEffectiveMembership.value || showUpgradeEntries.value,
       isDisabled:
+        renewalBlocksPurchase.value ||
         annualBlocked ||
         (hasEffectiveMembership.value &&
           (option?.classification !== 'allowed' || (!option.available && !option.previewOnly))),
@@ -336,13 +341,15 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
             : hasEffectiveMembership.value && !currentPlan
               ? t('membershipUpgrade.upgradeAction')
               : undefined,
-      disabledReason: annualBlocked
-        ? t('membershipUpgrade.ANNUAL_NOT_SUPPORTED')
-        : hasEffectiveMembership.value
-          ? option?.reasonCode
-            ? t(`membershipUpgrade.${option.reasonCode}`)
-            : undefined
-          : undefined,
+      disabledReason: renewalBlocksPurchase.value
+        ? t('membershipUpgrade.cancelBeforeRepurchase')
+        : annualBlocked
+          ? t('membershipUpgrade.ANNUAL_NOT_SUPPORTED')
+          : hasEffectiveMembership.value
+            ? option?.reasonCode
+              ? t(`membershipUpgrade.${option.reasonCode}`)
+              : undefined
+            : undefined,
     };
   });
 });
@@ -355,20 +362,16 @@ const hasOneTimeMonth = computed(() =>
 const hasOneTimeYear = computed(() => rawPlans.value.some(p => p.purchaseMode === 'one_time_year'));
 
 const statusBarState = computed<'none' | 'expired' | 'active'>(() => {
-  const sub = membershipStore.subscription;
-  if (!sub) return 'none';
-  if (sub.status === 'expired') return 'expired';
-  if (membershipStore.isMembershipEffectiveStatus(sub.status)) return 'active';
-  return 'none';
+  if (!membershipStore.subscription) return 'none';
+  return hasMembershipEntitlement(membershipStore.subscription) ? 'active' : 'expired';
 });
-
 const showCanceledNotice = computed(() => membershipStore.subscription?.status === 'canceled');
-
-const hasEffectiveMembership = computed(() => {
-  const sub = membershipStore.subscription;
-  if (!sub) return false;
-  return sub.status !== 'expired';
-});
+const hasEffectiveMembership = computed(() =>
+  hasMembershipEntitlement(membershipStore.subscription)
+);
+const renewalBlocksPurchase = computed(
+  () => !hasEffectiveMembership.value && canCancelMembershipRenewal(membershipStore.subscription)
+);
 
 const formattedExpiryDate = computed(() => {
   const date = membershipStore.expiryDate;
@@ -459,6 +462,10 @@ function handleSubscribe(productId: string, planName: string) {
     return;
   }
 
+  if (renewalBlocksPurchase.value) {
+    snackbarStore.showWarningMessage(t('membershipUpgrade.cancelBeforeRepurchase'));
+    return;
+  }
   if (plan.purchaseMode === 'one_time_month' || plan.purchaseMode === 'one_time_year') {
     selectedPlanForPayment.value = plan;
     selectedPlanTitle.value = planName;
@@ -592,6 +599,9 @@ onBeforeUnmount(() => upgradeStore.stop());
               </div>
               <div class="status-sub">
                 {{ t('zerocut.membership.statusBar.expiredAt', { date: formattedExpiryDate }) }}
+              </div>
+              <div v-if="renewalBlocksPurchase" class="status-sub status-sub--notice">
+                {{ t('membershipUpgrade.cancelBeforeRepurchase') }}
               </div>
             </template>
             <template v-else>

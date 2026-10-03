@@ -18,6 +18,10 @@ import { useMembershipUpgradeStore } from '@/stores/membershipUpgradeStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
 import { formatDate } from '@/utils/date';
+import {
+  canCancelMembershipRenewal,
+  hasMembershipEntitlement,
+} from '@/utils/membershipEntitlement';
 
 const snackbarStore = useSnackbarStore();
 const membershipStore = useMembershipStore();
@@ -54,6 +58,9 @@ const planName = computed(() => {
 
 const billingModeText = computed(() => {
   if (!subscription.value) return '';
+  if (subscription.value.purchaseMode === 'one_time_year') {
+    return t('zerocut.membership.priceList.headers.oneTimeYear');
+  }
   if (subscription.value.purchaseMode === 'auto_yearly') {
     return t('zerocut.membership.priceList.headers.autoYearly');
   }
@@ -65,11 +72,8 @@ const billingModeText = computed(() => {
 
 const statusChip = computed(() => {
   const status = subscription.value?.status;
-  if (
-    subscription.value?.currentPeriodEndAt &&
-    new Date(subscription.value.currentPeriodEndAt) <= new Date()
-  )
-    return { color: 'default', text: t('membershipUpgrade.expiredMembership') };
+  if (subscription.value && !hasMembershipEntitlement(subscription.value))
+    return { color: 'default', text: t('membershipUpgrade.entitlementExpired') };
   if (status === 'active') {
     return { color: 'success', text: t('zerocut.plansAndBilling.status.active') };
   }
@@ -99,14 +103,22 @@ const currentPeriodEndText = computed(() => {
   return formatDate(subscription.value.currentPeriodEndAt);
 });
 
-const canCancel = computed(() => {
-  if (!subscription.value) return false;
-  return (
-    subscription.value.autoRenew &&
-    ['active', 'past_due'].includes(subscription.value.status) &&
-    (!subscription.value.currentPeriodEndAt ||
-      new Date(subscription.value.currentPeriodEndAt) > new Date())
-  );
+const entitlementEndText = computed(() => {
+  const current = subscription.value;
+  if (!current) return '-';
+  const yearly = ['auto_yearly', 'one_time_year'].includes(current.purchaseMode);
+  const end =
+    current.entitlementEndsAt ?? (yearly ? current.termEndAt : current.currentPeriodEndAt);
+  return end ? formatDate(end) : '-';
+});
+
+const canCancel = computed(() => canCancelMembershipRenewal(subscription.value));
+const renewalNotice = computed(() => {
+  if (!subscription.value?.autoRenew) return null;
+  const lifecycle = subscription.value.lifecycleStatus ?? subscription.value.status;
+  return lifecycle === 'past_due'
+    ? t('membershipUpgrade.renewalRetrying')
+    : t('membershipUpgrade.renewalAuthorized');
 });
 
 function openCancelDialog() {
@@ -148,19 +160,28 @@ async function loadData() {
 async function confirmCancel() {
   if (!subscription.value || !workspaceId.value) return;
 
+  const cancelWorkspaceId = workspaceId.value;
+  const cancelSubscriptionId = subscription.value.subscriptionId;
+  const generation = loadGeneration;
+
   try {
     cancelling.value = true;
     const updated = await cancelSubscription({
-      workspaceId: workspaceId.value,
-      subscriptionId: subscription.value.subscriptionId,
+      workspaceId: cancelWorkspaceId,
+      subscriptionId: cancelSubscriptionId,
       reason: cancelReason.value.trim() ? cancelReason.value.trim() : undefined,
     });
 
+    if (workspaceId.value !== cancelWorkspaceId || generation !== loadGeneration) return;
     subscription.value = updated;
-    membershipStore.refresh();
+    void membershipStore.refresh().catch(() => {
+      if (workspaceId.value === cancelWorkspaceId && generation === loadGeneration)
+        snackbarStore.showErrorMessage(t('membershipUpgrade.membershipSyncFailed'));
+    });
     snackbarStore.showSuccessMessage(t('zerocut.plansAndBilling.messages.cancelSuccess'));
     cancelDialogOpen.value = false;
   } catch (e) {
+    if (workspaceId.value !== cancelWorkspaceId || generation !== loadGeneration) return;
     const err = e as ApiError;
     snackbarStore.showErrorMessage(err?.message || '取消失败，请稍后重试');
   } finally {
@@ -175,12 +196,16 @@ onMounted(() => {
 watch(
   () => workspaceId.value,
   id => {
+    cancelDialogOpen.value = false;
     upgradeStore.switchWorkspace(id ?? '');
     loadData();
   },
   { flush: 'sync' }
 );
-onBeforeUnmount(() => upgradeStore.stop());
+onBeforeUnmount(() => {
+  loadGeneration++;
+  upgradeStore.stop();
+});
 </script>
 
 <template>
@@ -206,6 +231,9 @@ onBeforeUnmount(() => upgradeStore.stop());
             </v-chip>
           </v-card-title>
           <v-card-text>
+            <v-alert v-if="renewalNotice" variant="tonal" type="warning" class="mb-4">{{
+              renewalNotice
+            }}</v-alert>
             <v-alert v-if="workspaceName" variant="tonal" type="info" class="mb-4">
               <div class="text-body-2">当前工作空间：{{ workspaceName }}</div>
             </v-alert>
@@ -270,6 +298,12 @@ onBeforeUnmount(() => upgradeStore.stop());
                   <span class="font-weight-medium">{{ currentPeriodEndText }}</span>
                 </v-list-item-title>
               </v-list-item>
+              <v-list-item class="px-0">
+                <v-list-item-title class="text-body-2">
+                  {{ t('membershipUpgrade.entitlementEndsAt') }}：
+                  <span class="font-weight-medium">{{ entitlementEndText }}</span>
+                </v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-card-text>
         </v-card>
@@ -331,7 +365,7 @@ onBeforeUnmount(() => upgradeStore.stop());
             v-if="subscription?.currentPeriodEndAt"
             class="text-body-2 text-medium-emphasis mt-2"
           >
-            取消后仍可使用至：{{ currentPeriodEndText }}
+            {{ t('membershipUpgrade.entitlementEndsAt') }}：{{ entitlementEndText }}
           </div>
         </v-card-text>
         <v-card-actions>

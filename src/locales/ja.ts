@@ -1,5 +1,16 @@
 export default {
   membershipUpgrade: {
+    entitlementEndsAt: '会員特典の終了日時',
+    membershipSyncFailed: '会員情報を同期できませんでした。更新して再試行してください。',
+    entitlementExpired: '会員特典の有効期間が終了しました',
+    renewalRetrying:
+      '自動更新の承認は継続しており、更新の再試行を処理中です。今後の自動更新は解約できます。',
+    renewalAuthorized: '自動更新の承認は継続しています。ここで今後の自動更新を解約できます。',
+    cancelBeforeRepurchase:
+      '自動更新を解約し、元の注文の支払い結果を確認してから再購入してください。',
+    sourceOrder: '元のサブスクリプション注文',
+    targetOrder: 'アップグレード後の注文',
+
     upgradeUnavailable: 'アップグレード対象外',
     queueDescription: 'アップグレード状況と支払いを確認し、注文の問題に対応します。',
     queueRecords: 'アップグレード履歴',
@@ -333,6 +344,7 @@ export default {
           oneTime: '単月購入',
           autoMonthly: '継続（月額）',
           autoYearly: '継続（年額）',
+          oneTimeYear: '年間購入',
           benefits: '特典',
         },
         formats: {

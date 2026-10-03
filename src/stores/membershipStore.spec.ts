@@ -81,4 +81,20 @@ describe('membership rights refresh', () => {
     await old;
     expect(s.subscription?.tier).toBe('standard');
   });
+  it('preserves separately purchased credits after membership entitlement expires', async () => {
+    vi.mocked(getCurrentSubscription).mockResolvedValue({
+      subscription: {
+        status: 'expired',
+        autoRenew: true,
+        lifecycleStatus: 'past_due',
+        entitlementActive: false,
+      },
+      firstMonthPromoEligible: false,
+    } as never);
+    const s = useMembershipStore();
+    await s.refresh();
+    expect(s.hasActiveSubscription).toBe(false);
+    expect(s.availableCredits).toBe(100);
+    expect(s.subscription?.autoRenew).toBe(true);
+  });
 });

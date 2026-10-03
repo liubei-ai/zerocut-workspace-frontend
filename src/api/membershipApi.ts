@@ -92,6 +92,10 @@ export interface SubscriptionDetails {
   tier: 'basic' | 'standard' | 'premium';
   purchaseMode: 'one_time_month' | 'auto_monthly' | 'auto_yearly' | 'one_time_year';
   status: SubscriptionStatus;
+  lifecycleStatus?: SubscriptionStatus;
+  entitlementActive?: boolean;
+  entitlementEndsAt?: string | null;
+  canCancelAutoRenewal?: boolean;
   autoRenew: boolean;
   termStartAt: string | null;
   termEndAt: string | null;

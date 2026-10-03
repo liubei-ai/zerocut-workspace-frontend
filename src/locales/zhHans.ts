@@ -1,5 +1,14 @@
 export default {
   membershipUpgrade: {
+    entitlementEndsAt: '会员权益结束时间',
+    membershipSyncFailed: '会员信息暂未同步，请刷新后重试。',
+    entitlementExpired: '会员权益已到期',
+    renewalRetrying: '自动续费仍获授权，当前正在处理续费重试。你可以取消后续续费。',
+    renewalAuthorized: '自动续费仍获授权，可在此取消后续续费。',
+    cancelBeforeRepurchase: '请先取消自动续费，并确认原订单付款结果后再重新购买。',
+    sourceOrder: '原订阅订单',
+    targetOrder: '升级后订单',
+
     upgradeUnavailable: '暂不支持升级',
     queueDescription: '查看升级状态、核对付款并跟进异常订单',
     queueRecords: '升级记录',
@@ -435,6 +444,7 @@ export default {
           oneTime: '按月支付',
           autoMonthly: '连续包月',
           oneTimeYear: '按年支付',
+          autoYearly: '连续包年',
           benefits: '权益',
         },
         formats: {

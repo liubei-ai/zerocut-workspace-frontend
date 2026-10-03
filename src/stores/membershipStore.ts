@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 import { getCurrentSubscription, type SubscriptionDetails } from '@/api/membershipApi';
 import { getWalletInfo, type WalletInfo } from '@/api/walletApi';
 import { useWorkspaceStore } from '@/stores/workspaceStore';
+import { hasMembershipEntitlement } from '@/utils/membershipEntitlement';
 
 export const useMembershipStore = defineStore('membership', () => {
   const subscription = ref<SubscriptionDetails | null>(null);
@@ -42,13 +43,17 @@ export const useMembershipStore = defineStore('membership', () => {
   };
 
   // Backward-compatible field name, now means "has effective membership entitlement".
-  const hasActiveSubscription = computed(() =>
-    isMembershipEffectiveStatus(subscription.value?.status)
+  const hasActiveSubscription = computed(() => hasMembershipEntitlement(subscription.value));
+  const isExpired = computed(
+    () => !!subscription.value && !hasMembershipEntitlement(subscription.value)
   );
-  const isExpired = computed(() => subscription.value?.status === 'expired');
   const availableCredits = computed(() => walletInfo.value?.availableCredits ?? 0);
   const expiryDate = computed(
-    () => subscription.value?.termEndAt ?? subscription.value?.currentPeriodEndAt ?? null
+    () =>
+      subscription.value?.entitlementEndsAt ??
+      subscription.value?.termEndAt ??
+      subscription.value?.currentPeriodEndAt ??
+      null
   );
   const tierI18nKey = computed(() =>
     subscription.value ? `zerocut.membership.tiers.${subscription.value.tier}` : null
@@ -63,9 +68,7 @@ export const useMembershipStore = defineStore('membership', () => {
     const request = (async () => {
       try {
         const me = await getCurrentSubscription(workspaceId);
-        const wallet = isMembershipEffectiveStatus(me.subscription?.status)
-          ? await getWalletInfo(workspaceId)
-          : null;
+        const wallet = await getWalletInfo(workspaceId);
         if (version !== generation || workspaceId !== workspaceStore.currentWorkspaceId) return;
         subscription.value = me.subscription;
         firstMonthPromoEligible.value = me.firstMonthPromoEligible;

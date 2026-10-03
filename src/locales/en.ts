@@ -1,5 +1,16 @@
 export default {
   membershipUpgrade: {
+    entitlementEndsAt: 'Membership benefits end at',
+    membershipSyncFailed: 'Membership information could not be synced. Refresh and try again.',
+    entitlementExpired: 'Membership benefits have expired',
+    renewalRetrying:
+      'Auto-renewal remains authorized and renewal retries are being processed. You can cancel future renewals.',
+    renewalAuthorized: 'Auto-renewal remains authorized. You can cancel future renewals here.',
+    cancelBeforeRepurchase:
+      'Cancel auto-renewal and confirm the previous payment result before purchasing again.',
+    sourceOrder: 'Original subscription order',
+    targetOrder: 'Upgraded subscription order',
+
     upgradeUnavailable: 'Upgrade unavailable',
     queueDescription: 'Review upgrade status, verify payments and follow up on order issues.',
     queueRecords: 'Upgrade records',
@@ -447,6 +458,7 @@ export default {
           oneTime: 'One-time (1 month)',
           autoMonthly: 'Auto-renew (Monthly)',
           autoYearly: 'Auto-renew (Yearly)',
+          oneTimeYear: 'One-time (1 year)',
           benefits: 'Benefits',
         },
         formats: {
