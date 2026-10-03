@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
   },
   upgrade: {
     options: { options: [] as unknown[] },
-    operation: null,
+    operation: null as null | { closedAt: string | null },
     load: vi.fn().mockResolvedValue(undefined),
     getQuote: vi.fn().mockResolvedValue(undefined),
     closeView: vi.fn(),
@@ -49,6 +49,11 @@ const mountPage = () =>
       renderStubDefaultSlot: true,
       stubs: {
         SubscribePricing: { name: 'SubscribePricing', props: ['plans'], template: '<div/>' },
+        VBtn: {
+          name: 'VBtn',
+          emits: ['click'],
+          template: `<button @click="$emit('click')"><slot/></button>`,
+        },
         VBtnToggle: { name: 'VBtnToggle', props: ['modelValue'], template: '<div><slot/></div>' },
         MembershipPaymentDialog: {
           name: 'MembershipPaymentDialog',
@@ -74,6 +79,7 @@ describe('membership plan entries use server upgrade eligibility', () => {
     vi.clearAllMocks();
     mocks.member.subscription = { status: 'active', planCode: 'source', tier: 'basic' };
     mocks.upgrade.operation = null;
+    mocks.upgrade.options.options = [];
     mocks.plans = [
       {
         code: 'target',
@@ -250,7 +256,7 @@ describe('membership plan entries use server upgrade eligibility', () => {
     w.unmount();
   });
 
-  it('keeps the upgrade entry visible when the feature gate prevents quoting', async () => {
+  it('hides upgrade entries when the feature gate or phone whitelist denies creation', async () => {
     mocks.upgrade.options.options = [
       {
         targetPlan: { code: 'target' },
@@ -263,33 +269,76 @@ describe('membership plan entries use server upgrade eligibility', () => {
     const w = mountPage();
     await flushPromises();
     const pricing = w.findComponent({ name: 'SubscribePricing' });
-    expect(pricing.props('plans')[0].isDisabled).toBe(false);
+    expect(pricing.props('plans')[0]).toMatchObject({ showAction: false, isDisabled: true });
     expect(pricing.props('plans')[0].actionLabel).toBe('升级会员');
     pricing.vm.$emit('subscribe', 'target', 'Standard');
     await flushPromises();
     expect(mocks.upgrade.getQuote).not.toHaveBeenCalled();
-    expect(mocks.warn).not.toHaveBeenCalled();
+    expect(mocks.warn).toHaveBeenCalledWith('升级入口暂未开放。');
     const dialog = w.findComponent({ name: 'MembershipUpgradeDialog' });
-    expect(dialog.props('open')).toBe(true);
-    expect(dialog.props('notice')).toBe('升级入口暂未开放。');
+    expect(dialog.props('open')).toBe(false);
     w.unmount();
   });
 
-  it('does not hide the upgrade entry if upgrade options have not loaded', async () => {
+  it('hides upgrade entries until server eligibility has loaded', async () => {
     mocks.upgrade.options.options = [];
     const w = mountPage();
     await flushPromises();
     const pricing = w.findComponent({ name: 'SubscribePricing' });
-    expect(pricing.props('plans')[0].isDisabled).toBe(false);
+    expect(pricing.props('plans')[0]).toMatchObject({ showAction: false, isDisabled: true });
     expect(pricing.props('plans')[0].actionLabel).toBe('升级会员');
     pricing.vm.$emit('subscribe', 'target', 'Standard');
     await flushPromises();
     expect(mocks.upgrade.getQuote).not.toHaveBeenCalled();
-    expect(mocks.warn).not.toHaveBeenCalled();
+    expect(mocks.warn).toHaveBeenCalledWith('升级入口暂未开放。');
     const dialog = w.findComponent({ name: 'MembershipUpgradeDialog' });
-    expect(dialog.props('open')).toBe(true);
-    expect(dialog.props('targetPlanCode')).toBe('target');
-    expect(dialog.props('notice')).toBe('升级入口暂未开放。');
+    expect(dialog.props('open')).toBe(false);
+    w.unmount();
+  });
+  it('hides every upgrade card for an excluded premium member across billing cycles', async () => {
+    mocks.member.subscription = { status: 'active', planCode: 'premium_month', tier: 'premium' };
+    const template = mocks.plans[0] as object;
+    mocks.plans = ['one_time_month', 'auto_monthly', 'one_time_year'].flatMap(purchaseMode =>
+      ['basic', 'standard', 'premium'].map(tier => ({
+        ...template,
+        code: `${tier}_${purchaseMode}`,
+        tier,
+        purchaseMode,
+      }))
+    );
+    mocks.upgrade.options.options = mocks.plans.map(plan => {
+      const { code, tier } = plan as { code: string; tier: string };
+      return {
+        targetPlan: { code },
+        classification: tier === 'premium' ? 'allowed' : 'forbidden',
+        available: false,
+        previewOnly: false,
+        reasonCode: tier === 'premium' ? 'UPGRADE_DISABLED' : 'DOWNGRADE_NOT_ALLOWED',
+      };
+    });
+    const w = mountPage();
+    await flushPromises();
+    for (const cycle of ['one_time_month', 'monthly', 'one_time_year']) {
+      w.getComponent({ name: 'VBtnToggle' }).vm.$emit('update:modelValue', cycle);
+      await flushPromises();
+      const plans = w.getComponent({ name: 'SubscribePricing' }).props('plans');
+      expect(plans).toHaveLength(3);
+      expect(plans.every((plan: { showAction: boolean }) => !plan.showAction)).toBe(true);
+    }
+    expect(mocks.upgrade.getQuote).not.toHaveBeenCalled();
+    w.unmount();
+  });
+
+  it('keeps existing operation recovery available after removal from the whitelist', async () => {
+    mocks.upgrade.operation = { closedAt: null };
+    const w = mountPage();
+    await flushPromises();
+    expect(w.getComponent({ name: 'SubscribePricing' }).props('plans')[0].showAction).toBe(false);
+    const resume = w.findAll('button').find(button => button.text() === '查看进行中的升级');
+    expect(resume).toBeDefined();
+    await resume?.trigger('click');
+    expect(w.getComponent({ name: 'MembershipUpgradeDialog' }).props('open')).toBe(true);
+    expect(mocks.upgrade.getQuote).not.toHaveBeenCalled();
     w.unmount();
   });
 });

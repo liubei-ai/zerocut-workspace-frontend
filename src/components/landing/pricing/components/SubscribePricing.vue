@@ -26,6 +26,7 @@ export interface SubscriptionPlan {
   productId: string; // SKU code (for subscription)
   isCurrentSubscription?: boolean; // Flag to indicate if this is the current active subscription
   isDisabled?: boolean; // Whether subscribe action is blocked
+  showAction?: boolean; // Defaults to visible; membership gates can hide upgrade entries
   disabledReason?: string; // Reason shown when subscribe action is blocked
   actionLabel?: string; // Optional label for upgrade or preview actions
 }
@@ -52,7 +53,7 @@ const emit = defineEmits<{
  * Handle subscribe button click
  */
 function onSubscribe(plan: SubscriptionPlan) {
-  if (plan.isDisabled) return;
+  if (plan.isDisabled || plan.showAction === false) return;
   emit('subscribe', plan.productId, plan.planName);
 }
 </script>
@@ -143,6 +144,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                     </div>
 
                     <v-btn
+                      v-if="plan.showAction !== false"
                       color="primary"
                       size="large"
                       class="mt-10"
@@ -153,7 +155,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                       {{ plan.actionLabel ?? t('zerocut.membership.actions.subscribe') }}
                     </v-btn>
                     <div
-                      v-if="plan.isDisabled && plan.disabledReason"
+                      v-if="plan.showAction !== false && plan.isDisabled && plan.disabledReason"
                       class="subscribe-disabled-reason mt-2"
                     >
                       {{ plan.disabledReason }}
@@ -246,6 +248,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                   </div>
 
                   <v-btn
+                    v-if="plan.showAction !== false"
                     color="primary"
                     size="large"
                     class="mt-10"
@@ -256,7 +259,7 @@ function onSubscribe(plan: SubscriptionPlan) {
                     {{ plan.actionLabel ?? t('zerocut.membership.actions.subscribe') }}
                   </v-btn>
                   <div
-                    v-if="plan.isDisabled && plan.disabledReason"
+                    v-if="plan.showAction !== false && plan.isDisabled && plan.disabledReason"
                     class="subscribe-disabled-reason mt-2"
                   >
                     {{ plan.disabledReason }}

@@ -273,6 +273,15 @@ const priceComparisonRows = computed<TierComparisonRow[]>(() => {
   return rows.filter((row): row is TierComparisonRow => row !== null);
 });
 
+// Eligibility is authoritative: do not expose upgrade entries while loading or gated out.
+// An existing operation has its own resume entry and does not require creation eligibility.
+const showUpgradeEntries = computed(
+  () =>
+    upgradeStore.options?.options.some(
+      option => option.classification === 'allowed' && (option.available || option.previewOnly)
+    ) ?? false
+);
+
 const displayPlans = computed<SubscriptionPlan[]>(() => {
   locale.value;
 
@@ -313,11 +322,11 @@ const displayPlans = computed<SubscriptionPlan[]>(() => {
       productId: plan.code,
       // Mark as current subscription if matches planCode and membership is still effective
       isCurrentSubscription: currentPlan,
+      showAction: !hasEffectiveMembership.value || showUpgradeEntries.value,
       isDisabled:
         annualBlocked ||
         (hasEffectiveMembership.value &&
-          option !== undefined &&
-          option.classification !== 'allowed'),
+          (option?.classification !== 'allowed' || (!option.available && !option.previewOnly))),
       actionLabel: annualBlocked
         ? t('membershipUpgrade.upgradeUnavailable')
         : upgradeAvailable(plan.code)
@@ -446,11 +455,7 @@ function handleSubscribe(productId: string, planName: string) {
   if (hasEffectiveMembership.value) {
     const option = upgradeOption(productId);
     const reasonCode = option?.reasonCode ?? 'UPGRADE_DISABLED';
-    if (!option || option.classification === 'allowed') {
-      showUpgradeNotice(productId, reasonCode);
-    } else {
-      snackbarStore.showWarningMessage(t(`membershipUpgrade.${reasonCode}`));
-    }
+    snackbarStore.showWarningMessage(t(`membershipUpgrade.${reasonCode}`));
     return;
   }
 
